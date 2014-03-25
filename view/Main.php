@@ -74,7 +74,11 @@ class Main extends AbstractView {
 					  ;?>
                         </div>
                         <div class="form-group"> 
-                          Odjavi se
+                          <?php if(\model\DBOsoba::isLoggedIn())     echo "<a href=\"" . \route\Route::get('d3')->generate(array(
+                                                                                        "controller" => "login",
+                                                                                        "action" => "logout"
+                                                                                        )) . "\">Odjavi se</a>";
+                          ?>
                         </div>
                   </div>
             </div>

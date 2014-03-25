@@ -11,6 +11,12 @@ class Index extends AbstractView {
     private $errorMessage;
     
     /**
+     *
+     * @var string 
+     */
+    private $resultMessage;
+    
+    /**
      * Opisuje prijenos varijable iz controllera ctl\Index
      * MORATE NAPRAVITI SETTER
      */
@@ -46,6 +52,14 @@ ako umjesto d3 stavite d2 onda ne trebate pisati akciju nego samo kontroler te v
     )); ?>
     </div>
 </div>
+        
+<div class="main">
+    <div class = "container-narrow">
+    <?php echo new components\ResultMessage(array(
+        "resultMessage" => $this->resultMessage
+    )); ?>
+    </div>
+</div>
 
 <?php
     }
@@ -57,6 +71,16 @@ ako umjesto d3 stavite d2 onda ne trebate pisati akciju nego samo kontroler te v
      */
     public function setErrorMessage($errorMessage) {
         $this->errorMessage = $errorMessage;
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param string $resultMessage
+     * @return \view\Index
+     */
+    public function setResultMessage($resultMessage) {
+        $this->resultMessage = $resultMessage;
         return $this;
     }
     

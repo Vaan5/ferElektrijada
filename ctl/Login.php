@@ -7,27 +7,34 @@ class Login implements Controller {
     
     private $errorMessage;
     
-    private function checkErrorMessage() {
-        switch(get('neispravno')) {
-            case 1:
-                 $this->errorMessage = 'Morate popuniti polja!';
-                break;
-            case 2:
-                 $this->errorMessage = 'Pogrešno uneseni podaci!';
-                break;
-            default:
-                 $this->errorMessage = null;
-                break;
-        }
-    }
-    
     public function display() {
-        // ako si vec logiran bjezi odavde
+        // if you're already logged in, then get out of here
         if (\model\DBOsoba::isLoggedIn()) {
             preusmjeri(\route\Route::get('d1')->generate());
         }
-
-        $this->checkErrorMessage();
+        
+        // the user has filled the form
+        if(!postEmpty()) {
+            // if you forgot to enter something
+            if(!post("userName") || !post("pass")) {
+                $this->errorMessage = 'Morate popuniti sva polja!';
+            } else {
+                // we validate the user
+                $validacija = new \model\LoginFormModel(array('password' => post("pass"), 'username' => post("userName")));
+                $pov = $validacija->validate();
+                
+                if($pov !== true) {
+                    $this->errorMessage = isset($pov['password']) ? 'Pogrešna lozinka!' : 'Pogrešno korisničko ime!';
+                } else {
+                    // i log you in cause everythings ok
+                    $korisnik = new \model\DBOsoba();
+                    $r = $korisnik->doAuth(post("userName"), post("pass"));
+                    
+                    $r === false ? $this->errorMessage = 'Pogrešno korisničko ime ili lozinka!' : 
+                        preusmjeri(\route\Route::get('d1')->generate() . '?msg=logsuccess');
+                }                
+            }
+        }
         
         echo new \view\Main(array(
             "body" => new \view\Login(array(
@@ -37,27 +44,8 @@ class Login implements Controller {
         ));
     }
     
-    public function login() {
-        
-        if(!post("userName") || !post("pass")) {
-            preusmjeri(\route\Route::get('d2')->generate(array(
-                "controller" => "login"
-            )) . "?neispravno=1");          // vidite kako se stvaraju get zahtjevi
-        }
-
-        $validacija = new \model\LoginFormModel(array('password' => post("pass"), 'username' => post("userName")));
-        $pov = $validacija->validate();
-        if($pov !== true) {
-            preusmjeri(\route\Route::get('d2')->generate(array(
-                "controller" => "login"
-            )) . "?neispravno=2");
-        }
-        
-        $korisnik = new \model\DBOsoba();
-        $korisnik->doAuth(post("userName"), post("pass"));
-        
-        //preusmjeri na naslovnicu
+    public function logout() {
+        session_destroy();
         preusmjeri(\route\Route::get('d1')->generate());
     }
-    
 }

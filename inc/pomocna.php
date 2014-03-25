@@ -113,3 +113,21 @@ function post($key, $default = false) {
 function files($key, $mainKey, $default = false) {
     return element($key, $_FILES[$mainKey], $default);
 }
+
+/**
+ * 
+ * @return boolean  true if $_POST is empty, false otherwise
+ */
+function postEmpty() {
+    return count($_POST) === 0 ? true : false;
+}
+
+/**
+ * 
+ * @param strin $key
+ * @param string $default
+ * @return mixed
+ */
+function session($key, $default = false) {
+    return element($key, $_SESSION, $default);
+} 

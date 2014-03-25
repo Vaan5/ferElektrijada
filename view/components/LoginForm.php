@@ -9,7 +9,7 @@ class LoginForm extends AbstractView {
 ?>
     <form action="<?php echo \route\Route::get('d3')->generate(array(
                                                             "controller" => "login",
-                                                            "action" => "login"
+                                                            "action" => "display"
                                                         ));?>" method="POST">
 		<div class="form-group">
             <label for="korisničkoIme"><b>Korisničko ime</b></label>
