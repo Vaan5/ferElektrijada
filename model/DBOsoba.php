@@ -22,7 +22,7 @@ class DBOsoba extends AbstractDBModel {
     
     public function getColumns() {
         return array('ime', 'prezime', 'mail', 'brojMob', 'ferId', 'password', 'JMBAG',
-            'spol', 'datRod', 'brOsobe', 'brPutovnice', 'osobnaVrijediDo', 'putovnicaVrijediDo', 'uloga');      // FALI OIB i njega dodati kad se promijeni baza
+            'spol', 'datRod', 'brOsobne', 'brPutovnice', 'osobnaVrijediDo', 'putovnicaVrijediDo', 'uloga', 'zivotopis', 'mbrOsigOsobe', 'OIB');      // FALI OIB i njega dodati kad se promijeni baza
     }
     
     public function kriptPass($pass) {
@@ -81,6 +81,26 @@ class DBOsoba extends AbstractDBModel {
         }
         
         return true;
+    }
+    
+    /**
+     * Returns the contents of $_SESSION['vrsta'] if set.
+     * false otherwise
+     * @return string|boolean
+     */
+    public static function getUserRole() {
+        return isset($_SESSION['vrsta']) ? $_SESSION['vrsta'] : false;
+    }
+    
+    public function addNewPerson($ime, $prezime, $mail, $brojMob, $ferId, $password, $JMBAG,
+            $spol, $datRod, $brOsobne, $brPutovnice, $osobnaVrijediDo, $putovnicaVrijediDo, $uloga, $zivotopis, $mbrOsigOsobe, $OIB) {
+        
+        $this->idOsobe = null;
+        $atributi = $this->getColumns();
+        foreach($atributi as $a) {
+            $this->{$a} = ${$a};
+        }
+        $this->save();
     }
     
 }

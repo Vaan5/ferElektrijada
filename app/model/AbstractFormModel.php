@@ -57,12 +57,88 @@ abstract class AbstractFormModel implements FormModel {
             return $this->test_pattern($pattern, $data);
     }
     
+    protected function validateName($data) {
+        if(isset($data) && $data !== '') {
+            $pattern = '/^[A-ZČŠĐŽĆ][a-zčćžšđ]{2,}$/';
+            return $this->test_pattern($pattern, $data);
+        }
+        // if you didn't give me anything to check i'll just return true
+        return true;
+    }
+    
+    protected function validateMail($data) {
+        if(isset($data) && $data !== '') {
+            $pattern = '/^[A-Za-z0-9_.+-]+@(?:[A-Za-z0-9]+\.)+[A-Za-z]{2,3}$/';
+            return $this->test_pattern($pattern, $data);
+        }
+        // if you didn't give me anything to check i'll just return true
+        return true;
+    }
+    
+    protected function validateNumbers($data) {
+        if(isset($data) && $data !== '') {
+            $pattern = '/^[0-9]{6,}$/';
+            return $this->test_pattern($pattern, $data);
+        }
+        // if you didn't give me anything to check i'll just return true
+        return true;
+    }
+    
+    protected function validateJmbag($data) {
+        if(isset($data) && $data !== '') {
+            $pattern = '/^[0-9]{10}$/';
+            return $this->test_pattern($pattern, $data);
+        }
+        // if you didn't give me anything to check i'll just return true
+        return true;
+    }
+    
+    protected function validateGender($data) {
+        if(isset($data) && $data !== '') {
+            $pattern = '/^[MŽ]{1}$/';
+            return $this->test_pattern($pattern, $data);
+        }
+        // if you didn't give me anything to check i'll just return true
+        return true;
+    }
+    
+    protected function validateDate($data) {
+        if(isset($data) && $data !== '') {
+            $pom = strtotime($data);
+            return $pom == false ? false : true;
+        }
+        // if you didn't give me anything to check i'll just return true
+        return true;
+    }
+    
+    protected function validateOib($data) {
+        if(isset($data) && $data !== '') {
+            $pattern = '/^[0-9]{11}$/';
+            return $this->test_pattern($pattern, $data);
+        }
+        // if you didn't give me anything to check i'll just return true
+        return true;
+    }
+
+        /**
+     * 
+     * @param mixed $data
+     * @return boolean
+     */
+    protected function validateRequired($data) {
+        if ($data === false)
+            return false;
+        return true;
+    }
+
+
     /**
      * @return array vracate polje oblika imePolja => array(nazivi pravila)
      * npr.: array('password' => array('password', 'username'))
      * tada se za clan testData['password'] pozivaju metode validatePassword i validateUsername
      * ako za neki clan nemate nikakvo pravilo onda ga oznacite sa 'safe'
      * npr. : array('email' => 'safe')
+     * REQUIRED AKO POSTOJI MORA BITI PRVI U POLJU PRAVILA
      */
     protected abstract function rules();
     
@@ -80,7 +156,12 @@ abstract class AbstractFormModel implements FormModel {
         $pravila = $this->rules();
         foreach($this->testData as $k => $v) {
             $metodeZaPozivanje = $pravila[$k];
+            $prvi = true;
             foreach($metodeZaPozivanje as $metoda) {
+                if($prvi) {
+                    if ($metoda !== 'required' && $v === false)
+                        break;          // ako nije neophodno polje i ako nije nista poslano ne testiraj ga
+                }
                 if($metoda === 'safe')
                     continue;
                 $pov = call_user_func(array($this,'validate' . ucfirst($metoda)), $v);

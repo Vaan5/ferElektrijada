@@ -40,7 +40,7 @@ class Login implements Controller {
             "body" => new \view\Login(array(
                 "errorMessage" => $this->errorMessage
             )),
-            "title" => "Login"
+            "title" => "Login",
         ));
     }
     
