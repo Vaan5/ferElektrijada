@@ -2,7 +2,6 @@
 
 namespace model;
 use app\model\AbstractDBModel;
-use app\model\UserAlreadyExistsException;
 
 class DBOsoba extends AbstractDBModel {
     
