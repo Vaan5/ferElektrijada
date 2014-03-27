@@ -80,16 +80,6 @@ class Administrator implements Controller {
                 // everything's ok i add the new Elektrijada data
                 $elektrijada = new \model\DBElektrijada();
                 
-//                // dodati u DBElektrijada
-//                public function addNewElektrijada($mjestoOdrzavanja, $datumPocetka, $datumKraja, $ukupniRezultat, $drzava) {
-//                    $this->idElektrijade = null;
-//                    $atributi = $this->getColumns();
-//                    foreach($atributi as $a) {
-//                        $this->{$a} = ${$a};
-//                    }
-//                    $this->save();
-//                }
-                
                 try {
                     $elektrijada->addNewElektrijada(post('mjestoOdrzavanja'), post('datumPocetka'), 
                             post('datumKraja'), post('ukupniRezultat', NULL), post('drzava'));
