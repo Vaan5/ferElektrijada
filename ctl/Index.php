@@ -20,6 +20,9 @@ class Index implements Controller {
             case 'ozsnAddedSucc':
                 $this->resultMessage = 'Uspješno dodan član odbora!';
                 break;
+            case 'elekAddSucc':
+                $this->resultMessage = "Uspješno dodana nova Elektrijada!";
+                break;
             default:
                 $this->resultMessage = null;
                 break;
