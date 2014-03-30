@@ -21,9 +21,9 @@ class Login extends AbstractView {
         "errorMessage" => $this->errorMessage
     )); ?>
 
-    <a href="<?php echo \route\Route::get('d1')->generate();?>">
+    <center><a href="<?php echo \route\Route::get('d1')->generate();?>">
 		Vrati se na naslovnicu
-	</a>
+	</a></center>
 <?php
     }
     

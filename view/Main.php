@@ -34,20 +34,30 @@ class Main extends AbstractView {
     <head>
         <title><?php echo $this->title; ?></title>
         <meta charset="utf-8">
-        <link href="../assets/css/bootstrap.css" rel="stylesheet">
-        <link href="../assets/css/bootstrap-responsive.css" rel="stylesheet">
-        <link href="../assets/css/style.css" rel="stylesheet">
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<link href="../assets/css/bootstrap.css" rel="stylesheet">
+		<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+		<link href="../assets/css/bootstrap-theme.css" rel="stylesheet">
+		<link href="../assets/css/bootstrap-theme.min.css" rel="stylesheet">
+		<script src="../assets/js/bootstrap.min.js"></script>
+		<link href="../assets/css/style.css" rel="stylesheet">
         <link href="../assets/css/menu.css" rel="stylesheet">
 
-        <link href="./assets/css/bootstrap.css" rel="stylesheet">
-        <link href="./assets/css/bootstrap-responsive.css" rel="stylesheet">
-        <link href="./assets/css/style.css" rel="stylesheet">
+		<link href="./assets/css/bootstrap.css" rel="stylesheet">
+		<link href="./assets/css/bootstrap.min.css" rel="stylesheet">
+		<link href="./assets/css/bootstrap-theme.css" rel="stylesheet">
+		<link href="./assets/css/bootstrap-theme.min.css" rel="stylesheet">
+		<script src="./assets/js/bootstrap.min.js"></script>
+		<link href="./assets/css/style.css" rel="stylesheet">
         <link href="./assets/css/menu.css" rel="stylesheet">
 
-        <link href="assets/css/bootstrap.css" rel="stylesheet">
-        <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
-        <link href="assets/css/style.css" rel="stylesheet">
-        <link href="assets/css/menu.css" rel="stylesheet">
+        <link href="/assets/css/bootstrap.css" rel="stylesheet">
+		<link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+		<link href="/assets/css/bootstrap-theme.css" rel="stylesheet">
+		<link href="/assets/css/bootstrap-theme.min.css" rel="stylesheet">
+		<script src="/assets/js/bootstrap.min.js"></script>
+		<link href="/assets/css/style.css" rel="stylesheet">
+        <link href="/assets/css/menu.css" rel="stylesheet">
         <?php if (null !== $this->script) {
             echo $this->script;  //<!-- Kad budete mijenjali echo $this->script; vam ispisuje skriptu recimo javascript -->
         }
@@ -55,41 +65,35 @@ class Main extends AbstractView {
     </head>
 
     <body>
-        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-                  <span class="navbar-brand"><?php echo $this->title; ?></span>     <!-- Kad budete mijenjali echo $this->title; vam ispisuje naslov -->
-                </div>
+<nav class="navbar navbar-default" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+        <a class="navbar-brand" a href=""><?php echo $this->title; ?></a><!-- Treba srediti link -->
+    </div>
 
-                <div class="navbar-collapse collapse">
-                  <div class="navbar-right form-inline" role="form">
-                        <div class="form-group"> 
-                             <?php if(!\model\DBOsoba::isLoggedIn()) echo
-						"<a href=\"" . \route\Route::get('d3')->generate(array(
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right">
+          <p class="navbar-text">
+               <?php if(!\model\DBOsoba::isLoggedIn()) echo
+						"<span class=\"glyphicon glyphicon-off\"></span> <a href=\"" . \route\Route::get('d3')->generate(array(
                                                                                         "controller" => "login",
                                                                                         "action" => "display"
-                                                                                        )) . "\">Prijavi se</a>"
+                                                                                        )) . "\"> Prijava</a>"
 						; else echo
-						$_SESSION['user'];
-					  ;?>
-                        </div>
-                        <div class="form-group"> 
-                          <?php if(\model\DBOsoba::isLoggedIn())     echo "<a href=\"" . \route\Route::get('d3')->generate(array(
+						"<span class=\"glyphicon glyphicon-user\"></span>" . $_SESSION['user']
+				 ;?><!-- treba dodati php dio da bude session['user'] link do profila usera -->
+				<?php if(\model\DBOsoba::isLoggedIn())     echo "<span class=\"glyphicon glyphicon-off\"></span><a href=\"" . \route\Route::get('d3')->generate(array(
                                                                                         "controller" => "login",
                                                                                         "action" => "logout"
-                                                                                        )) . "\">Odjavi se</a>";
-                          ?>
-                        </div>
-                  </div>
-            </div>
-          </div>
-        </div>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
+                                                                                        )) . "\">Odjava</a>";
+                 ?>
+          </p>
+          </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
         <br>
         
         <div class = "container-narrow">
