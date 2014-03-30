@@ -32,6 +32,9 @@ class Index implements Controller {
             case 'err':
                 $this->errorMessage = "Zapis nije moguće dodati!";
                 break;
+            case 'e':
+                $this->errorMessage = "Ne postoji zapis s predanim identifikatorom!";
+                break;
             default:
                 $this->resultMessage = null;
                 break;

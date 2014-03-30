@@ -20,11 +20,17 @@ class Administrator implements Controller {
             case 'succ':
                 $this->resultMessage = "Uspješno izmijenjena postojeća Elektrijada!";
                 break;
+            case 'succo':
+                $this->resultMessage = "Uspješno ažurirani podaci o članu odbora!";
+                break;
             case 'del':
                 $this->resultMessage = "Uspješno izbrisana Elektrijada!";
                 break;
             case 'err':
                 $this->errorMessage = "Zahtjevani zapis ne postoji!";
+                break;
+            case 'delo':
+                $this->errorMessage = "Uspješno izbrisan član odbora!";
                 break;
             case 'derr':
                 $this->errorMessage = "Dogodila se pogreška prilikom brisanja! Pokušajte ponovno!";
@@ -34,6 +40,9 @@ class Administrator implements Controller {
         }
     }
 
+    /**
+     * adds new Ozsn member
+     */
     public function addOzsn() {
         $this->checkRole();
         
@@ -52,8 +61,7 @@ class Administrator implements Controller {
                                         'brPutovnice' => post('brPutovnice'), 
                                         'osobnaVrijediDo' => post('osobnaVrijediDo'), 
                                         'putovnicaVrijediDo' => post('putovnicaVrijediDo'),
-                                        'zivotopis' => post('zivotopis'),
-                                        'mbrOsigOsobe' => post('mbrOsigOsobe'),
+                                        'MBG' => post('MBG'),
                                         'OIB' => post('OIB')));
             $pov = $validacija->validate();
             if($pov !== true) {
@@ -64,7 +72,7 @@ class Administrator implements Controller {
                 try {
                     $osoba->addNewPerson(post('ime', null), post('prezime', null), post('mail', null), post('brojMob', null), post('ferId'), post('password'), 
                         post('JMBAG', null), post('spol', null), post('datRod', null), post('brOsobne', null), post('brPutovnice', null), post('osobnaVrijediDo', null),
-                        post('putovnicaVrijediDo', null), 'O', post('zivotopis', null), post('mbrOsigOsobe', null), post('OIB', null));
+                        post('putovnicaVrijediDo', null), 'O', NULL, post('MBG', null), post('OIB', null));
                         // added successfully
                         preusmjeri(\route\Route::get('d1')->generate() . "?msg=ozsnAddedSucc");
                 } catch (\PDOException $e) {
@@ -80,6 +88,142 @@ class Administrator implements Controller {
             "title" => "Dodavanje članova odbora"
         ));
         
+    }
+    
+    public function searchOzsn() {
+        $this->checkRole();
+        $this->checkMessages();
+        
+        echo new \view\Main(array(
+            "body" => new 
+        ));
+    }
+    
+    public function displayOzsn() {
+        $this->checkRole();
+        $this->checkMessages();
+        $osobe = array();
+        $osoba = new \model\DBOsoba();
+        
+        if(!postEmpty()) {
+            // search db
+            
+        } else if (get("a") !== false) {
+            // get all ozsn members
+            $osobe = $osoba->getAllOzsn();
+            if($osobe === false)
+                $this->errorMessage = "Ne postoji niti jedan član, koji zadovoljava zahtjeve pretrage!";
+        }
+        
+        echo new \view\Main(array(
+            "body" => new \view\administrator\OzsnList(array(
+                "osobe" => $osobe,
+                "errorMessage" => $this->errorMessage,
+                "resultMessage" => $this->resultMessage
+            )),
+            "title" => "Popis članova Odbora"
+        ));
+    }
+    
+    /**
+     * changes ozsn member data
+     */
+    public function modifyOzsn() {
+        $this->checkRole();
+        $osoba = new \model\DBOsoba();
+        
+        if(!postEmpty()) {
+            // here we do the magic
+            $validacija = new \model\PersonFormModel(array('password' => post('password'),
+                                        'ferId' => post('ferId'),
+                                        'ime' => post('ime'), 
+                                        'prezime' => post('prezime'), 
+                                        'mail' => post('mail'), 
+                                        'brojMob' => post('brojMob'), 
+                                        'JMBAG' => post('JMBAG'),
+                                        'spol' => post('spol'), 
+                                        'datRod' => post('datRod'), 
+                                        'brOsobne' => post('brOsobne'), 
+                                        'brPutovnice' => post('brPutovnice'), 
+                                        'osobnaVrijediDo' => post('osobnaVrijediDo'), 
+                                        'putovnicaVrijediDo' => post('putovnicaVrijediDo'),
+                                        'MBG' => post('MBG'),
+                                        'OIB' => post('OIB')));
+            $pov = $validacija->validate();
+            if($pov !== true) {
+                $this->errorMessage = $validacija->decypherErrors($pov);
+            } else {
+                // everything's ok ; insert new row
+                try {
+                    $osoba->modifyRow(post($osoba->getPrimaryKeyColumn()), post('ime', null), post('prezime', null), post('mail', null), post('brojMob', null), post('ferId'), post('password'), 
+                        post('JMBAG', null), post('spol', null), post('datRod', null), post('brOsobne', null), post('brPutovnice', null), post('osobnaVrijediDo', null),
+                        post('putovnicaVrijediDo', null), 'O', NULL, post('MBG', null), post('OIB', null));
+                    // redirect with according message
+                    preusmjeri(\route\Route::get('d3')->generate(array(
+                        "controller" => "administrator",
+                        "action" => "searchOzsn"
+                    )) . "?msg=succo");
+                } catch(PDOException $e) {
+                    $this->errorMessage = "Greška prilikom unosa podataka! Već postoji član s takvim podacima!";
+                }
+            }
+        } else {
+            if(get("id") !== false) {
+                // let's check if i got an existing table key and let's do magic
+                try {
+                    $osoba->load(get("id"));
+                } catch (\app\model\NotFoundException $e) {
+                    preusmjeri(\route\Route::get('d1')->generate() . "?msg=e");
+                }
+            } else {
+                preusmjeri(\route\Route::get('d1')->generate() . "?msg=e");
+            }
+        }
+        
+        echo new \view\Main(array(
+            "body" => new \view\administrator\OzsnModification(array(
+                "errorMessage" => $this->errorMessage,
+                "osoba" => $osoba
+            )),
+            "title" => "Ažuriranje članova Odbora"
+        ));  
+        
+    }
+    
+    /**
+     * removes row from table osoba
+     */
+    public function deleteOzsn() {
+        $this->checkRole();
+        $osoba = new \model\DBOsoba();
+        
+        if(get('id') === false) {
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "administrator",
+                "action" => "searchOzsn"
+            )) . "?msg=err");
+        } else {
+            try {
+                $osoba->load(get('id'));
+                
+                if($osoba->deleteOsoba(get('id')) === false) {
+                    preusmjeri(\route\Route::get('d3')->generate(array(
+                        "controller" => "administrator",
+                        "action" => "searchOzsn"
+                    )) . "?msg=derr");
+                }
+                
+                preusmjeri(\route\Route::get('d3')->generate(array(
+                                    "controller" => "administrator",
+                                    "action" => "searchOzsn"
+                                )) . "?msg=delo");
+            } catch (\app\model\NotFoundException $e) {
+                preusmjeri(\route\Route::get('d3')->generate(array(
+                    "controller" => "administrator",
+                    "action" => "searchOzsn"
+                )) . "?msg=err");
+            }
+        }
     }
     
     /**
@@ -252,12 +396,12 @@ class Administrator implements Controller {
             if(get("id") !== false) {
                 // let's check if i got an existing table key and let's do magic
                 if($elektrijada->elektrijadaExists(get("id")) === false) {
-                    $this->errorMessage = "Ne postoji zapis s predanim identifikatorom!";
+                    preusmjeri(\route\Route::get('d1')->generate() . "?msg=e");
                 } else {
                     $elektrijada->load(get("id"));
                 }
             } else {
-                $this->errorMessage = "Ne postoji zapis s predanim identifikatorom!";
+                preusmjeri(\route\Route::get('d1')->generate() . "?msg=e");
             }
         }
         

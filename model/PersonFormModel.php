@@ -19,8 +19,7 @@ class PersonFormModel extends AbstractFormModel {
             'brPutovnice' => array('safe'), 
             'osobnaVrijediDo' => array('date'), 
             'putovnicaVrijediDo' => array('date'),
-            'zivotopis' => array('safe'),
-            'mbrOsigOsobe' => array('numbers'),
+            'MBG' => array('numbers'),
             'OIB' => array('oib'));
     }
     
@@ -50,8 +49,8 @@ class PersonFormModel extends AbstractFormModel {
                         return 'Neispravan datum isteka osobne iskaznice';
                     case 'putovnicaVrijediDo':
                         return 'Neispravan datum isteka putovnice';
-                    case 'mbrOsigOsobe':
-                        return 'Neispravan maticni broj osigurane osobe';
+                    case 'MBG':
+                        return 'Neispravan maticni broj osobe';
                     case 'OIB':
                         return 'Neispravan OIB';
                     default:

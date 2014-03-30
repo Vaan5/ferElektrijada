@@ -21,7 +21,7 @@ class DBOsoba extends AbstractDBModel {
     
     public function getColumns() {
         return array('ime', 'prezime', 'mail', 'brojMob', 'ferId', 'password', 'JMBAG',
-            'spol', 'datRod', 'brOsobne', 'brPutovnice', 'osobnaVrijediDo', 'putovnicaVrijediDo', 'uloga', 'zivotopis', 'mbrOsigOsobe', 'OIB');      // FALI OIB i njega dodati kad se promijeni baza
+            'spol', 'datRod', 'brOsobne', 'brPutovnice', 'osobnaVrijediDo', 'putovnicaVrijediDo', 'uloga', 'zivotopis', 'MBG', 'OIB');
     }
     
     public function kriptPass($pass) {
@@ -92,7 +92,7 @@ class DBOsoba extends AbstractDBModel {
     }
     
     public function addNewPerson($ime, $prezime, $mail, $brojMob, $ferId, $password, $JMBAG,
-            $spol, $datRod, $brOsobne, $brPutovnice, $osobnaVrijediDo, $putovnicaVrijediDo, $uloga, $zivotopis, $mbrOsigOsobe, $OIB) {
+            $spol, $datRod, $brOsobne, $brPutovnice, $osobnaVrijediDo, $putovnicaVrijediDo, $uloga, $zivotopis, $MBG, $OIB) {
         
         $this->idOsobe = null;
         $atributi = $this->getColumns();
@@ -100,6 +100,16 @@ class DBOsoba extends AbstractDBModel {
             $this->{$a} = ${$a};
         }
         $this->save();
+    }
+    
+    public function getAllOzsn() {
+        $pov = $this->select()->where(array(
+            "uloga" => 'O'
+        ))->fetchAll();
+        
+        if (count($pov))
+            return $pov;
+        return false;
     }
     
     public function isOzsnMember() {
@@ -130,5 +140,27 @@ class DBOsoba extends AbstractDBModel {
             }
         }
         return $ret;        
+    }
+    
+    public function modifyRow($primaryKey, $ime, $prezime, $mail, $brojMob, $ferId, $password, $JMBAG,
+            $spol, $datRod, $brOsobne, $brPutovnice, $osobnaVrijediDo, $putovnicaVrijediDo, $uloga, $zivotopis, $MBG, $OIB) {
+        $this->load($primaryKey);
+        $atributi = $this->getColumns();
+        foreach($atributi as $a) {
+            $this->{$a} = ${$a};
+        }
+        $this->save();
+    }
+    
+    public function deleteOsoba($primaryKey) {
+        try {
+            $this->load($primaryKey);
+            $this->delete();
+            return true;
+        } catch (\app\model\NotFoundException $e) {
+            return false;
+        } catch (\PDOException $e) {
+            return false;
+        }
     }
 }
