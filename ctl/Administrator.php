@@ -42,6 +42,61 @@ class Administrator implements Controller {
                 break;
         }
     }
+    
+    public function changeProfile() {
+        $this->checkRole();
+        $osoba = new \model\DBOsoba();
+        
+        if(!postEmpty()) {
+            // here we do the magic
+            $validacija = new \model\PersonFormModel(array('password' => post('password'),
+                                        'ferId' => post('ferId'),
+                                        'ime' => post('ime'), 
+                                        'prezime' => post('prezime'), 
+                                        'mail' => post('mail'), 
+                                        'brojMob' => post('brojMob'), 
+                                        'JMBAG' => post('JMBAG'),
+                                        'spol' => post('spol'), 
+                                        'datRod' => post('datRod'), 
+                                        'brOsobne' => post('brOsobne'), 
+                                        'brPutovnice' => post('brPutovnice'), 
+                                        'osobnaVrijediDo' => post('osobnaVrijediDo'), 
+                                        'putovnicaVrijediDo' => post('putovnicaVrijediDo'),
+                                        'MBG' => post('MBG'),
+                                        'OIB' => post('OIB')));
+            $pov = $validacija->validate();
+            if($pov !== true) {
+                $this->errorMessage = $validacija->decypherErrors($pov);
+            } else {
+                // everything's ok ; insert new row
+                try {
+                    $osoba->modifyRow(session("auth"), post('ime', null), post('prezime', null), post('mail', null), post('brojMob', null), post('ferId'), post('password'), 
+                        post('JMBAG', null), post('spol', null), post('datRod', null), post('brOsobne', null), post('brPutovnice', null), post('osobnaVrijediDo', null),
+                        post('putovnicaVrijediDo', null), 'O', NULL, post('MBG', null), post('OIB', null));
+                    // redirect with according message
+                    preusmjeri(\route\Route::get('d1')->generate() . "?msg=profSucc");
+                } catch(PDOException $e) {
+                    $this->errorMessage = "Greška prilikom unosa podataka! Već postoji član s takvim podacima!";
+                }
+            }
+        } else {
+            // let's check if i got an existing table key and let's do magic
+            try {
+                $osoba->load(session("auth"));
+            } catch (\app\model\NotFoundException $e) {
+                preusmjeri(\route\Route::get('d1')->generate() . "?msg=e");
+            }
+        }
+        
+        echo new \view\Main(array(
+            "body" => new \view\administrator\AdminProfile(array(
+                "errorMessage" => $this->errorMessage,
+                "resultMessage" => $this->resultMessage,
+                "admin" => $osoba
+            )),
+            "title" => "Ažuriranje članova Odbora"
+        ));
+    }
 
     /**
      * adds new Ozsn member
