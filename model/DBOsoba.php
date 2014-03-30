@@ -112,6 +112,20 @@ class DBOsoba extends AbstractDBModel {
         return false;
     }
     
+    public function findOzsnMembers($ime, $prezime, $ferId) {
+        $query = array("uloga" => 'O');
+        if($ime !== '' && $ime !== null)
+            $query["ime"] = $ime;
+        if($prezime !== '' && $prezime !== null)
+            $query["prezime"] = $prezime;
+        if($ferId !== '' && $ferId !== null)
+            $query["ferId"] = $ferId;
+        $pov = $this->select()->where($query)->fetchAll();
+        if(count($pov))
+            return $pov;
+        return true;
+    }
+    
     public function isOzsnMember() {
         return $this->uloga == 'O' ? true : false;
     }

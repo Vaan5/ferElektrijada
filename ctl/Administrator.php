@@ -35,6 +35,9 @@ class Administrator implements Controller {
             case 'derr':
                 $this->errorMessage = "Dogodila se pogreška prilikom brisanja! Pokušajte ponovno!";
                 break;
+            case 'noel':
+                $this->errorMessage = "Članove možete dodavati samo za trenutno aktivnu elektrijadu! Najprije stvorite novu elektrijadu!";
+                break;
             default:
                 break;
         }
@@ -70,11 +73,22 @@ class Administrator implements Controller {
                 // everything is ok i add the person
                 $osoba = new \model\DBOsoba();
                 try {
+                    $elektrijada = new \model\DBElektrijada();
+                    if($idElektrijade = $elektrijada->getCurrentElektrijadaId() === false) {
+                        // we can only add ozsn members for the current Elektrijada
+                        preusmjeri(\route\Route::get('d3')->generate(array(
+                            "controller" => "administrator",
+                            "action" => "displayElektrijada"
+                        )) . "?msg=noel");
+                    }
                     $osoba->addNewPerson(post('ime', null), post('prezime', null), post('mail', null), post('brojMob', null), post('ferId'), post('password'), 
                         post('JMBAG', null), post('spol', null), post('datRod', null), post('brOsobne', null), post('brPutovnice', null), post('osobnaVrijediDo', null),
                         post('putovnicaVrijediDo', null), 'O', NULL, post('MBG', null), post('OIB', null));
                         // added successfully
-                        preusmjeri(\route\Route::get('d1')->generate() . "?msg=ozsnAddedSucc");
+                    // now assign them to the current Elektrijada
+                    $obavlja = new \model\DBObavljaFunkciju();
+                    $obavlja->addNewRow($osoba->getPrimaryKey(), NULL, $idElektrijade);
+                    preusmjeri(\route\Route::get('d1')->generate() . "?msg=ozsnAddedSucc");
                 } catch (\PDOException $e) {
                     $this->errorMessage = "Pogreška prilikom dodavanja u bazu! Provjerite da li korisnik s takvim podacima već ne postoji!";
                 }
@@ -90,15 +104,25 @@ class Administrator implements Controller {
         
     }
     
+    /**
+     * shows simple search form
+     */
     public function searchOzsn() {
         $this->checkRole();
         $this->checkMessages();
         
         echo new \view\Main(array(
-            "body" => new 
+            "body" => new \view\administrator\OzsnSearch(array(
+                "errorMessage" => $this->errorMessage,
+                "resultMessage" => $this->resultMessage
+            )),
+            "title" => 'Pretraga'
         ));
     }
     
+    /**
+     * processes search query and displays results
+     */
     public function displayOzsn() {
         $this->checkRole();
         $this->checkMessages();
@@ -107,12 +131,32 @@ class Administrator implements Controller {
         
         if(!postEmpty()) {
             // search db
+            // first validate input
+            $validacija = new \model\SimplePersonSearchFormModel(array(
+                'ferId' => post('ferId'),
+                'ime' => post('ime'), 
+                'prezime' => post('prezime')
+            ));
             
+            $pov = $validacija->validate();
+            if($pov !== true) {
+                $this->errorMessage = $validacija->decypherErrors($pov);
+            } else {
+                // ok the data is correct now lets find what they're looking for
+                $osobe = $osoba->findOzsnMembers();
+                if($osobe === false)
+                    $this->errorMessage = "Nije pronađen niti jedan član!";
+            }
         } else if (get("a") !== false) {
             // get all ozsn members
             $osobe = $osoba->getAllOzsn();
             if($osobe === false)
                 $this->errorMessage = "Ne postoji niti jedan član, koji zadovoljava zahtjeve pretrage!";
+        } else {
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "administrator",
+                "action" => "searchOzsn"
+            )));
         }
         
         echo new \view\Main(array(
