@@ -23,6 +23,15 @@ class Index implements Controller {
             case 'elekAddSucc':
                 $this->resultMessage = "Uspješno dodana nova Elektrijada!";
                 break;
+            case 'dunno':
+                $this->errorMessage = "Tražena osoba ne postoji!";
+                break;
+            case 'notOzsn':
+                $this->errorMessage = "Osoba nije član OZSN-a";
+                break;
+            case 'err':
+                $this->errorMessage = "Zapis nije moguće dodati!";
+                break;
             default:
                 $this->resultMessage = null;
                 break;

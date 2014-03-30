@@ -102,4 +102,33 @@ class DBOsoba extends AbstractDBModel {
         $this->save();
     }
     
+    public function isOzsnMember() {
+        return $this->uloga == 'O' ? true : false;
+    }
+    
+    public function getOldOzsn() {
+        $elektrijada = new DBElektrijada();
+        $idElektrijade = $elektrijada->getLastYearElektrijadaId();
+        if ($idElektrijade === false)
+            return array();
+        
+        $obavljaFunkciju = new DBObavljaFunkciju();
+        $pov = $obavljaFunkciju->select()->where(array(
+            "idElektrijade" => $idElektrijade
+        ))->fetchAll();
+        if(!count($pov))
+            return array();
+        
+        $ret = array();
+        foreach ($pov as $v) {
+            $o = new DBOsoba();
+            try {
+                $o->load($v->idOsobe);
+                $ret[] = $o;
+            } catch (\app\model\NotFoundException $e) {
+                return array();
+            }
+        }
+        return $ret;        
+    }
 }

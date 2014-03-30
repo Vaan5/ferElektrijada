@@ -94,5 +94,30 @@ class DBElektrijada extends AbstractDBModel {
             return false;
         }
     }
+    
+    public function getCurrentElektrijadaId() {
+        $pov = $this->select()->where(array(
+            "YEAR(datumPocetka)" => date("Y")
+        ))->fetchAll();
+        
+        if(count($pov)) {
+            return $pov[0]->idElektrijade;
+        } else {
+            return false;
+        }
+    }
+    
+    public function getLastYearElektrijadaId() {
+        $datum = date('Y') - 1;
+        $pov = $this->select()->where(array(
+            "YEAR(datumPocetka)" => $datum
+        ))->fetchAll();
+        
+        if(count($pov)) {
+            return $pov[0]->idElektrijade;
+        } else {
+            return false;
+        }
+    }
 }
  

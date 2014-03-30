@@ -83,6 +83,77 @@ class Administrator implements Controller {
     }
     
     /**
+     * Shows last ozsn members from last year
+     */
+    public function listOldOzsn() {
+        $this->checkRole();
+        $osoba = new \model\DBOsoba();
+        $elektrijada = new \model\DBElektrijada();
+        $clanovi = null;
+        
+        if(get("id") !== false) {
+            // i add only one member
+            try {
+                $osoba->load(get('id'));
+                // check if he is an OZSN
+                if($osoba->isOzsnMember() === false) {
+                    preusmjeri(\route\Route::get('d1')->generate() . "?msg=notOzsn");
+                }
+                // now add a new row in the DBObavljaFunkciju
+                $obavljaFunkciju = new \model\DBObavljaFunkciju();
+                $i = $elektrijada->getCurrentElektrijadaId();
+                if($i === false) {
+                    preusmjeri(\route\Route::get('d1')->generate() . "?msg=err");
+                }
+                $obavljaFunkciju->addNewRow($osoba->getPrimaryKey(), NULL, $i);
+                
+                // everything's ok
+                preusmjeri(\route\Route::get('d1')->generate() . "?msg=ozsnAddedSucc");
+                
+            } catch (\app\model\NotFoundException $e) {
+                preusmjeri(\route\Route::get('d1')->generate() . "?msg=dunno");
+            } catch (\PDOException $e) {
+                preusmjeri(\route\Route::get('d1')->generate() . "?msg=err");
+            }
+        } else if (get("a") !== false) {
+            // i add everyone from last year
+            $clanovi = $osoba->getOldOzsn();
+            $i = $elektrijada->getCurrentElektrijadaId();
+            if($i === false) {
+                preusmjeri(\route\Route::get('d1')->generate() . "?msg=err");
+            }
+            if(count($clanovi)) {
+                foreach ($clanovi as $c) {
+                    $obavljaFunkciju = new \model\DBObavljaFunkciju();
+                    $obavljaFunkciju->addNewRow($c->getPrimaryKey(), NULL, $i);
+                }
+            } else {
+                preusmjeri(\route\Route::get('d1')->generate() . "?msg=err");
+            }
+        } else {
+            // just display last year's Ozsn
+            try {
+                $clanovi = $osoba->getOldOzsn();
+                if (!count($clanovi))
+                    $this->errorMessage = "Ne postoje zapisi o prošlogodišnjim članovima odbora!";                
+            } catch(PDOException $e) {
+                $this->errorMessage = "Pogreška prilikom dohvata prošlogodišnjih članova odbora!";
+            }
+            
+        }
+        
+        echo new \view\Main(array(
+            "body" => new \view\administrator\OldOzsn(array(
+                "errorMessage" => $this->errorMessage,
+                "clanovi" => $clanovi
+            )),
+            "title" => "Prošlogodišnji članovi odbora"
+        ));
+    }
+    
+    /****************** ELEKTRIJADA stuff **************************/
+    
+    /**
      * adds a new row in elektrijada table
      */
     public function addElektrijada() {
