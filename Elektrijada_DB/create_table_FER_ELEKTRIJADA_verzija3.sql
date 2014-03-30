@@ -102,7 +102,7 @@ CREATE TABLE NACINPROMOCIJE (
     idPromocije INT UNSIGNED AUTO_INCREMENT,
     tipPromocije VARCHAR(100) NOT NULL,
     UNIQUE (tipPromocije),
-    PRIMARY KEY (IdPromocije)
+    PRIMARY KEY (idPromocije)
 );
 
 CREATE TABLE KATEGORIJA (
@@ -244,7 +244,7 @@ CREATE TABLE PUTOVANJE (
 
 
 CREATE TABLE SUDJELOVANJE (
-    idSudejlovanja INT UNSIGNED AUTO_INCREMENT,
+    idSudjelovanja INT UNSIGNED AUTO_INCREMENT,
     idOsobe INT UNSIGNED NOT NULL,
     idElektrijade INT UNSIGNED NOT NULL,
     tip CHAR(1),
@@ -272,7 +272,7 @@ CREATE TABLE SUDJELOVANJE (
     FOREIGN KEY (idPutovanja)
         REFERENCES PUTOVANJE (idPutovanja)
         ON UPDATE CASCADE ON DELETE CASCADE,
-    PRIMARY KEY (idSudejlovanja),
+    PRIMARY KEY (idSudjelovanja),
     UNIQUE (idOsobe , idElektrijade),
     FOREIGN KEY (idOsobe)
         REFERENCES OSOBA (idOsobe)
@@ -284,7 +284,7 @@ CREATE TABLE SUDJELOVANJE (
 CREATE TABLE ObavljaFunkciju (
     idObavljaFunkciju INT UNSIGNED AUTO_INCREMENT,
     idOsobe INT UNSIGNED NOT NULL,
-    idFunkcije INT UNSIGNED NOT NULL,
+    idFunkcije INT UNSIGNED ,
     idElektrijade INT UNSIGNED NOT NULL,
     PRIMARY KEY (idObavljaFunkciju),
     UNIQUE (idOsobe , idFunkcije , idElektrijade),
@@ -355,33 +355,33 @@ CREATE TABLE ImaAtribut (
     idImaAtribut INT UNSIGNED AUTO_INCREMENT,
     idPodrucja INT UNSIGNED NOT NULL,
     idAtributa INT UNSIGNED NOT NULL,
-    idSudejlovanja INT UNSIGNED NOT NULL,
+    idSudjelovanja INT UNSIGNED NOT NULL,
     PRIMARY KEY (idImaAtribut),
-    UNIQUE (idPodrucja , idAtributa , idSudejlovanja),
+    UNIQUE (idPodrucja , idAtributa , idSudjelovanja),
     FOREIGN KEY (idPodrucja)
         REFERENCES PODRUCJE (idPodrucja)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idAtributa)
         REFERENCES ATRIBUT (idAtributa)
         ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (idSudejlovanja)
-        REFERENCES SUDJELOVANJE (idSudejlovanja)
+    FOREIGN KEY (idSudjelovanja)
+        REFERENCES SUDJELOVANJE (idSudjelovanja)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE PodrucjeSudjelovanja (
-    idPodrucjeSudejlovanja INT UNSIGNED AUTO_INCREMENT,
+    idPodrucjeSudjelovanja INT UNSIGNED AUTO_INCREMENT,
     idPodrucja INT UNSIGNED NOT NULL,
-    idSudejlovanja INT UNSIGNED NOT NULL,
+    idSudjelovanja INT UNSIGNED NOT NULL,
     rezultatPojedinacni SMALLINT,
     vrstaPodrucja TINYINT(1),
-    PRIMARY KEY (idPodrucjeSudejlovanja),
-    UNIQUE (idPodrucja , idSudejlovanja),
+    PRIMARY KEY (idPodrucjeSudjelovanja),
+    UNIQUE (idPodrucja , idSudjelovanja),
     FOREIGN KEY (idPodrucja)
         REFERENCES PODRUCJE (idPodrucja)
         ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (idSudejlovanja)
-        REFERENCES SUDJELOVANJE (idSudejlovanja)
+    FOREIGN KEY (idSudjelovanja)
+        REFERENCES SUDJELOVANJE (idSudjelovanja)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -394,8 +394,7 @@ CREATE TABLE MEDIJ (
     UNIQUE(nazivMedija),
     FOREIGN KEY (idKontakta)
         REFERENCES KONTAKTOSOBE (idKontakta)
-        ON UPDATE CASCADE ON DELETE CASCADE,
-    UNIQUE (nazivMedija)
+        ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE OBJAVA (
@@ -427,5 +426,6 @@ CREATE TABLE ObjavaOElektrijadi (
 );
 
 
+CALL `ferelektrijada`.`dodajOsobu`("Marko", "Banek", NULL, Root, NULL, "dc76e9f0c0006e8f919e0c515c66dbba3982f785", NULL, NULL, NULL, NULL, NULL, NULL, NULL, "A", NULL, NULL, NULL);
 
 
