@@ -4,7 +4,7 @@
         namespace model;
 	use app\model\AbstractDBModel;
 	
-	class DBSudjelovanje extends AbstractDBModel {
+	class DBSmjer extends AbstractDBModel {
 	    
 	    /**
 	     *
