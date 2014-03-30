@@ -23,4 +23,5 @@ class DBSudjelovanje extends AbstractDBModel {
         return array('idOsobe', 'idElektrijade', 'tip', 'idVelicine', 'idGodStud', 'idSmjera',
             'idRadnogMjesta', 'idZavoda', 'idPutovanja');
     }
+}
 ?>

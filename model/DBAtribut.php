@@ -22,4 +22,5 @@ class DBAtribut extends AbstractDBModel {
     public function getColumns() {
         return array('nazivAtributa');
     }
+	}
 ?>

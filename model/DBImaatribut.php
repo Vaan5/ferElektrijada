@@ -22,4 +22,5 @@ class DBImaatribut extends AbstractDBModel {
     public function getColumns() {
         return array('idPodrucja', 'idAtributa', 'idSudjelovanja');
 	}
+	}
 ?>
