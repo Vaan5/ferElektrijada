@@ -22,6 +22,12 @@ class PersonForm extends AbstractView {
      */
     private $osoba;
     
+    /**
+     *
+     * @var boolean 
+     */
+    private $prikazSpola = true;
+    
     protected function outputHTML() {
 		
 ?>
@@ -38,6 +44,11 @@ class PersonForm extends AbstractView {
 		<p>Prezime: &nbsp;
         <input type="text" name="prezime" placeholder="Upišite prezime" <?php if($this->osoba && $this->osoba->prezime){ echo 'value="' . $this->osoba->prezime . '"'; } ?> />
         </p>
+        <?php if ($this->prikazSpola) {?>
+		<p>Spol: &nbsp;
+        <input type="text" name="spol" placeholder="M ili Ž" <?php if($this->osoba && $this->osoba->spol){ echo 'value="' . $this->osoba->spol . '"'; } ?> />
+        </p>
+        <?php }?>
 		<p>E-mail: &nbsp;
         <input type="text" name="mail" placeholder="Upišite e-mail" <?php if($this->osoba && $this->osoba->mail){ echo 'value="' . $this->osoba->mail . '"'; } ?> />
         </p>
@@ -88,4 +99,9 @@ class PersonForm extends AbstractView {
         return $this;
     }
     
+    public function setPrikazSpola($prikazSpola) {
+        $this->prikazSpola = $prikazSpola;
+        return $this;
+    }
+  
 }

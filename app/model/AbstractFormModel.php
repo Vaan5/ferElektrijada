@@ -76,6 +76,12 @@ abstract class AbstractFormModel implements FormModel {
         return true;
     }
     
+    /**
+     * checks if they are integers (> 10^6)
+     * 
+     * @param type $data
+     * @return boolean
+     */
     protected function validateNumbers($data) {
         if(isset($data) && $data !== '') {
             $pattern = '/^[0-9]{6,}$/';
