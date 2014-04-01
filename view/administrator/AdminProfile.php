@@ -30,7 +30,8 @@ class AdminProfile extends AbstractView {
                 "controller" => 'administrator',
                 "action" => 'changeProfile'
             )),
-            "submitButtonText" => "Spremi promjene"
+            "submitButtonText" => "Spremi promjene",
+			"osoba" => $this->admin
         ));
         
         // print messages if any

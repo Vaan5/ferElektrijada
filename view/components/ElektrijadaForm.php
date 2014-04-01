@@ -31,28 +31,28 @@ class ElektrijadaForm extends AbstractView {
 ?>
     <form action="<?php echo $this->postAction;?>" method="POST">
         <p>Mjesto održavanja: &nbsp;
-			<input type="text" name="mjestoOdrzavanja" placeholder="Upišite mjesto održavanja" <?php if(isset($this->elektrijada['mjestoOdrzavanja'])){ echo 'value="' . $this->elektrijada['mjestoOdrzavanja'] . '"'; } ?> />
+			<input type="text" name="mjestoOdrzavanja" placeholder="Upišite mjesto održavanja" <?php if($this->elektrijada && $this->elektrijada->mjestoOdrzavanja){ echo 'value="' . $this->elektrijada->mjestoOdrzavanja . '"'; } ?> />
         </p>
 		<p>Država: &nbsp;
-		<input type="text" name="drzava" placeholder="Upišite državu" <?php if(isset($this->elektrijada['drzava'])){ echo 'value="' . $this->elektrijada['drzava'] . '"'; } ?> />
+			<input type="text" name="drzava" placeholder="Upišite državu" <?php if($this->elektrijada && $this->elektrijada->drzava){ echo 'value="' . $this->elektrijada->drzava . '"'; } ?> />
         </p>
         <p>Datum početka: &nbsp;
-            <input type="text" name="datumPocetka" placeholder="Upišite datum početka" <?php if(isset($this->elektrijada['datumPocetka'])){ echo 'value="' . $this->elektrijada['datumPocetka'] . '"'; } ?> />
+            <input type="text" name="datumPocetka" placeholder="Upišite datum početka" <?php if($this->elektrijada && $this->elektrijada->datumPocetka){ echo 'value="' . $this->elektrijada->datumPocetka . '"'; } ?> />
         </p>
 		<p>Datum kraja: &nbsp;
-            <input type="text" name="datumKraja" placeholder="Upišite datum kraja" <?php if(isset($this->elektrijada['datumKraja'])){ echo 'value="' . $this->elektrijada['datumKraja'] . '"'; } ?> />
+            <input type="text" name="datumKraja" placeholder="Upišite datum kraja" <?php if($this->elektrijada && $this->elektrijada->datumKraja){ echo 'value="' . $this->elektrijada->datumKraja . '"'; } ?> />
         </p>
 		<p>Ukupni rezultat: &nbsp;
-            <input type="text" name="ukupniRezultat" placeholder="Upišite ukupni rezultat" <?php if(isset($this->elektrijada['ukupniRezultat'])){ echo 'value="' . $this->elektrijada['ukupniRezultat'] . '"'; } ?> />
+            <input type="text" name="ukupniRezultat" placeholder="Upišite ukupni rezultat" <?php if($this->elektrijada && $this->elektrijada->ukupniRezultat){ echo 'value="' . $this->elektrijada->ukupniRezultat . '"'; } ?> />
         </p>
 		
-		<?php if(isset($this->elektrijada['idElektrijade'])){ echo '<input type="hidden" name="idElektrijade" value="' . $this->elektrijada['idElektrijade'] . '">'; } ?>
+		<?php if($this->elektrijada && $this->elektrijada->idElektrijade){ echo '<input type="hidden" name="idElektrijade" value="' . $this->elektrijada->idElektrijade . '">'; } ?>
         <input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText;?>" />
-		<?php if(isset($this->elektrijada['idElektrijade'])){ ?>
+		<?php if($this->elektrijada && $this->elektrijada->idElektrijade){ ?>
 			<a href="<?php echo \route\Route::get('d3')->generate(array(
 				"controller" => 'administrator',
 				"action" => 'deleteElektrijada'
-			));?>?id=<?php echo $this->elektrijada['idElektrijade']; ?>">Obriši elektrijadu</a>				
+			));?>?id=<?php echo $this->elektrijada->idElektrijade; ?>">Obriši elektrijadu</a>				
 		<?php }	?>
     </form>
 <?php

@@ -29,6 +29,21 @@ class OzsnModification extends AbstractView {
          * 
          * ako je errorMessage postavljen ispisi ga
          */
+		
+		// print out the form
+        echo new \view\components\PersonForm(array(
+            "postAction" => \route\Route::get('d3')->generate(array(
+                "controller" => 'administrator',
+                "action" => 'modifyOzsn'
+            )),
+            "submitButtonText" => "Spremi promjene",
+			"osoba" => $this->osoba
+        ));
+        
+        // print messages if any
+        echo new \view\components\ErrorMessage(array(
+            "errorMessage" => $this->errorMessage
+        ));
     }
     
     public function setErrorMessage($errorMessage) {

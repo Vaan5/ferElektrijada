@@ -15,6 +15,12 @@ class SimplePersonSearchForm extends AbstractView {
      * @var string submit button text
      */
     private $submitButtonText;
+	
+	/**
+     *
+     * @var string show all button text
+     */
+    private $showAllButtonText;
     
     protected function outputHTML() {
         /*
@@ -26,10 +32,29 @@ class SimplePersonSearchForm extends AbstractView {
          */
 ?>
     <form action="<?php echo $this->postAction;?>" method="POST">
-        
+		<p>Ime: &nbsp;
+			<input type="text" name="ime" placeholder="Upišite ime" />
+        </p>
+		<p>Prezime: &nbsp;
+			<input type="text" name="prezime" placeholder="Upišite prezime" />
+        </p>
+		<p>Korisničko ime: &nbsp;
+			<input type="text" name="ferId" placeholder="Upišite korisničko ime" />
+        </p>        
         <input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText;?>" />
     </form>
+
 <?php
+		if($this->showAllButtonText)
+		{
+			echo '<a href="';
+			echo \route\Route::get('d3')->generate(array(
+				"controller" => 'administrator',
+				"action" => 'displayOzsn'
+			));
+			echo '?a=1">' . $this->showAllButtonText . '</a>';
+		}
+
     }
     
     public function setPostAction($postAction) {
@@ -39,6 +64,11 @@ class SimplePersonSearchForm extends AbstractView {
 
     public function setSubmitButtonText($submitButtonText) {
         $this->submitButtonText = $submitButtonText;
+        return $this;
+    }
+	
+	public function setShowAllButtonText($showAllButtonText) {
+        $this->showAllButtonText = $showAllButtonText;
         return $this;
     }
     

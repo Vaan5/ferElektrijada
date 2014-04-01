@@ -34,7 +34,8 @@ class ElektrijadaModification extends AbstractView {
                 "controller" => 'administrator',
                 "action" => 'modifyElektrijada'
             )),
-            "submitButtonText" => "Spremi promjene"
+            "submitButtonText" => "Spremi promjene",
+			"elektrijada" => $this->elektrijada
         ));
 		
 		 // print messages if any

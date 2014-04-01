@@ -17,11 +17,24 @@ class OzsnSearch extends AbstractView {
     private $resultMessage;
     
     protected function outputHTML() {
-        /*
-         * prikazi obrazac za pretrazivanje
-         * 
-         * ako je postavljeno nesto od error ili result message ispisi ih
-         */
+        // print out the form
+        echo new \view\components\SimplePersonSearchForm(array(
+            "postAction" => \route\Route::get('d3')->generate(array(
+                "controller" => 'administrator',
+                "action" => 'searchOzsn'
+            )),
+            "submitButtonText" => "Pretraži",
+			"showAllButtonText" => "Prikaži sve članove"
+        ));
+		
+		 // print messages if any
+        echo new \view\components\ErrorMessage(array(
+            "errorMessage" => $this->errorMessage
+        ));
+		
+		echo new \view\components\ErrorMessage(array(
+            "resultMessage" => $this->resultMessage
+        ));
     }
     
     public function setErrorMessage($errorMessage) {

@@ -65,6 +65,27 @@ class Index extends AbstractView {
         "controller" => 'administrator',
         "action" => 'listOldOzsn'
     ));?>">Prikaži stare OZSN!</a>
+	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'administrator',
+        "action" => 'displayOzsn'
+    ));?>?a=1">Lista članova OSZN!</a>
+	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'administrator',
+        "action" => 'searchOzsn'
+    ));?>">Pretraži članove OSZN!</a>
+	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'administrator',
+        "action" => 'modifyOzsn'
+    ));?>?id=1">Uredi OZSN!</a>
 </p>
 
 <div class="main">

@@ -45,16 +45,16 @@ class OldOzsn extends AbstractView {
 				<div class="panel-heading">Prošlogodišnji članovi odbora</div>
 				
 				<table class="table">
-				<thead>
-					<tr>
-						<th>Ime</th>
-						<th>Prezime</th>
-						<th>FerID</th>
-						<th>Opcije</th>
-					</tr>
-				</thead>
-				
-				<tbody>
+					<thead>
+						<tr>
+							<th>Ime</th>
+							<th>Prezime</th>
+							<th>FerID</th>
+							<th>Opcije</th>
+						</tr>
+					</thead>
+
+					<tbody>
 <?php
 			// Foreach oldOzsn member, generate row in table
 			foreach($this->clanovi as $val)
@@ -67,8 +67,17 @@ class OldOzsn extends AbstractView {
 				));
 				echo '?id=' . $val->idOsobe . '">Dodaj</a></td></tr>';
 			}
-			
-			echo '</tbody></table></div>';
+?>
+					</tbody>
+				</table>	
+			</div>
+
+			<a href="<?php echo \route\Route::get('d3')->generate(array(
+				"controller" => 'administrator',
+				"action" => 'displayOzsn'
+			));?>?a=1">Prikaži sve članove Odbora</a>
+					
+<?php
 		}
     }
     
