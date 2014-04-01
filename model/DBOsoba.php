@@ -28,6 +28,20 @@ class DBOsoba extends AbstractDBModel {
         return sha1($pass);
     }
     
+	private function getUloga($idOsobe,$uloga){
+	$upit = $this->select()->from('sudjelovanje')
+	->leftJoin('imaatribut ON sudjelovanje.idSudjelovanje = imaatribut.idSudjelovanja')
+	->innerJoin('atribut ON imaatribut.idAtributa = atribut.idAtributa')
+	->where(array("idOsobe"=>$idOsobe))
+	->fetch();
+	
+	if(isset($upit) && strtoupper($upit)=="VODITELJ"){
+		return $uloga.'V';
+	}
+	else{
+		return $uloga;
+	}
+}
     /**
      * 
      * @param string $user userName
@@ -61,7 +75,7 @@ class DBOsoba extends AbstractDBModel {
         // u sjednici cuvam idKorisnika i njegovu vrstu
         if ($this->isLoggedIn) {
             $_SESSION["auth"] = $this->getPrimaryKey();
-            $_SESSION["vrsta"] = $this->uloga;
+            $_SESSION["vrsta"] =$this->uloga; //->getUloga($this->getPrimaryKEY(),$this->uloga;
             $_SESSION["user"] = $this->ime == NULL ? null:$this->ime;
         }
         
