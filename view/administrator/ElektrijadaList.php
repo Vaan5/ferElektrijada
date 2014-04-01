@@ -40,6 +40,16 @@ class ElektrijadaList extends AbstractView {
          * Ako je postavljena resultMessage ispisi ju koristeci ResultMessage pogled
          * 
          */
+		
+		echo "test";
+		
+		// print messages if any
+        echo new \view\components\ErrorMessage(array(
+            "errorMessage" => $this->errorMessage
+        ));
+        echo new \view\components\ResultMessage(array(
+            "resultMessage" => $this->resultMessage
+        ));
     }
     
     public function setElektrijade($elektrijade) {
