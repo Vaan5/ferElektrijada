@@ -20,10 +20,6 @@ abstract class AbstractDBModel implements DBModel {
         $this->fpdo = new \FluentPDO(\app\db\DataBase::getInstance());
     }
     
-    public function getPdo() {
-        return \app\db\DataBase::getInstance();
-    }
-    
     /**
     * @return \SelectQuery
     */

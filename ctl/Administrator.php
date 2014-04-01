@@ -38,9 +38,6 @@ class Administrator implements Controller {
             case 'noel':
                 $this->errorMessage = "Članove možete dodavati samo za trenutno aktivnu elektrijadu! Najprije stvorite novu elektrijadu!";
                 break;
-            case 'param':
-                $this->errorMessage = "Popunite parametre pretrage!";
-                break;
             default:
                 break;
         }
@@ -81,7 +78,7 @@ class Administrator implements Controller {
                 try {
                     $osoba->modifyRow(session("auth"), post('ime', null), post('prezime', null), post('mail', null), post('brojMob', null), post('ferId'), post('password', null), 
                         post('JMBAG', null), post('spol', null), post('datRod', null), post('brOsobne', null), post('brPutovnice', null), post('osobnaVrijediDo', null),
-                        post('putovnicaVrijediDo', null), 'A', NULL, post('MBG', null), post('OIB', null));
+                        post('putovnicaVrijediDo', null), 'O', NULL, post('MBG', null), post('OIB', null));
                     // redirect with according message
                     preusmjeri(\route\Route::get('d1')->generate() . "?msg=profSucc");
                 } catch(PDOException $e) {
@@ -137,7 +134,7 @@ class Administrator implements Controller {
                 $osoba = new \model\DBOsoba();
                 try {
                     $elektrijada = new \model\DBElektrijada();
-                    if(($idElektrijade = $elektrijada->getCurrentElektrijadaId()) === false) {
+                    if($idElektrijade = $elektrijada->getCurrentElektrijadaId() === false) {
                         // we can only add ozsn members for the current Elektrijada
                         preusmjeri(\route\Route::get('d3')->generate(array(
                             "controller" => "administrator",
@@ -206,7 +203,7 @@ class Administrator implements Controller {
                 $this->errorMessage = $validacija->decypherErrors($pov);
             } else {
                 // ok the data is correct now lets find what they're looking for
-                $osobe = $osoba->findOzsnMembers(post('ime'), post('prezime'), post('ferId'));
+                $osobe = $osoba->findOzsnMembers();
                 if($osobe === false)
                     $this->errorMessage = "Nije pronađen niti jedan član!";
             }
@@ -219,7 +216,7 @@ class Administrator implements Controller {
             preusmjeri(\route\Route::get('d3')->generate(array(
                 "controller" => "administrator",
                 "action" => "searchOzsn"
-            )) . '?msg=param');
+            )));
         }
         
         echo new \view\Main(array(

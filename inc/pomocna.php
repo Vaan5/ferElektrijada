@@ -119,10 +119,7 @@ function files($key, $mainKey, $default = false) {
  * @return boolean  true if $_POST is empty, false otherwise
  */
 function postEmpty() {
-    foreach($_POST as $k => $v)
-        if(post($k) !== false)
-            return false;
-    return true;
+    return count($_POST) === 0 ? true : false;
 }
 
 /**
