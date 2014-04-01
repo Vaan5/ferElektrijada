@@ -24,10 +24,14 @@ class AdminProfile extends AbstractView {
     
     protected function outputHTML() {
         
-        /**
-         * ISPISI obrazac koji ces popuniti s podacima o adminu (ne treba obrazac sadrzavati zivotopis)
-         * koristi onaj PersonFormModel
-         */
+		// print out the form
+        echo new \view\components\PersonForm(array(
+            "postAction" => \route\Route::get('d3')->generate(array(
+                "controller" => 'administrator',
+                "action" => 'changeProfile'
+            )),
+            "submitButtonText" => "Spremi promjene"
+        ));
         
         // print messages if any
         echo new \view\components\ErrorMessage(array(

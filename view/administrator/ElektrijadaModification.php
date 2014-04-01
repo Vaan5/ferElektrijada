@@ -27,6 +27,20 @@ class ElektrijadaModification extends AbstractView {
          * Josh dodaj jedno dugme(link) koje ce preusmjeriti na controllerovu akciju deleteElektrijada
          * predaj mu kao get parametar id elektrijade cije ce ime biti 'id' (bez navodnika)
          */
+		
+		// print out the form
+        echo new \view\components\ElektrijadaForm(array(
+            "postAction" => \route\Route::get('d3')->generate(array(
+                "controller" => 'administrator',
+                "action" => 'modifyElektrijada'
+            )),
+            "submitButtonText" => "Spremi promjene"
+        ));
+		
+		 // print messages if any
+        echo new \view\components\ErrorMessage(array(
+            "errorMessage" => $this->errorMessage
+        ));
     }
     
     public function setErrorMessage($errorMessage) {

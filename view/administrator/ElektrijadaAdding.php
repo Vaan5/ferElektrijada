@@ -11,10 +11,20 @@ class ElektrijadaAdding extends AbstractView {
     private $errorMessage;
     
     protected function outputHTML() {
-        /*
-         * Trebas prikazati odgovarajuci obrazac
-         * i predati mu odgovarajuce parametre
-         */
+        
+		// print out the form
+        echo new \view\components\ElektrijadaForm(array(
+            "postAction" => \route\Route::get('d3')->generate(array(
+                "controller" => 'administrator',
+                "action" => 'addElektrijada'
+            )),
+            "submitButtonText" => "Dodaj elektrijadu"
+        ));
+		
+		 // print messages if any
+        echo new \view\components\ErrorMessage(array(
+            "errorMessage" => $this->errorMessage
+        ));
     }
     
     public function setErrorMessage($errorMessage) {

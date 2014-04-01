@@ -74,6 +74,11 @@ class Main extends AbstractView {
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		<ul class="nav navbar-nav">
+			<!-- Randy: Ovo sam dodao privremeno da ne moram stalno URL upisivati -->
+			<li><a href="http://localhost/ferElektrijada">Naslovnica</a></li>
+		</ul>
+		
       <ul class="nav navbar-nav navbar-right">
           <p class="navbar-text">
                <?php if(!\model\DBOsoba::isLoggedIn()) echo

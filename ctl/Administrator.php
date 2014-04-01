@@ -94,7 +94,7 @@ class Administrator implements Controller {
                 "resultMessage" => $this->resultMessage,
                 "admin" => $osoba
             )),
-            "title" => "Ažuriranje članova Odbora"
+            "title" => "Uređivanje profila"
         ));
     }
 
