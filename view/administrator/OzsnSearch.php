@@ -21,7 +21,7 @@ class OzsnSearch extends AbstractView {
         echo new \view\components\SimplePersonSearchForm(array(
             "postAction" => \route\Route::get('d3')->generate(array(
                 "controller" => 'administrator',
-                "action" => 'searchOzsn'
+                "action" => 'displayOzsn'
             )),
             "submitButtonText" => "Pretraži",
 			"showAllButtonText" => "Prikaži sve članove"
