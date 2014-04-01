@@ -99,6 +99,7 @@ class DBOsoba extends AbstractDBModel {
         foreach($atributi as $a) {
             $this->{$a} = ${$a};
         }
+        $this->password = $this->kriptPass($this->password);
         $this->save();
     }
     
@@ -112,18 +113,42 @@ class DBOsoba extends AbstractDBModel {
         return false;
     }
     
+    /**
+     * Primjer uporabe parametar binding (izbjegavanje sql injection)
+     * @param type $ime
+     * @param type $prezime
+     * @param type $ferId
+     * @return boolean
+     */
     public function findOzsnMembers($ime, $prezime, $ferId) {
-        $query = array("uloga" => 'O');
-        if($ime !== '' && $ime !== null)
-            $query["ime"] = $ime;
-        if($prezime !== '' && $prezime !== null)
-            $query["prezime"] = $prezime;
-        if($ferId !== '' && $ferId !== null)
-            $query["ferId"] = $ferId;
-        $pov = $this->select()->where($query)->fetchAll();
+        $pdo = $this->getPdo();
+        $query = '';
+        $number = 0;
+        if($ime !== '' && $ime !== null && $ime !== false) {
+            $query .= ' ime = :ime';
+            $number++;
+        }
+        if($prezime !== '' && $prezime !== null && $prezime !== false) {
+            if ($number > 0) $query .= ' OR';
+            $query .= ' prezime = :prezime';
+        }
+        if($ferId !== '' && $ferId !== null && $ferId !== false) {
+            if ($number > 0) $query .= ' OR';
+            $query .= ' ferId = :ferId';
+        }
+        $query = 'SELECT ime, prezime, ferId FROM osoba WHERE (' . $query . ') AND uloga=\'O\'';
+        $upit = $pdo->prepare($query);
+        if($ime !== '' && $ime !== null && $ime !== false)
+            $upit->bindValue (':ime', $ime);
+        if($prezime !== '' && $prezime !== null && $prezime !== false)
+            $upit->bindValue (':prezime', $prezime);
+        if($ferId !== '' && $ferId !== null && $ferId !== false)
+            $upit->bindValue (':ferId', $ferId);
+        $upit->execute();
+        $pov = $upit->fetchAll($pdo::FETCH_CLASS, get_class($this));
         if(count($pov))
             return $pov;
-        return true;
+        return false;
     }
     
     public function isOzsnMember() {
@@ -169,6 +194,8 @@ class DBOsoba extends AbstractDBModel {
         }
         if($stariPass !== null)
             $this->password = $stariPass;
+        else
+            $this->password = $this->kriptPass ($this->password);
         $this->save();
     }
     
