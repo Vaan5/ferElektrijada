@@ -41,7 +41,53 @@ class ElektrijadaList extends AbstractView {
          * 
          */
 		
-		echo "test";
+		if($this->errorMessage)
+		{
+			echo new \view\components\ErrorMessage(array(
+            "errorMessage" => $this->errorMessage
+			));
+		}
+		
+		// Else show elektrijade in table
+		else
+		{
+			
+?>
+			<div class="panel panel-default">
+				<div class="panel-heading">Popis elektrijada</div>
+				
+				<table class="table">
+				<thead>
+					<tr>
+						<th>Godina</th>
+						<th>Mjesto</th>
+						<th>Država</th>
+						<th>Opcije</th>
+					</tr>
+				</thead>
+				
+				<tbody>
+<?php
+			// Foreach Ozsn member, generate row in table
+			foreach($this->elektrijade as $val)
+			{
+				echo '<tr><td>' . date('Y', strtotime($val->datumPocetka)) . '</td><td>' . $val->mjestoOdrzavanja . '</td><td>' . $val->drzava . '</td>';
+				echo '<td><a href="';
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'administrator',
+					"action" => 'modifyElektrijada'
+				));
+				echo '?id=' . $val->idElektrijade . '">Uredi</a> &nbsp; <a href="';
+				
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'administrator',
+					"action" => 'deleteElektrijada'
+				));
+				echo '?id=' . $val->idElektrijade . '">Obriši</a>';
+			}
+			
+			echo '</tbody></table></div>';
+		}
 		
 		// print messages if any
         echo new \view\components\ErrorMessage(array(
