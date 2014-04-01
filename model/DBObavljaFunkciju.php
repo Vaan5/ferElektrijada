@@ -25,4 +25,15 @@ class DBObavljaFunkciju extends AbstractDBModel {
             }
             $this->save();
         }
+        
+        public function deleteRows($idOsobe) {
+            $retci = $this->select()->where(array(
+                "idOsobe" => $idOsobe
+            ))->fetchAll();
+            if (count($retci)) {
+                foreach($retci as $r) {
+                    $r->delete();
+                }
+            }
+        }
 }

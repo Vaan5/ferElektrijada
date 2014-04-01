@@ -41,6 +41,9 @@ class Administrator implements Controller {
             case 'param':
                 $this->errorMessage = "Popunite parametre pretrage!";
                 break;
+            case 'remSucc':
+                $this->resultMessage = "Osoba uklonjena iz ovogodišnjeg odbora!";
+                break;
             default:
                 break;
         }
@@ -335,6 +338,42 @@ class Administrator implements Controller {
                     "controller" => "administrator",
                     "action" => "searchOzsn"
                 )) . "?msg=err");
+            }
+        }
+    }
+    
+    /**
+     * removes row from table obavljaFunkciju
+     */
+    public function removeOzsnFromElektrijada() {
+        $this->checkRole();
+        $osoba = new \model\DBOsoba();
+        
+        if(get('id') === false) {
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "administrator",
+                "action" => "searchOzsn"
+            )) . "?msg=err");
+        } else {
+            try {
+                $osoba->load(get('id'));
+                $obavlja = new \model\DBObavljaFunkciju();
+                $obavlja->deleteRows(get('id'));
+                
+                preusmjeri(\route\Route::get('d3')->generate(array(
+                                    "controller" => "administrator",
+                                    "action" => "searchOzsn"
+                                )) . "?msg=remSucc");
+            } catch (\app\model\NotFoundException $e) {
+                preusmjeri(\route\Route::get('d3')->generate(array(
+                    "controller" => "administrator",
+                    "action" => "searchOzsn"
+                )) . "?msg=err");
+            } catch (\PDOException $e) {
+                preusmjeri(\route\Route::get('d3')->generate(array(
+                    "controller" => "administrator",
+                    "action" => "searchOzsn"
+                )) . "?msg=derr");
             }
         }
     }
