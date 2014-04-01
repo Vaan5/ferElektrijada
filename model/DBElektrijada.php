@@ -40,8 +40,8 @@ class DBElektrijada extends AbstractDBModel {
      * 
      * @return array    array of objects representing rows
      */
-    public static function getElektrijada() {
-        return self::select()->fetchAll();
+    public function getElektrijada() {
+        return $this->select()->fetchAll();
     }
     
     /**

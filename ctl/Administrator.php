@@ -443,7 +443,8 @@ class Administrator implements Controller {
         $this->checkRole();
         $this->checkMessages();
         
-        $elektrijade = \model\DBElektrijada::getElektrijada();
+        $e = new \model\DBElektrijada();
+        $elektrijade = $e->getElektrijada();
         if(count($elektrijade) === 0) {
             $this->errorMessage = "Ne postoji niti jedan zapis o Elektrijadi!";
         }
