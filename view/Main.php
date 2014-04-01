@@ -87,12 +87,12 @@ class Main extends AbstractView {
                                                                                         "action" => "display"
                                                                                         )) . "\"> Prijava</a>"
 						; else echo
-						"<span class=\"glyphicon glyphicon-user\"></span>" . $_SESSION['user']
+						"<span class=\"glyphicon glyphicon-user\"></span> " . $_SESSION['user']
 				 ;?><!-- treba dodati php dio da bude session['user'] link do profila usera -->
 				<?php if(\model\DBOsoba::isLoggedIn())     echo "<span class=\"glyphicon glyphicon-off\"></span><a href=\"" . \route\Route::get('d3')->generate(array(
                                                                                         "controller" => "login",
                                                                                         "action" => "logout"
-                                                                                        )) . "\">Odjava</a>";
+                                                                                        )) . "\"> Odjava</a>";
                  ?>
           </p>
           </ul>

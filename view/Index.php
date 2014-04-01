@@ -24,7 +24,7 @@ class Index extends AbstractView {
     
     protected function outputHTML() {
 ?>
-<p><center><img src="naslovna.jpg" alt="FER logo" align="middle"></center></p>
+<p><center><img src="./assets/img/naslovna.jpg" alt="FER logo" align="middle"></center></p>
 <p>Ovaj link trebate sutnuti gore u traku (U main view) uz provjeru da samo admin to moze vidjet &nbsp;
     <a href="<?php echo \route\Route::get('d3')->generate(array(
         "controller" => 'administrator',
