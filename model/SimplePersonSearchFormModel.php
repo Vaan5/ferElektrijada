@@ -6,11 +6,14 @@ use app\model\AbstractFormModel;
 class SimplePersonSearchFormModel extends AbstractFormModel {
     
     protected function rules() {
-        return array(
-            'ferId' => array('username'),
-            'ime' => array('name'), 
-            'prezime' => array('name') 
-            );
+        if ($this->rulesArray === null) {
+            $this->rulesArray = array(
+                'ferId' => array('username'),
+                'ime' => array('name'), 
+                'prezime' => array('name') 
+                );
+        }
+        return $this->rulesArray;
     }
     
     public function decypherErrors($pov) {

@@ -158,11 +158,17 @@ class DBOsoba extends AbstractDBModel {
     
     public function modifyRow($primaryKey, $ime, $prezime, $mail, $brojMob, $ferId, $password, $JMBAG,
             $spol, $datRod, $brOsobne, $brPutovnice, $osobnaVrijediDo, $putovnicaVrijediDo, $uloga, $zivotopis, $MBG, $OIB) {
-        $this->load($primaryKey);
         $atributi = $this->getColumns();
+        $this->load($primaryKey);
+        $stariPass = null;
+        if($password === null || $password === false) {
+            $stariPass = $this->password;
+        }
         foreach($atributi as $a) {
             $this->{$a} = ${$a};
         }
+        if($stariPass !== null)
+            $this->password = $stariPass;
         $this->save();
     }
     

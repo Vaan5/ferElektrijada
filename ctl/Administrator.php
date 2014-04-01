@@ -43,6 +43,9 @@ class Administrator implements Controller {
         }
     }
     
+    /**
+     * Action being called when the admin wants to change his personal data
+     */
     public function changeProfile() {
         $this->checkRole();
         $osoba = new \model\DBOsoba();
@@ -64,13 +67,16 @@ class Administrator implements Controller {
                                         'putovnicaVrijediDo' => post('putovnicaVrijediDo'),
                                         'MBG' => post('MBG'),
                                         'OIB' => post('OIB')));
+            $pravila = $validacija->getRules();
+            $pravila['password'] = array('password');
+            $validacija->setRules($pravila);
             $pov = $validacija->validate();
             if($pov !== true) {
                 $this->errorMessage = $validacija->decypherErrors($pov);
             } else {
                 // everything's ok ; insert new row
                 try {
-                    $osoba->modifyRow(session("auth"), post('ime', null), post('prezime', null), post('mail', null), post('brojMob', null), post('ferId'), post('password'), 
+                    $osoba->modifyRow(session("auth"), post('ime', null), post('prezime', null), post('mail', null), post('brojMob', null), post('ferId'), post('password', null), 
                         post('JMBAG', null), post('spol', null), post('datRod', null), post('brOsobne', null), post('brPutovnice', null), post('osobnaVrijediDo', null),
                         post('putovnicaVrijediDo', null), 'O', NULL, post('MBG', null), post('OIB', null));
                     // redirect with according message
@@ -79,13 +85,12 @@ class Administrator implements Controller {
                     $this->errorMessage = "Greška prilikom unosa podataka! Već postoji član s takvim podacima!";
                 }
             }
-        } else {
-            // let's check if i got an existing table key and let's do magic
-            try {
-                $osoba->load(session("auth"));
-            } catch (\app\model\NotFoundException $e) {
-                preusmjeri(\route\Route::get('d1')->generate() . "?msg=e");
-            }
+        }
+        // let's check if i got an existing table key and let's do magic
+        try {
+            $osoba->load(session("auth"));
+        } catch (\app\model\NotFoundException $e) {
+            preusmjeri(\route\Route::get('d1')->generate() . "?msg=e");
         }
         
         echo new \view\Main(array(

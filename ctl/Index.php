@@ -36,7 +36,7 @@ class Index implements Controller {
                 $this->errorMessage = "Ne postoji zapis s predanim identifikatorom!";
                 break;
             case 'profSucc':
-                $this->errorMessage = "Uspješno ažurirani vlastiti podaci!";
+                $this->resultMessage = "Uspješno ažurirani vlastiti podaci!";
                 break;
             default:
                 $this->resultMessage = null;

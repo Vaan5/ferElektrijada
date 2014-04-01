@@ -6,11 +6,14 @@ use app\model\AbstractFormModel;
 class ElektrijadaFormModel extends AbstractFormModel {
     
     protected function rules() {
-        return array('mjestoOdrzavanja' => array('required', 'name'),
-            'datumPocetka' => array('required', 'date'),
-            'datumKraja' => array('required', 'date'), 
-            'ukupniRezultat' => array('numbers'),
-            'drzava' => array('required', 'name'));
+        if($this->rulesArray === null) {
+            $this->rulesArray = array('mjestoOdrzavanja' => array('required', 'name'),
+                'datumPocetka' => array('required', 'date'),
+                'datumKraja' => array('required', 'date'), 
+                'ukupniRezultat' => array('numbers'),
+                'drzava' => array('required', 'name'));
+        }
+        return $this->rulesArray;
     }
     
     public function decypherErrors($pov) {

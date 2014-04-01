@@ -4,6 +4,7 @@ namespace app\model;
 
 abstract class AbstractFormModel implements FormModel {
     
+    protected $rulesArray;
     /**
      * @var array podaci za testiranje oblika nazivPolja => vrijednost
      * na primjer password => kaohaahd
@@ -53,13 +54,13 @@ abstract class AbstractFormModel implements FormModel {
      * @return {boolean}					true ako je podatak zbilja ispravno napisan username
      */
     protected function validateUsername($data) {
-            $pattern = '/^[a-zA-Z0-9_-]{3,16}$/';
+            $pattern = '/^[a-zA-Z0-9_-]{3,16}$/u';
             return $this->test_pattern($pattern, $data);
     }
     
     protected function validateName($data) {
         if(isset($data) && $data !== '') {
-            $pattern = '/^[A-ZČŠĐŽĆ][a-zčćžšđ]{2,}$/';
+            $pattern = '/^[A-ZČŠĐŽĆ][a-zčćžšđ]{2,}$/u';
             return $this->test_pattern($pattern, $data);
         }
         // if you didn't give me anything to check i'll just return true
@@ -95,7 +96,7 @@ abstract class AbstractFormModel implements FormModel {
     
     protected function validateGender($data) {
         if(isset($data) && $data !== '') {
-            $pattern = '/^[MŽ]{1}$/';
+            $pattern = '/^[MŽ]{1}$/u';
             return $this->test_pattern($pattern, $data);
         }
         // if you didn't give me anything to check i'll just return true
@@ -171,5 +172,15 @@ abstract class AbstractFormModel implements FormModel {
         }
         
         return true;
+    }
+    
+    public function getRules() {
+        if ($this->rulesArray === null)
+            return $this->rules();
+        return $this->rulesArray;
+    }
+    
+    public function setRules(array $r) {
+        $this->rulesArray = $r;
     }
 }
