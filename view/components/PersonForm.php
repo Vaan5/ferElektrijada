@@ -80,9 +80,16 @@ class PersonForm extends AbstractView {
         <input type="text" name="putovnicaVrijediDo" placeholder="Upišite do kada vrijedi putovnica" <?php if($this->osoba && $this->osoba->putovnicaVrijediDo){ echo 'value="' . $this->osoba->putovnicaVrijediDo . '"'; } ?> />
         </p>
         
-        <input type="hidden" name="idOsobe" <?php if($this->osoba && $this->osoba->idOsobe){ echo 'value="' . $this->osoba->idOsobe . '"'; } ?> />
+		<?php if($this->osoba && $this->osoba->idOsobe){ ?><input type="hidden" name="idOsobe" value="<?php echo $this->osoba->idOsobe; ?>" /> <?php } ?>
         
         <input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText;?>" />
+		
+		<?php if($this->osoba && $this->osoba->idOsobe){ ?>
+		<a href="<?php echo \route\Route::get('d3')->generate(array(
+			"controller" => 'administrator',
+			"action" => 'deleteOzsn'
+		));?>?id=<?php echo $this->osoba->idOsobe; ?>">Obriši osobu</a>	
+		<?php } ?>
     </form>
 <?php
     }
