@@ -84,7 +84,7 @@ abstract class AbstractFormModel implements FormModel {
      */
     protected function validateNumbers($data) {
         if(isset($data) && $data !== '') {
-            $pattern = '/^[0-9]{6,}$/';
+            $pattern = '/^[0-9]{1,}$/';
             return $this->test_pattern($pattern, $data);
         }
         // if you didn't give me anything to check i'll just return true
