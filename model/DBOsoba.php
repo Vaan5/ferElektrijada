@@ -150,7 +150,7 @@ class DBOsoba extends AbstractDBModel {
             if ($number > 0) $query .= ' OR';
             $query .= ' ferId = :ferId';
         }
-        $query = 'SELECT ime, prezime, ferId FROM osoba WHERE (' . $query . ') AND uloga=\'O\'';
+        $query = 'SELECT * FROM osoba WHERE (' . $query . ') AND uloga=\'O\'';
         $upit = $pdo->prepare($query);
         if($ime !== '' && $ime !== null && $ime !== false)
             $upit->bindValue (':ime', $ime);

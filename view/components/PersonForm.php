@@ -79,6 +79,9 @@ class PersonForm extends AbstractView {
 		<p>Putovnica vrijedi do: &nbsp;
         <input type="text" name="putovnicaVrijediDo" placeholder="Upišite do kada vrijedi putovnica" <?php if($this->osoba && $this->osoba->putovnicaVrijediDo){ echo 'value="' . $this->osoba->putovnicaVrijediDo . '"'; } ?> />
         </p>
+        
+        <input type="hidden" name="idOsobe" <?php if($this->osoba && $this->osoba->idOsobe){ echo 'value="' . $this->osoba->idOsobe . '"'; } ?> />
+        
         <input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText;?>" />
     </form>
 <?php

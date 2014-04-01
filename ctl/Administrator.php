@@ -84,7 +84,7 @@ class Administrator implements Controller {
                         post('putovnicaVrijediDo', null), 'A', NULL, post('MBG', null), post('OIB', null));
                     // redirect with according message
                     preusmjeri(\route\Route::get('d1')->generate() . "?msg=profSucc");
-                } catch(PDOException $e) {
+                } catch(\PDOException $e) {
                     $this->errorMessage = "Greška prilikom unosa podataka! Već postoji član s takvim podacima!";
                 }
             }
@@ -256,13 +256,19 @@ class Administrator implements Controller {
                                         'putovnicaVrijediDo' => post('putovnicaVrijediDo'),
                                         'MBG' => post('MBG'),
                                         'OIB' => post('OIB')));
+            $pravila = $validacija->getRules();
+            $pravila['password'] = array('password');
+            $validacija->setRules($pravila);
             $pov = $validacija->validate();
             if($pov !== true) {
                 $this->errorMessage = $validacija->decypherErrors($pov);
+                try {
+                    $osoba->load(post('idOsobe'));
+                } catch (app\model\NotFoundException $e) {}
             } else {
                 // everything's ok ; insert new row
                 try {
-                    $osoba->modifyRow(post($osoba->getPrimaryKeyColumn()), post('ime', null), post('prezime', null), post('mail', null), post('brojMob', null), post('ferId'), post('password'), 
+                    $osoba->modifyRow(post($osoba->getPrimaryKeyColumn()), post('ime', null), post('prezime', null), post('mail', null), post('brojMob', null), post('ferId'), post('password', null), 
                         post('JMBAG', null), post('spol', null), post('datRod', null), post('brOsobne', null), post('brPutovnice', null), post('osobnaVrijediDo', null),
                         post('putovnicaVrijediDo', null), 'O', NULL, post('MBG', null), post('OIB', null));
                     // redirect with according message
@@ -270,7 +276,7 @@ class Administrator implements Controller {
                         "controller" => "administrator",
                         "action" => "searchOzsn"
                     )) . "?msg=succo");
-                } catch(PDOException $e) {
+                } catch(\PDOException $e) {
                     $this->errorMessage = "Greška prilikom unosa podataka! Već postoji član s takvim podacima!";
                 }
             }
@@ -387,7 +393,7 @@ class Administrator implements Controller {
                 $clanovi = $osoba->getOldOzsn();
                 if (!count($clanovi))
                     $this->errorMessage = "Ne postoje zapisi o prošlogodišnjim članovima odbora!";                
-            } catch(PDOException $e) {
+            } catch(\PDOException $e) {
                 $this->errorMessage = "Pogreška prilikom dohvata prošlogodišnjih članova odbora!";
             }
             
@@ -429,7 +435,7 @@ class Administrator implements Controller {
                     $elektrijada->addNewElektrijada(post('mjestoOdrzavanja'), post('datumPocetka'), 
                             post('datumKraja'), post('ukupniRezultat', NULL), post('drzava'));
                     preusmjeri(\route\Route::get('d1')->generate() . "?msg=elekAddSucc");
-                } catch (PDOException $e) {
+                } catch (\PDOException $e) {
                     $this->errorMessage = "Pogreška prilikom dodavanja u bazu! Provjerite da li elektrijada s takvim podacima već ne postoji!";
                 }
                 
@@ -496,7 +502,7 @@ class Administrator implements Controller {
                         "controller" => "administrator",
                         "action" => "displayElektrijada"
                     )) . "?msg=succ");
-                } catch(PDOException $e) {
+                } catch(\PDOException $e) {
                     $this->errorMessage = "Greška prilikom unosa podataka! Već postoji elektrijada s takvim podacima!";
                 }
             }

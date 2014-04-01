@@ -32,7 +32,7 @@ class OzsnSearch extends AbstractView {
             "errorMessage" => $this->errorMessage
         ));
 		
-		echo new \view\components\ErrorMessage(array(
+		echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
     }
