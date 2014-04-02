@@ -54,7 +54,7 @@ abstract class AbstractFormModel implements FormModel {
      * @return {boolean}					true ako je podatak zbilja ispravno napisan username
      */
     protected function validateUsername($data) {
-            $pattern = '/^[a-zA-Z0-9_-]{3,16}$/u';
+            $pattern = '/^[a-zA-Z0-9]{3,16}$/u';
             return $this->test_pattern($pattern, $data);
     }
     
