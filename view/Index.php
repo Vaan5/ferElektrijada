@@ -86,6 +86,16 @@ class Index extends AbstractView {
         "controller" => 'administrator',
         "action" => 'modifyOzsn'
     ));?>?id=1">Uredi OZSN!</a>
+	
+	<br><br>
+	<b>OZSN</b>
+	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'displayAtribut'
+    ));?>">Lista atributa</a>
 </p>
 
 <div class="main">

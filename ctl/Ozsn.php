@@ -23,7 +23,7 @@ class Ozsn implements Controller {
                 "errorMessage" => $this->errorMessage,
                 "resultMessage" => $this->resultMessage
             )),
-            "title" => ""
+            "title" => "Lista atributa"
         ));
     }
 }
