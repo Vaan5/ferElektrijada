@@ -27,6 +27,8 @@ class DBElektrijada extends AbstractDBModel {
      * @param mixed $drzava
      */
     public function addNewElektrijada($mjestoOdrzavanja, $datumPocetka, $datumKraja, $ukupniRezultat, $drzava) {
+        if ($this->existsElektrijadaWithYear($datumPocetka))
+            return false;
         $this->idElektrijade = null;
         $atributi = $this->getColumns();
         foreach($atributi as $a) {
@@ -42,6 +44,41 @@ class DBElektrijada extends AbstractDBModel {
      */
     public function getElektrijada() {
         return $this->select()->fetchAll();
+    }
+    
+    public function existsElektrijadaWithYear($date) {
+        $datum = date('Y', strtotime($date));
+        
+        $pdo = $this->getPdo();
+        $query = $pdo->prepare("SELECT * FROM elektrijada WHERE YEAR(datumPocetka) = :datum");
+        $query->bindValue(':datum', $datum);
+        $query->execute();
+        $pov = $query->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+        
+        if(count($pov)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public function existsElektrijadaWithYearDifferentFrom($date, $idElektrijade) {
+        $datum = date('Y', strtotime($date));
+        
+        $pdo = $this->getPdo();
+        $query = $pdo->prepare("SELECT * FROM elektrijada WHERE YEAR(datumPocetka) = :datum");
+        $query->bindValue(':datum', $datum);
+        $query->execute();
+        $pov = $query->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+        
+        if(count($pov)) {
+            foreach($pov as $p) {
+                if($p->idElektrijade != $idElektrijade)
+                    return true;
+            }
+            return false;
+        }
+        return false;
     }
     
     /**
@@ -96,9 +133,12 @@ class DBElektrijada extends AbstractDBModel {
     }
     
     public function getCurrentElektrijadaId() {
-        $pov = $this->select()->where(array(
-            "YEAR(datumPocetka)" => date("Y")
-        ))->fetchAll();
+        $datum = date('Y');
+        $pdo = $this->getPdo();
+        $query = $pdo->prepare("SELECT * FROM elektrijada WHERE YEAR(datumPocetka) = :datum");
+        $query->bindValue(':datum', $datum);
+        $query->execute();
+        $pov = $query->fetchAll(\PDO::FETCH_CLASS, get_class($this));
         
         if(count($pov)) {
             return $pov[0]->idElektrijade;
@@ -109,9 +149,11 @@ class DBElektrijada extends AbstractDBModel {
     
     public function getLastYearElektrijadaId() {
         $datum = date('Y') - 1;
-        $pov = $this->select()->where(array(
-            "YEAR(datumPocetka)" => $datum
-        ))->fetchAll();
+        $pdo = $this->getPdo();
+        $query = $pdo->prepare("SELECT * FROM elektrijada WHERE YEAR(datumPocetka) = :datum");
+        $query->bindValue(':datum', $datum);
+        $query->execute();
+        $pov = $query->fetchAll(\PDO::FETCH_CLASS, get_class($this));
         
         if(count($pov)) {
             return $pov[0]->idElektrijade;

@@ -12,6 +12,11 @@ class OldOzsn extends AbstractView {
     
     /**
      *
+     * @var string 
+     */
+    private $resultMessage;
+    /**
+     *
      * @var array 
      */
     private $clanovi;
@@ -74,10 +79,16 @@ class OldOzsn extends AbstractView {
 
 			<a href="<?php echo \route\Route::get('d3')->generate(array(
 				"controller" => 'administrator',
-				"action" => 'displayOzsn'
-			));?>?a=1">Prikaži sve članove Odbora</a>
+				"action" => 'listOldOzsn'
+			));?>?a=1">Obnovi ovlasti svim članovima odbora</a>
 					
 <?php
+                        if($this->resultMessage)
+                        {
+                                echo new \view\components\ResultMessage(array(
+                                    "resultMessage" => $this->resultMessage
+                                ));
+                        }
 		}
     }
     
@@ -85,7 +96,11 @@ class OldOzsn extends AbstractView {
         $this->errorMessage = $errorMessage;
         return $this;
     }
-    
+    public function setResultMessage($resultMessage) {
+        $this->resultMessage = $resultMessage;
+        return $this;
+    }
+
     public function setClanovi($clanovi) {
         $this->clanovi = $clanovi;
         return $this;

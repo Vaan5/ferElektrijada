@@ -36,4 +36,11 @@ class DBObavljaFunkciju extends AbstractDBModel {
                 }
             }
         }
+        
+        public function ozsnExists($idOsobe, $idElektrijade) {
+            $pov = $this->select()->where(array("idOsobe" => $idOsobe, "idElektrijade" => $idElektrijade))->fetchAll();
+            if(count($pov))
+                return true;
+            return false;
+        }
 }

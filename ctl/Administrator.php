@@ -398,14 +398,18 @@ class Administrator implements Controller {
                 // now add a new row in the DBObavljaFunkciju
                 $obavljaFunkciju = new \model\DBObavljaFunkciju();
                 $i = $elektrijada->getCurrentElektrijadaId();
-                if($i === false) {
-                    preusmjeri(\route\Route::get('d1')->generate() . "?msg=err");
+                
+                if($obavljaFunkciju->ozsnExists(get('id'), $i) === true) {
+                    $this->errorMessage = "Član je već zadužen za aktualnu Elektrijadu!";
+                } else {
+                    if($i === false) {
+                        preusmjeri(\route\Route::get('d1')->generate() . "?msg=err");
+                    }
+                    $obavljaFunkciju->addNewRow($osoba->getPrimaryKey(), NULL, $i);
+
+                    // everything's ok
+                    preusmjeri(\route\Route::get('d1')->generate() . "?msg=ozsnAddedSucc");
                 }
-                $obavljaFunkciju->addNewRow($osoba->getPrimaryKey(), NULL, $i);
-                
-                // everything's ok
-                preusmjeri(\route\Route::get('d1')->generate() . "?msg=ozsnAddedSucc");
-                
             } catch (\app\model\NotFoundException $e) {
                 preusmjeri(\route\Route::get('d1')->generate() . "?msg=dunno");
             } catch (\PDOException $e) {
@@ -421,8 +425,11 @@ class Administrator implements Controller {
             if(count($clanovi)) {
                 foreach ($clanovi as $c) {
                     $obavljaFunkciju = new \model\DBObavljaFunkciju();
-                    $obavljaFunkciju->addNewRow($c->getPrimaryKey(), NULL, $i);
+                    if($obavljaFunkciju->ozsnExists($c->getPrimaryKey(), $i) !== true) {
+                        $obavljaFunkciju->addNewRow($c->getPrimaryKey(), NULL, $i);
+                    }
                 }
+                $this->resultMessage = "Uspješno dodani svi članovi odbora!";
             } else {
                 preusmjeri(\route\Route::get('d1')->generate() . "?msg=err");
             }
@@ -441,6 +448,7 @@ class Administrator implements Controller {
         echo new \view\Main(array(
             "body" => new \view\administrator\OldOzsn(array(
                 "errorMessage" => $this->errorMessage,
+                "resultMessage" => $this->resultMessage,
                 "clanovi" => $clanovi
             )),
             "title" => "Prošlogodišnji članovi odbora"
@@ -471,9 +479,13 @@ class Administrator implements Controller {
                 $elektrijada = new \model\DBElektrijada();
                 
                 try {
-                    $elektrijada->addNewElektrijada(post('mjestoOdrzavanja'), post('datumPocetka'), 
+                    $p =$elektrijada->addNewElektrijada(post('mjestoOdrzavanja'), post('datumPocetka'), 
                             post('datumKraja'), post('ukupniRezultat', NULL), post('drzava'));
-                    preusmjeri(\route\Route::get('d1')->generate() . "?msg=elekAddSucc");
+                    if ($p === false) {
+                        $this->errorMessage = "Već postoji Elektrijada za tu godinu";
+                    } else {
+                        preusmjeri(\route\Route::get('d1')->generate() . "?msg=elekAddSucc");
+                    }
                 } catch (\PDOException $e) {
                     $this->errorMessage = "Pogreška prilikom dodavanja u bazu! Provjerite da li elektrijada s takvim podacima već ne postoji!";
                 }
@@ -521,6 +533,9 @@ class Administrator implements Controller {
         
         if(!postEmpty()) {
             // here we do the magic
+            if($elektrijada->elektrijadaExists(post("idElektrijade")) !== false) {
+                $elektrijada->load(post("idElektrijade"));
+            }
             $validacija = new \model\ElektrijadaFormModel(array(
                                                 'mjestoOdrzavanja' => post('mjestoOdrzavanja'),
                                             'datumPocetka' => post('datumPocetka'),
@@ -534,13 +549,17 @@ class Administrator implements Controller {
             } else {
                 // everything's ok ; insert new row
                 try {
-                    $elektrijada->modifyRow(post($elektrijada->getPrimaryKeyColumn()), post('mjestoOdrzavanja'), post('datumPocetka'), 
-                            post('datumKraja'), post('ukupniRezultat', NULL), post('drzava'));
-                    // redirect with according message
-                    preusmjeri(\route\Route::get('d3')->generate(array(
-                        "controller" => "administrator",
-                        "action" => "displayElektrijada"
-                    )) . "?msg=succ");
+                    if ($elektrijada->existsElektrijadaWithYearDifferentFrom(post('datumPocetka'), post($elektrijada->getPrimaryKeyColumn()))) {
+                        $this->errorMessage = "Već postoji Elektrijada za tu godinu";
+                    } else {
+                        $elektrijada->modifyRow(post($elektrijada->getPrimaryKeyColumn()), post('mjestoOdrzavanja'), post('datumPocetka'), 
+                                post('datumKraja'), post('ukupniRezultat', NULL), post('drzava'));
+                        // redirect with according message
+                        preusmjeri(\route\Route::get('d3')->generate(array(
+                            "controller" => "administrator",
+                            "action" => "displayElektrijada"
+                        )) . "?msg=succ");
+                    }
                 } catch(\PDOException $e) {
                     $this->errorMessage = "Greška prilikom unosa podataka! Već postoji elektrijada s takvim podacima!";
                 }
