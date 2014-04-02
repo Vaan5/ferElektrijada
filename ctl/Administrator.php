@@ -15,6 +15,11 @@ class Administrator implements Controller {
         }
     }
     
+    public function test() {
+        $t = new \model\DBTest();
+        $t->metoda();
+    }
+    
     private function checkMessages() {
         switch(get("msg")) {
             case 'succ':
