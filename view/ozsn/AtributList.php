@@ -6,7 +6,7 @@ use app\view\AbstractView;
 class AtributList extends AbstractView {
     private $errorMessage;
     private $resultMessage;
-	private $atributi;
+    private $atributi;
     
     protected function outputHTML() {
         if(count($this->atributi))

@@ -22,5 +22,9 @@ class DBAtribut extends AbstractDBModel {
     public function getColumns() {
         return array('nazivAtributa');
     }
-	}
-?>
+    
+    public function getAllAtributes() {
+        return $this->select()->fetchAll();     // Ante poziv tvoje procedure ako zelis
+    }
+    
+}
