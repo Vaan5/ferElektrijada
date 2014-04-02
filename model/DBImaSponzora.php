@@ -1,27 +1,26 @@
 <?php
 
-        namespace model;
-	use app\model\AbstractDBModel;
+namespace model;
+use app\model\AbstractDBModel;
 	
-	class DBImaSponzora extends AbstractDBModel {
+class DBImaSponzora extends AbstractDBModel {
 	    
-	    /**
-	     *
-	     * @var boolean 
-	     */
-	    private $isLoggedIn = false;
+	/**
+	*
+	* @var boolean 
+	*/
             
-            public function getTable(){
-                return 'imasponzora';
-            }
+    public function getTable(){
+        return 'imasponzora';
+    }
             
-            public function getPrimaryKeyColumn(){
-                return 'idImaSponzora';
-            }
+    public function getPrimaryKeyColumn(){
+        return 'idImaSponzora';
+    }
             
-            public function getColumns(){
-                return array('idSponzora','idKategorijeSponzora', 'idPromocije', 'idElektrijade', 'iznosDonacije', 'valutaDonacije', 'napomena');
-            }
-			}
-?>
+    public function getColumns(){
+        return array('idSponzora','idKategorijeSponzora', 'idPromocije', 'idElektrijade', 'iznosDonacije', 'valutaDonacije', 'napomena');
+    }
+}
+
 

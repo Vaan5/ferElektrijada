@@ -1,26 +1,25 @@
 <?php
 
-        namespace model;
-	use app\model\AbstractDBModel;
+namespace model;
+use app\model\AbstractDBModel;
 	
-	class DBFunkcija extends AbstractDBModel {
+class DBFunkcija extends AbstractDBModel {
 	    
-	    /**
-	     *
-	     * @var boolean 
-	     */
-	    private $isLoggedIn = false;
+	/**
+	*
+	* @var boolean 
+	*/
             
-            public function getTable(){
-                return 'funkcija';
-            }
+    public function getTable(){
+        return 'funkcija';
+    }
             
-            public function getPrimaryKeyColumn(){
-                return 'idFunkcije';
-            }
+    public function getPrimaryKeyColumn(){
+        return 'idFunkcije';
+    }
             
-            public function getColumns(){
-                return 'nazivFunkcije';
-            }
-			}
-?>
+    public function getColumns(){
+        return array('nazivFunkcije');
+    }
+}
+

@@ -1,27 +1,26 @@
 <?php
 
-        namespace model;
-	use app\model\AbstractDBModel;
+namespace model;
+use app\model\AbstractDBModel;
 	
-	class DBKategorija extends AbstractDBModel {
+class DBKategorija extends AbstractDBModel {
 	    
-	    /**
-	     *
-	     * @var boolean 
-	     */
-	    private $isLoggedIn = false;
+	/**
+	*
+	* @var boolean 
+	*/
             
-            public function getTable(){
-                return 'kategorija';
-            }
+    public function getTable(){
+        return 'kategorija';
+    }
             
-            public function getPrimaryKeyColumn(){
-                return 'idKategorijeSponzora';
-            }
+    public function getPrimaryKeyColumn(){
+        return 'idKategorijeSponzora';
+    }
             
-            public function getColumns(){
-                return 'tipKategorijeSponzora';
-            }
-			}
-?>
+    public function getColumns(){
+        return array('tipKategorijeSponzora');
+    }
+}
+
 

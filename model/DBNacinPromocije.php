@@ -1,26 +1,24 @@
 <?php
 
-        namespace model;
-	use app\model\AbstractDBModel;
+namespace model;
+use app\model\AbstractDBModel;
 	
-	class DBNacinPromocije extends AbstractDBModel {
+class DBNacinPromocije extends AbstractDBModel {
 	    
-	    /**
-	     *
-	     * @var boolean 
-	     */
-	    private $isLoggedIn = false;
+	/**
+	*
+	* @var boolean 
+	*/
             
-            public function getTable(){
-                return 'nacinpromocije';
-            }
+    public function getTable(){
+        return 'nacinpromocije';
+    }
             
-            public function getPrimaryKeyColumn(){
-                return 'idPromocije';
-            }
+    public function getPrimaryKeyColumn(){
+        return 'idPromocije';
+    }
             
-            public function getColumns(){
-                return 'tipPromocije';
-            }
-			}
-?>
+    public function getColumns(){
+        return array('tipPromocije');
+    }
+}

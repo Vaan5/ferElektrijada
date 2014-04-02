@@ -1,26 +1,24 @@
 <?php
 
-        namespace model;
-	use app\model\AbstractDBModel;
+namespace model;
+use app\model\AbstractDBModel;
 	
-	class DBUdruga extends AbstractDBModel {
+class DBUdruga extends AbstractDBModel {
 	    
-	    /**
-	     *
-	     * @var boolean 
-	     */
-	    private $isLoggedIn = false;
+	/**
+	*
+	* @var boolean 
+	*/
             
-            public function getTable(){
-                return 'udruga';
-            }
+    public function getTable(){
+        return 'udruga';
+    }
             
-            public function getPrimaryKeyColumn(){
-                return 'idUdruge';
-            }
+    public function getPrimaryKeyColumn(){
+        return 'idUdruge';
+    }
             
-            public function getColumns(){
-                return 'nazivUdruge';
-            }
-			}
-?>
+    public function getColumns(){
+        return array('nazivUdruge');
+    }
+}

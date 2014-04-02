@@ -1,26 +1,25 @@
 <?php
 
-        namespace model;
-	use app\model\AbstractDBModel;
+namespace model;
+use app\model\AbstractDBModel;
 	
-	class DBElekPodrucje extends AbstractDBModel {
+class DBElekPodrucje extends AbstractDBModel {
 	    
-	    /**
-	     *
-	     * @var boolean 
-	     */
-	    private $isLoggedIn = false;
+	/**
+	*
+	* @var boolean 
+	*/
             
-            public function getTable(){
-                return 'elekpodrucje';
-            }
+    public function getTable(){
+        return 'elekpodrucje';
+    }
             
-            public function getPrimaryKeyColumn(){
-                return 'idElekPodrucje';
-            }
+    public function getPrimaryKeyColumn(){
+        return 'idElekPodrucje';
+    }
             
-            public function getColumns(){
-                return array ('idPodrucja', 'rezultatGrupni', 'slikaLink', 'slikaBLOB', 'idElektrijade', 'idSponzora');
-            }
-			}
-?>
+    public function getColumns(){
+        return array ('idPodrucja', 'rezultatGrupni', 'slikaLink', 'slikaBLOB', 'idElektrijade', 'idSponzora');
+    }
+}
+

@@ -1,26 +1,24 @@
 <?php
 
-        namespace model;
-	use app\model\AbstractDBModel;
-	
-	class DBPodrucje extends AbstractDBModel {
+namespace model;
+use app\model\AbstractDBModel;
+
+class DBPodrucje extends AbstractDBModel {
 	    
-	    /**
-	     *
-	     * @var boolean 
-	     */
-	    private $isLoggedIn = false;
+	/**
+	*
+	* @var boolean 
+	*/
             
-            public function getTable(){
-                return 'podrucje';
-            }
+    public function getTable(){
+        return 'podrucje';
+    }
             
-            public function getPrimaryKeyColumn(){
-                return 'idPodrucja';
-            }
+    public function getPrimaryKeyColumn(){
+        return 'idPodrucja';
+    }
             
-            public function getColumns(){
-                return array ('nazivPodrucja', 'idNadredjenog');
-            }
-			}
-?>
+    public function getColumns(){
+        return array ('nazivPodrucja', 'idNadredjenog');
+    }
+}

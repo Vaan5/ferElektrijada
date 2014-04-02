@@ -1,27 +1,26 @@
 
 <?php
 
-        namespace model;
-	use app\model\AbstractDBModel;
+namespace model;
+use app\model\AbstractDBModel;
 	
-	class DBSmjer extends AbstractDBModel {
+class DBSmjer extends AbstractDBModel {
 	    
-	    /**
-	     *
-	     * @var boolean 
-	     */
-	    private $isLoggedIn = false;
+	/**
+	*
+	* @var boolean 
+	*/
             
-            public function getTable(){
-                return 'smjer';
-            }
+    public function getTable(){
+        return 'smjer';
+    }
             
-            public function getPrimaryKeyColumn(){
-                return 'idSmjera';
-            }
+    public function getPrimaryKeyColumn(){
+        return 'idSmjera';
+    }
             
-            public function getColumns(){
-                return 'nazivSmjera';
-            }
-			}
-?>
+    public function getColumns(){
+        return array('nazivSmjera');
+    }
+}
+

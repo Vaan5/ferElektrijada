@@ -1,27 +1,26 @@
 <?php
 
-        namespace model;
-	use app\model\AbstractDBModel;
+namespace model;
+use app\model\AbstractDBModel;
 	
-	class DBGodStud extends AbstractDBModel {
+class DBGodStud extends AbstractDBModel {
 	    
-	    /**
-	     *
-	     * @var boolean 
-	     */
-	    private $isLoggedIn = false;
+	/**
+	*
+	* @var boolean 
+	*/
             
-            public function getTable(){
-                return 'godstud';
-            }
+    public function getTable(){
+        return 'godstud';
+    }
             
-            public function getPrimaryKeyColumn(){
-                return 'idGodStud';
-            }
+    public function getPrimaryKeyColumn(){
+        return 'idGodStud';
+    }
             
-            public function getColumns(){
-                return array ('studij', 'godina');
-            }
-			}
-?>
+    public function getColumns(){
+        return array ('studij', 'godina');
+    }
+}
+
 
