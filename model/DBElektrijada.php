@@ -14,7 +14,7 @@ class DBElektrijada extends AbstractDBModel {
     }
     
     public function getColumns() {
-        return array('mjestoOdrzavanja', 'datumPocetka', 'datumKraja', 'ukupniRezultat', 'drzava');
+        return array('mjestoOdrzavanja', 'datumPocetka', 'datumKraja', 'ukupniRezultat', 'drzava', 'rokZaZnanje', 'rokZaSport', 'ukupanBrojSudionika');
     }
     
     /**

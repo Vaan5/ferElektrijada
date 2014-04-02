@@ -20,7 +20,7 @@
             }
             
             public function getColumns(){
-                return array ('imeTvrtke', 'adresaTvrtke');
+                return array ('imeTvrtke', 'adresaTvrtke', 'logotip');
             }
 			}
 ?>
