@@ -105,7 +105,8 @@ class Administrator implements Controller {
                 "resultMessage" => $this->resultMessage,
                 "admin" => $osoba
             )),
-            "title" => "Uređivanje profila"
+            "title" => "Uređivanje profila",
+			"script" => new \view\scripts\PersonFormJs()
         ));
     }
 
@@ -301,7 +302,8 @@ class Administrator implements Controller {
                 "errorMessage" => $this->errorMessage,
                 "osoba" => $osoba
             )),
-            "title" => "Ažuriranje članova Odbora"
+            "title" => "Ažuriranje članova Odbora",
+			"script" => new \view\scripts\PersonFormJs()
         ));  
         
     }
@@ -497,7 +499,8 @@ class Administrator implements Controller {
             "body" => new \view\administrator\ElektrijadaAdding(array(
                 "errorMessage" => $this->errorMessage
             )),
-            "title" => "Dodavanje Elektrijade"
+            "title" => "Dodavanje Elektrijade",
+			"script" => new \view\scripts\ElektrijadaFormJs()
         ));
     }
     
@@ -582,7 +585,8 @@ class Administrator implements Controller {
                 "elektrijada" => $elektrijada,
                 "errorMessage" => $this->errorMessage
             )),
-            "title" => "Ažuriranje Elektrijade"
+            "title" => "Ažuriranje Elektrijade",
+			"script" => new \view\scripts\ElektrijadaFormJs()
         ));
     }
     

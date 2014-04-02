@@ -65,19 +65,19 @@ class PersonForm extends AbstractView {
         <input type="text" name="MBG" placeholder="Upišite MBG" <?php if($this->osoba && $this->osoba->MBG){ echo 'value="' . $this->osoba->MBG . '"'; } ?> />
         </p>
 		<p>Datum rođenja: &nbsp;
-        <input type="text" name="datRod" placeholder="Upišite datum rođenja" <?php if($this->osoba && $this->osoba->datRod){ echo 'value="' . $this->osoba->datRod . '"'; } ?> />
+        <input type="text" name="datRod" placeholder="Upišite datum rođenja" class="datePicker" <?php if($this->osoba && $this->osoba->datRod){ echo 'value="' . $this->osoba->datRod . '"'; } ?> />
         </p>
 		<p>Broj osobne iskaznice: &nbsp;
         <input type="text" name="brOsobne" placeholder="Upišite broj osobne iskaznice" <?php if($this->osoba && $this->osoba->brOsobne){ echo 'value="' . $this->osoba->brOsobe . '"'; } ?> />
         </p>
 		<p>Osobna iskaznica vrijedi do: &nbsp;
-        <input type="text" name="osobnaVrijediDo" placeholder="Upišite do kada vrijedi osobna" <?php if($this->osoba && $this->osoba->osobnaVrijediDo){ echo 'value="' . $this->osoba->osobnaVrijediDo . '"'; } ?> />
+        <input type="text" name="osobnaVrijediDo" placeholder="Upišite do kada vrijedi osobna" class="datePicker" <?php if($this->osoba && $this->osoba->osobnaVrijediDo){ echo 'value="' . $this->osoba->osobnaVrijediDo . '"'; } ?> />
         </p>
 		<p>Broj putovnice: &nbsp;
         <input type="text" name="brPutovnice" placeholder="Upišite broj putovnice" <?php if($this->osoba && $this->osoba->brPutovnice){ echo 'value="' . $this->osoba->brPutovnice . '"'; } ?> />
         </p>
 		<p>Putovnica vrijedi do: &nbsp;
-        <input type="text" name="putovnicaVrijediDo" placeholder="Upišite do kada vrijedi putovnica" <?php if($this->osoba && $this->osoba->putovnicaVrijediDo){ echo 'value="' . $this->osoba->putovnicaVrijediDo . '"'; } ?> />
+        <input type="text" name="putovnicaVrijediDo" placeholder="Upišite do kada vrijedi putovnica" class="datePicker" <?php if($this->osoba && $this->osoba->putovnicaVrijediDo){ echo 'value="' . $this->osoba->putovnicaVrijediDo . '"'; } ?> />
         </p>
         
 		<?php if($this->osoba && $this->osoba->idOsobe){ ?><input type="hidden" name="idOsobe" value="<?php echo $this->osoba->idOsobe; ?>" /> <?php } ?>
