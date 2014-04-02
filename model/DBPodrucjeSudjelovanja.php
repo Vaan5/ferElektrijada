@@ -14,7 +14,7 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
 	}
 	
 	public function getColumns() {
-		return array ('idPodrucja','idSudjelovanja','rezultatPojeinacni','vrstaPodrucja');
+		return array ('idPodrucja','idSudjelovanja','rezultatPojeinacni','vrstaPodrucja', 'ukupanBrojSudionika');
 	}
 }
 

@@ -21,7 +21,7 @@ class DBOsoba extends AbstractDBModel {
     
     public function getColumns() {
         return array('ime', 'prezime', 'mail', 'brojMob', 'ferId', 'password', 'JMBAG',
-            'spol', 'datRod', 'brOsobne', 'brPutovnice', 'osobnaVrijediDo', 'putovnicaVrijediDo', 'uloga', 'zivotopis', 'MBG', 'OIB');
+            'spol', 'datRod', 'brOsobne', 'brPutovnice', 'osobnaVrijediDo', 'putovnicaVrijediDo', 'uloga', 'zivotopis', 'MBG', 'OIB', 'idNadredjena');
     }
     
     public function kriptPass($pass) {

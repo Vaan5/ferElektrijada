@@ -37,10 +37,10 @@ class ElektrijadaForm extends AbstractView {
 			<input type="text" name="drzava" placeholder="Upišite državu" <?php if($this->elektrijada && $this->elektrijada->drzava){ echo 'value="' . $this->elektrijada->drzava . '"'; } ?> />
         </p>
         <p>Datum početka: &nbsp;
-            <input type="text" name="datumPocetka" placeholder="Upišite datum početka" <?php if($this->elektrijada && $this->elektrijada->datumPocetka){ echo 'value="' . $this->elektrijada->datumPocetka . '"'; } ?> />
+            <input type="text" name="datumPocetka" placeholder="Upišite datum početka" class="datePicker" <?php if($this->elektrijada && $this->elektrijada->datumPocetka){ echo 'value="' . $this->elektrijada->datumPocetka . '"'; } ?> />
         </p>
 		<p>Datum kraja: &nbsp;
-            <input type="text" name="datumKraja" placeholder="Upišite datum kraja" <?php if($this->elektrijada && $this->elektrijada->datumKraja){ echo 'value="' . $this->elektrijada->datumKraja . '"'; } ?> />
+            <input type="text" name="datumKraja" placeholder="Upišite datum kraja" class="datePicker" <?php if($this->elektrijada && $this->elektrijada->datumKraja){ echo 'value="' . $this->elektrijada->datumKraja . '"'; } ?> />
         </p>
 		<p>Ukupni rezultat: &nbsp;
             <input type="text" name="ukupniRezultat" placeholder="Upišite ukupni rezultat" <?php if($this->elektrijada && $this->elektrijada->ukupniRezultat){ echo 'value="' . $this->elektrijada->ukupniRezultat . '"'; } ?> />
