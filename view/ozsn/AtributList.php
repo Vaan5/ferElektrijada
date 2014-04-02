@@ -24,17 +24,13 @@ class AtributList extends AbstractView {
 				</thead>
 				
 				<tbody>
+				<form action="modifyAtribut" method="POST"> 
 <?php
 			// Foreach atribut, generate row in table
 			foreach($this->atributi as $val)
 			{
-				echo '<tr><td>' . $val->nazivAtributa . '</td><td>';
-				echo '<td><a href="';
-				echo \route\Route::get('d3')->generate(array(
-					"controller" => 'ozsn',
-					"action" => 'modifyAtribut'
-				));
-				echo '?id=' . $val->idAtributa . '">Uredi</a> &nbsp; <a href="';
+				echo '<tr><td><span id="span-' . $val->idAtributa . '">' . $val->nazivAtributa . '</span><input type="text" id="input-' . $val->idAtributa . '" style="display:none;" name="nazivAtributa" value="' . $val->nazivAtributa . '"><input type="hidden" name="idAtributa" value="' . $val->idAtributa . '"></td>';
+				echo '<td><input type="submit" style="display: none;" class="btn btn-primary" id="submit-' . $val->idAtributa . '" value="Spremi" /><a href="javascript:;" class="urediAtribut" id="uredi-' . $val->idAtributa . '" data-id="' . $val->idAtributa . '">Uredi</a> &nbsp; <a class="obrisiAtribut" id="obrisi-' . $val->idAtributa . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
@@ -43,7 +39,7 @@ class AtributList extends AbstractView {
 				echo '?id=' . $val->idAtributa . '">Obriši</a>';
 			}
 			
-			echo '</tbody></table></div>';
+			echo '</td></tr></form></tbody></table></div>';
 
 		}
 		

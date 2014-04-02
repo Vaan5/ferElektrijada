@@ -72,7 +72,8 @@ class Ozsn implements Controller {
                 "resultMessage" => $this->resultMessage,
                 "atributi" => $atributi
             )),
-            "title" => "Lista atributa"
+            "title" => "Lista atributa",
+			"script" => new \view\scripts\ozsn\AtributListJs()
         ));
     }
     
