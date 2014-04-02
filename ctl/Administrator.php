@@ -209,13 +209,13 @@ class Administrator implements Controller {
                 $this->errorMessage = $validacija->decypherErrors($pov);
             } else {
                 // ok the data is correct now lets find what they're looking for
-                $osobe = $osoba->findOzsnMembers(post('ime'), post('prezime'), post('ferId'));
+                $osobe = $osoba->findActiveOzsnMembers(post('ime'), post('prezime'), post('ferId'));
                 if($osobe === false)
                     $this->errorMessage = "Nije pronađen niti jedan član!";
             }
         } else if (get("a") !== false) {
             // get all ozsn members
-            $osobe = $osoba->getAllOzsn();
+            $osobe = $osoba->getAllActiveOzsn();
             if($osobe === false)
                 $this->errorMessage = "Ne postoji niti jedan član, koji zadovoljava zahtjeve pretrage!";
         } else {

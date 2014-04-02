@@ -117,13 +117,25 @@ class DBOsoba extends AbstractDBModel {
         $this->save();
     }
     
-    public function getAllOzsn() {
+    public function getAllActiveOzsn() {
         $pov = $this->select()->where(array(
             "uloga" => 'O'
         ))->fetchAll();
         
-        if (count($pov))
-            return $pov;
+        if (count($pov)) {
+            // i take only active ozsn members
+            $elektrijada = new DBElektrijada();
+            $id = $elektrijada->getCurrentElektrijadaId();
+            $obavljaFunkciju = new DBObavljaFunkciju();
+            foreach($pov as $k => $v) {
+                if($obavljaFunkciju->ozsnExists($v->getPrimaryKey(), $id))
+                        continue;
+                unset($pov[$k]);
+            }
+            if(count($pov))
+                return $pov;
+            return false;
+        }
         return false;
     }
     
@@ -134,7 +146,7 @@ class DBOsoba extends AbstractDBModel {
      * @param type $ferId
      * @return boolean
      */
-    public function findOzsnMembers($ime, $prezime, $ferId) {
+    public function findActiveOzsnMembers($ime, $prezime, $ferId) {
         $pdo = $this->getPdo();
         $query = '';
         $number = 0;
@@ -160,8 +172,20 @@ class DBOsoba extends AbstractDBModel {
             $upit->bindValue (':ferId', $ferId);
         $upit->execute();
         $pov = $upit->fetchAll($pdo::FETCH_CLASS, get_class($this));
-        if(count($pov))
-            return $pov;
+        if(count($pov)) {
+            // i take only active ozsn members
+            $elektrijada = new DBElektrijada();
+            $id = $elektrijada->getCurrentElektrijadaId();
+            $obavljaFunkciju = new DBObavljaFunkciju();
+            foreach($pov as $k => $v) {
+                if($obavljaFunkciju->ozsnExists($v->getPrimaryKey(), $id))
+                        continue;
+                unset($pov[$k]);
+            }
+            if(count($pov))
+                return $pov;
+            return false;
+        }
         return false;
     }
     
