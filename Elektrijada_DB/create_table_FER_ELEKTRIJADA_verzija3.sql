@@ -11,7 +11,10 @@ CREATE TABLE ELEKTRIJADA (
     datumPocetka DATE NOT NULL,
     datumKraja DATE NOT NULL,
     ukupniRezultat SMALLINT,
+    rokZaZnanje DATE,
+    rokZaSport DATE,
     drzava VARCHAR(100) NOT NULL,
+    ukupanBrojSudionika INT,
     PRIMARY KEY (idElektrijade),
     UNIQUE (datumKraja),
     UNIQUE (datumPocetka)
@@ -50,6 +53,7 @@ CREATE TABLE OSOBA (
     zivotopis BLOB,
     MBG VARCHAR(9),
     OIB VARCHAR(11) ,
+    idNadredjena INT UNSIGNED,
     PRIMARY KEY (idOsobe),
     UNIQUE (ferId),
     UNIQUE (JMBAG),
@@ -73,6 +77,7 @@ CREATE TABLE SPONZOR (
     idSponzora INT UNSIGNED AUTO_INCREMENT,
     imeTvrtke VARCHAR(100) NOT NULL,
     adresaTvrtke VARCHAR(100) NOT NULL,
+    logotip VARCHAR(200),
     PRIMARY KEY (idSponzora)
 );
 
@@ -84,6 +89,7 @@ CREATE TABLE ElekPodrucje (
     slikaBLOB BLOB,
     idElektrijade INT UNSIGNED NOT NULL,
     idSponzora INT UNSIGNED,
+    ukupanBrojEkipa INT,
     PRIMARY KEY (idElekPodrucje),
     UNIQUE (idElekPodrucje , idPodrucja),
     FOREIGN KEY (idElektrijade)
@@ -375,6 +381,7 @@ CREATE TABLE PodrucjeSudjelovanja (
     idSudjelovanja INT UNSIGNED NOT NULL,
     rezultatPojedinacni SMALLINT,
     vrstaPodrucja TINYINT(1),
+    ukupanBrojSudionika INT,
     PRIMARY KEY (idPodrucjeSudjelovanja),
     UNIQUE (idPodrucja , idSudjelovanja),
     FOREIGN KEY (idPodrucja)
@@ -426,6 +433,6 @@ CREATE TABLE ObjavaOElektrijadi (
 );
 
 
-CALL `ferelektrijada`.`dodajOsobu`("Marko", "Banek", NULL, "Root", NULL, "dc76e9f0c0006e8f919e0c515c66dbba3982f785", NULL, NULL, NULL, NULL, NULL, NULL, NULL, "A", NULL, NULL, NULL);
+CALL `ferelektrijada`.`dodajOsobu`("Marko", "Banek", NULL, "Root", NULL, "dc76e9f0c0006e8f919e0c515c66dbba3982f785", NULL, NULL, NULL, NULL, NULL, NULL, NULL, "A", NULL, NULL, NULL,NULL);
 
 
