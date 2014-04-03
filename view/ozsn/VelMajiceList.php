@@ -24,11 +24,11 @@ class VelMajiceList extends AbstractView {
 				</thead>
 				
 				<tbody>
-				<form action="modifyVelMajice" method="POST"> 
 <?php
 			// Foreach atribut, generate row in table
 			foreach($this->velicine as $val)
 			{
+				echo '<form action="modifyVelMajice" method="POST">';
 				echo '<tr><td><span id="span-' . $val->idVelicine . '">' . $val->velicina . '</span><input type="text" id="input-' . $val->idVelicine . '" style="display:none;" name="velicina" value="' . $val->velicina . '"><input type="hidden" name="idVelicine" value="' . $val->idVelicine . '"></td>';
 				echo '<td><input type="submit" style="display: none;" class="btn btn-primary" id="submit-' . $val->idVelicine . '" value="Spremi" /><a href="javascript:;" class="urediVelicinu" id="uredi-' . $val->idVelicine . '" data-id="' . $val->idVelicine . '">Uredi</a> &nbsp; <a class="obrisiVelicinu" id="obrisi-' . $val->idvelicine . '" href="';
 				
@@ -37,9 +37,10 @@ class VelMajiceList extends AbstractView {
 					"action" => 'deleteVelMajice'
 				));
 				echo '?id=' . $val->idVelicine . '">Obriši</a>';
+				echo '</td></tr></form>';
 			}
 			
-			echo '</td></tr></form></tbody></table></div>';
+			echo '</tbody></table></div>';
 
 		}
 		
