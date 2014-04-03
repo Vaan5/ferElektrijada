@@ -75,7 +75,7 @@ class Ozsn implements Controller {
         $pov = $validacija->validate();
         if($pov !== true) {
             $message = $validacija->decypherErrors($pov);
-            $handler = new \model\ExceptionHandlerModel($e, $message);
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
             $_SESSION["exception"] = serialize($handler);
             preusmjeri(\route\Route::get('d3')->generate(array(
                 "controller" => "ozsn",
@@ -107,16 +107,13 @@ class Ozsn implements Controller {
     public function modifyAtribut() {
         $this->checkRole();
         
-        var_dump($_POST);
-        die();
-        
         $atribut = new \model\DBAtribut();
         $atribut = new \model\DBAtribut();
         $validacija = new \model\formModel\AtributFormModel(array('nazivAtributa' => post("nazivAtributa")));
         $pov = $validacija->validate();
         if($pov !== true) {
             $message = $validacija->decypherErrors($pov);
-            $handler = new \model\ExceptionHandlerModel($e, $message);
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
             $_SESSION["exception"] = serialize($handler);
             preusmjeri(\route\Route::get('d3')->generate(array(
                 "controller" => "ozsn",
