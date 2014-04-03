@@ -31,9 +31,9 @@ class AtributListJs extends AbstractView {
 			
 			// When addAtribut is clicked, show form for adding
 			$('#addAtribut').click( function () {
-				$('#addAtribut').hide();
-				$('#addAtribut_input').show();
-				$('#addAtribut_submit').show();
+				$('.addAtribut').hide();
+				$('#addAtribut_form').show();
+				$('.alert').hide();
 			});
 		});
 	</script>    

@@ -16,14 +16,14 @@ class AtributList extends AbstractView {
 				<div class="panel-heading">Popis atributa</div>
 				
 				<table class="table">
-				<thead>
-					<tr>
-						<th>Naziv</th>
-						<th>Opcije</th>
-					</tr>
-				</thead>
-				
-				<tbody>
+					<thead>
+						<tr>
+							<th>Naziv</th>
+							<th>Opcije</th>
+						</tr>
+					</thead>
+
+					<tbody>
 <?php
 			// Foreach atribut, generate row in table
 			foreach($this->atributi as $val)
@@ -39,13 +39,55 @@ class AtributList extends AbstractView {
 				echo '?id=' . $val->idAtributa . '">Obriši</a>';
 				echo '</td></tr></form>';
 			}
-			
-			echo '</tbody></table></div>';
-
+?>			
+				<tr class="addAtribut">
+					<td colspan="2">
+						<a class="addAtribut" id="addAtribut" href="javascript:;"><span class="glyphicon glyphicon-plus"></span> Dodaj novi atribut</a>
+					</td>
+				</tr>
+						
+				<tr style="display: none;" id="addAtribut_form">
+					<form action="addAtribut" method="post">
+						<td><input type="text" name="nazivAtributa" placeholder="Upišite naziv atributa"></td>
+						<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
+					</form>
+				</tr>
+						
+					</tbody>
+				</table>
+			</div>
+<?php
 		}
 		
 		else
 		{
+?>
+			<div id="addAtribut_form" style="display:none;" class="panel panel-default">
+				<div class="panel-heading">Popis atributa</div>
+				
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Naziv</th>
+							<th>Opcije</th>
+						</tr>
+					</thead>
+
+					<tbody>	
+						
+						<tr>
+							<form action="addAtribut" method="post">
+								<td><input type="text" name="nazivAtributa" placeholder="Upišite naziv atributa"></td>
+								<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
+							</form>
+						</tr>
+						
+					</tbody>
+				</table>
+			</div>
+
+			<input type="button" id="addAtribut" class="btn btn-primary addAtribut" value="Dodaj novi atribut">
+<?php
 			$this->errorMessage = "Ne postoji niti jedan atribut";
 		}
 		
@@ -56,13 +98,6 @@ class AtributList extends AbstractView {
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
-?>		
-		<input type="button" id="addAtribut" class="btn btn-primary" value="Dodaj novi atribut" />			
-		<form action="addAtribut" method="post">
-			<input type="text" id="addAtribut_input" name="nazivAtributa" style="display:none;" placeholder="Upišite naziv atributa">
-			<input type="submit" id="addAtribut_submit" style="display: none;" class="btn btn-primary" value="Dodaj" />
-		</form>
-<?php
     }
     
     public function setErrorMessage($errorMessage) {
