@@ -2,6 +2,7 @@
 
 namespace ctl;
 use app\controller\Controller;
+use \PDOException;
 
 class Ozsn implements Controller {
     
@@ -10,40 +11,28 @@ class Ozsn implements Controller {
     
     private function checkRole() {
         // you must be logged in, and an Ozsn member with or without leadership
-        if (!(\model\DBOsoba::isLoggedIn() && (\model\DBOsoba::getUserRole() !== 'O' || \model\DBOsoba::getUserRole() !== 'OV'))) {
+        if (!(\model\DBOsoba::isLoggedIn() && (\model\DBOsoba::getUserRole() === 'O' || \model\DBOsoba::getUserRole() === 'OV'))) {
             preusmjeri(\route\Route::get('d1')->generate() . "?msg=accessDenied");
         }
     }
     
     private function checkMessages() {
         switch(get("msg")) {
-            case 'succ':
-                $this->resultMessage = "Uspješno izmijenjena postojeća Elektrijada!";
+            case 'succm':
+                $this->resultMessage = "Uspješno ažuriran zapis!";
                 break;
-            case 'succo':
-                $this->resultMessage = "Uspješno ažurirani podaci o članu odbora!";
+            case 'succd':
+                $this->resultMessage = "Uspješno obrisan zapis!";
                 break;
-            case 'del':
-                $this->resultMessage = "Uspješno izbrisana Elektrijada!";
+            case 'succa':
+                $this->resultMessage = "Uspješno dodan zapis!";
                 break;
-            case 'err':
-                $this->errorMessage = "Zahtjevani zapis ne postoji!";
-                break;
-            case 'delo':
-                $this->errorMessage = "Uspješno izbrisan član odbora!";
-                break;
-            case 'derr':
-                $this->errorMessage = "Dogodila se pogreška prilikom brisanja! Pokušajte ponovno!";
-                break;
-            case 'noel':
-                $this->errorMessage = "Članove možete dodavati samo za trenutno aktivnu elektrijadu! Najprije stvorite novu elektrijadu!";
-                break;
-            case 'param':
-                $this->errorMessage = "Popunite parametre pretrage!";
-                break;
-            case 'remSucc':
-                $this->resultMessage = "Osoba uklonjena iz ovogodišnjeg odbora!";
-                break;
+            case 'excep':
+                if(isset($_SESSION['exception'])) {
+                    $e = unserialize($_SESSION['exception']);   // don't forget 'use \PDOException;'
+                    unset($_SESSION['exception']);
+                    $this->errorMessage = $e;
+                }
             default:
                 break;
         }
@@ -59,8 +48,6 @@ class Ozsn implements Controller {
         $atribut = new \model\DBAtribut();
         try {
             $atributi = $atribut->getAllAtributes();
-            if (!count($atributi))
-                $this->errorMessage = "Ne postoji niti jedan zapis atributa!";
         } catch (\PDOException $e) {
             $handler = new \model\ExceptionHandlerModel($e);
             $this->errorMessage = $handler;
@@ -73,7 +60,7 @@ class Ozsn implements Controller {
                 "atributi" => $atributi
             )),
             "title" => "Lista atributa",
-			"script" => new \view\scripts\ozsn\AtributListJs()
+            "script" => new \view\scripts\ozsn\AtributListJs()
         ));
     }
     
@@ -81,6 +68,36 @@ class Ozsn implements Controller {
      * Inserts new data into database via post request
      */
     public function addAtribut() {
+        $this->checkRole();
+
+        $atribut = new \model\DBAtribut();
+        $validacija = new \model\formModel\AtributFormModel(array('nazivAtributa' => post("nazivAtributa")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $handler = new \model\ExceptionHandlerModel($e, $message);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayAtribut"
+            )) . "?msg=excep");
+        }
+        
+        try {
+            $atribut->addRow(post("nazivAtributa", null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayAtribut"
+            )) . '?msg=succa');
+        } catch (\PDOException $e){
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayAtribut"
+            )) . "?msg=excep");
+        }
         
     }
     
@@ -88,13 +105,62 @@ class Ozsn implements Controller {
      * Modifies attribute data via post request
      */
     public function modifyAtribut() {
+        $this->checkRole();
         
+        var_dump($_POST);
+        die();
+        
+        $atribut = new \model\DBAtribut();
+        $atribut = new \model\DBAtribut();
+        $validacija = new \model\formModel\AtributFormModel(array('nazivAtributa' => post("nazivAtributa")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $handler = new \model\ExceptionHandlerModel($e, $message);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayAtribut"
+            )) . "?msg=excep");
+        }
+        try {
+            $atribut->modifyRow(post($atribut->getPrimaryKeyColumn(), null), post('nazivAtributa', null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayAtribut"
+            )) . '?msg=succm');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayAtribut"
+            )) . "?msg=excep");
+        }
     }
     
     /**
      * Deletes attribute via get request
      */
     public function deleteAtribut() {
+        $this->checkRole();
         
+        $atribut = new \model\DBAtribut();
+        try {
+            $atribut->deleteRow(get("id"));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayAtribut"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayAtribut"
+            )) . "?msg=excep");
+        }
     }
 }

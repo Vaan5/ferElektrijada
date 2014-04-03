@@ -126,6 +126,15 @@ abstract class AbstractFormModel implements FormModel {
         // if you didn't give me anything to check i'll just return true
         return true;
     }
+    
+    public function validateAlnum($data) {
+        if(isset($data) && $data !== '') {
+            $pattern = '/^[A-Za-z0-9čćžšđČĆŽŠĐ]+$/u';
+            return $this->test_pattern($pattern, $data);
+        }
+        // if you didn't give me anything to check i'll just return true
+        return true;
+    }
 
         /**
      * 
