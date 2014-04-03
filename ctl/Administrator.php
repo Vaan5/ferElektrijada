@@ -166,7 +166,8 @@ class Administrator implements Controller {
             "body" => new \view\administrator\OzsnAdding(array(
                     "errorMessage" => $this->errorMessage
                 )),
-            "title" => "Dodavanje članova odbora"
+            "title" => "Dodavanje članova odbora",
+			"script" => new \view\scripts\PersonFormJs()
         ));
         
     }
@@ -232,7 +233,8 @@ class Administrator implements Controller {
                 "errorMessage" => $this->errorMessage,
                 "resultMessage" => $this->resultMessage
             )),
-            "title" => "Popis članova Odbora"
+            "title" => "Popis članova Odbora",
+			"script" => new \view\scripts\administrator\OzsnListJs
         ));
     }
     
@@ -523,7 +525,8 @@ class Administrator implements Controller {
                 "errorMessage" => $this->errorMessage,
                 "resultMessage" => $this->resultMessage
             )),
-            "title" => "Popis Elektrijada"
+            "title" => "Popis Elektrijada",
+			"script" => new \view\scripts\ElektrijadaListJs()
         ));
     }
     

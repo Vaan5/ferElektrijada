@@ -10,9 +10,17 @@ class PersonFormJs extends AbstractView {
 	<link href="../assets/css/datetimepicker.css" rel="stylesheet">
 	<script src="../assets/js/datetimepicker.js"></script>
 	
-	<script type="text/javascript">
-		$(function(){
-			$('.datePicker').datetimepicker();
+	<script type="text/javascript">	
+		$( document ).ready(function() {
+			$(function(){
+				$('.datePicker').datetimepicker();
+			});
+			
+			// Change password
+			$("#promjeniLozinku").click(function() {
+				$("#promjeniLozinku").hide();
+				$(".promjeniLozinku").show();
+			});
 		});
 	</script>    
 <?php

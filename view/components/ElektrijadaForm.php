@@ -48,12 +48,6 @@ class ElektrijadaForm extends AbstractView {
 		
 		<?php if($this->elektrijada && $this->elektrijada->idElektrijade){ echo '<input type="hidden" name="idElektrijade" value="' . $this->elektrijada->idElektrijade . '">'; } ?>
         <input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText;?>" />
-		<?php if($this->elektrijada && $this->elektrijada->idElektrijade){ ?>
-			<a href="<?php echo \route\Route::get('d3')->generate(array(
-				"controller" => 'administrator',
-				"action" => 'deleteElektrijada'
-			));?>?id=<?php echo $this->elektrijada->idElektrijade; ?>">Obriši elektrijadu</a>				
-		<?php }	?>
     </form>
 <?php
     }

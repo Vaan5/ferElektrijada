@@ -3,7 +3,7 @@
 namespace view\scripts\ozsn;
 use app\view\AbstractView;
 
-class AtributListJs extends AbstractView {
+class VelMajiceListJs extends AbstractView {
     protected function outputHTML() {
 ?>
 	<script src="../assets/js/confirm.js"></script>
@@ -11,18 +11,18 @@ class AtributListJs extends AbstractView {
 	<script type="text/javascript">
 		$(function(){
 			// When Uredi is clicked, show form
-			var idAtributa;
-			$('.urediAtribut').click(function () {
-				$idAtributa = $(this).data("id");
-				$('#span-' + $idAtributa).hide();
-				$('#uredi-' + $idAtributa).hide();
-				$('#obrisi-' + $idAtributa).hide();
-				$('#input-' + $idAtributa).show();
-				$('#submit-' + $idAtributa).show();
+			var idVelicine;
+			$('.urediVelicinu').click(function () {
+				$idVelicine = $(this).data("id");
+				$('#span-' + $idVelicine).hide();
+				$('#uredi-' + $idVelicine).hide();
+				$('#obrisi-' + $idVelicine).hide();
+				$('#input-' + $idVelicine).show();
+				$('#submit-' + $idVelicine).show();
 			});
 			
 			// When Obriši is clicked, show confirmation
-			$('.obrisiAtribut').confirm({
+			$('.obrisiVelicinu').confirm({
 				text: "Jeste li sigurni da želite obrisati?",
 				title: "Potrebna potvrda",
 				confirmButton: "Obriši",
@@ -30,10 +30,10 @@ class AtributListJs extends AbstractView {
 			});
 			
 			// When addAtribut is clicked, show form for adding
-			$('#addAtribut').click( function () {
-				$('#addAtribut').hide();
-				$('#addAtribut_input').show();
-				$('#addAtribut_submit').show();
+			$('#addVelicina').click( function () {
+				$('#addVelicina').hide();
+				$('#addVelicina_input').show();
+				$('#addVelicina_submit').show();
 			});
 		});
 	</script>    

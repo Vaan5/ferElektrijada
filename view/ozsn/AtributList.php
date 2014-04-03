@@ -55,6 +55,13 @@ class AtributList extends AbstractView {
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
+?>		
+		<input type="button" id="addAtribut" class="btn btn-primary" value="Dodaj novi atribut" />			
+		<form action="addAtribut" method="post">
+			<input type="text" id="addAtribut_input" name="nazivAtributa" style="display:none;" placeholder="Upišite naziv atributa">
+			<input type="submit" id="addAtribut_submit" style="display: none;" class="btn btn-primary" value="Dodaj" />
+		</form>
+<?php
     }
     
     public function setErrorMessage($errorMessage) {

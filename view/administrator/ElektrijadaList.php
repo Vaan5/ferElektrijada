@@ -77,7 +77,7 @@ class ElektrijadaList extends AbstractView {
 					"controller" => 'administrator',
 					"action" => 'modifyElektrijada'
 				));
-				echo '?id=' . $val->idElektrijade . '">Uredi</a> &nbsp; <a href="';
+				echo '?id=' . $val->idElektrijade . '">Uredi</a> &nbsp; <a class="obrisiElektrijadu" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'administrator',

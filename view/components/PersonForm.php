@@ -35,9 +35,31 @@ class PersonForm extends AbstractView {
         <p>Korisničko ime: &nbsp;
 			<input type="text" name="ferId" placeholder="Upišite korisničko ime" <?php if($this->osoba && $this->osoba->ferId){ echo 'value="' . $this->osoba->ferId . '"'; } ?> />
         </p>
+		
+<?php if($this->osoba){ ?>
+		
+		<input type="button" id="promjeniLozinku" class="btn btn-default" value="Promjeni lozinku" />
+		
+		<p class="promjeniLozinku" style="display: none;">Stara lozinka: &nbsp;
+        <input type="password" name="password" placeholder="Upišite staru lozinku" />
+        </p>
+		
+		<p class="promjeniLozinku" style="display: none;">Nova lozinka: &nbsp;
+        <input type="password" name="password_new" placeholder="Upišite novu lozinku" />
+        </p>
+		
+		<p class="promjeniLozinku" style="display: none;">Ponovi novu lozinku: &nbsp;
+        <input type="password" name="password_new2" placeholder="Upišite povnovno lozinku" />
+        </p>
+		
+<?php } else{ ?>
+		
         <p>Lozinka: &nbsp;
         <input type="password" name="password" placeholder="Upišite lozinku" />
         </p>
+		
+<?php }?>
+		
 		<p>Ime: &nbsp;
         <input type="text" name="ime" placeholder="Upišite ime" <?php if($this->osoba && $this->osoba->ime){ echo 'value="' . $this->osoba->ime . '"'; } ?> />
         </p>

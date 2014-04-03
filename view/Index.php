@@ -95,7 +95,14 @@ class Index extends AbstractView {
 	<a href="<?php echo \route\Route::get('d3')->generate(array(
         "controller" => 'ozsn',
         "action" => 'displayAtribut'
-    ));?>">Lista atributa</a>
+    ));?>">DBM Atributi</a>
+	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'displayVelMajice'
+    ));?>">DBM Veličine majica</a>
 </p>
 
 <div class="main">
