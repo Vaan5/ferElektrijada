@@ -566,7 +566,7 @@ class Administrator implements Controller {
                 "resultMessage" => $this->resultMessage
             )),
             "title" => "Popis Elektrijada",
-            "script" => new \view\scripts\ElektrijadaListJs()
+            "script" => new \view\scripts\administrator\ElektrijadaListJs()
         ));
     }
     

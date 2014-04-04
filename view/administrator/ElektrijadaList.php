@@ -74,7 +74,7 @@ class ElektrijadaList extends AbstractView {
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'administrator',
-					"action" => 'deleteElektrijada'
+					"action" => 'doubleCheckAdmin'
 				));
 				echo '?id=' . $val->idElektrijade . '">Obriši</a>';
 			}

@@ -1,6 +1,6 @@
 <?php
 
-namespace view\scripts;
+namespace view\scripts\administrator;
 use app\view\AbstractView;
 
 class ElektrijadaListJs extends AbstractView {
@@ -12,9 +12,9 @@ class ElektrijadaListJs extends AbstractView {
 		$(function(){
 			// When Obriši is clicked, show confirmation
 			$('.obrisiElektrijadu').confirm({
-				text: "Jeste li sigurni da želite obrisati?",
+				text: "Jeste li sigurni da želite obrisati? U nastavku je potreban unos lozinke za potvrdu",
 				title: "Potrebna potvrda",
-				confirmButton: "Obriši",
+				confirmButton: "Nastavi",
 				cancelButton: "Odustani"
 			});
 		});
