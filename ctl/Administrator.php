@@ -15,6 +15,12 @@ class Administrator implements Controller {
         }
     }
     
+    private function messageExists() {
+        if ($this->errorMessage !== null || $this->resultMessage !== null)
+            return true;
+        return false;
+    }
+    
     private function checkMessages() {
         switch(get("msg")) {
             case 'succ':
@@ -44,6 +50,18 @@ class Administrator implements Controller {
             case 'remSucc':
                 $this->resultMessage = "Osoba uklonjena iz ovogodišnjeg odbora!";
                 break;
+            case 'passn':
+                $this->errorMessage = "Morate unijeti lozinku";
+                break;
+            case 'passw':
+                $this->errorMessage = "Neispravna lozinka";
+                break;
+            case 'excep':
+                if(isset($_SESSION['exception'])) {
+                    $e = unserialize($_SESSION['exception']);   // don't forget 'use \PDOException;'
+                    unset($_SESSION['exception']);
+                    $this->errorMessage = $e;
+                }
             default:
                 break;
         }
@@ -473,36 +491,52 @@ class Administrator implements Controller {
                                             'datumPocetka' => post('datumPocetka'),
                                             'datumKraja' => post('datumKraja'), 
                                             'ukupniRezultat' => post('ukupniRezultat'),
-                                            'drzava' => post('drzava')
+                                            'drzava' => post('drzava'),
+                                            'rokZaZnanje' => post('rokZaZnanje'),
+                                            'rokZaSport' => post('rokZaSport'),
+                                            'ukupanBrojSudionika' => post('ukupanBrojSudionika')
                                             ));
             $pov = $validacija->validate();
             if($pov !== true) {
-                $this->errorMessage = $validacija->decypherErrors($pov);
+                $message = $validacija->decypherErrors($pov);
+                $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+                $_SESSION["exception"] = serialize($handler);
+                preusmjeri(\route\Route::get('d3')->generate(array(
+                    "controller" => "administrator",
+                    "action" => "addElektrijada"
+                )) . "?msg=excep");
             } else {
                 // everything's ok i add the new Elektrijada data
                 $elektrijada = new \model\DBElektrijada();
                 
                 try {
                     $p =$elektrijada->addNewElektrijada(post('mjestoOdrzavanja'), post('datumPocetka'), 
-                            post('datumKraja'), post('ukupniRezultat', NULL), post('drzava'));
+                            post('datumKraja'), post('ukupniRezultat', NULL), post('drzava'), post('rokZaZnanje', NULL),
+                            post('rokZaSport', NULL), post('ukupanBrojSudionika', NULL));
                     if ($p === false) {
                         $this->errorMessage = "Već postoji Elektrijada za tu godinu";
                     } else {
                         preusmjeri(\route\Route::get('d1')->generate() . "?msg=elekAddSucc");
                     }
                 } catch (\PDOException $e) {
-                    $this->errorMessage = "Pogreška prilikom dodavanja u bazu! Provjerite da li elektrijada s takvim podacima već ne postoji!";
+                    $handler = new \model\ExceptionHandlerModel($e);
+                    $_SESSION["exception"] = serialize($handler);
+                    preusmjeri(\route\Route::get('d3')->generate(array(
+                        "controller" => "administrator",
+                        "action" => "addElektrijada"
+                     )) . "?msg=excep");
                 }
                 
             }
         }
         
+        $this->checkMessages();
         echo new \view\Main(array(
             "body" => new \view\administrator\ElektrijadaAdding(array(
                 "errorMessage" => $this->errorMessage
             )),
             "title" => "Dodavanje Elektrijade",
-			"script" => new \view\scripts\ElektrijadaFormJs()
+            "script" => new \view\scripts\ElektrijadaFormJs()
         ));
     }
     
@@ -514,7 +548,13 @@ class Administrator implements Controller {
         $this->checkMessages();
         
         $e = new \model\DBElektrijada();
-        $elektrijade = $e->getElektrijada();
+        try {
+            $elektrijade = $e->getElektrijada();
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d1')->generate() . "?msg=excep");
+        }
         if(count($elektrijade) === 0) {
             $this->errorMessage = "Ne postoji niti jedan zapis o Elektrijadi!";
         }
@@ -526,7 +566,7 @@ class Administrator implements Controller {
                 "resultMessage" => $this->resultMessage
             )),
             "title" => "Popis Elektrijada",
-			"script" => new \view\scripts\ElektrijadaListJs()
+            "script" => new \view\scripts\ElektrijadaListJs()
         ));
     }
     
@@ -547,11 +587,20 @@ class Administrator implements Controller {
                                             'datumPocetka' => post('datumPocetka'),
                                             'datumKraja' => post('datumKraja'), 
                                             'ukupniRezultat' => post('ukupniRezultat'),
-                                            'drzava' => post('drzava')
+                                            'drzava' => post('drzava'),
+                                            'rokZaZnanje' => post('rokZaZnanje'),
+                                            'rokZaSport' => post('rokZaSport'),
+                                            'ukupanBrojSudionika' => post('ukupanBrojSudionika')
                                             ));
             $pov = $validacija->validate();
             if($pov !== true) {
-                $this->errorMessage = $validacija->decypherErrors($pov);
+                $message = $validacija->decypherErrors($pov);
+                $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+                $_SESSION["exception"] = serialize($handler);
+                preusmjeri(\route\Route::get('d3')->generate(array(
+                    "controller" => "administrator",
+                    "action" => "modifyElektrijada"
+                )) . "?msg=excep&id=" . post($elektrijada->getPrimaryKeyColumn()));
             } else {
                 // everything's ok ; insert new row
                 try {
@@ -559,7 +608,8 @@ class Administrator implements Controller {
                         $this->errorMessage = "Već postoji Elektrijada za tu godinu";
                     } else {
                         $elektrijada->modifyRow(post($elektrijada->getPrimaryKeyColumn()), post('mjestoOdrzavanja'), post('datumPocetka'), 
-                                post('datumKraja'), post('ukupniRezultat', NULL), post('drzava'));
+                                post('datumKraja'), post('ukupniRezultat', NULL), post('drzava'), post('rokZaZnanje', NULL),
+                                post('rokZaSport', NULL), post('ukupanBrojSudionika', NULL));
                         // redirect with according message
                         preusmjeri(\route\Route::get('d3')->generate(array(
                             "controller" => "administrator",
@@ -567,7 +617,12 @@ class Administrator implements Controller {
                         )) . "?msg=succ");
                     }
                 } catch(\PDOException $e) {
-                    $this->errorMessage = "Greška prilikom unosa podataka! Već postoji elektrijada s takvim podacima!";
+                    $handler = new \model\ExceptionHandlerModel($e);
+                    $_SESSION["exception"] = serialize($handler);
+                    preusmjeri(\route\Route::get('d3')->generate(array(
+                        "controller" => "administrator",
+                        "action" => "modifyElektrijada"
+                     )) . "?msg=excep&id=" . post($elektrijada->getPrimaryKeyColumn()));
                 }
             }
         } else {
@@ -583,13 +638,14 @@ class Administrator implements Controller {
             }
         }
         
+        $this->checkMessages();
         echo new \view\Main(array(
             "body" => new \view\administrator\ElektrijadaModification(array(
                 "elektrijada" => $elektrijada,
                 "errorMessage" => $this->errorMessage
             )),
             "title" => "Ažuriranje Elektrijade",
-			"script" => new \view\scripts\ElektrijadaFormJs()
+            "script" => new \view\scripts\ElektrijadaFormJs()
         ));
     }
     
@@ -625,5 +681,45 @@ class Administrator implements Controller {
             "controller" => "administrator",
             "action" => "displayElektrijada"
         )) . "?msg=del");
+    }
+    
+    public function doubleCheckAdmin() {
+        $this->checkRole();
+        $this->checkMessages();
+        $osoba = new \model\DBOsoba();
+
+        if (!postEmpty()) {
+            if (post("pass") === false)
+                preusmjeri(\route\Route::get('d3')->generate(array(
+                            "controller" => "administrator",
+                            "action" => "doubleCheckAdmin"
+                        )) . "?id=" . post('id') . "&msg=passn");
+            else {
+                $pov = $osoba->checkAdmin(post('pass'));
+                if ($pov === false)
+                    preusmjeri(\route\Route::get('d3')->generate(array(
+                            "controller" => "administrator",
+                            "action" => "doubleCheckAdmin"
+                        )) . "?id=" . post('id') . "&msg=passw");
+                else {
+                    if($_SESSION['auth'] !== $pov->getPrimaryKey())
+                        preusmjeri(\route\Route::get('d1')->generate() . "&msg=accessDenied");
+                    else {
+                        preusmjeri(\route\Route::get('d3')->generate(array(
+                            "controller" => "administrator",
+                            "action" => "deleteElektrijada"
+                        )) . "?id=" . post('id'));
+                    }
+                }
+            }
+        }
+        
+        echo new \view\Main(array(
+            "body" => new \view\administrator\AdminDoubleCheck(array(
+                "errorMessage" => $this->errorMessage,
+                "id" => get('id')
+            )),
+            "title" => "Provjera identiteta"
+        ));
     }
 }

@@ -41,15 +41,8 @@ class ElektrijadaList extends AbstractView {
          * 
          */
 		
-		if($this->errorMessage)
-		{
-			echo new \view\components\ErrorMessage(array(
-            "errorMessage" => $this->errorMessage
-			));
-		}
-		
 		// Else show elektrijade in table
-		else
+		if(count($this->elektrijade))
 		{
 			
 ?>
@@ -89,7 +82,6 @@ class ElektrijadaList extends AbstractView {
 			echo '</tbody></table></div>';
 		}
 		
-		// print messages if any
         echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
         ));

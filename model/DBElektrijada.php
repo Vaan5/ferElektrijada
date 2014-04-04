@@ -19,6 +19,7 @@ class DBElektrijada extends AbstractDBModel {
     
     /**
      * Adds new row to the table
+     * Check date constraints
      * 
      * @param mixed $mjestoOdrzavanja
      * @param mixed $datumPocetka
@@ -26,7 +27,7 @@ class DBElektrijada extends AbstractDBModel {
      * @param mixed $ukupniRezultat
      * @param mixed $drzava
      */
-    public function addNewElektrijada($mjestoOdrzavanja, $datumPocetka, $datumKraja, $ukupniRezultat, $drzava) {
+    public function addNewElektrijada($mjestoOdrzavanja, $datumPocetka, $datumKraja, $ukupniRezultat, $drzava, $rokZaZnanje, $rokZaSport, $ukupanBrojSudionika) {
         if ($this->existsElektrijadaWithYear($datumPocetka))
             return false;
         $this->idElektrijade = null;
@@ -88,11 +89,15 @@ class DBElektrijada extends AbstractDBModel {
      */
     public function elektrijadaExists($primaryKey) {
         try {
-            $this->load($primaryKey);
-        } catch (\app\model\NotFoundException $e) {
+            $pdo = $this->getPdo();
+            $query = $pdo->prepare("SELECT * FROM elektrijada WHERE idElektrijade = :id");
+            $query->bindValue(':id', $primaryKey);
+            $query->execute();
+            $pov = $query->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+            return count($pov) == 0 ? false : true;
+        } catch (\PDOException $e){
             return false;
         }
-        return true;
     }
     
     /**
@@ -105,7 +110,8 @@ class DBElektrijada extends AbstractDBModel {
      * @param mixed $ukupniRezultat
      * @param mixed $drzava
      */
-    public function modifyRow($primaryKey, $mjestoOdrzavanja, $datumPocetka, $datumKraja, $ukupniRezultat, $drzava) {
+    public function modifyRow($primaryKey, $mjestoOdrzavanja, $datumPocetka, $datumKraja, 
+            $ukupniRezultat, $drzava, $rokZaZnanje, $rokZaSport, $ukupanBrojSudionika) {
         $this->load($primaryKey);
         $atributi = $this->getColumns();
         foreach($atributi as $a) {
@@ -122,11 +128,11 @@ class DBElektrijada extends AbstractDBModel {
      */
     public function deleteElektrijada($primaryKey) {
         try {
-            $this->load($primaryKey);
-            $this->delete();
+            $pdo = $this->getPdo();
+            $query = $pdo->prepare("DELETE FROM elektrijada WHERE idElektrijade = :id");
+            $query->bindValue(':id', $primaryKey);
+            $query->execute();
             return true;
-        } catch (\app\model\NotFoundException $e) {
-            return false;
         } catch (\PDOException $e) {
             return false;
         }

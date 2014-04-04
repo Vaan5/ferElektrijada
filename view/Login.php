@@ -15,7 +15,12 @@ class Login extends AbstractView {
     protected function outputHTML() {
 ?>
 
-    <?php echo new LoginForm(); ?>
+    <?php echo new LoginForm(array(
+        "actionRoute" => \route\Route::get('d3')->generate(array(
+                                                            "controller" => "login",
+                                                            "action" => "display"
+                                                        ))
+    )); ?>
 
     <?php echo new components\ErrorMessage(array(
         "errorMessage" => $this->errorMessage

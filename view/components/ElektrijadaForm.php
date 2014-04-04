@@ -45,6 +45,15 @@ class ElektrijadaForm extends AbstractView {
 		<p>Ukupni rezultat: &nbsp;
             <input type="text" name="ukupniRezultat" placeholder="Upišite ukupni rezultat" <?php if($this->elektrijada && $this->elektrijada->ukupniRezultat){ echo 'value="' . $this->elektrijada->ukupniRezultat . '"'; } ?> />
         </p>
+                <p>Rok za unos podataka za područje znanja: &nbsp;
+            <input type="text" name="rokZaZnanje" placeholder="Upišite rok za znanje" class="datePicker" <?php if($this->elektrijada && $this->elektrijada->rokZaZnanje){ echo 'value="' . $this->elektrijada->rokZaZnanje . '"'; } ?> />
+        </p>
+                <p>Rok za unos podataka za područje sporta: &nbsp;
+            <input type="text" name="rokZaSport" placeholder="Upišite rok za sport" class="datePicker" <?php if($this->elektrijada && $this->elektrijada->rokZaSport){ echo 'value="' . $this->elektrijada->rokZaSport . '"'; } ?> />
+        </p>
+                <p>Ukupan broj sudionika: &nbsp;
+            <input type="text" name="ukupanBrojSudionika" placeholder="Upišite broj sudionika" <?php if($this->elektrijada && $this->elektrijada->ukupanBrojSudionika){ echo 'value="' . $this->elektrijada->ukupanBrojSudionika . '"'; } ?> />
+        </p>
 		
 		<?php if($this->elektrijada && $this->elektrijada->idElektrijade){ echo '<input type="hidden" name="idElektrijade" value="' . $this->elektrijada->idElektrijade . '">'; } ?>
         <input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText;?>" />

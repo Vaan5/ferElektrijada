@@ -11,7 +11,10 @@ class ElektrijadaFormModel extends AbstractFormModel {
                 'datumPocetka' => array('required', 'date'),
                 'datumKraja' => array('required', 'date'), 
                 'ukupniRezultat' => array('numbers'),
-                'drzava' => array('required', 'name'));
+                'drzava' => array('required', 'name'),
+                'rokZaZnanje' => array('date'),
+                'rokZaSport' => array('date'),
+                'ukupanBrojSudionika' => array('numbers'));
         }
         return $this->rulesArray;
     }
@@ -30,6 +33,11 @@ class ElektrijadaFormModel extends AbstractFormModel {
                         return 'Neispravan rezultat! Mora biti broj!';
                     case 'drzava':
                         return $v === 'required' ? 'Morate unijeti naziv države' : 'Pogrešan naziv države';
+                    case 'rokZaZnanje':
+                    case 'rokZaSport':
+                        return 'Neispravan format datuma!';
+                    case 'ukupanBrojSudionika':
+                        return 'Morate unijeti brojcanu vrijednost za broj sudionika!';
                     default:
                         break;
                 }

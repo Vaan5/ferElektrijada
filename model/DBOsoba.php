@@ -248,4 +248,24 @@ class DBOsoba extends AbstractDBModel {
             return false;
         }
     }
+    
+    /**
+     * 
+     * @param mixed $password
+     * @return mixed    false if the admin doesn't exist, else object with his data
+     */
+    public function checkAdmin($password) {
+        try {
+            $pdo = $this->getPdo();
+            $password = $this->kriptPass($password);
+            $query = $pdo->prepare("SELECT * FROM osoba WHERE password = :password AND uloga='A'");
+            $query->bindValue(":password", $password);
+            $query->execute();
+            $pov = $query->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+            return count($pov) == 0 ? false : $pov[0];
+        } catch (\PDOException $e) {
+            return false;
+        }
+        
+    }
 }
