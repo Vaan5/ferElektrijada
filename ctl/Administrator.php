@@ -72,6 +72,7 @@ class Administrator implements Controller {
      */
     public function changeProfile() {
         $this->checkRole();
+        $this->checkMessages();
         $osoba = new \model\DBOsoba();
         
         if(!postEmpty()) {
@@ -90,7 +91,9 @@ class Administrator implements Controller {
                                         'osobnaVrijediDo' => post('osobnaVrijediDo'), 
                                         'putovnicaVrijediDo' => post('putovnicaVrijediDo'),
                                         'MBG' => post('MBG'),
-                                        'OIB' => post('OIB')));
+                                        'OIB' => post('OIB'),
+                                        'password_new' => post('password_new'),
+                                        'password_new2' => post('password_new2')));
             $pravila = $validacija->getRules();
             $pravila['password'] = array('password');
             $validacija->setRules($pravila);
@@ -99,14 +102,55 @@ class Administrator implements Controller {
                 $this->errorMessage = $validacija->decypherErrors($pov);
             } else {
                 // everything's ok ; insert new row
+                // first check for passwords
+                if (post("password") !== false) {
+                    if (post("password_new") !== false && post("password_new2") !== false) {
+                        $pov = $osoba->checkAdmin(post("password"));
+                        if ($pov === false || $pov->getPrimaryKey() != session('auth')) {
+                            $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Pogrešna stara lozinka");
+                            $_SESSION["exception"] = serialize($handler);
+                            preusmjeri(\route\Route::get('d3')->generate(array(
+                                "controller" => "administrator",
+                                "action" => "changeProfile"
+                             )) . "?msg=excep");
+                        }
+                        if (post("password_new") !== post("password_new2")) {
+                            $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nove lozinke se ne podudaraju");
+                            $_SESSION["exception"] = serialize($handler);
+                            preusmjeri(\route\Route::get('d3')->generate(array(
+                                "controller" => "administrator",
+                                "action" => "changeProfile"
+                             )) . "?msg=excep");
+                        }
+                    } else {
+                        $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Ukoliko mijenjate lozinku, morate unijeti staru, kao i novu lozinku!");
+                        $_SESSION["exception"] = serialize($handler);
+                        preusmjeri(\route\Route::get('d3')->generate(array(
+                            "controller" => "administrator",
+                            "action" => "changeProfile"
+                         )) . "?msg=excep");
+                    }
+                } else {
+                    $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Morate unijeti staru lozinku");
+                    $_SESSION["exception"] = serialize($handler);
+                    preusmjeri(\route\Route::get('d3')->generate(array(
+                        "controller" => "administrator",
+                        "action" => "changeProfile"
+                     )) . "?msg=excep");
+                }
                 try {
-                    $osoba->modifyRow(session("auth"), post('ime', null), post('prezime', null), post('mail', null), post('brojMob', null), post('ferId'), post('password', null), 
+                    $osoba->modifyRow(session("auth"), post('ime', null), post('prezime', null), post('mail', null), post('brojMob', null), post('ferId'), post('password_new', null), 
                         post('JMBAG', null), post('spol', null), post('datRod', null), post('brOsobne', null), post('brPutovnice', null), post('osobnaVrijediDo', null),
                         post('putovnicaVrijediDo', null), 'A', NULL, post('MBG', null), post('OIB', null));
                     // redirect with according message
                     preusmjeri(\route\Route::get('d1')->generate() . "?msg=profSucc");
                 } catch(\PDOException $e) {
-                    $this->errorMessage = "Greška prilikom unosa podataka! Već postoji član s takvim podacima!";
+                    $handler = new \model\ExceptionHandlerModel($e);
+                    $_SESSION["exception"] = serialize($handler);
+                    preusmjeri(\route\Route::get('d3')->generate(array(
+                        "controller" => "administrator",
+                        "action" => "changeProfile"
+                     )) . "?msg=excep");
                 }
             }
         }
@@ -115,6 +159,13 @@ class Administrator implements Controller {
             $osoba->load(session("auth"));
         } catch (\app\model\NotFoundException $e) {
             preusmjeri(\route\Route::get('d1')->generate() . "?msg=e");
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "administrator",
+                "action" => "changeProfile"
+             )) . "?msg=excep");
         }
         
         echo new \view\Main(array(
@@ -124,7 +175,7 @@ class Administrator implements Controller {
                 "admin" => $osoba
             )),
             "title" => "Uređivanje profila",
-			"script" => new \view\scripts\PersonFormJs()
+            "script" => new \view\scripts\PersonFormJs()
         ));
     }
 

@@ -83,8 +83,8 @@ class PersonForm extends AbstractView {
 		<p>OIB: &nbsp;
         <input type="text" name="OIB" placeholder="Upišite OIB" <?php if($this->osoba && $this->osoba->OIB){ echo 'value="' . $this->osoba->OIB . '"'; } ?> />
         </p>
-		<p>MBG: &nbsp;
-        <input type="text" name="MBG" placeholder="Upišite MBG" <?php if($this->osoba && $this->osoba->MBG){ echo 'value="' . $this->osoba->MBG . '"'; } ?> />
+		<p>Matični broj osiguranika: &nbsp;
+        <input type="text" name="MBG" placeholder="Upišite matični broj" <?php if($this->osoba && $this->osoba->MBG){ echo 'value="' . $this->osoba->MBG . '"'; } ?> />
         </p>
 		<p>Datum rođenja: &nbsp;
         <input type="text" name="datRod" placeholder="Upišite datum rođenja" class="datePicker" <?php if($this->osoba && $this->osoba->datRod){ echo 'value="' . $this->osoba->datRod . '"'; } ?> />

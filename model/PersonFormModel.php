@@ -21,7 +21,10 @@ class PersonFormModel extends AbstractFormModel {
                 'osobnaVrijediDo' => array('date'), 
                 'putovnicaVrijediDo' => array('date'),
                 'MBG' => array('numbers'),
-                'OIB' => array('oib'));
+                'OIB' => array('oib'),
+                'idNadredjena' => array('numbers'),
+                'password_new' => array('password'),
+                'password_new2' => array('password'));
         }
         return $this->rulesArray;
     }
@@ -56,6 +59,11 @@ class PersonFormModel extends AbstractFormModel {
                         return 'Neispravan maticni broj osobe';
                     case 'OIB':
                         return 'Neispravan OIB';
+                    case 'idNadredjena':
+                        return 'Nepoznat identifikator nadređene osobe';
+                    case 'password_new':
+                    case 'password_new2':
+                        return "Neispravna nova lozinka";
                     default:
                         break;
                 }
