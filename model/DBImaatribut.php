@@ -5,11 +5,7 @@ use app\model\AbstractDBModel;
 
 class DBImaatribut extends AbstractDBModel {
     
-    /**
-     *
-     * @var boolean 
-     */
-    private $isLoggedIn = false;
+    
     
     public function getTable() {
         return 'imaatribut';
