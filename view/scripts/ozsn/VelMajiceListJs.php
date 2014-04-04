@@ -11,29 +11,29 @@ class VelMajiceListJs extends AbstractView {
 	<script type="text/javascript">
 		$(function(){
 			// When Uredi is clicked, show form
-			var idVelicine;
-			$('.urediVelicinu').click(function () {
-				$idVelicine = $(this).data("id");
-				$('#span-' + $idVelicine).hide();
-				$('#uredi-' + $idVelicine).hide();
-				$('#obrisi-' + $idVelicine).hide();
-				$('#input-' + $idVelicine).show();
-				$('#submit-' + $idVelicine).show();
+			var idVelMajice;
+			$('.editVelMajice').click(function () {
+				$idVelMajice = $(this).data("id");
+				$('#span-' + $idVelMajice).hide();
+				$('#edit-' + $idVelMajice).hide();
+				$('#delete-' + $idVelMajice).hide();
+				$('#input-' + $idVelMajice).show();
+				$('#submit-' + $idVelMajice).show();
 			});
 			
 			// When Obriši is clicked, show confirmation
-			$('.obrisiVelicinu').confirm({
+			$('.deleteVelMajice').confirm({
 				text: "Jeste li sigurni da želite obrisati?",
 				title: "Potrebna potvrda",
 				confirmButton: "Obriši",
 				cancelButton: "Odustani"
 			});
 			
-			// When addAtribut is clicked, show form for adding
-			$('#addVelicina').click( function () {
-				$('#addVelicina').hide();
-				$('#addVelicina_input').show();
-				$('#addVelicina_submit').show();
+			// When addVelMajice is clicked, show form for adding
+			$('#addVelMajice').click( function () {
+				$('#addVeMajice').hide();
+				$('#addVelMajice_input').show();
+				$('#addVelMajice_submit').show();
 			});
 		});
 	</script>    

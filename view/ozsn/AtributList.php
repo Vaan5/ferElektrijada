@@ -30,7 +30,7 @@ class AtributList extends AbstractView {
 			{
 				echo '<form action="modifyAtribut" method="POST">';
 				echo '<tr><td><span id="span-' . $val->idAtributa . '">' . $val->nazivAtributa . '</span><input type="text" id="input-' . $val->idAtributa . '" style="display:none;" name="nazivAtributa" value="' . $val->nazivAtributa . '"><input type="hidden" name="idAtributa" value="' . $val->idAtributa . '"></td>';
-				echo '<td><input type="submit" style="display: none;" class="btn btn-primary" id="submit-' . $val->idAtributa . '" value="Spremi" /><a href="javascript:;" class="urediAtribut" id="uredi-' . $val->idAtributa . '" data-id="' . $val->idAtributa . '">Uredi</a> &nbsp; <a class="obrisiAtribut" id="obrisi-' . $val->idAtributa . '" href="';
+				echo '<td><input type="submit" style="display: none;" class="btn btn-primary" id="submit-' . $val->idAtributa . '" value="Spremi" /><a href="javascript:;" class="editAtribut" id="uredi-' . $val->idAtributa . '" data-id="' . $val->idAtributa . '">Uredi</a> &nbsp; <a class="deleteAtribut" id="delete-' . $val->idAtributa . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
@@ -39,30 +39,21 @@ class AtributList extends AbstractView {
 				echo '?id=' . $val->idAtributa . '">Obriši</a>';
 				echo '</td></tr></form>';
 			}
-?>			
-				<tr class="addAtribut">
-					<td colspan="2">
-						<a class="addAtribut" id="addAtribut" href="javascript:;"><span class="glyphicon glyphicon-plus"></span> Dodaj novi atribut</a>
-					</td>
-				</tr>
-						
-				<tr style="display: none;" id="addAtribut_form">
-					<form action="addAtribut" method="post">
-						<td><input type="text" name="nazivAtributa" placeholder="Upišite naziv atributa"></td>
-						<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
-					</form>
-				</tr>
-						
-					</tbody>
-				</table>
-			</div>
+?>
+						<tr class="addAtribut">
+							<td colspan="2">
+								<a class="addAtribut" id="addAtribut" href="javascript:;"><span class="glyphicon glyphicon-plus"></span> Dodaj novi atribut</a>
+							</td>
+						</tr>
 <?php
 		}
 		
 		else
 		{
 ?>
-			<div id="addAtribut_form" style="display:none;" class="panel panel-default">
+			<input type="button" id="addAtribut" class="btn btn-primary addAtribut" value="Dodaj novi atribut">
+			
+			<div class="panel panel-default addAtribut_form" style="display:none;">
 				<div class="panel-heading">Popis atributa</div>
 				
 				<table class="table">
@@ -73,9 +64,13 @@ class AtributList extends AbstractView {
 						</tr>
 					</thead>
 
-					<tbody>	
-						
-						<tr>
+					<tbody>
+
+<?php
+			$this->errorMessage = "Ne postoji niti jedan atribut";
+		}
+		?>
+						<tr style="display: none;" class="addAtribut_form">
 							<form action="addAtribut" method="post">
 								<td><input type="text" name="nazivAtributa" placeholder="Upišite naziv atributa"></td>
 								<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
@@ -85,12 +80,7 @@ class AtributList extends AbstractView {
 					</tbody>
 				</table>
 			</div>
-
-			<input type="button" id="addAtribut" class="btn btn-primary addAtribut" value="Dodaj novi atribut">
-<?php
-			$this->errorMessage = "Ne postoji niti jedan atribut";
-		}
-		
+<?php		
 		// print messages if any
         echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage

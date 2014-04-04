@@ -12,17 +12,17 @@ class AtributListJs extends AbstractView {
 		$(function(){
 			// When Uredi is clicked, show form
 			var idAtributa;
-			$('.urediAtribut').click(function () {
+			$('.editAtribut').click(function () {
 				$idAtributa = $(this).data("id");
 				$('#span-' + $idAtributa).hide();
-				$('#uredi-' + $idAtributa).hide();
-				$('#obrisi-' + $idAtributa).hide();
+				$('#edit-' + $idAtributa).hide();
+				$('#delete-' + $idAtributa).hide();
 				$('#input-' + $idAtributa).show();
 				$('#submit-' + $idAtributa).show();
 			});
 			
 			// When Obriši is clicked, show confirmation
-			$('.obrisiAtribut').confirm({
+			$('.deleteAtribut').confirm({
 				text: "Jeste li sigurni da želite obrisati?",
 				title: "Potrebna potvrda",
 				confirmButton: "Obriši",
@@ -32,7 +32,7 @@ class AtributListJs extends AbstractView {
 			// When addAtribut is clicked, show form for adding
 			$('#addAtribut').click( function () {
 				$('.addAtribut').hide();
-				$('#addAtribut_form').show();
+				$('.addAtribut_form').show();
 				$('.alert').hide();
 			});
 		});

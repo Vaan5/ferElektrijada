@@ -16,21 +16,21 @@ class VelMajiceList extends AbstractView {
 				<div class="panel-heading">Popis veličina majica</div>
 				
 				<table class="table">
-				<thead>
-					<tr>
-						<th>Veličina</th>
-						<th>Opcije</th>
-					</tr>
-				</thead>
-				
-				<tbody>
+					<thead>
+						<tr>
+							<th>Veličina</th>
+							<th>Opcije</th>
+						</tr>
+					</thead>
+
+					<tbody>
 <?php
 			// Foreach atribut, generate row in table
 			foreach($this->velicine as $val)
 			{
 				echo '<form action="modifyVelMajice" method="POST">';
-				echo '<tr><td><span id="span-' . $val->idVelicine . '">' . $val->velicina . '</span><input type="text" id="input-' . $val->idVelicine . '" style="display:none;" name="velicina" value="' . $val->velicina . '"><input type="hidden" name="idVelicine" value="' . $val->idVelicine . '"></td>';
-				echo '<td><input type="submit" style="display: none;" class="btn btn-primary" id="submit-' . $val->idVelicine . '" value="Spremi" /><a href="javascript:;" class="urediVelicinu" id="uredi-' . $val->idVelicine . '" data-id="' . $val->idVelicine . '">Uredi</a> &nbsp; <a class="obrisiVelicinu" id="obrisi-' . $val->idvelicine . '" href="';
+				echo '<tr><td><span id="span-' . $val->id . '">' . $val->velicina . '</span><input type="text" id="input-' . $val->idVelicine . '" style="display:none;" name="velicina" value="' . $val->velicina . '"><input type="hidden" name="idVelicine" value="' . $val->idVelicine . '"></td>';
+				echo '<td><input type="submit" style="display: none;" class="btn btn-primary" id="submit-' . $val->idVelicine . '" value="Spremi" /><a href="javascript:;" class="editVelMajice" id="edit-' . $val->idVelicine . '" data-id="' . $val->idVelicine . '">Uredi</a> &nbsp; <a class="deleteVelMajice" id="delete-' . $val->idVelicine . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
@@ -39,16 +39,48 @@ class VelMajiceList extends AbstractView {
 				echo '?id=' . $val->idVelicine . '">Obriši</a>';
 				echo '</td></tr></form>';
 			}
-			
-			echo '</tbody></table></div>';
-
+?>
+						<tr class="addVelMajice">
+							<td colspan="2">
+								<a class="addVelMajice" id="addVelMajice" href="javascript:;"><span class="glyphicon glyphicon-plus"></span> Dodaj novu veličinu majice</a>
+							</td>
+						</tr>
+<?php
 		}
 		
 		else
 		{
-			$this->errorMessage = "Ne postoji niti jedan zapis o veličini majice";
+?>
+			<input type="button" id="addVelMajice" class="btn btn-primary addAtribut" value="Dodaj novu veličinu majice">
+			
+			<div class="panel panel-default addVelMajice_form" style="display:none;">
+				<div class="panel-heading">Popis veličina majice</div>
+				
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Veličina</th>
+							<th>Opcije</th>
+						</tr>
+					</thead>
+
+					<tbody>
+
+<?php
+			$this->errorMessage = "Ne postoji niti jedan veličina majice";
 		}
-		
+		?>
+						<tr style="display: none;" class="addVelMajice_form">
+							<form action="addAtribut" method="post">
+								<td><input type="text" name="velicina" placeholder="Upišite veličinu majice"></td>
+								<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
+							</form>
+						</tr>
+						
+					</tbody>
+				</table>
+			</div>
+<?php		
 		// print messages if any
         echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
@@ -56,13 +88,6 @@ class VelMajiceList extends AbstractView {
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
-?>		
-		<input type="button" id="addVelicina" class="btn btn-primary" value="Dodaj novu veličinu" />			
-		<form action="addAtribut" method="post">
-			<input type="text" id="addVelicina_input" name="velicina" style="display:none;" placeholder="Upišite veličinu majice">
-			<input type="submit" id="addVelicina_submit" style="display: none;" class="btn btn-primary" value="Dodaj" />
-		</form>
-<?php
     }
     
     public function setErrorMessage($errorMessage) {
@@ -75,8 +100,8 @@ class VelMajiceList extends AbstractView {
         return $this;
     }
 	
-	public function setVelMajice($velMajice) {
-        $this->velMajice = $velMajice;
+	public function setVelicine($velicine) {
+        $this->velicine = $velicine;
         return $this;
     }
 
