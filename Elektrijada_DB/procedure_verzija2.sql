@@ -1970,7 +1970,7 @@ DELIMITER ;
  DELIMITER $$
 CREATE  PROCEDURE `dohvatiOdredeniAtribut`(IN idOsoba INT(10))
 BEGIN
-SELECT sudjelovanje.atribut FROM sudjelovanje 
+SELECT atribut.nazivAtributa FROM sudjelovanje 
 LEFT JOIN imaatribut ON sudjelovanje.idSudjelovanja = imaatribut.idSudjelovanja
  JOIN atribut ON imaatribut.idAtributa = atribut.idAtributa
 WHERE sudjelovanje.idOsobe = idOsoba;
