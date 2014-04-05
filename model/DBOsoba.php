@@ -29,20 +29,51 @@ class DBOsoba extends AbstractDBModel {
         return sha1($pass);
     }
     
-	private function getUloga($idOsobe,$uloga){
-	$upit = $this->select()->from('sudjelovanje')
-	->leftJoin('imaatribut ON sudjelovanje.idSudjelovanje = imaatribut.idSudjelovanja')
-	->innerJoin('atribut ON imaatribut.idAtributa = atribut.idAtributa')
-	->where(array("idOsobe"=>$idOsobe))
-	->fetch();
+private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
+		try{
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL dohvatiOdredeniAtribut($idOsobe)");
+			$q->execute();
+			$rez=$q->fetch(); //dohvatili smo ulogu
+		}catch (\PDOException $e) {
+            var_dump('tu');
+            var_dump($e->errorInfo); // tu ce biti josh i 02000 (indeks 0) i 1604 kao index 1
+            var_dump($e->errorInfo[2]);  
+            var_dump($e);
+            die();
+		}
+		if(isset($rez->nazivAtributa) && strtoupper($rez->nazivAtributa)=="VODITELJ"){
+			return $uloga.'V'; //ako je korisnik i voditelj dobiva nastavak "V"
+		}
+		else{
+			return $uloga;
+		}
+	}
 	
-	if(isset($upit) && strtoupper($upit)=="VODITELJ"){
-		return $uloga.'V';
-	}
-	else{
-		return $uloga;
-	}
-}
+	private function getPodrucja($idOsobe){//vraca sva podrucja u kojima sudjeluje osoba
+		try{
+			$elektrijada = new DBElektrijada();
+			$pdo = $this->getPdo();
+			$id = $elektrijada->getCurrentElektrijadaId();
+			$q = $pdo->prepare("CALL dohvatiOsobnaPodrucja($id,$idOsobe)");
+			$q->execute();
+			$rez  = $q->fetchAll();
+			$vel = $q->columnCount();
+		}catch (\PDOException $e) {
+            var_dump('tu');
+            var_dump($e->errorInfo); // tu ce biti josh i 02000 (indeks 0) i 1604 kao index 1
+            var_dump($e->errorInfo[2]);  // <---- tu je sadrzaj od MESSAGE_TEXT
+            var_dump($e);
+            die();
+		}
+		if($vel>0){//ako postoji ba 1 podrucje vrati podrucje, ako ne vrati null
+			return $rez;
+		}
+		else {
+			return null;
+		}
+	}	
+	
     /**
      * 
      * @param string $user userName
@@ -76,8 +107,10 @@ class DBOsoba extends AbstractDBModel {
         // u sjednici cuvam idKorisnika i njegovu vrstu
         if ($this->isLoggedIn) {
             $_SESSION["auth"] = $this->getPrimaryKey();
-            $_SESSION["vrsta"] =$this->uloga; //->getUloga($this->getPrimaryKEY(),$this->uloga;
+			$uloga=$this->uloga;
+           $_SESSION["vrsta"] =$this->getUloga($_SESSION["auth"], $uloga);
             $_SESSION["user"] = $this->ime == NULL ? null:$this->ime;
+			$_SESSION["podrucja"] = $this->getPodrucja ($_SESSION["auth"]);//vraca imena podrucja
         }
         
         return $this->isLoggedIn;
