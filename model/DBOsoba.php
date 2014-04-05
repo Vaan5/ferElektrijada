@@ -282,6 +282,9 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
     public function deleteOsoba($primaryKey) {
         try {
             $this->load($primaryKey);
+            if ($this->uloga === 'A') {
+                return false;
+            }
             $this->delete();
             return true;
         } catch (\app\model\NotFoundException $e) {

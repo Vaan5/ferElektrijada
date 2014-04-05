@@ -38,6 +38,9 @@ class Administrator implements Controller {
             case 'delo':
                 $this->errorMessage = "Uspješno izbrisan član odbora!";
                 break;
+            case 'delp':
+                $this->errorMessage = "Uspješno izbrisana osoba!";
+                break;
             case 'derr':
                 $this->errorMessage = "Dogodila se pogreška prilikom brisanja! Pokušajte ponovno!";
                 break;
@@ -730,6 +733,45 @@ class Administrator implements Controller {
             )),
             "title" => "Prošlogodišnji članovi odbora"
         ));
+    }
+    public function deletePerson() {
+        $this->checkRole();
+        $osoba = new \model\DBOsoba();
+        
+        if(get('id') === false) {
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "administrator",
+                "action" => "searchPersons"
+            )) . "?msg=err");
+        } else {
+            try {
+                $osoba->load(get('id'));
+                
+                if($osoba->deleteOsoba(get('id')) === false) {
+                    preusmjeri(\route\Route::get('d3')->generate(array(
+                        "controller" => "administrator",
+                        "action" => "searchPersons"
+                    )) . "?msg=derr");
+                }
+                
+                preusmjeri(\route\Route::get('d3')->generate(array(
+                                    "controller" => "administrator",
+                                    "action" => "searchPersons"
+                                )) . "?msg=delp");
+            } catch (\app\model\NotFoundException $e) {
+                preusmjeri(\route\Route::get('d3')->generate(array(
+                    "controller" => "administrator",
+                    "action" => "searchPersons"
+                )) . "?msg=err");
+            } catch (\PDOException $e) {
+                $handler = new \model\ExceptionHandlerModel($e);
+                $_SESSION["exception"] = serialize($handler);
+                preusmjeri(\route\Route::get('d3')->generate(array(
+                    "controller" => "administrator",
+                    "action" => "searchPersons"
+                 )) . "?msg=excep");
+            }
+        }
     }
     
     /****************** ELEKTRIJADA stuff **************************/
