@@ -1,4 +1,4 @@
-
+﻿
 DELIMITER $$
 CREATE  PROCEDURE `azurirajAtribut`(IN idAtributa INT(10),IN nazivAtributa VARCHAR(100))
 BEGIN
@@ -1967,5 +1967,21 @@ BEGIN
 	END IF;
 END $$
 DELIMITER ;
+ DELIMITER $$
+CREATE  PROCEDURE `dohvatiOdredeniAtribut`(IN idOsoba INT(10))
+BEGIN
+SELECT atribut.nazivAtributa FROM sudjelovanje 
+LEFT JOIN imaatribut ON sudjelovanje.idSudjelovanja = imaatribut.idSudjelovanja
+ JOIN atribut ON imaatribut.idAtributa = atribut.idAtributa
+WHERE sudjelovanje.idOsobe = idOsoba;
+END $$
+DELIMITER ;
 
-
+DELIMITER $$
+BEGIN
+SELECT podrucje.nazivPodrucja FROM sudjelovanje 
+LEFT JOIN podrucjeSudjelovanja ON sudjelovanje.idSudjelovanja = podrucjeSudjelovanja.idSudjelovanja
+ JOIN podrucje ON podrucje.idPodrucja = podrucjeSudjelovanja.idPodrucja
+WHERE sudjelovanje.idOsobe = idOsobe;
+END $$
+DELIMITER ;
