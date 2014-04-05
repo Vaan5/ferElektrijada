@@ -110,7 +110,7 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
 			$uloga=$this->uloga;
            $_SESSION["vrsta"] =$this->getUloga($_SESSION["auth"], $uloga);
             $_SESSION["user"] = $this->ime == NULL ? null:$this->ime;
-			$_SESSION["podrucja"] = $this->getPodrucja ($_SESSION["auth"]);//vraca imena podrucja
+			$_SESSION["podrucja"] = $this->getPodrucja ($_SESSION["auth"]);//vraca id podrucja
         }
         
         return $this->isLoggedIn;
