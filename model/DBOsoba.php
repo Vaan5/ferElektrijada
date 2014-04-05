@@ -279,7 +279,7 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
         $this->save();
     }
     
-    public function modifyRow($primaryKey, $ime, $prezime, $mail, $brojMob, $ferId, $password, $JMBAG,
+    public function modifyPerson($primaryKey, $ime, $prezime, $mail, $brojMob, $ferId, $password, $JMBAG,
             $spol, $datRod, $brOsobne, $brPutovnice, $osobnaVrijediDo, $putovnicaVrijediDo, $zivotopis, $MBG, $OIB) {
         $atributi = $this->getColumns();
         $this->load($primaryKey);
