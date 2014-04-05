@@ -1978,6 +1978,7 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
+
 CREATE  PROCEDURE `dohvatiOsobnaPodrucja`(IN idElektrijada INT(10), IN idOsobe INT(10))
 BEGIN
 SELECT podrucje.idPodrucja FROM sudjelovanje 
