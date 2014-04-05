@@ -69,15 +69,15 @@ class Main extends AbstractView {
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-        <a class="navbar-brand" a href=""><?php echo $this->title; ?></a><!-- Treba srediti link -->
-    </div>
+        <a class="navbar-brand" href="<?php echo \route\Route::get('d1')->generate();?>">
+		<span class="glyphicon glyphicon-home"></span> Naslovnica
+	</a>
+        <p class="navbar-brand">
+            <span class="glyphicon glyphicon-chevron-right"></span><?php echo " ".$this->title; ?>
+        </p>
+     </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-		<ul class="nav navbar-nav">
-			<!-- Randy: Ovo sam dodao privremeno da ne moram stalno URL upisivati -->
-			<li><a href="http://localhost/ferElektrijada">Naslovnica</a></li>
-		</ul>
-		
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">		
       <ul class="nav navbar-nav navbar-right">
           <p class="navbar-text">
                <?php if(!\model\DBOsoba::isLoggedIn()) echo
@@ -86,7 +86,7 @@ class Main extends AbstractView {
                                                                                         "action" => "display"
                                                                                         )) . "\"> Prijava</a>"
 						; else echo
-						"<span class=\"glyphicon glyphicon-user\"></span> " . $_SESSION['user']
+                                                "<span class=\"glyphicon glyphicon-user\"></span> " . $_SESSION['user']
 				 ;?><!-- treba dodati php dio da bude session['user'] link do profila usera -->
 				<?php if(\model\DBOsoba::isLoggedIn())     echo "<span class=\"glyphicon glyphicon-off\"></span><a href=\"" . \route\Route::get('d3')->generate(array(
                                                                                         "controller" => "login",
