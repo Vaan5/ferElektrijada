@@ -38,6 +38,9 @@ class Index implements Controller {
             case 'profSucc':
                 $this->resultMessage = "Uspješno ažurirani vlastiti podaci!";
                 break;
+            case 'ozsnl':
+                $this->resultMessage = "Uspješno obnovljene ovlasti svim prošlogodišnjim članovima odbora!";
+                break;
             case 'excep':
                 if(isset($_SESSION['exception'])) {
                     $e = unserialize($_SESSION['exception']);   // don't forget 'use \PDOException;'

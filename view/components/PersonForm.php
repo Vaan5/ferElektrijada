@@ -28,6 +28,8 @@ class PersonForm extends AbstractView {
      */
     private $prikazSpola = true;
     
+    private $showDelete = true;
+    
     protected function outputHTML() {
 		
 ?>
@@ -42,7 +44,7 @@ class PersonForm extends AbstractView {
 	<input type="button" id="promjeniLozinku" class="btn btn-default" value="Promjeni lozinku" />
 		
 	<div class="promjeniLozinku form-group" style="display: none;">
-            <label for="staralozinka">Stara lozinka</label>
+            <label for="staralozinka">Vaša stara lozinka</label>
         <input type="password" name="password" class="form-control" placeholder="Upišite staru lozinku" />
         </div>
 		
@@ -101,7 +103,7 @@ class PersonForm extends AbstractView {
         </div>
 		<div class="form-group">
                      <label for="datrod">Datum rođenja</label>
-        <input type="text" name="datRod" class="form-control" placeholder="Upišite datum rođenja" class="datePicker" <?php if($this->osoba && $this->osoba->datRod){ echo 'value="' . $this->osoba->datRod . '"'; } ?> />
+        <input type="text" name="datRod" class="form-control datePicker" placeholder="Upišite datum rođenja" <?php if($this->osoba && $this->osoba->datRod){ echo 'value="' . $this->osoba->datRod . '"'; } ?> />
         </div>
 		<div class="form-group">
                      <label for="brosobne">Broj osobne iskaznice</label>
@@ -124,7 +126,7 @@ class PersonForm extends AbstractView {
         
         <center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText;?>" />
 		
-		<?php if($this->osoba && $this->osoba->idOsobe){ ?>
+		<?php if($this->osoba && $this->osoba->idOsobe && $this->showDelete === true){ ?>
 		<a type="button" class="btn btn-danger" href="<?php echo \route\Route::get('d3')->generate(array(
 			"controller" => 'administrator',
 			"action" => 'deleteOzsn'
@@ -155,5 +157,10 @@ class PersonForm extends AbstractView {
         $this->prikazSpola = $prikazSpola;
         return $this;
     }
-  
+    
+    public function setShowDelete($showDelete) {
+        $this->showDelete = $showDelete;
+        return $this;
+    }
+
 }

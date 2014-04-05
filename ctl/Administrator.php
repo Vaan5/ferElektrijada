@@ -56,6 +56,15 @@ class Administrator implements Controller {
             case 'passw':
                 $this->errorMessage = "Neispravna lozinka";
                 break;
+            case 'pog':
+                $this->errorMessage = "Dogodila se pogreška! Pokušajte ponovno kasnije!";
+                break;
+            case 'succProm':
+                $this->resultMessage = "Uspješno promijenjena uloga osobe!";
+                break;
+            case 'alrO':
+                $this->resultMessage = "Osoba je već član odbora!";
+                break;
             case 'excep':
                 if(isset($_SESSION['exception'])) {
                     $e = unserialize($_SESSION['exception']);   // don't forget 'use \PDOException;'
@@ -131,12 +140,14 @@ class Administrator implements Controller {
                          )) . "?msg=excep");
                     }
                 } else {
-                    $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Morate unijeti staru lozinku");
-                    $_SESSION["exception"] = serialize($handler);
-                    preusmjeri(\route\Route::get('d3')->generate(array(
-                        "controller" => "administrator",
-                        "action" => "changeProfile"
-                     )) . "?msg=excep");
+                    if(post("password_new") !== false || post("password_new2") !== false) {
+                        $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Morate unijeti staru lozinku");
+                        $_SESSION["exception"] = serialize($handler);
+                        preusmjeri(\route\Route::get('d3')->generate(array(
+                            "controller" => "administrator",
+                            "action" => "changeProfile"
+                         )) . "?msg=excep");
+                    }
                 }
                 try {
                     $osoba->modifyRow(session("auth"), post('ime', null), post('prezime', null), post('mail', null), post('brojMob', null), post('ferId'), post('password_new', null), 
@@ -184,6 +195,7 @@ class Administrator implements Controller {
      */
     public function addOzsn() {
         $this->checkRole();
+        $this->checkMessages();
         
         // if you want to add someone
         if (!postEmpty()) {
@@ -219,14 +231,15 @@ class Administrator implements Controller {
                     }
                     $osoba->addNewPerson(post('ime', null), post('prezime', null), post('mail', null), post('brojMob', null), post('ferId'), post('password'), 
                         post('JMBAG', null), post('spol', null), post('datRod', null), post('brOsobne', null), post('brPutovnice', null), post('osobnaVrijediDo', null),
-                        post('putovnicaVrijediDo', null), 'O', NULL, post('MBG', null), post('OIB', null));
+                        post('putovnicaVrijediDo', null), 'O', NULL, post('MBG', null), post('OIB', null), session("auth"));
                         // added successfully
                     // now assign them to the current Elektrijada
                     $obavlja = new \model\DBObavljaFunkciju();
                     $obavlja->addNewRow($osoba->getPrimaryKey(), NULL, $idElektrijade);
                     preusmjeri(\route\Route::get('d1')->generate() . "?msg=ozsnAddedSucc");
                 } catch (\PDOException $e) {
-                    $this->errorMessage = "Pogreška prilikom dodavanja u bazu! Provjerite da li korisnik s takvim podacima već ne postoji!";
+                    $handler = new \model\ExceptionHandlerModel($e);
+                    $this->errorMessage = $handler;
                 }
             }
         }
@@ -236,7 +249,7 @@ class Administrator implements Controller {
                     "errorMessage" => $this->errorMessage
                 )),
             "title" => "Dodavanje članova odbora",
-			"script" => new \view\scripts\PersonFormJs()
+            "script" => new \view\scripts\PersonFormJs()
         ));
         
     }
@@ -303,7 +316,7 @@ class Administrator implements Controller {
                 "resultMessage" => $this->resultMessage
             )),
             "title" => "Popis članova Odbora",
-			"script" => new \view\scripts\administrator\OzsnListJs
+            "script" => new \view\scripts\administrator\OzsnListJs
         ));
     }
     
@@ -312,6 +325,7 @@ class Administrator implements Controller {
      */
     public function modifyOzsn() {
         $this->checkRole();
+        $this->checkMessages();
         $osoba = new \model\DBOsoba();
         
         if(!postEmpty()) {
@@ -330,7 +344,9 @@ class Administrator implements Controller {
                                         'osobnaVrijediDo' => post('osobnaVrijediDo'), 
                                         'putovnicaVrijediDo' => post('putovnicaVrijediDo'),
                                         'MBG' => post('MBG'),
-                                        'OIB' => post('OIB')));
+                                        'OIB' => post('OIB'),
+                                        'password_new' => post('password_new'),
+                                        'password_new2' => post('password_new2')));
             $pravila = $validacija->getRules();
             $pravila['password'] = array('password');
             $validacija->setRules($pravila);
@@ -339,11 +355,55 @@ class Administrator implements Controller {
                 $this->errorMessage = $validacija->decypherErrors($pov);
                 try {
                     $osoba->load(post('idOsobe'));
-                } catch (app\model\NotFoundException $e) {}
+                } catch (app\model\NotFoundException $e) {
+                    
+                } catch (\PDOException $e) {
+                    $handler = new \model\ExceptionHandlerModel($e);
+                    $this->errorMessage = $handler;
+                }
             } else {
+                // first check passwords
+                if (post("password") !== false) {
+                    if (post("password_new") !== false && post("password_new2") !== false) {
+                        $pov = $osoba->checkAdmin(post("password"));
+                        if ($pov === false || $pov->getPrimaryKey() != session('auth')) {
+                            $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Pogrešna stara lozinka");
+                            $_SESSION["exception"] = serialize($handler);
+                            preusmjeri(\route\Route::get('d3')->generate(array(
+                                "controller" => "administrator",
+                                "action" => "modifyOzsn"
+                             )) . "?msg=excep&id=" . post("idOsobe"));
+                        }
+                        if (post("password_new") !== post("password_new2")) {
+                            $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nove lozinke se ne podudaraju");
+                            $_SESSION["exception"] = serialize($handler);
+                            preusmjeri(\route\Route::get('d3')->generate(array(
+                                "controller" => "administrator",
+                                "action" => "modifyOzsn"
+                             )) . "?msg=excep&id=" . post("idOsobe"));
+                        }
+                    } else {
+                        $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Ukoliko mijenjate lozinku, morate unijeti staru, kao i novu lozinku!");
+                        $_SESSION["exception"] = serialize($handler);
+                        preusmjeri(\route\Route::get('d3')->generate(array(
+                            "controller" => "administrator",
+                            "action" => "modifyOzsn"
+                         )) . "?msg=excep&id=" . post("idOsobe"));
+                    }
+                } else {
+                    if (post("password_new") !== false || post("password_new2") !== false) {
+                        $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Morate unijeti staru lozinku");
+                        $_SESSION["exception"] = serialize($handler);
+                        preusmjeri(\route\Route::get('d3')->generate(array(
+                            "controller" => "administrator",
+                            "action" => "modifyOzsn"
+                         )) . "?msg=excep&id=" . post("idOsobe"));
+                    }
+                }
+                
                 // everything's ok ; insert new row
                 try {
-                    $osoba->modifyRow(post($osoba->getPrimaryKeyColumn()), post('ime', null), post('prezime', null), post('mail', null), post('brojMob', null), post('ferId'), post('password', null), 
+                    $osoba->modifyRow(post($osoba->getPrimaryKeyColumn()), post('ime', null), post('prezime', null), post('mail', null), post('brojMob', null), post('ferId'), post('password_new', null), 
                         post('JMBAG', null), post('spol', null), post('datRod', null), post('brOsobne', null), post('brPutovnice', null), post('osobnaVrijediDo', null),
                         post('putovnicaVrijediDo', null), 'O', NULL, post('MBG', null), post('OIB', null));
                     // redirect with according message
@@ -352,7 +412,12 @@ class Administrator implements Controller {
                         "action" => "searchOzsn"
                     )) . "?msg=succo");
                 } catch(\PDOException $e) {
-                    $this->errorMessage = "Greška prilikom unosa podataka! Već postoji član s takvim podacima!";
+                    $handler = new \model\ExceptionHandlerModel($e);
+                    $_SESSION["exception"] = serialize($handler);
+                    preusmjeri(\route\Route::get('d3')->generate(array(
+                        "controller" => "administrator",
+                        "action" => "modifyOzsn"
+                     )) . "?msg=excep&id=" . post("idOsobe"));
                 }
             }
         } else {
@@ -374,7 +439,7 @@ class Administrator implements Controller {
                 "osoba" => $osoba
             )),
             "title" => "Ažuriranje članova Odbora",
-			"script" => new \view\scripts\PersonFormJs()
+            "script" => new \view\scripts\PersonFormJs()
         ));  
         
     }
@@ -411,14 +476,21 @@ class Administrator implements Controller {
                     "controller" => "administrator",
                     "action" => "searchOzsn"
                 )) . "?msg=err");
+            } catch (\PDOException $e) {
+                $handler = new \model\ExceptionHandlerModel($e);
+                $_SESSION["exception"] = serialize($handler);
+                preusmjeri(\route\Route::get('d3')->generate(array(
+                    "controller" => "administrator",
+                    "action" => "searchOzsn"
+                 )) . "?msg=excep");
             }
         }
     }
     
     /**
-     * removes row from table obavljaFunkciju
+     * removes row from table obavljaFunkciju which belongs to the current Elektrijada
      */
-    public function removeOzsnFromElektrijada() {
+    public function removeOzsnFromCurrentElektrijada() {
         $this->checkRole();
         $osoba = new \model\DBOsoba();
         
@@ -431,7 +503,15 @@ class Administrator implements Controller {
             try {
                 $osoba->load(get('id'));
                 $obavlja = new \model\DBObavljaFunkciju();
-                $obavlja->deleteRows(get('id'));
+                $elektrijada = new \model\DBElektrijada();
+                $i = $elektrijada->getCurrentElektrijadaId();
+                if ($i === false)
+                    preusmjeri (\route\Route::get('d3')->generate(array(
+                            "controller" => "administrator",
+                            "action" => "searchOzsn"
+                        )) . "?msg=pog");
+                
+                $obavlja->deleteRows(get('id'), $i);
                 
                 preusmjeri(\route\Route::get('d3')->generate(array(
                                     "controller" => "administrator",
@@ -452,10 +532,132 @@ class Administrator implements Controller {
     }
     
     /**
+     * Changes the role status of the person which id was sent via get request to 'O' (if he isn't A or O)
+     */
+    public function promoteToOzsn() {
+        $this->checkRole();
+        $this->checkMessages();
+        
+        if (get('id') !== false) {
+            try {
+                $elektrijada = new \model\DBElektrijada();
+                $i = $elektrijada->getCurrentElektrijadaId();
+                if ($i === false)
+                    preusmjeri(\route\Route::get('d3')->generate(array(
+                    "controller" => "administrator",
+                    "action" => "searchPersons"
+                )) . "?msg=noel");
+                
+                $osoba = new \model\DBOsoba();
+                $osoba->promoteToOzsn(get('id'));
+                
+                $obavlja = new \model\DBObavljaFunkciju();
+                $pov = $obavlja->ozsnExists(get('id'), $i);
+                if ($pov !== true && $osoba->uloga !== 'A') {
+                    $obavlja->addNewRow(get('id'), NULL, $i);
+                    preusmjeri(\route\Route::get('d3')->generate(array(
+                        "controller" => "administrator",
+                        "action" => "searchPersons"
+                    )) . "?msg=succProm");
+                } else {
+                    preusmjeri(\route\Route::get('d3')->generate(array(
+                        "controller" => "administrator",
+                        "action" => "searchPersons"
+                    )) . "?msg=alrO");
+                }
+            } catch (\app\model\NotFoundException $e) {
+                preusmjeri(\route\Route::get('d3')->generate(array(
+                    "controller" => "administrator",
+                    "action" => "searchPersons"
+                )) . "?msg=err");
+            } catch (\PDOException $e) {
+                preusmjeri(\route\Route::get('d3')->generate(array(
+                    "controller" => "administrator",
+                    "action" => "searchPersons"
+                )) . "?msg=pog");
+            }
+        } else {
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "administrator",
+                "action" => "searchPersons"
+            )) . "?msg=err");
+        }
+    }
+    
+    /**
+     * Shows simple form for searching persons in DBOsoba
+     */
+    public function searchPersons() {
+        $this->checkRole();
+        $this->checkMessages();
+        
+        echo new \view\Main(array(
+            "body" => new \view\administrator\PersonSearch(array(
+                "errorMessage" => $this->errorMessage,
+                "resultMessage" => $this->resultMessage
+            )),
+            "title" => "Pretraga"
+        ));
+    }
+    
+    /**
+     * Processes the search query from action above
+     */
+    public function displayPersons() {
+        $this->checkRole();
+        $this->checkMessages();
+        $osobe = array();
+        $osoba = new \model\DBOsoba();
+        
+        if(!postEmpty()) {
+            // search db
+            // first validate input
+            $validacija = new \model\MediumPersonSearchFormModel(array(
+                'ferId' => post('ferId'),
+                'ime' => post('ime'), 
+                'prezime' => post('prezime'),
+                'OIB' => post('OIB'),
+                'JMBAG' => post('JMBAG')
+            ));
+            
+            $pov = $validacija->validate();
+            if($pov !== true) {
+                $this->errorMessage = $validacija->decypherErrors($pov);
+            } else {
+                // ok the data is correct now lets find what they're looking for
+                $osobe = $osoba->find(post('ime'), post('prezime'), post('ferId'), post('OIB'), post('JMBAG'));
+                if($osobe === false)
+                    $this->errorMessage = "Nije pronađen niti jedna osoba!";
+            }
+        } else if (get("a") !== false) {
+            // get all persons
+            $osobe = $osoba->getAllPersons();
+            if($osobe === false)
+                $this->errorMessage = "Ne postoji niti jedna osoba!";
+        } else {
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "administrator",
+                "action" => "searchPersons"
+            )) . '?msg=param');
+        }
+        
+        echo new \view\Main(array(
+            "body" => new \view\administrator\PersonList(array(
+                "osobe" => $osobe,
+                "errorMessage" => $this->errorMessage,
+                "resultMessage" => $this->resultMessage
+            )),
+            "title" => "Popis osoba",
+            "script" => new \view\scripts\administrator\OzsnListJs
+        ));
+    }
+    
+    /**
      * Shows last ozsn members from last year
      */
     public function listOldOzsn() {
         $this->checkRole();
+        $this->checkMessages();
         $osoba = new \model\DBOsoba();
         $elektrijada = new \model\DBElektrijada();
         $clanovi = null;
@@ -502,7 +704,7 @@ class Administrator implements Controller {
                         $obavljaFunkciju->addNewRow($c->getPrimaryKey(), NULL, $i);
                     }
                 }
-                $this->resultMessage = "Uspješno dodani svi članovi odbora!";
+                preusmjeri(\route\Route::get('d1')->generate() . "?msg=ozsnl");
             } else {
                 preusmjeri(\route\Route::get('d1')->generate() . "?msg=err");
             }
@@ -513,7 +715,9 @@ class Administrator implements Controller {
                 if (!count($clanovi))
                     $this->errorMessage = "Ne postoje zapisi o prošlogodišnjim članovima odbora!";                
             } catch(\PDOException $e) {
-                $this->errorMessage = "Pogreška prilikom dohvata prošlogodišnjih članova odbora!";
+                $handler = new \model\ExceptionHandlerModel($e);
+                $_SESSION["exception"] = serialize($handler);
+                preusmjeri(\route\Route::get('d1')->generate() . "?msg=excep");
             }
             
         }

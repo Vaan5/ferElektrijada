@@ -37,7 +37,7 @@ class OzsnModification extends AbstractView {
                 "action" => 'modifyOzsn'
             )),
             "submitButtonText" => "Spremi promjene",
-			"osoba" => $this->osoba
+            "osoba" => $this->osoba,
         ));
         
         // print messages if any

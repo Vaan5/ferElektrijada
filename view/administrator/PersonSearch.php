@@ -3,7 +3,7 @@
 namespace view\administrator;
 use app\view\AbstractView;
 
-class AdminProfile extends AbstractView {
+class PersonSearch extends AbstractView {
     /**
      *
      * @var string 
@@ -16,33 +16,25 @@ class AdminProfile extends AbstractView {
      */
     private $resultMessage;
     
-    /**
-     *
-     * @var object 
-     */
-    private $admin;
-    
     protected function outputHTML() {
-        
-		// print out the form
-        echo new \view\components\PersonForm(array(
+        // print out the form
+        echo new \view\components\MediumPersonSearchForm(array(
             "postAction" => \route\Route::get('d3')->generate(array(
                 "controller" => 'administrator',
-                "action" => 'changeProfile'
+                "action" => 'displayPersons'
             )),
-            "submitButtonText" => "Spremi promjene",
-            "osoba" => $this->admin,
-            "showDelete" => false
+            "submitButtonText" => "Pretraži",
+            "showAllButtonText" => "Prikaži sve osobe"
         ));
-        
-        // print messages if any
+		
+		 // print messages if any
         echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
         ));
-        echo new \view\components\ResultMessage(array(
+		
+		echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
-        
     }
     
     public function setErrorMessage($errorMessage) {
@@ -52,11 +44,6 @@ class AdminProfile extends AbstractView {
 
     public function setResultMessage($resultMessage) {
         $this->resultMessage = $resultMessage;
-        return $this;
-    }
-    
-    public function setAdmin($admin) {
-        $this->admin = $admin;
         return $this;
     }
 

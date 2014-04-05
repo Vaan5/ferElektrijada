@@ -12,7 +12,7 @@ class Login implements Controller {
         if (\model\DBOsoba::isLoggedIn()) {
             preusmjeri(\route\Route::get('d1')->generate());
         }
-        
+
         // the user has filled the form
         if(!postEmpty()) {
             // if you forgot to enter something
