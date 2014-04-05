@@ -1978,8 +1978,9 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-BEGIN
+
 CREATE  PROCEDURE `dohvatiOsobnaPodrucja`(IN idElektrijada INT(10), IN idOsobe INT(10))
+BEGIN
 SELECT podrucje.idPodrucja FROM sudjelovanje 
 LEFT JOIN podrucjeSudjelovanja ON sudjelovanje.idSudjelovanja = podrucjeSudjelovanja.idSudjelovanja
  JOIN podrucje ON podrucje.idPodrucja = podrucjeSudjelovanja.idPodrucja
