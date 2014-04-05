@@ -56,7 +56,7 @@ class MediumPersonSearchForm extends AbstractView {
 			echo '<a href="';
 			echo \route\Route::get('d3')->generate(array(
 				"controller" => 'administrator',
-				"action" => 'displayOzsn'
+				"action" => 'displayPersons'
 			));
 			echo '?a=1">' . $this->showAllButtonText . '</a>';
 		}
