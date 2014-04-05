@@ -433,6 +433,5 @@ CREATE TABLE ObjavaOElektrijadi (
 );
 
 
-CALL `ferelektrijada`.`dodajOsobu`("Marko", "Banek", NULL, "Root", NULL, "dc76e9f0c0006e8f919e0c515c66dbba3982f785", NULL, NULL, NULL, NULL, NULL, NULL, NULL, "A", NULL, NULL, NULL,NULL);
 
 
