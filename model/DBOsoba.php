@@ -279,6 +279,25 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
         $this->save();
     }
     
+    public function modifyRow($primaryKey, $ime, $prezime, $mail, $brojMob, $ferId, $password, $JMBAG,
+            $spol, $datRod, $brOsobne, $brPutovnice, $osobnaVrijediDo, $putovnicaVrijediDo, $zivotopis, $MBG, $OIB) {
+        $atributi = $this->getColumns();
+        $this->load($primaryKey);
+        $stariPass = null;
+        if($password === null || $password === false) {
+            $stariPass = $this->password;
+        }
+        foreach($atributi as $a) {
+            if ($a !== 'uloga')     // don't change the role
+                $this->{$a} = ${$a};
+        }
+        if($stariPass !== null)
+            $this->password = $stariPass;
+        else
+            $this->password = $this->kriptPass ($this->password);
+        $this->save();
+    }
+    
     public function deleteOsoba($primaryKey) {
         try {
             $this->load($primaryKey);

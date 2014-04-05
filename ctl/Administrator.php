@@ -29,6 +29,9 @@ class Administrator implements Controller {
             case 'succo':
                 $this->resultMessage = "Uspješno ažurirani podaci o članu odbora!";
                 break;
+            case 'succp':
+                $this->resultMessage = "Uspješno ažurirani podaci o osobi!";
+                break;
             case 'del':
                 $this->resultMessage = "Uspješno izbrisana Elektrijada!";
                 break;
@@ -772,6 +775,127 @@ class Administrator implements Controller {
                  )) . "?msg=excep");
             }
         }
+    }
+    
+    public function modifyPerson() {
+        $this->checkRole();
+        $this->checkMessages();
+        $osoba = new \model\DBOsoba();
+        
+        if(!postEmpty()) {
+            // here we do the magic
+            $validacija = new \model\PersonFormModel(array('password' => post('password'),
+                                        'ferId' => post('ferId'),
+                                        'ime' => post('ime'), 
+                                        'prezime' => post('prezime'), 
+                                        'mail' => post('mail'), 
+                                        'brojMob' => post('brojMob'), 
+                                        'JMBAG' => post('JMBAG'),
+                                        'spol' => post('spol'), 
+                                        'datRod' => post('datRod'), 
+                                        'brOsobne' => post('brOsobne'), 
+                                        'brPutovnice' => post('brPutovnice'), 
+                                        'osobnaVrijediDo' => post('osobnaVrijediDo'), 
+                                        'putovnicaVrijediDo' => post('putovnicaVrijediDo'),
+                                        'MBG' => post('MBG'),
+                                        'OIB' => post('OIB'),
+                                        'password_new' => post('password_new'),
+                                        'password_new2' => post('password_new2')));
+            $pravila = $validacija->getRules();
+            $pravila['password'] = array('password');
+            $validacija->setRules($pravila);
+            $pov = $validacija->validate();
+            if($pov !== true) {
+                $this->errorMessage = $validacija->decypherErrors($pov);
+                try {
+                    $osoba->load(post('idOsobe'));
+                } catch (app\model\NotFoundException $e) {
+                    
+                } catch (\PDOException $e) {
+                    $handler = new \model\ExceptionHandlerModel($e);
+                    $this->errorMessage = $handler;
+                }
+            } else {
+                // first check passwords
+                if (post("password") !== false) {
+                    if (post("password_new") !== false && post("password_new2") !== false) {
+                        $pov = $osoba->checkAdmin(post("password"));
+                        if ($pov === false || $pov->getPrimaryKey() != session('auth')) {
+                            $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Pogrešna stara lozinka");
+                            $_SESSION["exception"] = serialize($handler);
+                            preusmjeri(\route\Route::get('d3')->generate(array(
+                                "controller" => "administrator",
+                                "action" => "modifyPerson"
+                             )) . "?msg=excep&id=" . post("idOsobe"));
+                        }
+                        if (post("password_new") !== post("password_new2")) {
+                            $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nove lozinke se ne podudaraju");
+                            $_SESSION["exception"] = serialize($handler);
+                            preusmjeri(\route\Route::get('d3')->generate(array(
+                                "controller" => "administrator",
+                                "action" => "modifyPerson"
+                             )) . "?msg=excep&id=" . post("idOsobe"));
+                        }
+                    } else {
+                        $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Ukoliko mijenjate lozinku, morate unijeti staru, kao i novu lozinku!");
+                        $_SESSION["exception"] = serialize($handler);
+                        preusmjeri(\route\Route::get('d3')->generate(array(
+                            "controller" => "administrator",
+                            "action" => "modifyPerson"
+                         )) . "?msg=excep&id=" . post("idOsobe"));
+                    }
+                } else {
+                    if (post("password_new") !== false || post("password_new2") !== false) {
+                        $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Morate unijeti staru lozinku");
+                        $_SESSION["exception"] = serialize($handler);
+                        preusmjeri(\route\Route::get('d3')->generate(array(
+                            "controller" => "administrator",
+                            "action" => "modifyPerson"
+                         )) . "?msg=excep&id=" . post("idOsobe"));
+                    }
+                }
+                
+                // everything's ok ; insert new row
+                try {
+                    $osoba->modifyPerson(post($osoba->getPrimaryKeyColumn()), post('ime', null), post('prezime', null), post('mail', null), post('brojMob', null), post('ferId'), post('password_new', null), 
+                        post('JMBAG', null), post('spol', null), post('datRod', null), post('brOsobne', null), post('brPutovnice', null), post('osobnaVrijediDo', null),
+                        post('putovnicaVrijediDo', null), NULL, post('MBG', null), post('OIB', null));
+                    // redirect with according message
+                    preusmjeri(\route\Route::get('d3')->generate(array(
+                        "controller" => "administrator",
+                        "action" => "searchPersons"
+                    )) . "?msg=succp");
+                } catch(\PDOException $e) {
+                    $handler = new \model\ExceptionHandlerModel($e);
+                    $_SESSION["exception"] = serialize($handler);
+                    preusmjeri(\route\Route::get('d3')->generate(array(
+                        "controller" => "administrator",
+                        "action" => "modifyPerson"
+                     )) . "?msg=excep&id=" . post("idOsobe"));
+                }
+            }
+        } else {
+            if(get("id") !== false) {
+                // let's check if i got an existing table key and let's do magic
+                try {
+                    $osoba->load(get("id"));
+                } catch (\app\model\NotFoundException $e) {
+                    preusmjeri(\route\Route::get('d1')->generate() . "?msg=e");
+                }
+            } else {
+                preusmjeri(\route\Route::get('d1')->generate() . "?msg=e");
+            }
+        }
+        
+        echo new \view\Main(array(
+            "body" => new \view\administrator\PersonModification(array(
+                "errorMessage" => $this->errorMessage,
+                "osoba" => $osoba
+            )),
+            "title" => "Ažuriranje osoba",
+            "script" => new \view\scripts\PersonFormJs()
+        ));  
+        
     }
     
     /****************** ELEKTRIJADA stuff **************************/
