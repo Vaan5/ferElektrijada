@@ -85,12 +85,12 @@ class Main extends AbstractView {
                                                                                         "controller" => "login",
                                                                                         "action" => "display"
                                                                                         )) . "\"> Prijava</a>"
-						; else echo
+						; elseif ($_SESSION ['vrsta']==='A') echo 
                                                     $_SESSION ['user']." ".
                                                     "<span class=\"glyphicon glyphicon-user\"></span> <a href=\"" . \route\Route::get('d3')->generate(array(
                                                                                         "controller" => "administrator",
                                                                                         "action" => "changeProfile"
-                                                                                        )) . "\"> Profil</a>"
+                                                )) . "\"> Profil</a>"
 				 ;?>
 				<?php if(\model\DBOsoba::isLoggedIn())     echo "<span class=\"glyphicon glyphicon-off\"></span><a href=\"" . \route\Route::get('d3')->generate(array(
                                                                                         "controller" => "login",
