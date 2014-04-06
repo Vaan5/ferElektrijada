@@ -41,7 +41,7 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
             var_dump($e);
             die();
 		}
-		if(isset($rez->nazivAtributa) && strtoupper($rez->nazivAtributa)=="VODITELJ"){
+		if(isset($rez->nazivAtributa) && strtoupper($rez->nazivAtributa)=="VODITELJ"&& $rez!=false){
 			return $uloga.'V'; //ako je korisnik i voditelj dobiva nastavak "V"
 		}
 		else{
