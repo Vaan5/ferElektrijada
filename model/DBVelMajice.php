@@ -39,7 +39,7 @@ class DBVelMajice extends AbstractDBModel {
      */
     public function modifyRow($idVelicine, $Velicina) {
         try {
-			$this->load($idVelicine);
+            $this->load($idVelicine);
             $this->velicina = $Velicina;
             $this->save();
         } catch (\app\model\NotFoundException $e) {
@@ -61,7 +61,7 @@ class DBVelMajice extends AbstractDBModel {
     public function deleteRow($idVelicine) {
         try {
             $this->load($idVelicine);
-			$this->delete();
+            $this->delete();
         } catch (\app\model\NotFoundException $e) {
             $e = new \PDOException();
             $e->errorInfo[0] = '02000';

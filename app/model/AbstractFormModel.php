@@ -91,6 +91,15 @@ abstract class AbstractFormModel implements FormModel {
         return true;
     }
     
+     protected function validatePhone($data) {
+        if(isset($data) && $data !== '') {
+            $pattern = '/^[0-9]{6,}$/';
+            return $this->test_pattern($pattern, $data);
+        }
+        // if you didn't give me anything to check i'll just return true
+        return true;
+    }
+    
     protected function validateJmbag($data) {
         if(isset($data) && $data !== '') {
             $pattern = '/^[0-9]{10}$/';
@@ -127,7 +136,7 @@ abstract class AbstractFormModel implements FormModel {
         return true;
     }
     
-    public function validateAlnum($data) {
+    private function validateAlnum($data) {
         if(isset($data) && $data !== '') {
             $pattern = '/^[A-Za-z0-9čćžšđČĆŽŠĐ]+$/u';
             return $this->test_pattern($pattern, $data);

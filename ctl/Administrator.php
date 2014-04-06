@@ -633,7 +633,7 @@ class Administrator implements Controller {
                 // ok the data is correct now lets find what they're looking for
                 $osobe = $osoba->find(post('ime'), post('prezime'), post('ferId'), post('OIB'), post('JMBAG'));
                 if($osobe === false)
-                    $this->errorMessage = "Nije pronađen niti jedna osoba!";
+                    $this->errorMessage = "Nije pronađena niti jedna osoba!";
             }
         } else if (get("a") !== false) {
             // get all persons

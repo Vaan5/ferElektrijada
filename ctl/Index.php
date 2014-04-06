@@ -41,6 +41,9 @@ class Index implements Controller {
             case 'ozsnl':
                 $this->resultMessage = "Uspješno obnovljene ovlasti svim prošlogodišnjim članovima odbora!";
                 break;
+            case 'succContact':
+                $this->resultMessage = "Uspješno dodan novi kontakt!";
+                break;
             case 'excep':
                 if(isset($_SESSION['exception'])) {
                     $e = unserialize($_SESSION['exception']);   // don't forget 'use \PDOException;'
@@ -62,7 +65,7 @@ class Index implements Controller {
                 "resultMessage" => $this->resultMessage,
                 "errorMessage" => $this->errorMessage
             )),
-            "title" => "Welcome to FER!"
+            "title" => "FER"
         ));
     }
 }

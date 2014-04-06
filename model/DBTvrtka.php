@@ -21,6 +21,10 @@ class DBTvrtka extends AbstractDBModel {
     public function getColumns(){
         return array ('imeTvrtke', 'adresaTvrtke');
     }
+    
+    public function getAll() {
+        return $this->select()->fetchAll();
+    }
 }
 
 

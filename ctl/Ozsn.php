@@ -38,6 +38,119 @@ class Ozsn implements Controller {
         }
     }
     
+    public function addContact() {
+        $this->checkRole();
+        $this->checkMessages();
+        $sponzor = new \model\DBSponzor();
+        $tvrtka = new \model\DBTvrtka();
+        $mail = new \model\DBEmailAdrese();
+        $mob = new \model\DBBrojeviMobitela();
+        $kontak = new \model\DBKontaktOsobe();
+        
+        // get company data and sponsor data
+        $tvrtke = $tvrtka->getAll();
+        $sponzori = $sponzor->getAll();
+        
+        if (!postEmpty()) {
+            $validacija = new \model\formModel\KontaktOsobeFormModel(array(
+                "imeKontakt" => post("imeKontakt"),
+                "prezimeKontakt" => post("prezimeKontakt"),
+                "telefon" => post("telefon"),
+                "radnoMjesto" => post("radnoMjesto"),
+                "idTvrtke" => post("idTvrtke"),
+                "idSponzora" => post("idSponzora")
+            ));
+            
+            $pov = $validacija->validate();
+            if ($pov !== true) {
+                $message = $validacija->decypherErrors($pov);
+                $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+                $_SESSION["exception"] = serialize($handler);
+                preusmjeri(\route\Route::get('d3')->generate(array(
+                    "controller" => "ozsn",
+                    "action" => "addContact"
+                 )) . "?msg=excep");
+            }
+            
+            // check if atleast one idTvrtke or idSponzora is given
+            if (post('idTvrtke') === false && false === post('idSponzora')) {
+                $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Morate odabrati barem jednog sponzora ili tvrtku!");
+                $_SESSION["exception"] = serialize($handler);
+                preusmjeri(\route\Route::get('d3')->generate(array(
+                    "controller" => "ozsn",
+                    "action" => "addContact"
+                 )) . "?msg=excep");
+            }
+            
+            // now we check the mail addresses and phone numbers
+            // if you entered a number that already exists we won't add another one, just gonna add it
+            $i = 1;
+            while (post("mob" . $i) !== false) {
+                $validator = new \model\formModel\NumberValidationModel(array("number" => post("mob" . $i)));
+                $pov = $validator->validate();
+                if ($pov !== true) {
+                    $message = $validacija->decypherErrors($pov);
+                    $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+                    $_SESSION["exception"] = serialize($handler);
+                    preusmjeri(\route\Route::get('d3')->generate(array(
+                        "controller" => "ozsn",
+                        "action" => "addContact"
+                     )) . "?msg=excep");
+                }
+                $i = $i + 1;
+            }
+            
+            $k = 1;
+            while (post("mail" . $i) !== false) {
+                $validator = new \model\formModel\NumberValidationModel(array("mail" => post("mail" . $k)));
+                $pov = $validator->validate();
+                if ($pov !== true) {
+                    $message = $validacija->decypherErrors($pov);
+                    $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+                    $_SESSION["exception"] = serialize($handler);
+                    preusmjeri(\route\Route::get('d3')->generate(array(
+                        "controller" => "ozsn",
+                        "action" => "addContact"
+                     )) . "?msg=excep");
+                }
+                $k = $k + 1;
+            }
+            
+            // now i have checked all of the data, next i go add the new contact
+            try {
+                $kontak->addNewContact(post("imeKontakt"), post("prezimeKontakt"), post("telefon", null), post('radnoMjesto', null),
+                        post('idTvrtke', NULL), post('idSponzora', null));
+                // now lets add the phone numbers and e-mails
+                for ($j = 1; $j < $i; $j = $j + 1) {
+                    $mob->addNewOrIgnore($kontak->getPrimaryKey(), post("mob" . $j));
+                }
+                
+                for ($j = 1; $j < $k; $j = $j + 1) {
+                    $mail->addNewOrIgnore($kontak->getPrimaryKey(), post("mail" . $j));
+                }
+                
+                preusmjeri(\route\Route::get('d1')->generate() . "msg=succContact");
+                
+            } catch (\PDOException $e) {
+                $handler = new \model\ExceptionHandlerModel($e);
+                $_SESSION["exception"] = serialize($handler);
+                preusmjeri(\route\Route::get('d3')->generate(array(
+                    "controller" => "ozsn",
+                    "action" => "addContact"
+                )) . "?msg=excep");
+            }
+        }
+        
+        echo new \view\Main(array(
+            "body" => new \view\ozsn\AddContact(array(
+                        "errorMessage" => $this->errorMessage,
+                        "resultMessage" => $this->resultMessage,
+                        "tvrtke" => $tvrtke,
+                        "sponzori" => $sponzori)),
+            "title" => "Dodavanje Kontakta"
+            ));
+    }
+    
     /**
      * Displays all attributes in database
      */
@@ -161,11 +274,11 @@ class Ozsn implements Controller {
         }
     }
 	/**
-*Displays all "velicina" from database
-*/
-public function displayVelMajice(){
-	$this->checkRole();
-    $this->checkMessages();
+         *Displays all "velicina" from database
+         */
+    public function displayVelMajice(){
+        $this->checkRole();
+        $this->checkMessages();
 	
 	$velicina = new \model\DBVelMajice();
 	try {
