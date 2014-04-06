@@ -25,7 +25,7 @@ class VelMajiceList extends AbstractView {
 
 					<tbody>
 <?php
-			// Foreach atribut, generate row in table
+			// Foreach velicina, generate row in table
 			foreach($this->velicine as $val)
 			{
 				echo '<form action="modifyVelMajice" method="POST">';
@@ -51,7 +51,7 @@ class VelMajiceList extends AbstractView {
 		else
 		{
 ?>
-			<input type="button" id="addVelMajice" class="btn btn-primary addAtribut" value="Dodaj novu veličinu majice">
+			<input type="button" id="addVelMajice" class="btn btn-primary addVelMajice" value="Dodaj novu veličinu majice">
 			
 			<div class="panel panel-default addVelMajice_form" style="display:none;">
 				<div class="panel-heading">Popis veličina majice</div>
@@ -71,7 +71,7 @@ class VelMajiceList extends AbstractView {
 		}
 		?>
 						<tr style="display: none;" class="addVelMajice_form">
-							<form action="addAtribut" method="post">
+							<form action="addVelMajice" method="post">
 								<td><input type="text" name="velicina" placeholder="Upišite veličinu majice"></td>
 								<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
 							</form>

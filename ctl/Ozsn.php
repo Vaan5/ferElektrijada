@@ -388,7 +388,7 @@ public function addVelMajice() {
             
             preusmjeri(\route\Route::get('d3')->generate(array(
                 "controller" => "ozsn",
-                "action" => "displayVelicina"
+                "action" => "displayVelMajice"
             )) . '?msg=succa');
         } catch (\PDOException $e){
             $handler = new \model\ExceptionHandlerModel($e);

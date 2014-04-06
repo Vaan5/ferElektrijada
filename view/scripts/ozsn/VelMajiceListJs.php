@@ -31,7 +31,8 @@ class VelMajiceListJs extends AbstractView {
 			
 			// When addVelMajice is clicked, show form for adding
 			$('#addVelMajice').click( function () {
-				$('#addVeMajice').hide();
+				$('#addVelMajice').hide();
+				$('.addVelMajice_form').show();
 				$('#addVelMajice_input').show();
 				$('#addVelMajice_submit').show();
 			});
