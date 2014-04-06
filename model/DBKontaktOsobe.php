@@ -25,4 +25,23 @@ class DBKontaktOsobe extends AbstractDBModel {
             }
             $this->save();
         }
+        
+        public function getAll() {
+            return $this->select()->fetchAll();
+        }
+        
+        public function deleteRow($idKontakta) {
+        try {
+            $this->load($idKontakta);
+            $this->delete();
+        } catch (\app\model\NotFoundException $e) {
+            $e = new \PDOException();
+            $e->errorInfo[0] = '02000';
+            $e->errorInfo[1] = 1604;
+            $e->errorInfo[2] = "Zapis ne postoji!";
+            throw $e;
+        } catch (\PDOException $e) {
+            throw $e;
+        }
+    }
 }

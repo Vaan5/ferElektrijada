@@ -152,6 +152,64 @@ class Ozsn implements Controller {
     }
     
     /**
+     * Displays all contacts from all Elektrijada
+     */
+    public function displayContacts() {
+        $this->checkRole();
+        $this->checkMessages();
+        
+        $kontakt = new \model\DBKontaktOsobe();
+        try {
+            $kontakti = $kontakt->getAll();
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->errorMessage = $handler;
+        }
+        
+        echo new \view\Main(array(
+            "body" => new \view\ozsn\ContactList(array(
+                "errorMessage" => $this->errorMessage,
+                "resultMessage" => $this->resultMessage,
+                "kontakti" => $kontakti
+            )),
+            "title" => "Kontakt Osobe"
+        ));
+    }
+    
+    /**
+     * Deletes contact via get request
+     */
+    public function deleteContact() {
+        $this->checkRole();
+        
+        if (get('id') === false) {
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati zapis!");
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayAtribut"
+            )) . "?msg=excep");
+        }
+        
+        $kontakt = new \model\DBKontaktOsobe();
+        try {
+            $kontakt->deleteRow(get("id"));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayAtribut"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayAtribut"
+            )) . "?msg=excep");
+        }
+    }
+    
+    /**
      * Displays all attributes in database
      */
     public function displayAtribut() {
@@ -256,6 +314,14 @@ class Ozsn implements Controller {
     public function deleteAtribut() {
         $this->checkRole();
         
+        if (get('id') === false) {
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati zapis!");
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayAtribut"
+            )) . "?msg=excep");
+        }
         $atribut = new \model\DBAtribut();
         try {
             $atribut->deleteRow(get("id"));
@@ -376,6 +442,15 @@ public function addVelMajice() {
      */
     public function deleteVelMajice() {
         $this->checkRole();
+        
+        if (get('id') === false) {
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati zapis!");
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayAtribut"
+            )) . "?msg=excep");
+        }
         
         $velicina = new \model\DBVelMajice();
         try {
