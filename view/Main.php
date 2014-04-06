@@ -59,7 +59,7 @@ class Main extends AbstractView {
 		<link href="/assets/css/style.css" rel="stylesheet">
         <link href="/assets/css/menu.css" rel="stylesheet">
         <?php if (null !== $this->script) {
-            echo $this->script;  //<!-- Kad budete mijenjali echo $this->script; vam ispisuje skriptu recimo javascript -->
+            echo $this->script;
         }
         ?>
     </head>
@@ -112,7 +112,7 @@ class Main extends AbstractView {
         <br>
         
         <div class = "container-narrow">
-        <?php echo $this->body; ?>      <!-- obazeno ovo mora doci tu ce se iscrtati neki drugi view s podacima npr -->
+        <?php echo $this->body; ?>
         </div>
 
 
