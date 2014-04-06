@@ -73,7 +73,13 @@ class OzsnList extends AbstractView {
 					"controller" => 'administrator',
 					"action" => 'modifyOzsn'
 				));
-				echo '?id=' . $val->idOsobe . '">Uredi</a> &nbsp; <a class="obrisiOzsn" href="';
+				echo '?id=' . $val->idOsobe . '">Uredi</a> &nbsp; <a href="';
+				
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'administrator',
+					"action" => 'removeOzsnFromCurrentElektrijada'
+				));
+				echo '?id=' . $val->idOsobe . '">Ukloni iz Odbora</a> &nbsp; <a class="obrisiOzsn" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'administrator',
