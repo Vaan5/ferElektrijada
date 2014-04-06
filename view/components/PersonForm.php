@@ -37,7 +37,7 @@ class PersonForm extends AbstractView {
         <div class="form-group">
             <label for="korisnickoime" class="col-sm-2 control-label">Korisničko ime</label>            
             <div class="col-sm-10">
-            <input type="text" name="ferId" class="form-control" placeholder="Upišite korisničko ime" <?php if($this->osoba && $this->osoba->ferId){ echo 'value="' . $this->osoba->ferId . '"'; } ?> />
+            <input type="text" name="ferId" class="form-control" placeholder="Upišite korisničko ime" <?php if($this->osoba && $this->osoba->ferId){ echo 'value="' . $this->osoba->ferId . '"'; } ?> autocomplete="off"  />
             </div>  
         </div>
 		
@@ -48,21 +48,21 @@ class PersonForm extends AbstractView {
 	<div class="promjeniLozinku form-group" style="display: none;">
             <label for="staralozinka" class="col-sm-2 control-label">Stara lozinka</label>
             <div class="col-sm-10">
-            <input type="password" name="password" class="form-control" placeholder="Upišite staru lozinku" />
+            <input type="password" name="password" class="form-control" placeholder="Upišite staru lozinku" autocomplete="off"  />
             </div>
         </div>
 		
 	<div class="promjeniLozinku form-group" style="display: none;">
             <label for="novalozinka" class="col-sm-2 control-label">Nova lozinka</label>
             <div class="col-sm-10">        
-            <input type="password" name="password_new" class="form-control" placeholder="Upišite novu lozinku" />
+            <input type="password" name="password_new" class="form-control" placeholder="Upišite novu lozinku" autocomplete="off"  />
             </div>
         </div>
 		
 	<div class="promjeniLozinku form-group" style="display: none;">
             <label for="ponovilozinku" class="col-sm-2 control-label">Ponovi novu lozinku</label>
             <div class="col-sm-10">		
-            <input type="password" name="password_new2" class="form-control" placeholder="Upišite povnovno lozinku" />
+            <input type="password" name="password_new2" class="form-control" placeholder="Upišite povnovno lozinku" autocomplete="off"  />
 	    </div>
         </div>
 	
@@ -95,7 +95,18 @@ class PersonForm extends AbstractView {
 		<div class="form-group">
             <label for="spol" class="col-sm-2 control-label">Spol</label>
         <div class="col-sm-10">
-            <input type="text" name="spol" class="form-control" placeholder="M ili Ž" <?php if($this->osoba && $this->osoba->spol){ echo 'value="' . $this->osoba->spol . '"'; } ?> />
+            <!--
+			<input type="text" name="spol" class="form-control" placeholder="M ili Ž" <?php if($this->osoba && $this->osoba->spol){ echo 'value="' . $this->osoba->spol . '"'; } ?> />
+			-->
+<?php if($this->osoba && $this->osoba->spol == 'Ž'){ ?>
+			<input type="radio" name="spol" value="M"> Muški
+			&nbsp; &nbsp;
+			<input type="radio" name="spol" value="Ž" checked> Ženski
+<?php } else{ ?>
+			<input type="radio" name="spol" value="M" checked> Muški
+			&nbsp; &nbsp;
+			<input type="radio" name="spol" value="Ž"> Ženski
+<?php } ?>
         </div>        
                 </div>
         <?php }?>
