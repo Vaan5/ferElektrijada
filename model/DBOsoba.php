@@ -36,10 +36,7 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
 			$q->execute();
 			$rez=$q->fetch(); //dohvatili smo ulogu
 		}catch (\PDOException $e) {
-            var_dump($e->errorInfo); // tu ce biti josh i 02000 (indeks 0) i 1604 kao index 1
-            var_dump($e->errorInfo[2]);  
-            var_dump($e);
-            die();
+           return false;
 		}
 		if(isset($rez->nazivAtributa) && strtoupper($rez->nazivAtributa)=="VODITELJ"&& $rez!=false){
 			return $uloga.'V'; //ako je korisnik i voditelj dobiva nastavak "V"
@@ -50,19 +47,19 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
 	}
 	
 	private function getPodrucja($idOsobe){//vraca sva podrucja u kojima sudjeluje osoba
+		$rez=null;
 		try{
 			$elektrijada = new DBElektrijada();
 			$pdo = $this->getPdo();
 			$id = $elektrijada->getCurrentElektrijadaId();
+			if($id === false){
+				return null;
+			}
 			$q = $pdo->prepare("CALL dohvatiOsobnaPodrucja($id,$idOsobe)");
 			$q->execute();
 			$rez  = $q->fetchAll();
 		}catch (\PDOException $e) {
-            var_dump('tu');
-            var_dump($e->errorInfo); // tu ce biti josh i 02000 (indeks 0) i 1604 kao index 1
-            var_dump($e->errorInfo[2]);  // <---- tu je sadrzaj od MESSAGE_TEXT
-            var_dump($e);
-            die();
+           return false;
 		}
 		$vel=count($rez);
 		if($vel>0){//ako postoji ba 1 podrucje vrati podrucje, ako ne vrati null
@@ -110,7 +107,10 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
            $_SESSION["vrsta"] =$this->getUloga($_SESSION["auth"], $uloga);
             $_SESSION["user"] = $this->ime == NULL ? null:$this->ime;
 			$_SESSION["podrucja"] = $this->getPodrucja ($_SESSION["auth"]);//vraca id podrucja
-        }
+        if($_SESSION["vrsta"]===false or $_SESSION["podrucja"]===false){//ako ne uspije dohvatit informacije vrati false
+			return false;
+		}
+		}
         
         return $this->isLoggedIn;
     }
