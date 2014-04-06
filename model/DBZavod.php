@@ -11,15 +11,15 @@ class DBZavod extends AbstractDBModel {
 	*/
             
     public function getTable(){
-    return 'zavod';
+		return 'zavod';
     }
             
     public function getPrimaryKeyColumn(){
-    return 'idZavoda';
+		return 'idZavoda';
     }
             
     public function getColumns(){
-    return array('nazivZavoda','skraceniNaziv');
+		return array('nazivZavoda','skraceniNaziv');
     }
 }
 

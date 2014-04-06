@@ -17,9 +17,13 @@ class DBSponzor extends AbstractDBModel {
     public function getPrimaryKeyColumn(){
         return 'idSponzora';
     }
-            
+
     public function getColumns(){
         return array ('imeTvrtke', 'adresaTvrtke');
+    }
+    
+     public function getAll() {
+        return $this->select()->fetchAll();
     }
 }
 
