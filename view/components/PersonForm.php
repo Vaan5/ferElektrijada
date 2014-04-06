@@ -54,9 +54,11 @@ class PersonForm extends AbstractView {
         </div>
 		
 	<div class="promjeniLozinku form-group" style="display: none;">
-            <label for="ponovinovu">Ponovi novu lozinku</label>
-        <input type="password" name="password_new2" class="form-control" placeholder="Upišite povnovno lozinku" />
-        </div>
+		<label for="ponovinovu">Ponovi novu lozinku</label>
+		<input type="password" name="password_new2" class="form-control" placeholder="Upišite povnovno lozinku" />
+	</div>
+	
+	<span id="passBr"><br><br></span>
 		
 <?php } else{ ?>
 		
@@ -127,7 +129,7 @@ class PersonForm extends AbstractView {
         <center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText;?>" />
 		
 		<?php if($this->osoba && $this->osoba->idOsobe && $this->showDelete === true){ ?>
-		<a type="button" class="btn btn-danger" href="<?php echo \route\Route::get('d3')->generate(array(
+		<a type="button" class="btn btn-danger deletePerson" href="<?php echo \route\Route::get('d3')->generate(array(
 			"controller" => 'administrator',
 			"action" => 'deleteOzsn'
 		));?>?id=<?php echo $this->osoba->idOsobe; ?>">Obriši osobu</a>	
