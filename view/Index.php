@@ -29,14 +29,14 @@ class Index extends AbstractView {
     <a href="<?php echo \route\Route::get('d3')->generate(array(
         "controller" => 'administrator',
         "action" => 'addOzsn'
-    ));?>">Link za dodavanje ozsna ako ste admin!</a>
+    ));?>">Link za dodavanje ozsna ako ste admin! RIJEŠENO</a>
 	
 	<br><br>
 	Test: <br>
 	<a href="<?php echo \route\Route::get('d3')->generate(array(
         "controller" => 'administrator',
         "action" => 'changeProfile'
-    ));?>">Link za uređivanje admin profila!</a>
+    ));?>">Link za uređivanje admin profila! STAVLJENO DA SE PRIKAŽE KAD JE ADMIN ON</a>
 	
 	<br>
 	

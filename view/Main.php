@@ -77,8 +77,15 @@ class Main extends AbstractView {
         </p>
      </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">		
-      <ul class="nav navbar-nav navbar-right">
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">    
+        <ul class="nav navbar-nav">
+        <?php if( $_SESSION ['vrsta']==='A') echo 
+            "<li><a href=\"" . \route\Route::get('d3')->generate(array(
+                    "controller" => 'administrator',
+                    "action" => 'addOzsn'
+                )) . "\">Dodaj OZSN</a></li> " ; ?>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
           <p class="navbar-text">
                <?php if(!\model\DBOsoba::isLoggedIn()) echo
 						"<span class=\"glyphicon glyphicon-off\"></span> <a href=\"" . \route\Route::get('d3')->generate(array(
