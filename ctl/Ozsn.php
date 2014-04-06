@@ -108,7 +108,7 @@ class Ozsn implements Controller {
         $this->checkRole();
         
         $atribut = new \model\DBAtribut();
-        $atribut = new \model\DBAtribut();
+        $atribut = new \model\DBAtribut();// jel mora bit tu???
         $validacija = new \model\formModel\AtributFormModel(array('nazivAtributa' => post("nazivAtributa")));
         $pov = $validacija->validate();
         if($pov !== true) {
@@ -157,6 +157,127 @@ class Ozsn implements Controller {
             preusmjeri(\route\Route::get('d3')->generate(array(
                 "controller" => "ozsn",
                 "action" => "displayAtribut"
+            )) . "?msg=excep");
+        }
+    }
+	/**
+*Displays all "velicina" from database
+*/
+public function displayVelMajice(){
+	$this->checkRole();
+    $this->checkMessages();
+	
+	$velicina = new \model\DBVelMajice();
+	try {
+            $velicine = $velicina->getAllVelicina();
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->errorMessage = $handler;
+        }
+		
+	echo new \view\Main(array(
+            "body" => new \view\ozsn\VelMajiceList(array(
+                "errorMessage" => $this->errorMessage,
+                "resultMessage" => $this->resultMessage,
+                "velicine" => $velicine
+            )),
+            "title" => "Lista velicina",
+            "script" => new \view\scripts\ozsn\VelMajiceListJs()
+        ));
+	}
+/**
+* Inserts new data into database via post request
+*/
+public function addVelMajice() {
+        $this->checkRole();
+
+        $velicina = new \model\DBVelMajice();
+        $validacija = new \model\formModel\VelMajiceFormModel(array('velicina' => post("velicina")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayVelMajice"
+            )) . "?msg=excep");
+        }
+        
+        try {
+            $velicina->addRow(post("velicina", null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayVelicina"
+            )) . '?msg=succa');
+        } catch (\PDOException $e){
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayVelMajice"
+            )) . "?msg=excep");
+        }
+        
+    }
+	
+	/**
+     * Modifies velicina data via post request
+     */
+    public function modifyVelMajice() {
+        $this->checkRole();
+        
+        $velicina = new \model\DBVelMajice();
+        $velicina = new \model\DBVelMajice();
+        $validacija = new \model\formModel\VelMajiceFormModel(array('velicina' => post("velicina")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayVelMajice"
+            )) . "?msg=excep");
+        }
+        try {
+            $velicina->modifyRow(post($velicina->getPrimaryKeyColumn(), null), post('velicina', null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayVelMajice"
+            )) . '?msg=succm');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayVelMajice"
+            )) . "?msg=excep");
+        }
+    }
+	
+	 /**
+     * Deletes velicina via get request
+     */
+    public function deleteVelMajice() {
+        $this->checkRole();
+        
+        $velicina = new \model\DBVelMajice();
+        try {
+            $velicina->deleteRow(get("id"));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayVelMajice"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayVelMajice"
             )) . "?msg=excep");
         }
     }
