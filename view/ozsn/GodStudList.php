@@ -9,30 +9,38 @@ class GodStudList extends AbstractView {
     private $godine;
     
     protected function outputHTML() {
-        if(count($this->godine))
-		{
+		// print messages if any
+        echo new \view\components\ErrorMessage(array(
+            "errorMessage" => $this->errorMessage
+        ));
+        echo new \view\components\ResultMessage(array(
+            "resultMessage" => $this->resultMessage
+        ));
 ?>
-			<div class="panel panel-default">
-				<div class="panel-heading">Popis godina studija</div>
-				
-				<table class="table">
-					<thead>
-						<tr>
-							<th>Studij</th>
-							<th>Godina</th>
-							<th>Opcije</th>
-						</tr>
-					</thead>
+		<div class="panel panel-default">
+			<div class="panel-heading">Popis godina studija</div>
 
-					<tbody>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Studij</th>
+						<th>Godina</th>
+						<th>Opcije</th>
+					</tr>
+				</thead>
+
+				<tbody>
 <?php
+
+		if(count($this->godine))
+		{
 			// Foreach atribut, generate row in table
 			foreach($this->godine as $val)
 			{
 				echo '<form action="modifyGodStud" method="POST">';
-				echo '<tr><td><span id="span-' . $val->idGodStud . '">' . $val->studij . '</span><input type="text" id="input-' . $val->idGodStud . '" style="display:none;" name="studij" value="' . $val->studij . '"><input type="hidden" name="idGodStud" value="' . $val->idGodStud . '"></td>';
-				echo '<tr><td><span id="span-' . $val->idGodStud . '">' . $val->godina . '</span><input type="text" id="input-' . $val->idGodStud . '" style="display:none;" name="godina" value="' . $val->godina . '"><input type="hidden" name="idGodStud" value="' . $val->idGodStud . '"></td>';
-				echo '<td><input type="submit" style="display: none;" class="btn btn-primary" id="submit-' . $val->idGodStud . '" value="Spremi" /><a href="javascript:;" class="editGodStud" id="uredi-' . $val->idGodStud . '" data-id="' . $val->idGodStud . '">Uredi</a> &nbsp; <a class="deleteGodStud" id="delete-' . $val->idGodStud . '" href="';
+				echo '<tr><td><span class="modify-' . $val->idGodStud . '">' . $val->studij . '</span><input type="text" class="modifyOn-' . $val->idGodStud . '" style="display:none;" name="studij" value="' . $val->studij . '"><input type="hidden" name="idGodStud" value="' . $val->idGodStud . '"></td>';
+				echo '<tr><td><span class="modify-' . $val->idGodStud . '">' . $val->studij . '</span><input type="text" class="modifyOn-' . $val->idGodStud . '" style="display:none;" name="godina" value="' . $val->godina . '"></td>';
+				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idGodStud . '" value="Spremi" /><a href="javascript:;" class="editGodStud modify-' . $val->idGodStud . '" data-id="' . $val->idGodStud . '">Uredi</a> &nbsp; <a class="deleteGodStud modify-' . $val->idGodStud . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
@@ -41,58 +49,35 @@ class GodStudList extends AbstractView {
 				echo '?id=' . $val->idGodStud . '">Obriši</a>';
 				echo '</td></tr></form>';
 			}
-?>
-						<tr class="addGodStud">
-							<td colspan="3">
-								<a class="addGodStud" id="addGodStud" href="javascript:;"><span class="glyphicon glyphicon-plus"></span> Dodaj novi atribut</a>
-							</td>
-						</tr>
-<?php
 		}
 		
 		else
 		{
 ?>
-			<input type="button" id="addGodStud" class="btn btn-primary addGodStud" value="Dodaj novu godinu studija">
-			
-			<div class="panel panel-default addGodStud_form" style="display:none;">
-				<div class="panel-heading">Popis godina studija</div>
-				
-				<table class="table">
-					<thead>
 						<tr>
-							<th>Studij</th>
-							<th>Godina</th>
-							<th>Opcije</th>
+							<td class="addGodStud" colspan="3"><i>Ne postoji ni jedan zapis o godini studija</i></td>
 						</tr>
-					</thead>
-
-					<tbody>
-
 <?php
-			$this->errorMessage = "Ne postoji niti jedna godina studija";
 		}
-		?>
-						<tr style="display: none;" class="addGodStud_form">
-							<form action="addGodStud" method="post">
-								<td><input type="text" name="studij" placeholder="Upišite naziv studija"></td>
-								<td><input type="text" name="godina" placeholder="Upišite godinu studija"></td>
-								<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
-							</form>
-						</tr>
-						
-					</tbody>
-				</table>
-			</div>
+?>
+					<tr class="addGodStud">
+						<td colspan="3">
+							<a id="addGodStud" href="javascript:;"><span class="glyphicon glyphicon-plus"></span> Dodaj novu godinu studija</a>
+						</td>
+					</tr>
+					<tr style="display: none;" class="addGodStudOn">
+						<form action="addGodStud" method="post">
+							<td><input type="text" name="studij" placeholder="Upišite naziv studija"></td>
+							<td><input type="text" name="godina" placeholder="Upišite godinu studija"></td>
+							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
+						</form>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
 <?php		
-		// print messages if any
-        echo new \view\components\ErrorMessage(array(
-            "errorMessage" => $this->errorMessage
-        ));
-        echo new \view\components\ResultMessage(array(
-            "resultMessage" => $this->resultMessage
-        ));
-	}
+    }
     
     public function setErrorMessage($errorMessage) {
         $this->errorMessage = $errorMessage;

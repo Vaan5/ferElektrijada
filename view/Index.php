@@ -110,6 +110,8 @@ class Index extends AbstractView {
         "controller" => 'ozsn',
         "action" => 'addContact'
     ));?>">Dodavanje Kontakt Osobe</a>
+	
+	<br>
         
 	<a href="<?php echo \route\Route::get('d3')->generate(array(
         "controller" => 'ozsn',
@@ -122,6 +124,13 @@ class Index extends AbstractView {
         "controller" => 'ozsn',
         "action" => 'displayVelMajice'
     ));?>">DBM Veličine majica</a>
+	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'displayGodStud'
+    ));?>">DBM Godine studija</a>
 </p>
 
 <div class="main">

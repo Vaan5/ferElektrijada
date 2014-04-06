@@ -14,11 +14,8 @@ class AtributListJs extends AbstractView {
 			var idAtributa;
 			$('.editAtribut').click(function () {
 				$idAtributa = $(this).data("id");
-				$('#span-' + $idAtributa).hide();
-				$('#edit-' + $idAtributa).hide();
-				$('#delete-' + $idAtributa).hide();
-				$('#input-' + $idAtributa).show();
-				$('#submit-' + $idAtributa).show();
+				$('.modify-' + $idAtributa).hide();
+				$('.modifyOn-' + $idAtributa).show();
 			});
 			
 			// When Obriši is clicked, show confirmation
@@ -32,7 +29,7 @@ class AtributListJs extends AbstractView {
 			// When addAtribut is clicked, show form for adding
 			$('#addAtribut').click( function () {
 				$('.addAtribut').hide();
-				$('.addAtribut_form').show();
+				$('.addAtributOn').show();
 				$('.alert').hide();
 			});
 		});

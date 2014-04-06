@@ -448,7 +448,7 @@ public function addVelMajice() {
             $_SESSION["exception"] = serialize($handler);
             preusmjeri(\route\Route::get('d3')->generate(array(
                 "controller" => "ozsn",
-                "action" => "displayAtribut"
+                "action" => "displayVelMajice"
             )) . "?msg=excep");
         }
         

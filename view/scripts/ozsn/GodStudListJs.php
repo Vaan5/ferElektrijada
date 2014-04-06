@@ -14,11 +14,8 @@ class GodStudListJs extends AbstractView {
 			var idGodStud;
 			$('.editGodStud').click(function () {
 				$idGodStud = $(this).data("id");
-				$('#span-' + $idGodStud).hide();
-				$('#edit-' + $idGodStud).hide();
-				$('#delete-' + $idGodStud).hide();
-				$('#input-' + $idGodStud).show();
-				$('#submit-' + $idGodStud).show();
+				$('.modify-' + $idGodStud).hide();
+				$('.modifyOn-' + $idGodStud).show();
 			});
 			
 			// When Obriši is clicked, show confirmation
@@ -32,7 +29,7 @@ class GodStudListJs extends AbstractView {
 			// When addGodStud is clicked, show form for adding
 			$('#addGodStud').click( function () {
 				$('.addGodStud').hide();
-				$('.addGodStud_form').show();
+				$('.addGodStudOn').show();
 				$('.alert').hide();
 			});
 		});

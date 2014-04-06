@@ -14,11 +14,8 @@ class VelMajiceListJs extends AbstractView {
 			var idVelMajice;
 			$('.editVelMajice').click(function () {
 				$idVelMajice = $(this).data("id");
-				$('#span-' + $idVelMajice).hide();
-				$('#edit-' + $idVelMajice).hide();
-				$('#delete-' + $idVelMajice).hide();
-				$('#input-' + $idVelMajice).show();
-				$('#submit-' + $idVelMajice).show();
+				$('.modify-' + $idVelMajice).hide();
+				$('.modifyOn-' + $idVelMajice).show();
 			});
 			
 			// When Obriši is clicked, show confirmation
@@ -31,10 +28,9 @@ class VelMajiceListJs extends AbstractView {
 			
 			// When addVelMajice is clicked, show form for adding
 			$('#addVelMajice').click( function () {
-				$('#addVelMajice').hide();
-				$('.addVelMajice_form').show();
-				$('#addVelMajice_input').show();
-				$('#addVelMajice_submit').show();
+				$('.addVelMajice').hide();
+				$('.addVelMajiceOn').show();
+				$('.alert').hide();
 			});
 		});
 	</script>    

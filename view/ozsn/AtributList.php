@@ -9,28 +9,36 @@ class AtributList extends AbstractView {
     private $atributi;
     
     protected function outputHTML() {
-        if(count($this->atributi))
-		{
+		// print messages if any
+        echo new \view\components\ErrorMessage(array(
+            "errorMessage" => $this->errorMessage
+        ));
+        echo new \view\components\ResultMessage(array(
+            "resultMessage" => $this->resultMessage
+        ));
 ?>
-			<div class="panel panel-default">
-				<div class="panel-heading">Popis atributa</div>
-				
-				<table class="table">
-					<thead>
-						<tr>
-							<th>Naziv</th>
-							<th>Opcije</th>
-						</tr>
-					</thead>
+		<div class="panel panel-default">
+			<div class="panel-heading">Popis atributa</div>
 
-					<tbody>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Naziv</th>
+						<th>Opcije</th>
+					</tr>
+				</thead>
+
+				<tbody>
 <?php
+
+		if(count($this->atributi))
+		{
 			// Foreach atribut, generate row in table
 			foreach($this->atributi as $val)
 			{
 				echo '<form action="modifyAtribut" method="POST">';
-				echo '<tr><td><span id="span-' . $val->idAtributa . '">' . $val->nazivAtributa . '</span><input type="text" id="input-' . $val->idAtributa . '" style="display:none;" name="nazivAtributa" value="' . $val->nazivAtributa . '"><input type="hidden" name="idAtributa" value="' . $val->idAtributa . '"></td>';
-				echo '<td><input type="submit" style="display: none;" class="btn btn-primary" id="submit-' . $val->idAtributa . '" value="Spremi" /><a href="javascript:;" class="editAtribut" id="uredi-' . $val->idAtributa . '" data-id="' . $val->idAtributa . '">Uredi</a> &nbsp; <a class="deleteAtribut" id="delete-' . $val->idAtributa . '" href="';
+				echo '<tr><td><span class="modify-' . $val->idAtributa . '">' . $val->nazivAtributa . '</span><input type="text" class="modifyOn-' . $val->idAtributa . '" style="display:none;" name="nazivAtributa" value="' . $val->nazivAtributa . '"><input type="hidden" name="idAtributa" value="' . $val->idAtributa . '"></td>';
+				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idAtributa . '" value="Spremi" /><a href="javascript:;" class="editAtribut modify-' . $val->idAtributa . '" data-id="' . $val->idAtributa . '">Uredi</a> &nbsp; <a class="deleteAtribut modify-' . $val->idAtributa . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
@@ -39,55 +47,33 @@ class AtributList extends AbstractView {
 				echo '?id=' . $val->idAtributa . '">Obriši</a>';
 				echo '</td></tr></form>';
 			}
-?>
-						<tr class="addAtribut">
-							<td colspan="2">
-								<a class="addAtribut" id="addAtribut" href="javascript:;"><span class="glyphicon glyphicon-plus"></span> Dodaj novi atribut</a>
-							</td>
-						</tr>
-<?php
 		}
 		
 		else
 		{
 ?>
-			<input type="button" id="addAtribut" class="btn btn-primary addAtribut" value="Dodaj novi atribut">
-			
-			<div class="panel panel-default addAtribut_form" style="display:none;">
-				<div class="panel-heading">Popis atributa</div>
-				
-				<table class="table">
-					<thead>
 						<tr>
-							<th>Naziv</th>
-							<th>Opcije</th>
+							<td class="addAtribut" colspan="2"><i>Ne postoji ni jedan atribut</i></td>
 						</tr>
-					</thead>
-
-					<tbody>
-
 <?php
-			$this->errorMessage = "Ne postoji niti jedan atribut";
 		}
-		?>
-						<tr style="display: none;" class="addAtribut_form">
-							<form action="addAtribut" method="post">
-								<td><input type="text" name="nazivAtributa" placeholder="Upišite naziv atributa"></td>
-								<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
-							</form>
-						</tr>
-						
-					</tbody>
-				</table>
-			</div>
+?>
+					<tr class="addAtribut">
+						<td colspan="2">
+							<a id="addAtribut" href="javascript:;"><span class="glyphicon glyphicon-plus"></span> Dodaj novi atribut</a>
+						</td>
+					</tr>
+					<tr style="display: none;" class="addAtributOn">
+						<form action="addAtribut" method="post">
+							<td><input type="text" name="nazivAtributa" placeholder="Upišite naziv atributa"></td>
+							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
+						</form>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
 <?php		
-		// print messages if any
-        echo new \view\components\ErrorMessage(array(
-            "errorMessage" => $this->errorMessage
-        ));
-        echo new \view\components\ResultMessage(array(
-            "resultMessage" => $this->resultMessage
-        ));
     }
     
     public function setErrorMessage($errorMessage) {
