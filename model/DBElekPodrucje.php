@@ -17,11 +17,9 @@ class DBElekPodrucje extends AbstractDBModel {
     public function getPrimaryKeyColumn(){
         return 'idElekPodrucje';
     }
- 
+            
     public function getColumns(){
         return array ('idPodrucja', 'rezultatGrupni', 'slikaLink', 'slikaBLOB', 'idElektrijade', 'idSponzora');
     }
 }
 
-
- 
