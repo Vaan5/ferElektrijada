@@ -36,7 +36,6 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
 			$q->execute();
 			$rez=$q->fetch(); //dohvatili smo ulogu
 		}catch (\PDOException $e) {
-            var_dump('tu');
             var_dump($e->errorInfo); // tu ce biti josh i 02000 (indeks 0) i 1604 kao index 1
             var_dump($e->errorInfo[2]);  
             var_dump($e);
@@ -58,7 +57,6 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
 			$q = $pdo->prepare("CALL dohvatiOsobnaPodrucja($id,$idOsobe)");
 			$q->execute();
 			$rez  = $q->fetchAll();
-			$vel = $q->columnCount();
 		}catch (\PDOException $e) {
             var_dump('tu');
             var_dump($e->errorInfo); // tu ce biti josh i 02000 (indeks 0) i 1604 kao index 1
@@ -66,6 +64,7 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
             var_dump($e);
             die();
 		}
+		$vel=count($rez);
 		if($vel>0){//ako postoji ba 1 podrucje vrati podrucje, ako ne vrati null
 			return $rez;
 		}
