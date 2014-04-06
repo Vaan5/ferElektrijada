@@ -4,7 +4,7 @@ CREATE  PROCEDURE `azurirajAtribut`(IN idAtributa INT(10),IN nazivAtributa VARCH
 BEGIN
 IF NOT EXISTS (SELECT* 
 		FROM ATRIBUT WHERE ATRIBUT.idAtributa = idAtributa) THEN
-		SELECT 'Greška: Ne postoji traženi atribut';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji traženi atribut';
 ELSE
 	UPDATE ATRIBUT
 	SET ATRIBUT.nazivAtributa=nazivAtributa
@@ -21,7 +21,7 @@ IF EXISTS (SELECT* FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idPodrucja) THEN
 IF EXISTS (SELECT* FROM ELEKTRIJADA WHERE ELEKTRIJADA.datumPocetka = datumPocetka) THEN
 IF NOT EXISTS (SELECT* 
 		FROM ElekPodrucje WHERE ElekPodrucje.idElekPodrucje = idElekPodrucje ) THEN
-		SELECT 'Greška: Ne postoji područje koje želite ažurirati';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji područje koje želite ažurirati';
 ELSE
 	UPDATE ElekPodrucje
     SET ElekPodrucje.datumPocetka=datumPocetka, ElekPodrucje.rezultatGrupni=rezultatGrupni, ElekPodrucje.slikaLink=slikaLink, ElekPodrucje.slikaBLOB=slikaBLOB, ElekPodrucje.idPodrucja=idPodrucja, ElekPodrucje.idSponzora=idSponzora
@@ -29,11 +29,11 @@ ELSE
 
 END IF;
 ELSE 
-	   SELECT 'Greška: Upisan nepostojeći datum Elektrijade!';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Upisan nepostojeći datum Elektrijade!';
 END IF;
 
 ELSE 
-	   SELECT 'Greška: Upisan nepostojeće područje!';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Upisan nepostojeće područje!';
 END IF;
 
 END $$
@@ -43,14 +43,14 @@ DELIMITER $$
 CREATE  PROCEDURE `azurirajElektrijadu`(IN idElektrijade INT(10), IN mjestoOdrzavanja VARCHAR(100), IN datumPocetka DATE, IN datumKraja DATE, IN ukupniRezultat SMALLINT(6), IN drzava VARCHAR(100))
 BEGIN
 IF NOT EXISTS (SELECT * FROM ELEKTRIJADA WHERE ELEKTRIJADA.idElektrijade = idElektrijade) THEN
-	SELECT 'Greška: Ne postoji Elektrijada na zadanom mjestu';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji Elektrijada na zadanom mjestu';
 ELSE
 IF(datumPocetka<datumKraja) THEN
 UPDATE ELEKTRIJADA
 SET ELEKTRIJADA.datumKraja = datumKraja, ELEKTRIJADA.mjestoOdrzavanja=mjestoOdrzavanja , ELEKTRIJADA.ukupniRezultat=ukupniRezultat, ELEKTRIJADA.drzava=drzava, ELEKTRIJADA.datumPocetka=datumPocetka
 WHERE ELEKTRIJADA.idElektrijade = idElektrijade;
 ELSE
-    SELECT 'Greška: Pogrešan unos datuma pocetka i datuma kraja Elektrijade!';
+     SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Pogrešan unos datuma pocetka i datuma kraja Elektrijade!';
 END IF;
 
 END IF;
@@ -68,13 +68,13 @@ IF EXISTS (SELECT * FROM FUNKCIJA WHERE FUNKCIJA.idFunkcije = idFunkcije) THEN
 				FUNKCIJA.nazivFunkcije = nazivFunkcije
 			WHERE FUNKCIJA.idFunkcije = idFunkcije;
 		ELSE 
-			SELECT 'Greška: Naziv funkcije mora biti poznat!';
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Naziv funkcije mora biti poznat!';
 		END IF;
 	ELSE
-		SELECT 'Greška: naziv funkcije već postoji!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: naziv funkcije već postoji!';
 	END IF;
 ELSE 
-	SELECT 'Greška: id funkcije nije pronađen!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: id funkcije nije pronađen!';
 END IF;
 END $$
 DELIMITER ;
@@ -88,7 +88,7 @@ IF EXISTS (SELECT * FROM GODSTUD WHERE idGodStud = id) THEN
 UPDATE  GODSTUD
 SET idGodStud=id, studij=stud,godina=god  WHERE idGodStud = id;
 ELSE 
-	SELECT 'Greška: Odabrana vrijednost ne postoji!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrana vrijednost ne postoji!';
 END IF;
 END $$
 DELIMITER ;
@@ -102,9 +102,9 @@ BEGIN
 			UPDATE KATEGORIJA
 			SET KATEGORIJA.tipKategorijaSponzora=tipKategorijeSponzora
 			WHERE KATEGORIJA.idKategorijaSponzora=idKategorijaSponzora;
-		ELSE SELECT 'Greška: Ne postoji kategorija sponzora sa zadanim identifikatorom!';
+		ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji kategorija sponzora sa zadanim identifikatorom!';
 		END IF;
-	ELSE SELECT 'Greška: Ovaj tip kategorije sponzora je vec unesen u bazu!';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ovaj tip kategorije sponzora je vec unesen u bazu!';
 	END IF;
 END $$
 DELIMITER ;
@@ -116,7 +116,7 @@ BEGIN
 		UPDATE KONTAKTOSOBE
 		SET KONTAKTOSOBE.imeKontakt=imeKontakt, KONTAKTOSOBE.prezimeKontakt=prezimeKontakt, KONTAKTOSOBE.telefon=telefon, KONTAKTOSOBE.radnoMjesto=radnoMjesto, KONTAKTOSOBE.idTvrtke=idTvrtke, KONTAKTOSOBE.idSponzora=idSponzora
 		WHERE KONTAKTOSOBE.idKontakta=idKontakta;
-	ELSE SELECT 'Greška: Ne postoji kontakt sa upisanim identifikatorom!';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji kontakt sa upisanim identifikatorom!';
 	END IF;
 END $$
 DELIMITER ;
@@ -129,22 +129,22 @@ IF EXISTS (SELECT * FROM USLUGA  WHERE idUsluge=Usluga) THEN
 IF EXISTS (SELECT * FROM TVRTKA  WHERE idTvrtke = Tvrtka) THEN
 			IF EXISTS (SELECT * FROM ELEKTRIJADA  WHERE ELEKTRIJADA.idElektrijade = idElektrijade) THEN
 				IF UPPER(valuta) NOT IN( 'HRK','USD','EUR') THEN
-SELECT ' Greška: Valuta donacije mora biti HRK, USD ili EUR!';
+ SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = ' Greška: Valuta donacije mora biti HRK, USD ili EUR!';
 				ELSE	IF iznos <= 0 THEN
-SELECT ' Greška: Iznos donacije je nula ili manji!';
+ SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = ' Greška: Iznos donacije je nula ili manji!';
 
 				ELSE	    	UPDATE KoristiPruza					SET idUsluge=Usluga,ELEKTRIJADA.idElektrijade=idElektrijade, idTvrtke=Tvrtka, iznosRacuna=iznos, valutaRacuna=valuta, nacinPlacanja=nacin, napomena=napomene
 WHERE KoristiPruza.idKoristiPruza=idKoristiPruza;
 				END IF;
 				END IF;
 					ELSE
-					SELECT 'Greška: Odabrani datum nije početak Elektrijade!';
+					 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrani datum nije početak Elektrijade!';
 				END IF;
 		ELSE
-			SELECT 'Greška: Odabrana tvrtka ne postoji! ';
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrana tvrtka ne postoji! ';
 		END IF;
 ELSE
-	SELECT 'Greška: Usluga nije evidentirana u bazi  podataka!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Usluga nije evidentirana u bazi  podataka!';
 END IF;
 END $$
 DELIMITER ;
@@ -159,11 +159,11 @@ BEGIN
 				UPDATE EMAILADRESE
 				SET EMAILADRESE.idKontakta=idKontakta,EMAILADRESE.email=email
 				WHERE EMAILADRESE.idAdrese=idAdrese;
-			ELSE SELECT 'Greška: Krivi format email adrese!';
+			ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Krivi format email adrese!';
 			END IF;
-		ELSE SELECT 'Greška: Ne postoji kontakt sa upisanim identifikatorom!';
+		ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji kontakt sa upisanim identifikatorom!';
 		END IF;
-	ELSE SELECT 'Navedeni email je vec u bazi!';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Navedeni email je vec u bazi!';
 	END IF;
 END $$
 DELIMITER ;
@@ -177,11 +177,11 @@ BEGIN
 				UPDATE BROJEVIMOBITELA
 				SET BROJEVIMOBITELA.idKontakta=idKontakta,BROJEVIMOBITELA.broj=broj
 				WHERE BROJEVIMOBITELA.idBroja=idBroja;
-			ELSE SELECT 'Greška: Broj mobitela moze sadrzavati samo znamenke!';
+			ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Broj mobitela moze sadrzavati samo znamenke!';
 			END IF;
-		ELSE SELECT 'Greška: Ne postoji kontakt sa zadanim identifikatorom!';
+		ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji kontakt sa zadanim identifikatorom!';
 		END IF;
-	ELSE SELECT 'Greška: Navedeni broj mobitela se vec nalazi u bazi!';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Navedeni broj mobitela se vec nalazi u bazi!';
 	END IF;
 END $$
 DELIMITER ;
@@ -196,13 +196,13 @@ IF EXISTS ( SELECT * FROM NACINPROMOCIJE WHERE NACINPROMOCIJE.idPromocije = idPr
 			NACINPROMOCIJE.tipPromocije = tipPromocije
 			WHERE NACINPROMOCIJE.idPromocije = idPromocije;
 		ELSE 
-			SELECT 'Greška: Tip promocije mora biti poznat!';
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Tip promocije mora biti poznat!';
 		END IF;
 	ELSE 
-		SELECT 'Greška: Tip promocije već postoji!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Tip promocije već postoji!';
 	END IF;
 ELSE
-	SELECT 'Greška: id promocije nije pronađen!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: id promocije nije pronađen!';
 END IF;
 END $$
 DELIMITER ;
@@ -231,38 +231,38 @@ WHERE OSOBA.idOsobe=idOsobe ;
  
 
 	ELSE 
-	   SELECT 'Greška: Pogrešno upisan ferId! Unesite ferId u obliku "ab22222" ili "mivic3" !';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Pogrešno upisan ferId! Unesite ferId u obliku "ab22222" ili "mivic3" !';
 END IF;
     ELSE 
-	   SELECT 'Greška: Niste unijeli dobar email!';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Niste unijeli dobar email!';
 END IF;
 	ELSE 
-	   SELECT 'Greška: Broj  mobitela smiju sadrzavati samo brojke!';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Broj  mobitela smiju sadrzavati samo brojke!';
 	END IF;
 
 	ELSE
-       SELECT 'Greška: Broj putovnice ili broj osobne trebaju sadržavati samo znamenke!';
+        SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Broj putovnice ili broj osobne trebaju sadržavati samo znamenke!';
 
 	END IF;
  ELSE
-	   SELECT 'Greška: OIB mora sadržavati samo znamenke i biti jedanaesteroznamenkast!';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: OIB mora sadržavati samo znamenke i biti jedanaesteroznamenkast!';
 END IF;
  ELSE
-	   SELECT 'Greška: MBG mora sadržavati samo znamenke i biti deveteroznamenkast!';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: MBG mora sadržavati samo znamenke i biti deveteroznamenkast!';
 END IF;
     ELSE
-	   SELECT 'Greška: JMBAG mora sadržavati samo znamenke i biti deseteroznamenkast!';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: JMBAG mora sadržavati samo znamenke i biti deseteroznamenkast!';
 END IF;
 ELSE 
-	   SELECT 'Greška: Unijeli ste pogrešni id osobe!';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Unijeli ste pogrešni id osobe!';
 END IF;
 
 
  ELSE 
-	   SELECT 'Greška: Osobna ili putovnica su istekle !';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Osobna ili putovnica su istekle !';
 END IF;
     ELSE 
-	   SELECT 'Greška: Pogrešno unseen spol! !';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Pogrešno unseen spol! !';
 END IF;
 
 END $$
@@ -274,7 +274,7 @@ CREATE  PROCEDURE `azurirajPodrucje`(IN idPodrucja INT(10),IN nazivPodrucja VARC
 BEGIN
 IF NOT EXISTS (SELECT* FROM PODRUCJE WHERE PODRUCJE.nazivPodrucja = nazivPodrucja) THEN
 IF NOT EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idPodrucja) THEN
-	SELECT 'Greška: Područje je pogrešno zadano';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Područje je pogrešno zadano';
 ELSE
 UPDATE PODRUCJE
 SET  PODRUCJE.nazivPodrucja=nazivPodrucja,PODRUCJE.idNadredjenog=idNadredjenog
@@ -282,7 +282,7 @@ WHERE PODRUCJE.idPodrucja = idPodrucja ;
 
 END IF;
 ELSE
-SELECT 'Greška: Ovo područje je već unešeno!';
+ SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ovo područje je već unešeno!';
 END IF;
 
 END $$
@@ -297,21 +297,21 @@ IF EXISTS (SELECT * FROM PODRUCJESUDJELOVANJA WHERE PODRUCJESUDJELOVANJA.idPodru
 IF EXISTS (SELECT* FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idPodrucja) THEN
 IF EXISTS (SELECT* FROM SUDJELOVANJE WHERE SUDJELOVANJE.idSudjelovanja = idSudjelovanja) THEN
 	IF (vrstaPodrucja = 0 AND rezultatPojedinacni IS NOT NULL) THEN
-		SELECT 'Pojedinacni rezultat se ne može upisat u ekipnu disciplinu.';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Pojedinacni rezultat se ne može upisat u ekipnu disciplinu.';
 	ELSE
 		UPDATE PODRUCJESUDJELOVANJA SET PODRUCJESUDJELOVANJA.rezultatPojedinacni = rezultatPojedinacni, PODRUCJESUDJELOVANJA.vrstaPodrucja = vrstaPodrucja, PODRUCJESUDJELOVANJA.idPodrucja=idPodrucja ,PODRUCJESUDJELOVANJA.idSudjelovanja=idSudjelovanja
 		WHERE PODRUCJESUDJELOVANJA.idPodrucjeSudjelovanja=idPodrucjeSudjelovanja;
 	END IF;
 ELSE
-	SELECT 'Greška: Upisano nepostojeće sudjelovanje (id sudjelovanja)!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Upisano nepostojeće sudjelovanje (id sudjelovanja)!';
 END IF;
 
 ELSE
-	SELECT 'Greška: Upisano nepostojeće podrucje (id podrucja)!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Upisano nepostojeće podrucje (id podrucja)!';
 END IF;
 
 ELSE
-	SELECT 'Greška: Traženi zapis ne postoji!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Traženi zapis ne postoji!';
 END IF;
 END $$
 DELIMITER ;
@@ -324,7 +324,7 @@ IF EXISTS (SELECT * FROM RADNOMJESTO WHERE idRadnogMjesta = id) THEN
 UPDATE RADNOMJESTO 
 SET idRadnogMjesta=id, naziv=ime WHERE idRadnogMjesta = id;
 ELSE 
-	SELECT 'Greška: Odabrana vrijednost ne postoji!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrana vrijednost ne postoji!';
 END IF;
 END $$
 DELIMITER ;
@@ -336,7 +336,7 @@ IF EXISTS (SELECT * FROM SMJER WHERE idSmjera = id) THEN
 UPDATE SMJER
 SET idSmjera=id, nazivSmjera=naziv WHERE idSmjera = id;
 ELSE 
-	SELECT 'Greška: Odabrana vrijednost ne postoji!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrana vrijednost ne postoji!';
 END IF;
 END $$
 DELIMITER ;
@@ -349,9 +349,9 @@ IF NOT EXISTS (SELECT * FROM SPONZOR WHERE SPONZOR.imeTvrtke=imeTvrtke AND SPONZ
 		UPDATE SPONZOR
 		SET SPONZOR.imeTvrtke=imeTvrtke, SPONZOR.adresaTvrtke=adresaTvrtke
 		WHERE SPONZOR.idSponzora=idSponzora;
-	ELSE SELECT 'Greška: Ne postoji sponzor sa unesenim identifikatorom!';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji sponzor sa unesenim identifikatorom!';
 	END IF;
-ELSE SELECT 'Greška: Zadani zapis vec postoji u bazi!';
+ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Zadani zapis vec postoji u bazi!';
 END IF;
 END $$
 DELIMITER ;
@@ -364,21 +364,21 @@ IF EXISTS (SELECT * FROM ImaSponzora WHERE ImaSponzora.idImaSponzora=idImaSponzo
 IF EXISTS (SELECT* FROM SPONZOR WHERE SPONZOR.idSponzora = idSponzora) THEN
 IF EXISTS (SELECT* FROM ELEKTRIJADA WHERE SUDJELOVANJE.idElektrijade = idElektrijade) THEN
 	IF valutaDonacije NOT IN( 'HRK','USD','EUR') THEN
-	SELECT 'Greška: Valuta donacije mora biti HRK, USD ili EUR!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Valuta donacije mora biti HRK, USD ili EUR!';
 	ELSE
 	IF (iznosDonacije <= 0) THEN
-	SELECT 'Greksa: Iznos donacije je manji ili jednak nuli!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greksa: Iznos donacije je manji ili jednak nuli!';
 	ELSE
 		UPDATE ImaSponzora 
 		SET ImaSponzora.idKategorijaSponzora=idKategorijeSponzora,ImaSponzora.idPromocije=idPromocije,ImaSponzora.iznosDonacije=iznosDonacije,ImaSponzora.valutaDonacije=valutaDonacije,ImaSponzora.napomena=napomena ,ImaSponzora.idSponzora=idSponzora ,ImaSponzora.idElektrijade=idElektrijade
 		WHERE ImaSponzora.idImaSponzora=idImaSponzora;
 	END IF;
 	END IF;
-ELSE SELECT 'Greška: Ne postoji doticni sponzor!';
+ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji doticni sponzor!';
 END IF;
-ELSE SELECT 'Greška: Ne postoji doticna elektrijada!';
+ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji doticna elektrijada!';
 END IF;
-ELSE SELECT 'Greška: Ne postoji unos sa upisanim podacima!';
+ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji unos sa upisanim podacima!';
 END IF;
 END $$
 DELIMITER ;
@@ -389,11 +389,11 @@ CREATE  PROCEDURE `azurirajSudjelovanje`(IN idSudjelovanja INT UNSIGNED, IN idOs
 BEGIN
 IF EXISTS (SELECT * FROM SUDJELOVANJE WHERE SUDJELOVANJE.idSudjelovanja=idSudjelovanja) THEN
 	IF tip NOT IN('D','S') THEN
-		SELECT 'Greška: Varijabla tip mora biti ili S ili D!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Varijabla tip mora biti ili S ili D!';
 	ELSE
 		IF tip = 'S' THEN
 			IF idRadnogMjesta IS NOT NULL || idZavoda IS NOT NULL THEN
-				SELECT 'Greška: Sudent ne može imati radno mjesto / zavod!';
+				 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Sudent ne može imati radno mjesto / zavod!';
 			ELSE
 				IF EXISTS (SELECT* FROM OSOBA WHERE OSOBA.idOsobe = idOsobe) THEN
 				IF EXISTS (SELECT* FROM ELEKTRIJADA WHERE SUDJELOVANJE.idElektrijade = idElektrijade) THEN
@@ -411,24 +411,24 @@ IF EXISTS (SELECT * FROM SUDJELOVANJE WHERE SUDJELOVANJE.idSudjelovanja=idSudjel
 								SUDJELOVANJE.idZavoda = idZavoda
 							WHERE SUDJELOVANJE.idSudjelovanja=idSudjelovanja;
                           ELSE
-							SELECT 'Greška: Id osobe je pogrešan!';
+							 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Id osobe je pogrešan!';
 						END IF;
 						ELSE
-							SELECT 'Greška: Id eleektrijade je pogrešan!';
+							 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Id eleektrijade je pogrešan!';
 						END IF;
 						ELSE
-							SELECT 'Greška: Nije odabrana veličina majice!';
+							 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nije odabrana veličina majice!';
 						END IF;
 					ELSE
-						SELECT 'Greška: Nije odabran smjer!';
+						 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nije odabran smjer!';
 					END IF;
 				ELSE
-					SELECT 'Greška: Nije odabrana godina studija!';
+					 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nije odabrana godina studija!';
 				END IF;
 			END IF;
 		ELSE
 			IF idGodStud IS NOT NULL || idSmjera IS NOT NULL THEN
-				SELECT 'Greška: Djelatnik ne može imati godinu studija / smjer!';
+				 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Djelatnik ne može imati godinu studija / smjer!';
 			ELSE
                 IF EXISTS (SELECT* FROM OSOBA WHERE OSOBA.idOsobe = idOsobe) THEN
 				IF EXISTS (SELECT* FROM ELEKTRIJADA WHERE SUDJELOVANJE.idElektrijade = idElektrijade) THEN
@@ -446,25 +446,25 @@ IF EXISTS (SELECT * FROM SUDJELOVANJE WHERE SUDJELOVANJE.idSudjelovanja=idSudjel
 								SUDJELOVANJE.idZavoda = idZavoda
 							WHERE SUDJELOVANJE.idSudjelovanja=idSudjelovanja;
                         ELSE
-							SELECT 'Greška: Id osobe je pogrešan!';
+							 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Id osobe je pogrešan!';
 						END IF;
 						ELSE
-							SELECT 'Greška: Id eleektrijade je pogrešan!';
+							 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Id eleektrijade je pogrešan!';
 						END IF;
 						ELSE
-							SELECT 'Greška: Nije odabrana veličina majice!';
+							 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nije odabrana veličina majice!';
 						END IF;
 					ELSE
-						SELECT 'Greška: Nije odabran zavod!';
+						 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nije odabran zavod!';
 					END IF;
 				ELSE
-					SELECT 'Greška: Nije odabrano radno mjesto!';
+					 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nije odabrano radno mjesto!';
 				END IF;
 			END IF;
 		END IF;
 	END IF;
 ELSE
-	SELECT 'Greška: Traženi zapis ne postoji!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Traženi zapis ne postoji!';
 END IF;
 END $$
 DELIMITER ;
@@ -480,10 +480,10 @@ BEGIN
 				TVRTKA.adresaTvrtke = adresaTvrtke
 				WHERE TVRTKA.idTvrtke = idTvrtke;
 		ELSE 
-				SELECT 'Greška: Ime i naziv tvrtke moraju biti poznati!';
+				 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ime i naziv tvrtke moraju biti poznati!';
 			END IF;
 	ELSE
-		SELECT 'Greška: Tražena tvrtka ne postoji!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Tražena tvrtka ne postoji!';
 	END IF;
 END $$
 DELIMITER ;
@@ -498,13 +498,13 @@ BEGIN
 					UDRUGA.nazivUdruge = nazivUdruge
 					WHERE UDRUGA.idUdruge = idUdruge;
 			ELSE
-				SELECT 'Greška: Naziv udruge mora biti poznat!';
+				 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Naziv udruge mora biti poznat!';
 			END IF;			
 		ELSE
-			SELECT 'Greška: Naziv udruge već postoji!';
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Naziv udruge već postoji!';
 		END IF;
 	ELSE 
-		SELECT 'Greška: Tražena udruga ne postoji!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Tražena udruga ne postoji!';
 	END IF;
 END $$
 DELIMITER ;
@@ -519,13 +519,13 @@ BEGIN
 				USLUGA.nazivUsluge = nazivUsluge
 				WHERE USLUGA.idUsluge = idUsluge;
 			ELSE 
-				SELECT 'Greška: Naziv usluge mora biti poznat!';
+				 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Naziv usluge mora biti poznat!';
 			END IF;
 		ELSE
-			SELECT 'Greška: Naziv usluge već postoji!';
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Naziv usluge već postoji!';
 		END IF;
 	ELSE
-		SELECT 'Greška: Navedeni id usluge ne postoji!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Navedeni id usluge ne postoji!';
 	END IF;
 END $$
 DELIMITER ;
@@ -537,7 +537,7 @@ IF EXISTS (SELECT * FROM VELMAJICE WHERE idVelicine = id) THEN
 UPDATE VELMAJICE
 SET idVelicine=id,velicina=vel  WHERE idVelicine = id;
 ELSE 
-	SELECT 'Greška: Odabrana vrijednost ne postoji!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrana vrijednost ne postoji!';
 END IF;
 END $$
 DELIMITER ;
@@ -549,7 +549,7 @@ IF EXISTS (SELECT * FROM ZAVOD WHERE idZavoda = id) THEN
 UPDATE  ZAVOD
 SET idZavoda=id, nazivZavoda=naziv, skraceniNaziv=skraceni WHERE idZavoda = id;
 ELSE 
-	SELECT 'Greška: Odabrana vrijednost ne postoji!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrana vrijednost ne postoji!';
 END IF;
 END $$
 DELIMITER ;
@@ -559,7 +559,7 @@ CREATE  PROCEDURE `brisiAtribut`(IN idAtributa INT(10))
 BEGIN
 IF NOT EXISTS (SELECT* 
 		FROM ATRIBUT WHERE ATRIBUT.idAtributa = idAtributa) THEN
-		SELECT 'Greška: Ne postoji traženi atribut';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji traženi atribut';
 ELSE
 	DELETE FROM ATRIBUT
 	WHERE ATRIBUT.idAtributa = idAtributa ;
@@ -575,7 +575,7 @@ BEGIN
 	IF EXISTS (SELECT * FROM ImaAtribut WHERE ImaAtribut.idImaAtribut=idImaAtribut ) THEN
 		DELETE FROM ImaAtribut
 		WHERE ImaAtribut.idImaAtribut=idImaAtribut;
-	ELSE SELECT 'Greška: Ne postoji unos sa upisanim podacima!';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji unos sa upisanim podacima!';
   	END IF;
 END $$
 DELIMITER ;
@@ -587,7 +587,7 @@ BEGIN
 	IF EXISTS (SELECT * FROM JeUUdruzi WHERE JeUUdruzi.idUdruge = idUdruge && JeUUdruzi.idOsobe = idOsobe) THEN
 		DELETE FROM JeUUdruzi WHERE JeUUdruzi.idUdruge = idUdruge && JeUUdruzi.idOsobe = idOsobe;
 	ELSE
-		SELECT 'Greška: Tražena osoba ne postoji!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Tražena osoba ne postoji!';
 	END IF;
 END $$
 DELIMITER ;
@@ -598,7 +598,7 @@ BEGIN
 
 IF NOT EXISTS (SELECT* 
 		FROM ElekPodrucje WHERE ElekPodrucje.idElekPodrucje = idElekPodrucje ) THEN
-		SELECT 'Greška: Ne postoji područje koje želite izbrisati';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji područje koje želite izbrisati';
 ELSE
 	DELETE FROM ElekPodrucje
 	WHERE ElekPodrucje.idElekPodrucje = idElekPodrucje ;
@@ -613,7 +613,7 @@ DELIMITER $$
 CREATE  PROCEDURE `brisiElektrijadu`(IN idElektrijade INT(10))
 BEGIN
 IF NOT EXISTS (SELECT * FROM ELEKTRIJADA WHERE ELEKTRIJADA.idElektrijade = idElektrijade) THEN
-	SELECT 'Greška: Ne postoji tražena Elektrijada';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji tražena Elektrijada';
 ELSE
 DELETE FROM ELEKTRIJADA
 WHERE ELEKTRIJADA.idElektrijade=idElektrijade ;
@@ -629,7 +629,7 @@ IF EXISTS ( SELECT * FROM ObavljaFunkciju WHERE ObavljaFunkciju.idObavljaFunkcij
 	DELETE FROM ObavljaFunkciju
     WHERE ObavljaFunkciju.idObavljaFunkciju = idObavljaFunkciju;
 ELSE
-	SELECT 'Greška: Traženi unos nije pronađen!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Traženi unos nije pronađen!';
 END IF;
 END $$
 DELIMITER ;
@@ -640,7 +640,7 @@ BEGIN
 IF EXISTS (SELECT * FROM FUNKCIJA WHERE FUNKCIJA.idFunkcije = idFunkcije) THEN
 	DELETE FROM FUNKCIJA WHERE FUNKCIJA.idFunkcije = idFunkcije;
 	ELSE
-		SELECT 'Greška: traženi zapis ne postoji!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: traženi zapis ne postoji!';
 END IF;
 END $$
 DELIMITER ;
@@ -651,7 +651,7 @@ BEGIN
 IF EXISTS (SELECT * FROM GODSTUD WHERE idGodStud = id) THEN
 DELETE FROM GODSTUD WHERE idGodStud = id;
 ELSE 
-	SELECT 'Greška: Odabrana vrijednost ne postoji!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrana vrijednost ne postoji!';
 END IF;
 END $$
 DELIMITER ;
@@ -662,7 +662,7 @@ BEGIN
 	IF EXISTS (SELECT * FROM KATEGORIJA WHERE KATEGORIJA.idKategorijeSponzora=idKategorijeSponzora) THEN
 		DELETE FROM KATEGORIJA
 		WHERE KATEGORIJA.idKategorijeSponzora=idKategorijeSponzora;
-	ELSE SELECT 'Greška: Ne postoji kategorija sa zadanim identifikatorom!';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji kategorija sa zadanim identifikatorom!';
 	END IF;
 END $$
 DELIMITER ;
@@ -673,7 +673,7 @@ BEGIN
 	IF EXISTS (SELECT * FROM KONTAKTOSOBE.idKontakta=idKontakta) THEN
 		DELETE FROM KONTAKTOSOBE
 		WHERE KONTAKTOSOBE.idKontakta=idKontakta;
-	ELSE SELECT 'Greška: Ne posotoji kontakt sa upisanim identifikatorom!';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne posotoji kontakt sa upisanim identifikatorom!';
 	END IF;
 END $$
 DELIMITER ;
@@ -686,7 +686,7 @@ BEGIN
 					    	DELETE FROM KoristiPruza WHERE KoristiPruza.idKoristiPruza = idKoristiPruza;
 				
 ELSE
-	SELECT 'Greška: Usluga nije evidentirana u bazi  podataka!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Usluga nije evidentirana u bazi  podataka!';
 END IF;
 END $$
 DELIMITER ;
@@ -697,7 +697,7 @@ BEGIN
 	IF EXISTS (SELECT * FROM EMAILADRESE WHERE EMAILADRESE.idAdrese=idAdrese) THEN
 		DELETE FROM EMAILADRESE
 		WHERE EMAILADRESE.idAdrese=idAdrese;
-	ELSE SELECT 'Greška: Ne postoji e-adresa sa unesenim identifikatorom!';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji e-adresa sa unesenim identifikatorom!';
     END IF;
 END $$
 DELIMITER ;
@@ -708,7 +708,7 @@ BEGIN
 	IF EXISTS (SELECT * FROM BROJEVIMOBITELA WHERE BROJEVIMOBITELA.idBroja=idBroja) THEN
 		DELETE FROM BROJEVIMOBITELA
 		WHERE BROJEVIMOBITELA.idBroja=idBroja;
-	ELSE SELECT 'Greška: Ne postoji mobitel sa unesenim identifikatorom!';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji mobitel sa unesenim identifikatorom!';
     END IF;
 END $$
 DELIMITER ;
@@ -719,7 +719,7 @@ BEGIN
 IF EXISTS ( SELECT * FROM NACINPROMOCIJE WHERE NACINPROMOCIJE.idPromocije = idPromocije) THEN
 	DELETE FROM NACINPROMOCIJE WHERE NACINPROMOCIJE.idPromocije = idPromocije;
 ELSE 
-	SELECT 'Greška: Traženi zapis ne postoji!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Traženi zapis ne postoji!';
 END IF;
 END $$
 DELIMITER ;
@@ -728,7 +728,7 @@ DELIMITER $$
 CREATE  PROCEDURE `brisiOsobu`(IN idOsobe INT(10))
 BEGIN
 IF NOT EXISTS (SELECT * FROM OSOBA WHERE OSOBA.idOsobe=idOsobe) THEN
-	SELECT 'Greška: Ne postoji OSOBA kuju želite izbrisati';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji OSOBA kuju želite izbrisati';
 ELSE
 DELETE FROM OSOBA
 WHERE OSOBA.idOsobe=idOsobe ;
@@ -741,13 +741,13 @@ DELIMITER $$
 CREATE  PROCEDURE `brisiPodrucje`(IN idPodrucja INT(10))
 BEGIN
 IF NOT EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idPodrucja) THEN
-	SELECT 'Greška: Ne postoji odabrano područje!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji odabrano područje!';
 ELSE
 IF NOT EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idNadredjenog = idPodrucja) THEN
 DELETE FROM PODRUCJE
 WHERE PODRUCJE.idPodrucja = idPodrucja ;
 ELSE
-    SELECT 'Greška: Najprije morate obrisati sva područja kojima je ovo područje nadređeno!';
+     SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Najprije morate obrisati sva područja kojima je ovo područje nadređeno!';
    END IF;
 
 END IF;
@@ -761,7 +761,7 @@ BEGIN
 IF EXISTS (SELECT * FROM PODRUCJESUDJELOVANJA WHERE PODRUCJESUDJELOVANJA.idPodrucjeSudejlovanja = idPodrucjeSudejlovanja) THEN
 	DELETE FROM PODRUCJESUDJELOVANJA WHERE PODRUCJESUDJELOVANJA.idPodrucjeSudejlovanja = idPodrucjeSudejlovanja;
 ELSE
-	SELECT 'Greška: Traženi zapis ne postoji!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Traženi zapis ne postoji!';
 END IF;
 END $$
 DELIMITER ;
@@ -772,7 +772,7 @@ BEGIN
 IF EXISTS (SELECT * FROM RADNOMJESTO  WHERE idRadnogMjesta = id) THEN
 DELETE FROM RADNOMJESTO WHERE idRadnogMjesta = id;
 ELSE 
-	SELECT 'Greška: Odabrana vrijednost ne postoji!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrana vrijednost ne postoji!';
 END IF;
 END $$
 DELIMITER ;
@@ -783,7 +783,7 @@ BEGIN
 IF EXISTS (SELECT * FROM SMJER WHERE idSmjera = id) THEN
 DELETE FROM SMJER WHERE idSmjera = id;
 ELSE 
-	SELECT 'Greška: Odabrana vrijednost ne postoji!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrana vrijednost ne postoji!';
 END IF;
 END $$
 DELIMITER ;
@@ -794,7 +794,7 @@ BEGIN
 	IF EXISTS (SELECT * FROM SPONZOR WHERE SPONZOR.idSponzora=idSponzora) THEN
 		DELETE FROM SPONZOR
 		WHERE SPONZOR.idSponzora=idSponzora;
-	ELSE SELECT 'Greška: Ne postoji sponzor sa unesenim identifikatorom!';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji sponzor sa unesenim identifikatorom!';
 	END IF;
 END $$
 DELIMITER ;
@@ -806,7 +806,7 @@ BEGIN
 	IF EXISTS (SELECT * FROM ImaSponzora WHERE ImaSponzora.idImaSponzora=idImaSponzora) THEN
 		DELETE FROM ImaSponzora
 		WHERE ImaSponzora.idImaSponzora=idImaSponzora;
-	ELSE SELECT 'Greška: Ne postoji unos sa upisanim podacima!';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji unos sa upisanim podacima!';
 	END IF;
 END $$
 DELIMITER ;
@@ -817,7 +817,7 @@ BEGIN
 IF EXISTS (SELECT * FROM SUDJELOVANJE WHERE SUDJELOVANJE.idSudjelovanja = idSudjelovanja) THEN
 	DELETE FROM SUDJELOVANJE WHERE SUDJELOVANJE.idSudjelovanja = idSudjelovanja;
 ELSE
-	SELECT 'Greška: Traženi zapis ne postoji!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Traženi zapis ne postoji!';
 END IF;
 END $$
 DELIMITER ;
@@ -828,7 +828,7 @@ BEGIN
 	IF EXISTS (SELECT * FROM TVRTKA WHERE TVRTKA.idTvrtke = idTvrtke) THEN
 		DELETE FROM TVRTKA WHERE TVRTKA.idTvrtke = idTvrtke;
 	ELSE 
-		SELECT 'Greška: Tražena tvrtka ne postoji!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Tražena tvrtka ne postoji!';
 	END IF;
 END $$
 DELIMITER ;
@@ -839,7 +839,7 @@ BEGIN
 	IF EXISTS (SELECT * FROM UDRUGA WHERE UDRUGA.idUdruge = idUdruge) THEN
 		DELETE FROM UDRUGA WHERE UDRUGA.idUdruge = idUdruge;
 	ELSE 
-		SELECT 'Greška: Tražena udruga nije pronađena!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Tražena udruga nije pronađena!';
 	END IF;
 END $$
 DELIMITER ;
@@ -850,7 +850,7 @@ BEGIN
 	IF EXISTS ( SELECT * FROM USLUGA WHERE USLUGA.idUsluge = idUsluge) THEN
 		DELETE FROM USLUGA WHERE USLUGA.idUsluge = idUsluge;
 	ELSE 
-		SELECT 'Greška: tražena usluga ne postoji!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: tražena usluga ne postoji!';
 	END IF;
 END $$
 DELIMITER ;
@@ -861,7 +861,7 @@ BEGIN
 IF EXISTS (SELECT * FROM VELMAJICE WHERE idVelicine = id) THEN
 DELETE FROM  VELMAJICE WHERE idVelicine = id;
 ELSE 
-	SELECT 'Greška: Odabrana vrijednost ne postoji!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrana vrijednost ne postoji!';
 END IF;
 END $$
 DELIMITER ;
@@ -872,7 +872,7 @@ BEGIN
 IF EXISTS (SELECT * FROM  ZAVOD WHERE idZavoda = id) THEN
 DELETE FROM ZAVOD WHERE idZavoda = id;
 ELSE 
-	SELECT 'Greška: Odabrana vrijednost ne postoji!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrana vrijednost ne postoji!';
 END IF;
 END $$
 DELIMITER ;
@@ -882,17 +882,17 @@ DELIMITER $$
 CREATE  PROCEDURE `dodajArtibutOsobi`(IN idPodrucja INT(10), IN idAtributa INT(10), IN idSudjelovanja INT(10))
 BEGIN
 IF EXISTS (SELECT * FROM ImaAtribut WHERE ImaAtribut.idPodrucja=idPodrucja && ImaAtribut.idAtributa=idAtributa && ImaAtribut.idSudjelovanja=idSudjelovanja) THEN
-	SELECT 'Greška: Zapis vec postoji u bazi!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Zapis vec postoji u bazi!';
 ELSE
 	IF EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idPodrucja=idPodrucja) THEN
 		IF EXISTS (SELECT * FROM ATRIBUT WHERE ATRIBUT.idAtributa=idAributa) THEN			
 				IF EXISTS (SELECT * FROM SUDJELOVANJE WHERE SUDEJLOVANJE.idSudjelovanja=idSudjelovanja) THEN
 					INSERT INTO ImaAtribut values (NULL,idPodrucja,idAtributa,idSudjelovanja);
-				ELSE SELECT 'Greška: Niste unijeli ispravan idSudjelovanja!';
+				ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Niste unijeli ispravan idSudjelovanja!';
 				END IF;
-			ELSE SELECT 'Greška: Niste unijeli ispravan identifikator osobe!';			
+			ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Niste unijeli ispravan identifikator osobe!';			
 		END IF;
-	ELSE SELECT 'Greška: Niste unijeli ispravan identifikator podrucja!';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Niste unijeli ispravan identifikator podrucja!';
 	END IF;
 END IF;
 
@@ -914,13 +914,13 @@ BEGIN
 			IF EXISTS (SELECT * FROM UDRUGA WHERE UDRUGA.idUdruge = idUdruge) THEN
 				INSERT INTO JeUUdruzi VALUES (NULL,idUdruge, idOsobe);
 			ELSE 
-				SELECT 'Greška: Navedeni id udruge nije pronađen!';
+				 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Navedeni id udruge nije pronađen!';
 			END IF;
 		ELSE 
-			SELECT 'Greška: Uneseni član već postoji!';
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Uneseni član već postoji!';
 		END IF;
 	ELSE 
-		SELECT 'Greška: Unešeni id osobe ne postoji ili osoba nije član OZSN!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Unešeni id osobe ne postoji ili osoba nije član OZSN!';
 	END IF;
 END $$
 DELIMITER ;
@@ -936,18 +936,18 @@ IF NOT EXISTS (SELECT * FROM ElekPodrucje WHERE ElekPodrucje.idElektrijade = idE
 		INSERT INTO ElekPodrucje VALUES (NULL,idPodrucja,rezultatGrupni,slikaLink,slikaBLOB,idElektrijade,idSponzora);
    
 ELSE
-	   SELECT 'Greška: Već postoji unos za ovo podrucje na ovoj Elektrijadi!';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Već postoji unos za ovo podrucje na ovoj Elektrijadi!';
 END IF;
 ELSE 
-	   SELECT 'Greška: Pogrešan unos sponzora!';
-END IF;
-
-ELSE 
-	   SELECT 'Greška: Upisan nepostojeći datum Elektrijade!';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Pogrešan unos sponzora!';
 END IF;
 
 ELSE 
-	   SELECT 'Greška: Upisan nepostojeće područje!';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Upisan nepostojeći datum Elektrijade!';
+END IF;
+
+ELSE 
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Upisan nepostojeće područje!';
 END IF;
 
 END $$
@@ -960,10 +960,10 @@ IF NOT EXISTS (SELECT * FROM ELEKTRIJADA WHERE ELEKTRIJADA.datumPocetka = datumP
 IF (datumPocetka<datumKraja) THEN
 	INSERT INTO ELEKTRIJADA VALUES (NULL,mjestoOdrzavanja,datumPocetka,datumKraja,ukupniRezultat,drzava);
 ELSE
-    SELECT 'Greška: Pogrešan unos datuma pocetka ili datuma kraja Elektrijade';
+     SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Pogrešan unos datuma pocetka ili datuma kraja Elektrijade';
 END IF;
 ELSE
-    SELECT 'Greška: Pogrešan unos datuma pocetka Elektrijade! Datum već postoji.';
+     SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Pogrešan unos datuma pocetka Elektrijade! Datum već postoji.';
 END IF;
 
 END $$
@@ -974,10 +974,10 @@ DELIMITER $$
 CREATE  PROCEDURE `dodajFunkcijuOdbora`(IN nazivFunkcije VARCHAR (100))
 BEGIN
 IF EXISTS ( SELECT * FROM FUNKCIJA WHERE FUNKCIJA.nazivFunkcije = nazivFunkcije) THEN
-	SELECT 'Greška: Naziv funkcije već postoji!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Naziv funkcije već postoji!';
 	ELSE
 		IF (nazivFunkcije IS NULL) THEN
-			SELECT 'Greška: naziv funkcije mora biti poznat!';
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: naziv funkcije mora biti poznat!';
 		ELSE 
 			INSERT INTO FUNKCIJA(nazivFunkcije) VALUES (nazivFunkcije);
 		END IF;
@@ -989,7 +989,7 @@ DELIMITER $$
 CREATE  PROCEDURE `dodajGodStud`( IN stud VARCHAR(50), IN god VARCHAR(50) )
 BEGIN
 IF EXISTS (SELECT* FROM GODSTUD  WHERE studij=stud AND godina=god) THEN  
-              SELECT 'Greška: Zapis već postoji!';
+               SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Zapis već postoji!';
 ELSE
 INSERT INTO GODSTUD VALUES(NULL, stud, god );
 END IF;
@@ -1004,7 +1004,7 @@ IF EXISTS (SELECT* FROM ELEKTRIJADA WHERE ELEKTRIJADA.idElektrijade = idElektrij
 
 IF NOT EXISTS (SELECT* 
 		FROM ElekPodrucje WHERE ElekPodrucje.idPodrucja = idPodrucja and ElekPodrucje.idElektrijade=idElektrijade) THEN
-		SELECT 'Greška: Ne postoji područje kojem želote dodati sliku';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji područje kojem želote dodati sliku';
 ELSE
 	UPDATE ElekPodrucje
     SET ElekPodrucje.rezultatGrupni=rezultatGrupni
@@ -1012,11 +1012,11 @@ ELSE
 
 END IF;
 ELSE 
-	   SELECT 'Greška: Upisan nepostojeći id Elektrijade!';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Upisan nepostojeći id Elektrijade!';
 END IF;
 
 ELSE 
-	   SELECT 'Greška: Upisan nepostojeće područje!';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Upisan nepostojeće područje!';
 END IF;
 
 
@@ -1028,7 +1028,7 @@ CREATE  PROCEDURE `dodajKategorijuSponzora`(IN tipKategorijeSponzora VARCHAR(100
 BEGIN
 IF NOT EXISTS (SELECT * FROM KATEGORIJA WHERE KATEGORIJA.tipKategorijeSponzora=tipKategorijeSponzora) THEN
 	INSERT INTO KATEGORIJA values (NULL, tipKategorijeSponzora);
-ELSE SELECT 'Greška: Zadani tip kategorije sponzora se vec nalazi u bazi';
+ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Zadani tip kategorije sponzora se vec nalazi u bazi';
 END IF;
 END $$
 DELIMITER ;
@@ -1037,17 +1037,17 @@ DELIMITER $$
 CREATE  PROCEDURE `dodajKontakt`(IN imeKontakt VARCHAR(100), IN prezimeKontakt VARCHAR(100), IN telefon VARCHAR(20), IN radnoMjesto VARCHAR(100), IN idTvrtke INT(10), IN idSponzora INT(10))
 BEGIN
 IF EXISTS (SELECT * FROM KONTAKTOSOBE WHERE KONTAKTOSOBE.imeKontakt=imeKontakt && KONTAKTOSOBE.prezimeKontakt=prezimeKontakt && KONTAKTOSOBE.telefon=telefon && KONTAKTOSOBE.radnoMjesto=radnoMjesto && KONTAKTOSOBE.idTvrtke=idTvrtke &&KONTAKTOSOBE.idSponzora=idSponzora) THEN
-	SELECT 'Greška: Zapis vec postoji u bazi!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Zapis vec postoji u bazi!';
 ELSE
 	IF EXISTS (SELECT * FROM TVRTKA WHERE TVRTKA.idTvrtke=idTvrtke) THEN
 		IF EXISTS (SELECT * FROM SPONZOR WHERE SPONZOR.idSponzora=idSponzora) THEN
 			IF (telefon REGEXP '[0-9]') THEN
 				INSERT INTO KONTAKTOSOBE values(NULL,imeKontakt,prezimeKontakt,telefon,radnoMjesto,idTvrtke,idSponzora);
-			ELSE SELECT 'Greška: Broj telefona moze sadrzavati samo znamenke!';
+			ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Broj telefona moze sadrzavati samo znamenke!';
 			END IF;
-		ELSE SELECT 'Greška: Ne postoji sponzor sa upisanim identifikatorom!';
+		ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji sponzor sa upisanim identifikatorom!';
 		END IF;
-	ELSE SELECT 'Ne postoji tvrtka sa unesenim identifikatorom';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Ne postoji tvrtka sa unesenim identifikatorom';
 	END IF;
 END IF;
 END $$
@@ -1058,7 +1058,7 @@ DELIMITER $$
 CREATE  PROCEDURE `dodajKoristenjeUsluga`(IN Usluga INT UNSIGNED,  IN Tvrtka INT UNSIGNED, IN iznos DECIMAL(13,2),  IN valuta VARCHAR(3), IN elektrijada INT(10), IN nacin VARCHAR(100), IN napomene VARCHAR(300) )
 BEGIN
 IF EXISTS (SELECT* FROM KoristiPruza WHERE idUsluge=Usluga AND idTvrtke=Tvrtka AND datumPocetka =pocetak) THEN 
-SELECT 'Greška: Zapis već postoji!';
+ SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Zapis već postoji!';
 ELSE
 IF EXISTS (SELECT * FROM USLUGA
  WHERE idUsluge=Usluga) THEN
@@ -1067,23 +1067,23 @@ IF EXISTS (SELECT * FROM TVRTKA
 			IF EXISTS (SELECT * FROM ELEKTRIJADA 
 		     		    WHERE idElektrijade = elektrijada) THEN
 					    	IF UPPER(valuta) NOT IN( 'HRK','USD','EUR') THEN
-SELECT ' Greška: Valuta donacije mora biti HRK, USD ili EUR!';
+ SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = ' Greška: Valuta donacije mora biti HRK, USD ili EUR!';
 						ELSE	
 IF iznos <= 0 THEN
-SELECT ' Greška: Iznos donacije je nula ili manji!';
+ SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = ' Greška: Iznos donacije je nula ili manji!';
 						ELSE
 INSERT INTO KoristiPruza 
 VALUES(NULL,Usluga, Tvrtka, elektrijada, iznos, valuta, nacin, napomene);
 							END IF;
 						END IF;
 				ELSE
-					SELECT 'Greška: Odabrani datum nije početak Elektrijade!';
+					 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrani datum nije početak Elektrijade!';
 				END IF;
 		ELSE
-			SELECT 'Greška: Odabrana tvrtka ne postoji! ';
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrana tvrtka ne postoji! ';
 		END IF;
 ELSE
-	SELECT 'Greška: Usluga nije evidentirana u bazi  podataka!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Usluga nije evidentirana u bazi  podataka!';
 END IF;
 END IF;
 END $$
@@ -1096,11 +1096,11 @@ BEGIN
 		IF EXISTS (SELECT * FROM KONTAKTOSOBE WHERE KONTAKTOSOBE.idKontakta=idKontakta) THEN
 			IF (email REGEXP '^[a-zA-Z0-9][a-zA-Z0-9._-]*[a-zA-Z0-9]@[a-zA-Z0-9][a-zA-Z0-9._-]*[a-zA-Z0-9]\.[a-zA-Z]{2,4}$') THEN
 				INSERT INTO EMAILADRESE values (NULL,idKontakta,email);
-			ELSE SELECT 'Greška: Krivi format email adrese!';
+			ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Krivi format email adrese!';
 			END IF;
-		ELSE SELECT 'Greška: Ne postoji kontakt sa upisanim identifikatorom!';
+		ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji kontakt sa upisanim identifikatorom!';
 		END IF;
-	ELSE SELECT 'Greška: Navedeni email je vec u bazi!';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Navedeni email je vec u bazi!';
 	END IF;
 END $$
 DELIMITER ;
@@ -1112,11 +1112,11 @@ BEGIN
 		IF EXISTS (SELECT * FROM KONTAKTOSOBE WHERE KONTAKTOSOBE.idKontakta=idKontakta) THEN
 			IF broj REGEXP '[0-9]' THEN
 				INSERT INTO BROJEVIMOBITELA values (NULL,idKontakta,broj);
-			ELSE SELECT 'Greška: Broj mobitela moze sadrzavati samo znamenke!';
+			ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Broj mobitela moze sadrzavati samo znamenke!';
 			END IF;
-		ELSE SELECT 'Greška: Ne postoji kontakt sa upisanim identifikatorom!';
+		ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji kontakt sa upisanim identifikatorom!';
 		END IF;
-	ELSE SELECT 'Navedeni broj je vec u bazi!';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Navedeni broj je vec u bazi!';
 	END IF;
 END $$
 DELIMITER ;
@@ -1125,9 +1125,9 @@ DELIMITER $$
 CREATE  PROCEDURE `dodajNacinPromocije`(IN tipPromocije VARCHAR(100))
 BEGIN
 IF EXISTS ( SELECT * FROM NACINPROMOCIJE WHERE NACINPROMOCIJE.tipPromocije = tipPromocije) THEN 
-	SELECT 'Greška: Tip promocije već postoji!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Tip promocije već postoji!';
 ELSE IF (tipPromocije IS NULL) THEN
-	SELECT 'Greška: Tip promocije mora biti poznat!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Tip promocije mora biti poznat!';
 ELSE
 	INSERT INTO NACINPROMOCIJE(tipPromocije) VALUES (tipPromocije);
 END IF;
@@ -1155,38 +1155,38 @@ INSERT INTO OSOBA VALUES (NULL, ime, prezime, mail, brojMob, ferId, passwordVAR,
    
 
 ELSE 
-	   SELECT 'Greška: OIB smije sadrzavati samo znamenke !';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: OIB smije sadrzavati samo znamenke !';
 END IF;
 ELSE 
-	   SELECT 'Greška: MBG smije sadrzavati samo znamenke !';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: MBG smije sadrzavati samo znamenke !';
 END IF;
     ELSE 
-	   SELECT 'Greška: Upisan već postojeći ferId !';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Upisan već postojeći ferId !';
 END IF;
 
 	ELSE 
-	   SELECT 'Greška: Pogrešno upisan ferId! Unesite ferId u obliku "ab22222" ili "mivic3" !';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Pogrešno upisan ferId! Unesite ferId u obliku "ab22222" ili "mivic3" !';
 END IF;
     ELSE 
-	   SELECT 'Greška: Niste unijeli dobar email!';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Niste unijeli dobar email!';
 END IF;
 	ELSE 
-	   SELECT 'Greška: Broj  mobitela smiju sadrzavati samo brojke!';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Broj  mobitela smiju sadrzavati samo brojke!';
 	END IF;
 
 	ELSE
-       SELECT 'Greška: Broj putovnice ili broj osobne trebaju sadržavati samo znamenke!';
+        SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Broj putovnice ili broj osobne trebaju sadržavati samo znamenke!';
 
 	END IF;
     ELSE
-	   SELECT 'Greška: JMBAG mora sadržavati samo znamenke i biti deseteroznamenkast!';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: JMBAG mora sadržavati samo znamenke i biti deseteroznamenkast!';
 END IF;
 
    ELSE 
-	   SELECT 'Greška: Istekla je putovnica ili osobna iskaznica!';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Istekla je putovnica ili osobna iskaznica!';
 END IF;
 ELSE 
-	   SELECT 'Greška: Pogrešno unešen spol! !';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Pogrešno unešen spol! !';
 END IF;
 
 END $$
@@ -1197,13 +1197,13 @@ CREATE  PROCEDURE `dodajPodrucje`(IN nazivPodrucja VARCHAR(100),IN idNadredjenog
 BEGIN
 IF NOT EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.nazivPodrucja = nazivPodrucja) THEN
 IF NOT EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idNadredjenog) THEN
-	SELECT 'Greška: Nadređeno područje je pogrešno zadano';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nadređeno područje je pogrešno zadano';
 ELSE
 INSERT INTO PODRUCJE VALUES (NULL,nazivPodrucja,idNadredjenog);
 
 END IF;
 ELSE
-SELECT 'Greška: Ovo područje je već unešeno!';
+ SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ovo područje je već unešeno!';
 END IF;
 
 END $$
@@ -1213,24 +1213,24 @@ DELIMITER $$
 CREATE  PROCEDURE `dodajPodrucjeSudjelovanja`(IN idPodrucja INT UNSIGNED, IN idSudjelovanja INT UNSIGNED, IN rezultatPojedinacni SMALLINT, IN vrstaPodrucja TINYINT(1))
 BEGIN
 IF EXISTS (SELECT * FROM PODRUCJESUDJELOVANJA WHERE PODRUCJESUDJELOVANJA.idPodrucja = idPodrucja && PODRUCJESUDJELOVANJA.idSudjelovanja=idSudjelovanja) THEN
-	SELECT 'Greška: Zapis već postoji!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Zapis već postoji!';
 ELSE
 	IF EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idPodrucja) THEN
 		IF EXISTS (SELECT * FROM SUDJELOVANJE WHERE SUDJELOVANJE.idSudjelovanja=idSudjelovanja) THEN
 			IF idPodrucja IN (SELECT distinct PODRUCJE.idNadredjenog from PODRUCJE) THEN
-				SELECT 'Pojedinačan rezultat moguće upisati samo za disciplinu unutar područja.';
+				 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Pojedinačan rezultat moguće upisati samo za disciplinu unutar područja.';
 			ELSE
 				IF (vrstaPodrucja = 0 && rezultatPojedinacni IS NOT NULL) THEN
-					SELECT 'Pojedinacni rezultat se ne može upisat u ekipnu disciplinu.';
+					 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Pojedinacni rezultat se ne može upisat u ekipnu disciplinu.';
 				ELSE
 					INSERT INTO PODRUCJESUDJELOVANJA VALUES(NULL,idPodrucja, idSudjelovanja, rezultatPojedinacni, vrstaPodrucja);
 				END IF;
 			END IF;
 		ELSE
-			SELECT 'Greška: Ne postoji zapis o sudjelovanju !';
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji zapis o sudjelovanju !';
 		END IF;
 	ELSE
-		SELECT 'Greška: Zadani idPodručja ne postoji!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Zadani idPodručja ne postoji!';
 	END IF;
 END IF;
 END $$
@@ -1239,13 +1239,13 @@ DELIMITER ;
 
 
 DELIMITER $$
-CREATE  PROCEDURE `dodajPojedinacniRezultat`(IN idPodrucjeSudjelovanja INT UNSIGNED, IN rezultatPojedinacni SMALLINT)
+CREATE  PROCEDURE `dodajPojedinacniRezultat`(IN idSudjelovanja INT UNSIGNED,IN idPodrucja INT UNSIGNED, IN rezultatPojedinacni SMALLINT)
 BEGIN
-IF EXISTS (SELECT * FROM PODRUCJESUDJELOVANJA WHERE PODRUCJESUDJELOVANJA.idPodrucjeSudjelovanja=idPodrucjeSudjelovanja && PODRUCJESUDJELOVANJA.vrstaPodrucja <> 0) THEN
+IF EXISTS (SELECT * FROM PODRUCJESUDJELOVANJA WHERE PODRUCJESUDJELOVANJA.idSudjelovanja=idSudjelovanja AND PODRUCJESUDJELOVANJA.idPodrucja=idPodrucja && PODRUCJESUDJELOVANJA.vrstaPodrucja <> 0) THEN
 	UPDATE PODRUCJESUDJELOVANJA SET PODRUCJESUDJELOVANJA.rezultatPojedinacni = rezultatPojedinacni
-	WHERE PODRUCJESUDJELOVANJA.idPodrucjeSudjelovanja=idPodrucjeSudjelovanja;
+	WHERE PODRUCJESUDJELOVANJA.idSudjelovanja=idSudjelovanja AND PODRUCJESUDJELOVANJA.idPodrucja=idPodrucja;
 ELSE
-	SELECT 'Greška: Traženi zapis ne postoji! / Navedena disciplina nema pojedinačnih rezultata!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Traženi zapis ne postoji! / Navedena disciplina nema pojedinačnih rezultata!';
 END IF;
 END $$
 DELIMITER ;
@@ -1254,7 +1254,7 @@ DELIMITER $$
 CREATE  PROCEDURE `dodajRadnoMjesto`(  IN naziv VARCHAR(100) )
 BEGIN
 IF EXISTS (SELECT* FROM RADNOMJESTO WHERE RADNOMJESTO.naziv=naziv) THEN 
- 	SELECT 'Greška: Zapis već postoji!';
+ 	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Zapis već postoji!';
 ELSE
 INSERT INTO RADNOMJESTO VALUES(NULL, naziv );
 END IF;
@@ -1269,7 +1269,7 @@ IF EXISTS (SELECT* FROM ELEKTRIJADA WHERE ELEKTRIJADA.idElektrijade = idElektrij
 
 IF NOT EXISTS (SELECT* 
 		FROM ElekPodrucje WHERE ElekPodrucje.idPodrucja = idPodrucja and ElekPodrucje.idElektrijade=idElektrijade) THEN
-		SELECT 'Greška: Ne postoji područje kojem želote dodati sliku';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji područje kojem želote dodati sliku';
 ELSE
 	UPDATE ElekPodrucje
     SET ElekPodrucje.slikaLink=slikaLink, ElekPodrucje.slikaBLOB=slikaBLOB
@@ -1277,11 +1277,11 @@ ELSE
 
 END IF;
 ELSE 
-	   SELECT 'Greška: Upisan nepostojeći datum Elektrijade!';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Upisan nepostojeći datum Elektrijade!';
 END IF;
 
 ELSE 
-	   SELECT 'Greška: Upisan nepostojeće područje!';
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Upisan nepostojeće područje!';
 END IF;
 
 
@@ -1292,7 +1292,7 @@ DELIMITER $$
 CREATE  PROCEDURE `dodajSmjer`(  IN naziv VARCHAR(100) )
 BEGIN
 IF EXISTS (SELECT* FROM SMJER WHERE nazivSmjera=naziv) THEN 
-      	 SELECT 'Greška: Zapis već postoji!';
+      	  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Zapis već postoji!';
 ELSE
 INSERT INTO SMJER VALUES(NULL, naziv );
 END IF;
@@ -1304,7 +1304,7 @@ CREATE  PROCEDURE `dodajSponzora`(IN imeTvrtke VARCHAR(100), IN adresaTvrtke VAR
 BEGIN
 IF NOT EXISTS (SELECT * FROM SPONZOR WHERE SPONZOR.imeTvrtke=imeTvrtke AND SPONZOR.adresaTvrtke=adresaTvrtke) THEN
 	INSERT INTO SPONZOR values (NULL,imeTvrtke,adresaTvrtke);
-ELSE SELECT 'Greška: Zadani zapis vec postoji u bazi!';
+ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Zadani zapis vec postoji u bazi!';
 END IF;
 END $$
 DELIMITER ;
@@ -1314,26 +1314,26 @@ DELIMITER $$
 CREATE  PROCEDURE `dodajSponzorstvo`(IN idSponzora INT(10), IN idKategorijeSponzora INT(10), IN idPromocije INT(10), IN idElektrijade INT(10), IN iznosDonacije DECIMAL(13,2), IN valutaDonacije VARCHAR(3), IN napomena VARCHAR(300))
 BEGIN
 IF EXISTS (SELECT * FROM ImaSponzora WHERE ImaSponzora.idSponzora=idSponzora && ImaSponzora.datumPocetka=datumPocetka) THEN
-	SELECT 'Greksa: Zapis vec postoji u bazi';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greksa: Zapis vec postoji u bazi';
 ELSE
 IF valutaDonacije NOT IN( 'HRK','USD','EUR') THEN
-	SELECT 'Greška: Valuta donacije mora biti HRK, USD ili EUR!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Valuta donacije mora biti HRK, USD ili EUR!';
 ELSE
 IF (iznosDonacije <= 0) THEN
-	SELECT 'Greksa: Iznos donacije je manji ili jednak nuli!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greksa: Iznos donacije je manji ili jednak nuli!';
 ELSE
 	IF EXISTS (SELECT * FROM SPONZOR WHERE SPONZOR.idSponzora=idSponzora) THEN
 		IF EXISTS (SELECT * FROM KATEGORIJA WHERE KATEGORIJA.idKategorijeSponzora=idKategorijaSponzora) THEN
 			IF EXISTS (SELECT * FROM NACINPROMOCIJE WHERE NACINPROMOCIJE.idPromocije=idPromocije) THEN
 				IF EXISTS (SELECT * FROM ELEKTRIJADA WHERE ELEKTRIJADA.idElektrijade=idElektrijade) THEN
 						INSERT INTO ImaSponzora values (NULL,idSponzora,idKategorijeSponzora,idPromocije,idElektrijade,iznosDonacije,valutaDonacije,napomena);
-				ELSE SELECT 'Greška: Ne postoji Elektrijada !';
+				ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji Elektrijada !';
 				END IF;
-			ELSE SELECT 'Greška: Ne postoji nacin promocije s unesenim identifikatorom!';
+			ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji nacin promocije s unesenim identifikatorom!';
 			END IF;
-		ELSE SELECT 'Greška: Ne postoji kategorija sponzora s unesenim identifikatorom!';
+		ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji kategorija sponzora s unesenim identifikatorom!';
 		END IF;
-	ELSE SELECT 'Greška: Ne postoji sponzor s unesenim identifikatorom!';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji sponzor s unesenim identifikatorom!';
 	END IF;
 END IF;
 END IF;
@@ -1345,16 +1345,16 @@ DELIMITER $$
 CREATE  PROCEDURE `dodajSudjelovanje`(IN idOsobe INT UNSIGNED, IN idElektrijade INT UNSIGNED, IN tip CHAR(1), IN idVelicine INT UNSIGNED, IN idGodStud INT UNSIGNED, IN idSmjera INT UNSIGNED, IN idRadnogMjesta INT UNSIGNED, IN idZavoda INT UNSIGNED,IN idPutovanja INT UNSIGNED)
 BEGIN
 IF EXISTS (SELECT * FROM SUDJELOVANJE WHERE SUDJELOVANJE.idOsobe = idOsobe && SUDJELOVANJE.idElektrijade = idElektrijade) THEN
-	SELECT 'Greška: zapis već postoji TJ. osoba je vec unesena kao sudionik elektrijade!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: zapis već postoji TJ. osoba je vec unesena kao sudionik elektrijade!';
 ELSE
 	IF tip NOT IN('D','S') THEN
-		SELECT 'Greška: Varijabla tip mora biti ili S ili D!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Varijabla tip mora biti ili S ili D!';
 	ELSE
 		IF EXISTS (SELECT * FROM OSOBA WHERE OSOBA.idOsobe = idOsobe) THEN
 			IF EXISTS (SELECT * FROM ELEKTRIJADA WHERE ELEKTRIJADA.idElektrijade = idElektrijade) THEN
 				IF tip = 'S' THEN
 					IF idRadnogMjesta IS NOT NULL || idZavoda IS NOT NULL THEN
-						SELECT 'Greška: Sudent ne može imati radno mjesto / zavod!';
+						 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Sudent ne može imati radno mjesto / zavod!';
 					ELSE
 						IF EXISTS (SELECT * FROM GODSTUD WHERE GODSTUD.idGodStud = idGodStud) THEN
 							IF EXISTS (SELECT * FROM SMJER WHERE SMJER.idSmjera = idSmjera) THEN
@@ -1363,21 +1363,21 @@ ELSE
 									INSERT INTO SUDJELOVANJE VALUES(NULL,idOsobe, idElektrijade, tip, idVelicine, idGodStud, idSmjera, idRadnogMjesta, idZavoda,idPutovanja);			
 								
                                     ELSE
-									     SELECT 'Greška: Nije odabrano putovanje!';
+									      SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nije odabrano putovanje!';
 								    END IF;    
                                 ELSE
-									SELECT 'Greška: Nije odabrana veličina majice!';
+									 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nije odabrana veličina majice!';
 								END IF;
 							ELSE
-								SELECT 'Greška: Nije odabran smjer!';
+								 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nije odabran smjer!';
 							END IF;
 						ELSE
-							SELECT 'Greška: Nije odabrana godina studija!';
+							 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nije odabrana godina studija!';
 						END IF;
 					END IF;
 				ELSE
 					IF idGodStud IS NOT NULL || idSmjera IS NOT NULL THEN
-						SELECT 'Greška: Djelatnik ne može imati godinu studija / smjer!';
+						 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Djelatnik ne može imati godinu studija / smjer!';
 					ELSE
 						IF EXISTS (SELECT * FROM RADNOMJESTO WHERE RADNOMJESTO.idRadnogMjesta = idRadnogMjesta) THEN
 							IF EXISTS (SELECT * FROM ZAVOD WHERE ZAVOD.idZavoda = idZavoda) THEN
@@ -1385,24 +1385,24 @@ ELSE
                                     IF EXISTS (SELECT * FROM PUTOVANJE WHERE PUTOVANJE.idPutovanja = idPutovanja) THEN
 										INSERT INTO SUDJELOVANJE VALUES(NULL,idOsobe, idElektrijade, tip, idVelicine, idGodStud, idSmjera, idRadnogMjesta, idZavoda,idPutovanja);
 									ELSE
-									     SELECT 'Greška: Nije odabrano putovanje!';
+									      SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nije odabrano putovanje!';
 								    END IF; 
                                 ELSE
-									SELECT 'Greška: Nije odabrana veličina majice!';
+									 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nije odabrana veličina majice!';
 								END IF;
 							ELSE
-								SELECT 'Greška: Nije odabran smjer!';
+								 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nije odabran smjer!';
 							END IF;
 						ELSE
-							SELECT 'Greška: Nije odabrana godina studija!';
+							 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nije odabrana godina studija!';
 						END IF;	
 					END IF;
 				END IF;
 			ELSE
-				SELECT 'Greška: Unesena Elektrijada nije evidentirana!';
+				 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Unesena Elektrijada nije evidentirana!';
 			END IF;
 		ELSE
-			SELECT 'Greška: Nepoznati idOsobe!';
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nepoznati idOsobe!';
 		END IF;
 	END IF;
 END IF;
@@ -1417,10 +1417,10 @@ BEGIN
 		IF (adresaTvrtke IS NOT NULL) THEN
 			INSERT INTO TVRTKA VALUES (NULL,imeTvrtke, adresaTvrtke);
 		ELSE 
-			SELECT 'Greška: Adresa tvrtke mora biti poznata!';
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Adresa tvrtke mora biti poznata!';
 		END IF;
 	ELSE 
-		SELECT 'Greška: Ime tvrtke mora biti poznato!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ime tvrtke mora biti poznato!';
 	END IF;
 END $$
 DELIMITER ;
@@ -1432,10 +1432,10 @@ BEGIN
 		IF (nazivUdruge IS NOT NULL) THEN
 			INSERT INTO UDRUGA VALUES (NULL,nazivUdruge);
 		ELSE
-			SELECT 'Greška: Naziv udruge mora biti poznat!';
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Naziv udruge mora biti poznat!';
 		END IF;
 	ELSE
-		SELECT 'Greška: Naziv udruge već postoji!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Naziv udruge već postoji!';
 	END IF;
 END $$
 DELIMITER ;
@@ -1447,10 +1447,10 @@ BEGIN
 		IF (nazivUsluge IS NOT NULL) THEN
 			INSERT INTO USLUGA(nazivUsluge) VALUES (nazivUsluge);
 		ELSE
-			SELECT 'Greška: Naziv usluge mora biti poznat!';
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Naziv usluge mora biti poznat!';
 		END IF;
 	ELSE
-		SELECT 'Greška: Naziv usluge već postoji!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Naziv usluge već postoji!';
 	END IF;
 END $$
 DELIMITER ;
@@ -1459,7 +1459,7 @@ DELIMITER $$
 CREATE  PROCEDURE `dodajVelicinu`( IN velicina VARCHAR(5) )
 BEGIN
  IF EXISTS (SELECT* FROM VELMAJICE WHERE  VELMAJICE.velicina=velicina) THEN 
-SELECT 'Greška: Zapis već postoji!';
+ SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Zapis već postoji!';
 ELSE
 
 INSERT INTO VELMAJICE VALUES(NULL, velicina );
@@ -1471,7 +1471,7 @@ DELIMITER $$
 CREATE  PROCEDURE `dodajZavod`(  IN naziv VARCHAR(100), IN skraceni VARCHAR(10) )
 BEGIN
 IF EXISTS (SELECT* FROM ZAVOD WHERE nazivZavoda=naziv AND skraceniNaziv=skraceni) THEN 
- 	SELECT 'Greška: Zapis već postoji!';
+ 	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Zapis već postoji!';
 ELSE
  	INSERT INTO ZAVOD VALUES(NULL, naziv, skraceni );
 END IF;
@@ -1532,16 +1532,16 @@ WHEN vrsta = 't' THEN
         			SELECT DISTINCT kontaktOsobe.idKontakta, kontaktOsobe.imeKontakt, kontaktOsobe.prezimeKontakt, kontaktOsobe.telefon, kontaktOsobe.radnoMjesto
        			 FROM kontaktOsobe
   			WHERE kontaktOsobe.idTvrtke = id;
-		ELSE SELECT 'Unešen je nepostojeći ID tvrtke';
+		ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unešen je nepostojeći ID tvrtke';
 		END IF;
 	WHEN vrsta = 's' THEN
 		IF EXISTS (SELECT * FROM sponzor WHERE sponzor.idSponzora = id) THEN
 			SELECT DISTINCT kontaktOsobe.idKontakta, kontaktOsobe.imeKontakt, kontaktOsobe.prezimeKontakt, kontaktOsobe.telefon, kontaktOsobe.radnoMjesto
 FROM kontaktOsobe
      			WHERE kontaktOsobe.idSponzora = id;
-		ELSE SELECT 'Unešen je nepostojeći ID sponzora';
+		ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unešen je nepostojeći ID sponzora';
 		END IF;
-ELSE SELECT 'Greška pri unosu vrste';
+ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška pri unosu vrste';
 END CASE;
 END $$
 DELIMITER ;
@@ -1564,7 +1564,7 @@ BEGIN
 		FROM podrucje
 		JOIN ElekPodrucje ON podrucje.idPodrucja = ElekPodrucje.idPodrucja
 		WHERE ElekPodrucje.idElektrijade = idElektrijade;
-	ELSE SELECT 'Unesen je nepostojeci datumPocetka';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeci datumPocetka';
 	END IF;
 END $$
 DELIMITER ;
@@ -1578,7 +1578,7 @@ BEGIN
 		JOIN obavljaFunkciju ON osoba.idOsobe = obavljaFunkciju.idOsobe
 		LEFT JOIN funkcija ON obavljaFunkciju.idFunkcije = funkcija.idFunkcije
 		WHERE obavljaFunkciju.idElektrijade = idElektrijade AND  ( osoba.uloga = 'o' OR osoba.uloga = 'O');
-	ELSE SELECT 'Unesen je nepostojeci datumPocetka';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeci datumPocetka';
 	END IF;
 END $$
 DELIMITER ;
@@ -1599,7 +1599,7 @@ LEFT JOIN podrucjeSudjelovanja ON podrucjeSudjelovanja.idOsobe = sudjelovanje.id
 LEFT JOIN podrucje ON podrucjeSudjelovanja.idPodrucja = podrucje.idPodrucja
 WHERE sudjelovanje.idElektrijade = idElektrijade AND ( osoba.uloga = 'S' OR osoba.uloga = 's')
 AND ( osoba.uloga = 'd' OR osoba.uloga = 'D');
-	ELSE SELECT 'Unesen je nepostojeci idELEKTRIJADE';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeci idELEKTRIJADE';
 	END IF;
 END $$
 DELIMITER ;
@@ -1614,7 +1614,7 @@ BEGIN
 		LEFT JOIN nacinPromocije ON imaSponzora.idPromocije = nacinPromocije.idPromocije
 		LEFT JOIN kategorija ON imaSponzora.idKategorijeSponzora = kategorija.idKategorijeSponzora
 		WHERE imaSponzora.idElektrijade = idElektrijade;
-ELSE SELECT 'Unesen je nepostojeci idELEKTRIJADE';
+ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeci idELEKTRIJADE';
 	END IF;
 END $$
 DELIMITER ;
@@ -1635,7 +1635,7 @@ BEGIN
         LEFT JOIN podrucje ON podrucjeSudjelovanja.idPodrucja = podrucje.idPodrucja
         WHERE sudjelovanje.idElektrijade = idElektrijade AND ( osoba.uloga = 'S' OR osoba.uloga = 's')
         AND (sudjelovanje.tip = 's' OR osudjelovanje.tip = 'S');
-ELSE SELECT 'Unesen je nepostojeci idELEKTRIJADE';
+ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeci idELEKTRIJADE';
 END IF;
 END $$
 DELIMITER ;
@@ -1649,9 +1649,9 @@ BEGIN
 			FROM osoba
 			JOIN podrucjeSudjelovanja ON osoba.idOsobe = podrucjeSudjelovanja.idOsobe
 			WHERE podrucjeSudjelovanja.idElektrijade = idElektrijade AND podrucjeSudjelovanja.idPodrucja = idPodrucja;
-		ELSE SELECT 'Unesen je nepostojeci ID podrucja';
+		ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeci ID podrucja';
 		END IF;
-ELSE SELECT 'Unesen je nepostojeci idELEKTRIJADE';
+ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeci idELEKTRIJADE';
 	END IF;
 END $$
 DELIMITER ;
@@ -1664,7 +1664,7 @@ BEGIN
 		FROM tvrtka
 		JOIN koristiPruza ON tvrtka.idTvrtke = koristiPruza.idTvrtke
 		WHERE koristiPruza.idElektrijade = idElektrijade;
-ELSE SELECT 'Unesen je nepostojeci idELEKTRIJADE';
+ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeci idELEKTRIJADE';
 	END IF;
 END $$
 DELIMITER ;
@@ -1732,16 +1732,16 @@ IF EXISTS (SELECT * FROM OSOBA WHERE OSOBA.idOsobe = idOsobe && OSOBA.uloga = "O
 			IF EXISTS ( SELECT * FROM ELEKTRIJADA WHERE ELEKTRIJADA.idElektrijade = idElektrijade) THEN
 				INSERT INTO ObavljaFunkciju VALUES (NULL,idOsobe, idFunkcije, idElektrijade);
 			ELSE 
-				SELECT 'Greška: navedeni datum početka nije valjan!';
+				 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: navedeni datum početka nije valjan!';
 			END IF;
 		ELSE
-			SELECT 'Greška: navedeni id funkcije nije valjan!';
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: navedeni id funkcije nije valjan!';
 		END IF;
 	ELSE
-		SELECT 'Greška: unešeni zapis već postoji!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: unešeni zapis već postoji!';
 	END IF;
 ELSE
-	SELECT 'Greška: navedena osoba ne postoji ili nije član OZSN!';
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: navedena osoba ne postoji ili nije član OZSN!';
 END IF;
 END $$
 DELIMITER ;
@@ -1753,7 +1753,7 @@ DELIMITER $$
 CREATE  PROCEDURE `dodajBus`( IN registracija VARCHAR(12), IN brojMjesta INT, IN brojBusa INT )
 BEGIN
 IF EXISTS (SELECT* FROM BUS WHERE BUS.registracija=registracija ) THEN  
-              SELECT 'Greška: Zapis već postoji!';
+               SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Zapis već postoji!';
 ELSE
 INSERT INTO BUS VALUES(NULL, registracija, brojMjesta,brojBusa);
 END IF;
@@ -1767,10 +1767,10 @@ BEGIN
       If (SELECT brojMjesta FROM BUS WHERE BUS.idBusa=idBusa) > brojSjedala THEN		
 			INSERT INTO PUTOVANJE VALUES (NULL,idBusa,polazak,povratak,napomena,brojSjedala);		
       ELSE 
-	      SELECT 'Greška: brojSjedala je veči od ukupnog broja sjedećih mjesta u busu!';
+	       SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: brojSjedala je veči od ukupnog broja sjedećih mjesta u busu!';
 	  END IF;
 	ELSE 
-		SELECT 'Greška: Unesen nepostojeći bus!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Unesen nepostojeći bus!';
 	END IF;
 END $$
 DELIMITER ;
@@ -1782,10 +1782,10 @@ BEGIN
       If (SELECT * FROM BUS WHERE BUS.idBusa=idBusa) > brojSjedala THEN		
 			INSERT INTO MEDIJ VALUES (NULL,nazivMedija,idKontakta);		
       ELSE 
-	      SELECT 'Greška: brojSjedala je veči od ukupnog broja sjedećih mjesta u busu!';
+	       SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: brojSjedala je veči od ukupnog broja sjedećih mjesta u busu!';
 	  END IF;
 	ELSE 
-		SELECT 'Greška: Unesen nepostojeći kontakt!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Unesen nepostojeći kontakt!';
 	END IF;
 END $$
 DELIMITER ;
@@ -1796,7 +1796,7 @@ BEGIN
 	IF EXISTS (SELECT * FROM MEDIJ WHERE MEDIJ.idMedijja=idMedijja ) THEN       	
 			INSERT INTO OBJAVA VALUES (NULL,datumObjave,link,autorIme,autorPrezime,idMedij,dokument);	    
 	ELSE 
-		SELECT 'Greška: Unesen nepostojeći mredij!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Unesen nepostojeći mredij!';
 	END IF;
 END $$
 DELIMITER ;
@@ -1808,10 +1808,10 @@ BEGIN
          IF EXISTS (SELECT * FROM ELEKTRIJADA WHERE ELEKTRIJADA.idElektrijade=idElektrijade ) THEN    
 			INSERT INTO objavaOElektrijadi VALUES (NULL,idObjave,idElektrijade);	    
        ELSE 
-		   SELECT 'Greška: Unesen nepostojeći id elektrijade!';
+		    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Unesen nepostojeći id elektrijade!';
 	   END IF;
 	ELSE 
-		SELECT 'Greška: Unesen nepostojeći id Objave!';
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Unesen nepostojeći id Objave!';
 	END IF;
 END $$
 DELIMITER ;
@@ -1823,7 +1823,7 @@ BEGIN
 	IF EXISTS (SELECT * FROM MEDIJ.idMedija=idMedija) THEN
 		DELETE FROM MEDIJ
 		WHERE MEDIJ.idMedijaa=idMedija;
-	ELSE SELECT 'Greška: Ne posotoji MEDIJ sa upisanim identifikatorom!';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne posotoji MEDIJ sa upisanim identifikatorom!';
 	END IF;
 END $$
 DELIMITER ;
@@ -1834,7 +1834,7 @@ BEGIN
 	IF EXISTS (SELECT * FROM OBJAVA.idObjave=idObjave) THEN
 		DELETE FROM OBJAVA
 		WHERE OBJAVA.idObjave=idObjave;
-	ELSE SELECT 'Greška: Ne posotoji objava sa upisanim identifikatorom!';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne posotoji objava sa upisanim identifikatorom!';
 	END IF;
 END $$
 DELIMITER ;
@@ -1845,7 +1845,7 @@ BEGIN
 	IF EXISTS (SELECT * FROM BUS.idBusa=idBusa) THEN
 		DELETE FROM BUS
 		WHERE BUS.idBusa=idBusa;
-	ELSE SELECT 'Greška: Ne posotoji bus sa upisanim identifikatorom!';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne posotoji bus sa upisanim identifikatorom!';
 	END IF;
 END $$
 DELIMITER ;
@@ -1856,7 +1856,7 @@ BEGIN
 	IF EXISTS (SELECT * FROM PUTOVANJE.idPutovanja=idPutovanja) THEN
 		DELETE FROM PUTOVANJE
 		WHERE PUTOVANJE.idPutovanja=idPutovanja;
-	ELSE SELECT 'Greška: Ne posotoji putovanje sa upisanim identifikatorom!';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne posotoji putovanje sa upisanim identifikatorom!';
 	END IF;
 END $$
 DELIMITER ;
@@ -1872,7 +1872,7 @@ BEGIN
 				WHERE BUS.idBusa=idBusa;
 			
 	ELSE
-      SELECT 'Greška: Navedena registracija se vec nalazi u bazi!';
+       SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Navedena registracija se vec nalazi u bazi!';
 	END IF;
 END $$
 DELIMITER ;
@@ -1887,7 +1887,7 @@ BEGIN
 				WHERE PUTOVANJE.idPutovanja=idPutovanja;
 			
 	ELSE 
-      SELECT 'Greška: Broj sjedala je veći od ukupnog broja mjesta u busu!';
+       SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Broj sjedala je veći od ukupnog broja mjesta u busu!';
 	END IF;
 END $$
 DELIMITER ;
@@ -1902,11 +1902,11 @@ BEGIN
 				SET MEDIJ.idKontakta=idKontakta,MEDIJ.nazivMedija=nazivMedija
 				WHERE MEDIJ.idMedija=idMedija;
        ELSE 
-          SELECT 'Greška: Kontakt ne postoji u bazi!';
+           SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Kontakt ne postoji u bazi!';
 	   END IF;
 			
 	ELSE 
-      SELECT 'Greška: Naziv medija već postoji u bazi!';
+       SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Naziv medija već postoji u bazi!';
 	END IF;
 END $$
 DELIMITER ;
@@ -1921,7 +1921,7 @@ BEGIN
 				WHERE OBJAVA.idObjave=idObjave;
 			
 	ELSE 
-      SELECT 'Greška: Unesen nepostojeć medij!';
+       SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Unesen nepostojeć medij!';
 	END IF;
 END $$
 DELIMITER ;
@@ -1946,7 +1946,7 @@ BEGIN
 		WHERE SUDJELOVANJE.idElektrijade = idElektrijade;
 		
       ELSE
-          SELECT 'Unesen je nepostojeci idElektrijade';
+           SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeci idElektrijade';
 	  END IF;
 
 SELECT * FROM BUS ORDER BY brojMjesta ASC;
@@ -1963,7 +1963,7 @@ BEGIN
 		JOIN 	obajvaOElektrijadi ON OBJAVA.idObjave = obajvaOElektrijadi.idObjave		
 		WHERE obajvaOElektrijadi.idElektrijade = idElektrijade;
     ELSE 
-       SELECT 'Unesen je nepostojeci idElektrijade';
+        SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeci idElektrijade';
 	END IF;
 END $$
 DELIMITER ;
