@@ -91,25 +91,14 @@ class PersonForm extends AbstractView {
             <input type="text" name="prezime" class="form-control" placeholder="Upišite prezime" <?php if($this->osoba && $this->osoba->prezime){ echo 'value="' . $this->osoba->prezime . '"'; } ?> />
         </div>
                </div>
-        <?php if ($this->prikazSpola) {?>
 		<div class="form-group">
             <label for="spol" class="col-sm-2 control-label">Spol</label>
         <div class="col-sm-10">
-            <!--
-			<input type="text" name="spol" class="form-control" placeholder="M ili Ž" <?php if($this->osoba && $this->osoba->spol){ echo 'value="' . $this->osoba->spol . '"'; } ?> />
-			-->
-<?php if($this->osoba && $this->osoba->spol == 'Ž'){ ?>
-			<input type="radio" name="spol" value="M"> Muški
+			<input type="radio" name="spol" value="M" <?php if($this->osoba && $this->osoba->spol == 'M'){ echo 'checked'; } ?>> Muški
 			&nbsp; &nbsp;
-			<input type="radio" name="spol" value="Ž" checked> Ženski
-<?php } else{ ?>
-			<input type="radio" name="spol" value="M" checked> Muški
-			&nbsp; &nbsp;
-			<input type="radio" name="spol" value="Ž"> Ženski
-<?php } ?>
+			<input type="radio" name="spol" value="Ž" <?php if($this->osoba && $this->osoba->spol == 'Ž'){ echo 'checked'; } ?>> Ženski
         </div>        
-                </div>
-        <?php }?>
+        </div>
 		<div class="form-group">
             <label for="email" class="col-sm-2 control-label">E-mail</label>
         <div class="col-sm-10">
