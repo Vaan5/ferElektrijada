@@ -55,24 +55,36 @@ class PersonList extends AbstractView {
 			{
 				echo '<tr><td>' . $val->ime . '</td><td>' . $val->prezime . '</td><td>' . $val->ferId . '</td>';
 				echo '<td><a href="';
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'administrator',
+					"action" => 'modifyPerson'
+				));
+				echo '?id=' . $val->idOsobe . '">Uredi</a> &nbsp; <a href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'administrator',
 					"action" => 'promoteToOzsn'
 				));
-				echo '?id=' . $val->idOsobe . '">Premjesti u Odbor</a></td></tr>';
+				echo '?id=' . $val->idOsobe . '">Premjesti u Odbor</a> &nbsp; <a class="deletePerson" href="';
+				
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'administrator',
+					"action" => 'deletePerson'
+				));
+				echo '?id=' . $val->idOsobe . '">Obriši</a></td></tr>';
 			}
 ?>
 				</tbody>
 			</table>
 		</div>
-
+<?php
+		}
+?>
 		<a href="<?php echo \route\Route::get('d3')->generate(array(
 			"controller" => 'administrator',
 			"action" => 'searchPersons'
 		));?>">Pretraži osobe</a>
 <?php
-		}
     }
     
     public function setOsobe($osobe) {

@@ -3,7 +3,7 @@
 namespace view\scripts\administrator;
 use app\view\AbstractView;
 
-class OzsnListJs extends AbstractView {
+class PersonListJs extends AbstractView {
     protected function outputHTML() {
 ?>
 	<script src="../assets/js/confirm.js"></script>
@@ -11,7 +11,7 @@ class OzsnListJs extends AbstractView {
 	<script type="text/javascript">
 		$(function(){
 			// When Obriši is clicked, show confirmation
-			$('.deleteOzsn').confirm({
+			$('.deletePerson').confirm({
 				text: "Jeste li sigurni da želite obrisati?",
 				title: "Potrebna potvrda",
 				confirmButton: "Obriši",

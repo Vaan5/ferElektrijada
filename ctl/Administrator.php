@@ -654,7 +654,7 @@ class Administrator implements Controller {
                 "resultMessage" => $this->resultMessage
             )),
             "title" => "Popis osoba",
-            "script" => new \view\scripts\administrator\OzsnListJs
+            "script" => new \view\scripts\administrator\PersonListJs
         ));
     }
     
