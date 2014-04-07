@@ -63,6 +63,7 @@ class Ozsn implements Controller {
         $this->checkMessages();
         
         $nacin = new \model\DBNacinPromocije();
+	$nacini = null;
         try {
             $nacini = $nacin->getAll();
         } catch (\PDOException $e) {
@@ -174,6 +175,130 @@ class Ozsn implements Controller {
             preusmjeri(\route\Route::get('d3')->generate(array(
                 "controller" => "ozsn",
                 "action" => "displayNacinPromocije"
+            )) . "?msg=excep");
+        }
+    }
+    
+    /**
+     * Displays all sponsor categories in database
+     */
+    public function displayKategorija() {
+        $this->checkRole();
+        $this->checkMessages();
+        
+        $kategorija = new \model\DBKategorija();
+	$kategorije = null;
+        try {
+            $kategorije = $kategorija->getAll();
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->errorMessage = $handler;
+        }
+
+        echo new \view\Main(array(
+            "body" => new \view\ozsn\KategorijaList(array(
+                "errorMessage" => $this->errorMessage,
+                "resultMessage" => $this->resultMessage,
+                "nacini" => $kategorije
+            )),
+            "title" => "Kategorije Sponzora",
+        ));
+    }
+    
+    /**
+     * Inserts new data into database via post request
+     */
+    public function addKategorija() {
+        $this->checkRole();
+
+        $kategorija = new \model\DBKategorija();
+        $validacija = new \model\formModel\KategorijaFormModel(array('tipKategorijeSponzora' => post("tipKategorijeSponzora")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayKategorija"
+            )) . "?msg=excep");
+        }
+        
+        try {
+            $kategorija->addRow(post("tipKategorijeSponzora", null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayKategorija"
+            )) . '?msg=succa');
+        } catch (\PDOException $e){
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayKategorija"
+            )) . "?msg=excep");
+        }
+        
+    }
+    
+    /**
+     * Modifies sponsor category data via post request
+     */
+    public function modifyKategorija() {
+        $this->checkRole();
+        
+        $kategorija = new \model\DBKategorija();
+        $validacija = new \model\formModel\NacinPromocijeFormModel(array('tipKategorijeSponzora' => post("tipKategorijeSponzora")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayKategorija"
+            )) . "?msg=excep");
+        }
+        try {
+            $kategorija->modifyRow(post($kategorija->getPrimaryKeyColumn(), null), post('tipKategorijeSponzora', null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayKategorija"
+            )) . '?msg=succm');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayKategorija"
+            )) . "?msg=excep");
+        }
+    }
+    
+    /**
+     * Deletes sponsor category via get request
+     */
+    public function deleteKategorija() {
+        $this->checkRole();
+        
+        $this->idCheck("displayKategorija");
+	
+        $kategorija = new \model\DBKategorija();
+        try {
+            $kategorija->deleteRow(get("id"));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayKategorija"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayKategorija"
             )) . "?msg=excep");
         }
     }
@@ -299,6 +424,7 @@ class Ozsn implements Controller {
         $this->checkMessages();
         
         $kontakt = new \model\DBKontaktOsobe();
+	$kontakti = null;
         try {
             $kontakti = $kontakt->getAll();
         } catch (\PDOException $e) {
@@ -357,6 +483,7 @@ class Ozsn implements Controller {
         $this->checkMessages();
         
         $atribut = new \model\DBAtribut();
+	$atributi = null;
         try {
             $atributi = $atribut->getAllAtributes();
         } catch (\PDOException $e) {
@@ -472,7 +599,8 @@ class Ozsn implements Controller {
             )) . "?msg=excep");
         }
     }
-	/**
+    
+    /**
          *Displays all "velicina" from database
          */
     public function displayVelMajice(){
@@ -480,6 +608,7 @@ class Ozsn implements Controller {
         $this->checkMessages();
 	
 	$velicina = new \model\DBVelMajice();
+	$velicine = null;
 	try {
             $velicine = $velicina->getAllVelicina();
         } catch (\PDOException $e) {
@@ -497,10 +626,11 @@ class Ozsn implements Controller {
             "script" => new \view\scripts\ozsn\VelMajiceListJs()
         ));
 	}
-/**
-* Inserts new data into database via post request
-*/
-public function addVelMajice() {
+	
+    /**
+     * Inserts new data into database via post request
+     */
+    public function addVelMajice() {
         $this->checkRole();
 
         $velicina = new \model\DBVelMajice();
@@ -534,7 +664,7 @@ public function addVelMajice() {
         
     }
 	
-	/**
+    /**
      * Modifies velicina data via post request
      */
     public function modifyVelMajice() {
@@ -568,8 +698,8 @@ public function addVelMajice() {
             )) . "?msg=excep");
         }
     }
-	
-	 /**
+    
+    /**
      * Deletes velicina via get request
      */
     public function deleteVelMajice() {
@@ -595,7 +725,7 @@ public function addVelMajice() {
         }
     }
 	
-		/**
+    /**
      * Displays all "GodStud" in database
      */
     public function displayGodStud() {
@@ -603,6 +733,7 @@ public function addVelMajice() {
         $this->checkMessages();
         
         $godina = new \model\DBGodStud();
+	$godine = null;
         try {
             $godine = $godina->getAllGodStud();
         } catch (\PDOException $e) {
@@ -620,7 +751,8 @@ public function addVelMajice() {
             "script" => new \view\scripts\ozsn\GodStudListJs()
         ));
     }
-	 /**
+    
+    /**
      * Inserts new data into database via post request
      */
     public function addGodStud() {
@@ -657,7 +789,7 @@ public function addVelMajice() {
         
     }
 	
-	/**
+    /**
      * Modifies godina studiranja data via post request
      */
     public function modifyGodStud() {
@@ -691,7 +823,8 @@ public function addVelMajice() {
             )) . "?msg=excep");
         }
     }
-		 /**
+    
+    /**
      * Deletes Godstud via get request
      */
     public function deleteGodStud() {
