@@ -469,4 +469,136 @@ public function addVelMajice() {
             )) . "?msg=excep");
         }
     }
+	
+		/**
+     * Displays all "GodStud" in database
+     */
+    public function displayGodStud() {
+        $this->checkRole();
+        $this->checkMessages();
+        
+        $godina = new \model\DBGodStud();
+        try {
+            $godine = $godina->getAllGodStud();
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->errorMessage = $handler;
+        }
+
+        echo new \view\Main(array(
+            "body" => new \view\ozsn\GodStudList(array(
+                "errorMessage" => $this->errorMessage,
+                "resultMessage" => $this->resultMessage,
+                "godine" => $godine
+            )),
+            "title" => "Lista godina studija",
+            "script" => new \view\scripts\ozsn\GodStudListJs()
+        ));
+    }
+	 /**
+     * Inserts new data into database via post request
+     */
+    public function addGodStud() {
+        $this->checkRole();
+
+        $godStud = new \model\DBGodStud();
+        $validacija = new \model\formModel\GodStudFormModel(array('studij' => post("studij"),'godina'=>post("godina")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayGodStud"
+            )) . "?msg=excep");
+        }
+        
+        try {
+            $godStud->addRow(post("studij", null),post("godina",null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayGodStud"
+            )) . '?msg=succa');
+        } catch (\PDOException $e){
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayGodStud"
+            )) . "?msg=excep");
+        }
+        
+    }
+	
+	/**
+     * Modifies godina studiranja data via post request
+     */
+    public function modifyGodStud() {
+        $this->checkRole();
+        
+        $godStud = new \model\DBGodStud();
+        $godStud = new \model\DBGodStud();
+        $validacija = new \model\formModel\VelMajiceFormModel(array('studij' => post("studij")),array('godina'=>post("godina")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayGodStud"
+            )) . "?msg=excep");
+        }
+        try {
+            $godStud->modifyRow(post($godStud->getPrimaryKeyColumn(), null), post('studij', null), post('godina', null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayGodStud"
+            )) . '?msg=succm');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayGodStud"
+            )) . "?msg=excep");
+        }
+    }
+		 /**
+     * Deletes Godstud via get request
+     */
+    public function deleteGodStud() {
+        $this->checkRole();
+        
+        if (get('id') === false) {
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati zapis!");
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayGodStud"
+            )) . "?msg=excep");
+        }
+        
+        $godStud = new \model\DBGodStud();
+        try {
+            $godStud->deleteRow(get("id"));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayGodStud"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayGodStud"
+            )) . "?msg=excep");
+        }
+    }
+	
+	
 }
