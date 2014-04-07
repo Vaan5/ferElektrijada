@@ -19,6 +19,16 @@ class PersonModification extends AbstractView {
         echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
         ));
+		
+		// print out the form
+        echo new \view\components\PersonForm(array(
+            "postAction" => \route\Route::get('d3')->generate(array(
+                "controller" => 'administrator',
+                "action" => 'modifyPerson'
+            )),
+            "submitButtonText" => "Spremi promjene",
+            "osoba" => $this->osoba,
+        ));
     }
     
     public function setErrorMessage($errorMessage) {

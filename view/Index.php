@@ -116,7 +116,7 @@ class Index extends AbstractView {
         <a href="<?php echo \route\Route::get('d3')->generate(array(
         "controller" => 'administrator',
         "action" => 'displayPersons'
-    ));?>">Pregledaj osobe!</a>
+    ));?>?a=1">Pregledaj osobe!</a>
 	
 	<br><br>
 	<b>OZSN</b>
