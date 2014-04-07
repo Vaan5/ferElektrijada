@@ -17,6 +17,14 @@ class OzsnAdding extends AbstractView {
     private $resultMessage;
     
     protected function outputHTML() {
+		
+		// print messages if any
+        echo new \view\components\ErrorMessage(array(
+            "errorMessage" => $this->errorMessage
+        ));
+        echo new \view\components\ResultMessage(array(
+            "resultMessage" => $this->resultMessage
+        ));
         
         // print out the form
         echo new \view\components\PersonForm(array(
@@ -25,16 +33,7 @@ class OzsnAdding extends AbstractView {
                 "action" => 'addOzsn'
             )),
             "submitButtonText" => "Dodaj novog člana"
-        ));
-        
-        // print messages if any
-        echo new \view\components\ErrorMessage(array(
-            "errorMessage" => $this->errorMessage
-        ));
-        echo new \view\components\ResultMessage(array(
-            "resultMessage" => $this->resultMessage
-        ));
-        
+        ));        
     }
     
     public function setErrorMessage($errorMessage) {

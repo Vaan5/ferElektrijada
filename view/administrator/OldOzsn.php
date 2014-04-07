@@ -22,16 +22,13 @@ class OldOzsn extends AbstractView {
     private $clanovi;
     
     protected function outputHTML() {
-        /*
-         * prvo provjeri je li errorMessage postavljen ako je ispisi ga i ne ispisuj nista vise
-         * ako nije proiteriraj kroz polje i generiraj listu sa imenom, prezimenom, korisnickim imenom clana odbora
-         * plus pored svakog stavi link koji ce ga dodati kao aktivnog clana za ovu godinu (parametar get zahtjeva neka se zove id
-         *  a akcija controllera listOldOzsn)
-         * 
-         * Na kraju stavi (dugme / link) koje ce preusmjeriti isto na listOldOzsn a sa get parametrom a=1
-         * tu cu dodati sve clanove od prosle godine 
-         * 
-         */
+        
+		if($this->resultMessage)
+		{
+			echo new \view\components\ResultMessage(array(
+				"resultMessage" => $this->resultMessage
+			));
+		}
 		
 		// Print errorMessage if is set
 		if($this->errorMessage)
@@ -83,12 +80,6 @@ class OldOzsn extends AbstractView {
 			));?>?a=1">Obnovi ovlasti svim članovima odbora</a>
 					
 <?php
-                        if($this->resultMessage)
-                        {
-                                echo new \view\components\ResultMessage(array(
-                                    "resultMessage" => $this->resultMessage
-                                ));
-                        }
 		}
     }
     

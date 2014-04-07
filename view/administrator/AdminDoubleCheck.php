@@ -15,22 +15,19 @@ class AdminDoubleCheck extends AbstractView {
     private $id;
     
     protected function outputHTML() {
-?>
-
-    <?php echo new LoginForm(array(
-        "showUserName" => false,
-        "actionRoute" => \route\Route::get('d3')->generate(array(
-            "controller" => "administrator",
-            "action" => "doubleCheckAdmin"
-        )),
-        "id" => $this->id
-    )); ?>
-
-    <?php echo new \view\components\ErrorMessage(array(
-        "errorMessage" => $this->errorMessage
-    )); ?>
-
-<?php
+		// Show error message if exists
+		echo new \view\components\ErrorMessage(array(
+			"errorMessage" => $this->errorMessage
+		));
+		
+		echo new LoginForm(array(
+			"showUserName" => false,
+			"actionRoute" => \route\Route::get('d3')->generate(array(
+				"controller" => "administrator",
+				"action" => "doubleCheckAdmin"
+			)),
+			"id" => $this->id
+		)); 
     }
     
     /**

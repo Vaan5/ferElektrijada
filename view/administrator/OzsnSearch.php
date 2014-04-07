@@ -17,6 +17,16 @@ class OzsnSearch extends AbstractView {
     private $resultMessage;
     
     protected function outputHTML() {
+		
+		// print messages if any
+        echo new \view\components\ErrorMessage(array(
+            "errorMessage" => $this->errorMessage
+        ));
+		
+		echo new \view\components\ResultMessage(array(
+            "resultMessage" => $this->resultMessage
+        ));
+		
         // print out the form
         echo new \view\components\SimplePersonSearchForm(array(
             "postAction" => \route\Route::get('d3')->generate(array(
@@ -25,15 +35,6 @@ class OzsnSearch extends AbstractView {
             )),
             "submitButtonText" => "Pretraži",
 			"showAllButtonText" => "Prikaži sve članove"
-        ));
-		
-		 // print messages if any
-        echo new \view\components\ErrorMessage(array(
-            "errorMessage" => $this->errorMessage
-        ));
-		
-		echo new \view\components\ResultMessage(array(
-            "resultMessage" => $this->resultMessage
         ));
     }
     

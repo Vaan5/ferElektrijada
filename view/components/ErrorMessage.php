@@ -15,6 +15,7 @@ class ErrorMessage extends AbstractView {
     <div>
         <?php if (null !== $this->errorMessage) {
                 echo '<br><p class="alert alert-danger">';
+				echo '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
                 echo $this->errorMessage;
                 echo '</p>';
         }

@@ -23,25 +23,14 @@ class ElektrijadaList extends AbstractView {
     private $resultMessage;
     
     protected function outputHTML() {
-        /* Napravi ispis u obliku tablice
-         * neka sadrzi godinu odrzavanja , mjesto, drzavu i jedan link na uredjivanje (mozes ga staviti recimo da klikom na godinu se uredjuje)
-         * u linku dodaj kao get parametar id elektrijade (preusmjeri  na odgovarajucu akciju controllera Administrator)
-         * GET PARAMETAR SE MORA ZVATI 'id' (bez navodnika)
-         * 
-         * Da vidis kako tocno izgleda varijabla elektrijada ukucaj
-         * var_dump($this->elektrijada);
-         * var_dump($this->elektrijada);
-         * var_dump($this->elektrijada);
-         * die();
-         * 
-         * PRIJE ISPISA PRVO POGLEDAJ JE LI ERRORMESSAGE != NULL AKO JE SAMO ISPISI (bilo koristeci ErrorMessage view ili bez njega)
-         * da nije upisana niti jedna elektrijada
-         * 
-         * Ako je postavljena resultMessage ispisi ju koristeci ResultMessage pogled
-         * 
-         */
-		
-		// Else show elektrijade in table
+		// Show messages if any
+		echo new \view\components\ErrorMessage(array(
+            "errorMessage" => $this->errorMessage
+        ));
+        echo new \view\components\ResultMessage(array(
+            "resultMessage" => $this->resultMessage
+        ));
+        
 		if(count($this->elektrijade))
 		{
 			
@@ -61,7 +50,7 @@ class ElektrijadaList extends AbstractView {
 				
 				<tbody>
 <?php
-			// Foreach Ozsn member, generate row in table
+			// Foreach elektrijada, generate row in table
 			foreach($this->elektrijade as $val)
 			{
 				echo '<tr><td>' . date('Y', strtotime($val->datumPocetka)) . '</td><td>' . $val->mjestoOdrzavanja . '</td><td>' . $val->drzava . '</td>';
@@ -81,13 +70,6 @@ class ElektrijadaList extends AbstractView {
 			
 			echo '</tbody></table></div>';
 		}
-		
-        echo new \view\components\ErrorMessage(array(
-            "errorMessage" => $this->errorMessage
-        ));
-        echo new \view\components\ResultMessage(array(
-            "resultMessage" => $this->resultMessage
-        ));
     }
     
     public function setElektrijade($elektrijade) {

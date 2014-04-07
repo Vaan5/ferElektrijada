@@ -32,8 +32,4 @@ class AddContact extends AbstractView {
         $this->tvrtke = $tvrtke;
         return $this;
     }
-
-
-
-
 }

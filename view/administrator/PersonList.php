@@ -23,6 +23,14 @@ class PersonList extends AbstractView {
     private $resultMessage;
     
     protected function outputHTML() {
+		
+		if($this->resultMessage)
+		{
+			echo new \view\components\ResultMessage(array(
+				"resultMessage" => $this->resultMessage
+			));
+		}
+		
 		if($this->errorMessage)
 		{
 			echo new \view\components\ErrorMessage(array(

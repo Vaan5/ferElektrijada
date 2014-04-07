@@ -23,6 +23,13 @@ class AdminProfile extends AbstractView {
     private $admin;
     
     protected function outputHTML() {
+		// print messages if any
+        echo new \view\components\ErrorMessage(array(
+            "errorMessage" => $this->errorMessage
+        ));
+        echo new \view\components\ResultMessage(array(
+            "resultMessage" => $this->resultMessage
+        ));
         
 		// print out the form
         echo new \view\components\PersonForm(array(
@@ -33,16 +40,7 @@ class AdminProfile extends AbstractView {
             "submitButtonText" => "Spremi promjene",
             "osoba" => $this->admin,
             "showDelete" => false
-        ));
-        
-        // print messages if any
-        echo new \view\components\ErrorMessage(array(
-            "errorMessage" => $this->errorMessage
-        ));
-        echo new \view\components\ResultMessage(array(
-            "resultMessage" => $this->resultMessage
-        ));
-        
+		));        
     }
     
     public function setErrorMessage($errorMessage) {

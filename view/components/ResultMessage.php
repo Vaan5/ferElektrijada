@@ -15,6 +15,7 @@ class ResultMessage extends AbstractView {
     <div>
         <?php if (null !== $this->resultMessage) {
                 echo '<br><p class="alert alert-success">';
+				echo '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
                 echo $this->resultMessage;
                 echo '</p>';
         }

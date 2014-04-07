@@ -12,6 +12,11 @@ class ElektrijadaAdding extends AbstractView {
     
     protected function outputHTML() {
         
+		 // print messages if any
+        echo new \view\components\ErrorMessage(array(
+            "errorMessage" => $this->errorMessage
+        ));
+		
 		// print out the form
         echo new \view\components\ElektrijadaForm(array(
             "postAction" => \route\Route::get('d3')->generate(array(
@@ -19,11 +24,6 @@ class ElektrijadaAdding extends AbstractView {
                 "action" => 'addElektrijada'
             )),
             "submitButtonText" => "Dodaj elektrijadu"
-        ));
-		
-		 // print messages if any
-        echo new \view\components\ErrorMessage(array(
-            "errorMessage" => $this->errorMessage
         ));
     }
     

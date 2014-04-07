@@ -24,6 +24,23 @@ class Index extends AbstractView {
     
     protected function outputHTML() {
 ?>
+
+<div class="main">
+    <div class = "container-narrow">
+    <?php echo new components\ErrorMessage(array(
+        "errorMessage" => $this->errorMessage
+    )); ?>
+    </div>
+</div>
+        
+<div class="main">
+    <div class = "container-narrow">
+    <?php echo new components\ResultMessage(array(
+        "resultMessage" => $this->resultMessage
+    )); ?>
+    </div>
+</div>
+
 <p><center><img src="./assets/img/naslovna.jpg" alt="FER logo" align="middle"></center></p>
 <p>Ovaj link trebate sutnuti gore u traku (U main view) uz provjeru da samo admin to moze vidjet &nbsp;
     <a href="<?php echo \route\Route::get('d3')->generate(array(
@@ -132,22 +149,6 @@ class Index extends AbstractView {
         "action" => 'displayGodStud'
     ));?>">DBM Godine studija</a>
 </p>
-
-<div class="main">
-    <div class = "container-narrow">
-    <?php echo new components\ErrorMessage(array(
-        "errorMessage" => $this->errorMessage
-    )); ?>
-    </div>
-</div>
-        
-<div class="main">
-    <div class = "container-narrow">
-    <?php echo new components\ResultMessage(array(
-        "resultMessage" => $this->resultMessage
-    )); ?>
-    </div>
-</div>
 
 <?php
     }
