@@ -303,6 +303,72 @@ class Ozsn implements Controller {
         }
     }
     
+    /**
+     * Displays all sponsors
+     */
+    public function displaySponzor() {
+	$this->checkRole();
+        $this->checkMessages();
+        
+        $sponzor = new \model\DBSponzor();
+	$sponzori = null;
+        try {
+            $sponzori = $sponzor->getAll();
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->errorMessage = $handler;
+        }
+
+        echo new \view\Main(array(
+            "body" => new \view\ozsn\SponzorList(array(
+                "errorMessage" => $this->errorMessage,
+                "resultMessage" => $this->resultMessage,
+                "sponzori" => $sponzori
+            )),
+            "title" => "Sponzori",
+        ));
+    }
+    
+    public function addSponzor() {
+	$this->checkRole();
+	$this->checkMessages();
+	
+	$kategorija = new \model\DBKategorija();
+	$promocija = new \model\DBNacinPromocije();
+	$podrucje = new \model\DBPodrucje();
+	$kategorije = null;
+	$promocije = null;
+	$podrucja = null;
+	
+	try {
+	    $kategorije = $kategorija->getAll();
+	    $promocije = $promocija->getAll();
+	    $podrucja = $podrucje->getAll();
+	} catch (\PDOException $e) {
+	    $handler = new \model\ExceptionHandlerModel($e);
+	    $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displaySponzor"
+            )) . "?msg=excep");
+	}
+	
+	if (!postEmpty()) {
+	    
+	}
+	
+	echo new \view\Main(array(
+	    "body" => new \view\ozsn\SponzorAdding(array(
+		"errorMessage" => $this->errorMessage,
+		"resultMessage" => $this->resultMessage,
+		"kategorije" => $kategorije,
+		"promocije" => $promocije,
+		"podrucja" => $podrucja
+	    )),
+	    "title" => "Dodavanje Sponzora"
+	));
+    }
+    
     public function addContact() {
         $this->checkRole();
         $this->checkMessages();

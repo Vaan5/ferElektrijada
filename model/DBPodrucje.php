@@ -3,13 +3,7 @@
 namespace model;
 use app\model\AbstractDBModel;
 
-class DBPodrucje extends AbstractDBModel {
-	    
-	/**
-	*
-	* @var boolean 
-	*/
-            
+class DBPodrucje extends AbstractDBModel {     
     public function getTable(){
         return 'podrucje';
     }
@@ -20,5 +14,9 @@ class DBPodrucje extends AbstractDBModel {
             
     public function getColumns(){
         return array ('nazivPodrucja', 'idNadredjenog');
+    }
+    
+    public function getAll() {
+	return $this->select()->fetchAll();
     }
 }
