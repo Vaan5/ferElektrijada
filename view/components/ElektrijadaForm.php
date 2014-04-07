@@ -29,34 +29,58 @@ class ElektrijadaForm extends AbstractView {
          * ako nije -> PAZI DA NE ISPISES U POLJA BAS NISTA, cak niti ''
          */
 ?>
-    <form action="<?php echo $this->postAction;?>" method="POST">
-        <p>Mjesto održavanja: &nbsp;
-			<input type="text" name="mjestoOdrzavanja" placeholder="Upišite mjesto održavanja" <?php if($this->elektrijada && $this->elektrijada->mjestoOdrzavanja){ echo 'value="' . $this->elektrijada->mjestoOdrzavanja . '"'; } ?> />
-        </p>
-		<p>Država: &nbsp;
-			<input type="text" name="drzava" placeholder="Upišite državu" <?php if($this->elektrijada && $this->elektrijada->drzava){ echo 'value="' . $this->elektrijada->drzava . '"'; } ?> />
-        </p>
-        <p>Datum početka: &nbsp;
-            <input type="text" name="datumPocetka" placeholder="Upišite datum početka" class="datePicker" <?php if($this->elektrijada && $this->elektrijada->datumPocetka){ echo 'value="' . $this->elektrijada->datumPocetka . '"'; } ?> />
-        </p>
-		<p>Datum kraja: &nbsp;
-            <input type="text" name="datumKraja" placeholder="Upišite datum kraja" class="datePicker" <?php if($this->elektrijada && $this->elektrijada->datumKraja){ echo 'value="' . $this->elektrijada->datumKraja . '"'; } ?> />
-        </p>
-		<p>Ukupni rezultat: &nbsp;
-            <input type="text" name="ukupniRezultat" placeholder="Upišite ukupni rezultat" <?php if($this->elektrijada && $this->elektrijada->ukupniRezultat){ echo 'value="' . $this->elektrijada->ukupniRezultat . '"'; } ?> />
-        </p>
-                <p>Rok za unos podataka za područje znanja: &nbsp;
-            <input type="text" name="rokZaZnanje" placeholder="Upišite rok za znanje" class="datePicker" <?php if($this->elektrijada && $this->elektrijada->rokZaZnanje){ echo 'value="' . $this->elektrijada->rokZaZnanje . '"'; } ?> />
-        </p>
-                <p>Rok za unos podataka za područje sporta: &nbsp;
-            <input type="text" name="rokZaSport" placeholder="Upišite rok za sport" class="datePicker" <?php if($this->elektrijada && $this->elektrijada->rokZaSport){ echo 'value="' . $this->elektrijada->rokZaSport . '"'; } ?> />
-        </p>
-                <p>Ukupan broj sudionika: &nbsp;
-            <input type="text" name="ukupanBrojSudionika" placeholder="Upišite broj sudionika" <?php if($this->elektrijada && $this->elektrijada->ukupanBrojSudionika){ echo 'value="' . $this->elektrijada->ukupanBrojSudionika . '"'; } ?> />
-        </p>
+    <form class="form-horizontal" role="form" action="<?php echo $this->postAction;?>" method="POST">
+        <div class="form-group">
+            <label for="mjestoodrzavanja" class="col-sm-3 control-label">Mjesto održavanja</label>
+                        <div class="col-sm-8">
+			<input type="text" name="mjestoOdrzavanja" class="form-control" placeholder="Upišite mjesto održavanja" <?php if($this->elektrijada && $this->elektrijada->mjestoOdrzavanja){ echo 'value="' . $this->elektrijada->mjestoOdrzavanja . '"'; } ?> />
+                        </div>
+        </div>                       
+        <div class="form-group">
+            <label for="drzava" class="col-sm-3 control-label">Država</label>
+                        <div class="col-sm-8">
+			<input type="text" name="drzava" class="form-control" placeholder="Upišite državu" <?php if($this->elektrijada && $this->elektrijada->drzava){ echo 'value="' . $this->elektrijada->drzava . '"'; } ?> />
+                        </div>
+        </div>
+        <div class="form-group">
+            <label for="datumpocetka" class="col-sm-3 control-label">Datum početka</label>
+                        <div class="col-sm-8">
+                        <input type="text" name="datumPocetka" placeholder="Upišite datum početka" class="datePicker form-control" <?php if($this->elektrijada && $this->elektrijada->datumPocetka){ echo 'value="' . $this->elektrijada->datumPocetka . '"'; } ?> />
+                        </div>
+        </div>
+        <div class="form-group">
+            <label for="datumkraja" class="col-sm-3 control-label">Datum kraja</label>
+                        <div class="col-sm-8">
+                        <input type="text" name="datumKraja" placeholder="Upišite datum kraja" class="datePicker form-control" <?php if($this->elektrijada && $this->elektrijada->datumKraja){ echo 'value="' . $this->elektrijada->datumKraja . '"'; } ?> />
+                        </div>
+        </div>
+        <div class="form-group">
+            <label for="ukupnirez" class="col-sm-3 control-label">Ukupni rezultat</label>
+                        <div class="col-sm-8">
+                        <input type="text" name="ukupniRezultat" class="form-control" placeholder="Upišite ukupni rezultat" <?php if($this->elektrijada && $this->elektrijada->ukupniRezultat){ echo 'value="' . $this->elektrijada->ukupniRezultat . '"'; } ?> />
+                        </div>
+        </div>
+        <div class="form-group">
+            <label for="rokzaznanje" class="col-sm-6 control-label">Rok za unos podataka za područje znanja</label>
+                        <div class="col-sm-5">
+                        <input type="text" name="rokZaZnanje" placeholder="Upišite rok za znanje" class="datePicker form-control" <?php if($this->elektrijada && $this->elektrijada->rokZaZnanje){ echo 'value="' . $this->elektrijada->rokZaZnanje . '"'; } ?> />
+                        </div>
+        </div>
+        <div class="form-group">
+            <label for="rokzasport" class="col-sm-6 control-label">Rok za unos podataka za područje sporta</label>
+                        <div class="col-sm-5">
+                        <input type="text" name="rokZaSport" placeholder="Upišite rok za sport" class="datePicker form-control" <?php if($this->elektrijada && $this->elektrijada->rokZaSport){ echo 'value="' . $this->elektrijada->rokZaSport . '"'; } ?> />
+                        </div>
+        </div>
+        <div class="form-group">
+            <label for="ukupnibrsud" class="col-sm-4 control-label">Ukupni broj sudionika</label>
+                        <div class="col-sm-7">           
+                        <input type="text" name="ukupanBrojSudionika" class="form-control" placeholder="Upišite broj sudionika" <?php if($this->elektrijada && $this->elektrijada->ukupanBrojSudionika){ echo 'value="' . $this->elektrijada->ukupanBrojSudionika . '"'; } ?> />
+                        </div>
+        </div>
 		
 		<?php if($this->elektrijada && $this->elektrijada->idElektrijade){ echo '<input type="hidden" name="idElektrijade" value="' . $this->elektrijada->idElektrijade . '">'; } ?>
-        <input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText;?>" />
+        <center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText;?>" /></center>
     </form>
 <?php
     }

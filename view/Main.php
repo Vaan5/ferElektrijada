@@ -70,7 +70,7 @@ class Main extends AbstractView {
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
         <a class="navbar-brand" href="<?php echo \route\Route::get('d1')->generate();?>">
-		<span class="glyphicon glyphicon-home"></span> Naslovnica
+		<span class="glyphicon glyphicon-home"></span>
 	</a>
         <p class="navbar-brand">
             <span class="glyphicon glyphicon-chevron-right"></span><?php echo " ".$this->title; ?>
@@ -79,11 +79,7 @@ class Main extends AbstractView {
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">    
         <ul class="nav navbar-nav">
-        <?php if(\model\DBOsoba::isLoggedIn() && $_SESSION ['vrsta']==='A') echo 
-            "<li><a href=\"" . \route\Route::get('d3')->generate(array(
-                    "controller" => 'administrator',
-                    "action" => 'addOzsn'
-                )) . "\">Dodaj OZSN</a></li> " ; ?>
+        <?php if(\model\DBOsoba::isLoggedIn() && $_SESSION ['vrsta']==='A') echo new navbar\AdminNavbar(); ?>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <p class="navbar-text">
