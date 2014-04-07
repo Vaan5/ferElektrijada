@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 namespace model;
 use app\model\AbstractDBModel;
