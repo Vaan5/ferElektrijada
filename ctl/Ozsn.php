@@ -353,8 +353,103 @@ class Ozsn implements Controller {
             )) . "?msg=excep");
 	}
 	
+	if (postEmpty() && files("tmp_name", "datoteka") !== false) {
+	    $handler = new \model\ExceptionHandlerModel($e, "Da biste dodali logotip, morate unijeti i podatke o sponzoru!");
+	    $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "addSponzor"
+            )) . "?msg=excep");
+	}
+	
+	// check if the image is too big
+	if (files("tmp_name", "datoteka") !== false && files("size", "datoteka") > 1024 * 1024) {
+	    $handler = new \model\ExceptionHandlerModel($e, "Veličina slike mora biti manja od 1MB!");
+	    $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "addSponzor"
+            )) . "?msg=excep");
+	}
+	
 	if (!postEmpty()) {
-	    
+	    try {
+		// first do the db work and after that the image work
+		$idSponzora = null; // 
+		//
+		//
+		//
+		//STAVI ID SPONZORA TU !!!!!!!!!!!
+		//
+		//
+		// if you have uploaded a logo
+		if (files("tmp_name", "datoteka") !== false) {
+		    $mime = null;
+		    $finfo = null;
+		    // check file type -finfo extension needs to be enables in PHP
+		    if(function_exists('finfo_file')) {
+			$finfo = \finfo_open(FILEINFO_MIME_TYPE);
+			$mime = finfo_file($finfo, files("tmp_name", "datoteka"));
+		    } else {
+			$mime = \mime_content_type(files("tmp_name", "datoteka"));
+		    }
+		    
+		    if($mime != 'image/jpeg') {
+			$handler = new \model\ExceptionHandlerModel($e, "Možete poslati logotip samo u jpeg (jpg) formatu!");
+			$_SESSION["exception"] = serialize($handler);
+			preusmjeri(\route\Route::get('d3')->generate(array(
+			    "controller" => "ozsn",
+			    "action" => "addSponzor"
+			)) . "?msg=excep");
+		    }
+		    
+		    // now i should add the file to my file system
+		    $img = imagecreatefromjpeg(files("tmp_name", "datoteka"));
+		    if ($img === false) {
+			$handler = new \model\ExceptionHandlerModel($e, "Ne mogu obraditi predani logo!");
+			$_SESSION["exception"] = serialize($handler);
+			preusmjeri(\route\Route::get('d3')->generate(array(
+			    "controller" => "ozsn",
+			    "action" => "addSponzor"
+			)) . "?msg=excep");
+		    }
+		    
+		    // resize logo
+		    list($width, $height) = getimagesize(files("tmp_name", "datoteka"));
+		    $image_p = imagecreatetruecolor(300, 200);
+		    imagecopyresampled($image_p, $img, 0, 0, 0, 0, 300, 200, $width, $height);
+		    
+		    // save resized image
+		    $pov = imagejpeg($image_p, "./logotip/" . $idSponzora . ".jpeg");
+		    if ($pov === true) {
+			// add path to db
+			
+			// NASTAVI
+			//
+			//
+			//
+			//
+			//
+			//
+			
+		    } else {
+			$handler = new \model\ExceptionHandlerModel($e, "Problem s spremanjem slike!");
+			$_SESSION["exception"] = serialize($handler);
+			preusmjeri(\route\Route::get('d3')->generate(array(
+			    "controller" => "ozsn",
+			    "action" => "addSponzor"
+			)) . "?msg=excep");
+		    }
+		    
+		}
+	    } catch (\PDOException $e) {
+		$handler = new \model\ExceptionHandlerModel($e);
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "ozsn",
+		    "action" => "addSponzor"
+		)) . "?msg=excep");
+	    } 
 	}
 	
 	echo new \view\Main(array(
