@@ -29,12 +29,142 @@ class Ozsn implements Controller {
                 break;
             case 'excep':
                 if(isset($_SESSION['exception'])) {
-                    $e = unserialize($_SESSION['exception']);   // don't forget 'use \PDOException;'
+                    $e = unserialize($_SESSION['exception']);
                     unset($_SESSION['exception']);
                     $this->errorMessage = $e;
                 }
             default:
                 break;
+        }
+    }
+    
+    /**
+     * Displays all promotion types in database
+     */
+    public function displayNacinPromocije() {
+        $this->checkRole();
+        $this->checkMessages();
+        
+        $nacin = new \model\DBNacinPromocije();
+        try {
+            $nacini = $nacin->getAll();
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->errorMessage = $handler;
+        }
+
+        echo new \view\Main(array(
+            "body" => new \view\ozsn\NacinPromocijeList(array(
+                "errorMessage" => $this->errorMessage,
+                "resultMessage" => $this->resultMessage,
+                "nacini" => $nacini
+            )),
+            "title" => "Načini Promocije",
+        ));
+    }
+    
+    /**
+     * Inserts new data into database via post request
+     */
+    public function addNacinPromocije() {
+        $this->checkRole();
+
+        $nacin = new \model\DBNacinPromocije();
+        $validacija = new \model\formModel\NacinPromocijeFormModel(array('tipPromocije' => post("tipPromocije")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayNacinPromocije"
+            )) . "?msg=excep");
+        }
+        
+        try {
+            $nacin->addRow(post("tipPromocije", null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayNacinPromocije"
+            )) . '?msg=succa');
+        } catch (\PDOException $e){
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayNacinPromocije"
+            )) . "?msg=excep");
+        }
+        
+    }
+    
+    /**
+     * Modifies promotion type data via post request
+     */
+    public function modifyNacinPromocije() {
+        $this->checkRole();
+        
+        $nacin = new \model\DBNacinPromocije();
+        $validacija = new \model\formModel\NacinPromocijeFormModel(array('tipPromocije' => post("tipPromocije")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayNacinPromocije"
+            )) . "?msg=excep");
+        }
+        try {
+            $nacin->modifyRow(post($nacin->getPrimaryKeyColumn(), null), post('tipPromocije', null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayNacinPromocije"
+            )) . '?msg=succm');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayNacinPromocije"
+            )) . "?msg=excep");
+        }
+    }
+    
+    /**
+     * Deletes promotion type via get request
+     */
+    public function deleteNacinPromocije() {
+        $this->checkRole();
+        
+        if (get('id') === false) {
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati zapis!");
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayNacinPromocije"
+            )) . "?msg=excep");
+        }
+	
+        $nacin = new \model\DBNacinPromocije();
+        try {
+            $nacin->deleteRow(get("id"));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayNacinPromocije"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayNacinPromocije"
+            )) . "?msg=excep");
         }
     }
     
@@ -279,7 +409,6 @@ class Ozsn implements Controller {
         $this->checkRole();
         
         $atribut = new \model\DBAtribut();
-        $atribut = new \model\DBAtribut();// jel mora bit tu???
         $validacija = new \model\formModel\AtributFormModel(array('nazivAtributa' => post("nazivAtributa")));
         $pov = $validacija->validate();
         if($pov !== true) {
