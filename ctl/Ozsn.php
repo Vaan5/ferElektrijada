@@ -16,6 +16,23 @@ class Ozsn implements Controller {
         }
     }
     
+    /**
+     * function to check if get("id") is a number
+     */
+    private function idCheck($akcija) {
+	$validator = new \model\formModel\IdValidationModel(array("id" => get("id")));
+	$pov = $validator->validate();
+	if ($pov !== true) {
+	    $message = $validator->decypherErrors($pov);
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => $akcija
+            )) . "?msg=excep");
+	}
+    }
+    
     private function checkMessages() {
         switch(get("msg")) {
             case 'succm':
@@ -141,14 +158,7 @@ class Ozsn implements Controller {
     public function deleteNacinPromocije() {
         $this->checkRole();
         
-        if (get('id') === false) {
-            $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati zapis!");
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayNacinPromocije"
-            )) . "?msg=excep");
-        }
+        $this->idCheck("displayNacinPromocije");
 	
         $nacin = new \model\DBNacinPromocije();
         try {
@@ -443,14 +453,8 @@ class Ozsn implements Controller {
     public function deleteAtribut() {
         $this->checkRole();
         
-        if (get('id') === false) {
-            $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati zapis!");
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayAtribut"
-            )) . "?msg=excep");
-        }
+        $this->idCheck("displayAtribut");
+	
         $atribut = new \model\DBAtribut();
         try {
             $atribut->deleteRow(get("id"));
@@ -537,7 +541,6 @@ public function addVelMajice() {
         $this->checkRole();
         
         $velicina = new \model\DBVelMajice();
-        $velicina = new \model\DBVelMajice();
         $validacija = new \model\formModel\VelMajiceFormModel(array('velicina' => post("velicina")));
         $pov = $validacija->validate();
         if($pov !== true) {
@@ -572,14 +575,7 @@ public function addVelMajice() {
     public function deleteVelMajice() {
         $this->checkRole();
         
-        if (get('id') === false) {
-            $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati zapis!");
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayVelMajice"
-            )) . "?msg=excep");
-        }
+        $this->idCheck("displayVelMajice");
         
         $velicina = new \model\DBVelMajice();
         try {
@@ -668,7 +664,6 @@ public function addVelMajice() {
         $this->checkRole();
         
         $godStud = new \model\DBGodStud();
-        $godStud = new \model\DBGodStud();
         $validacija = new \model\formModel\VelMajiceFormModel(array('studij' => post("studij")),array('godina'=>post("godina")));
         $pov = $validacija->validate();
         if($pov !== true) {
@@ -702,14 +697,7 @@ public function addVelMajice() {
     public function deleteGodStud() {
         $this->checkRole();
         
-        if (get('id') === false) {
-            $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati zapis!");
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayGodStud"
-            )) . "?msg=excep");
-        }
+        $this->idCheck("displayGodStud");
         
         $godStud = new \model\DBGodStud();
         try {

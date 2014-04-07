@@ -130,7 +130,40 @@ abstract class AbstractFormModel implements FormModel {
     protected function validateOib($data) {
         if(isset($data) && $data !== '') {
             $pattern = '/^[0-9]{11}$/';
-            return $this->test_pattern($pattern, $data);
+            $pov = $this->test_pattern($pattern, $data);
+	    if ($pov === false)
+		return false;
+	    $oib = $data;
+	    if ( strlen($oib) == 11 ) {
+		if ( is_numeric($oib) ) {
+			
+			$a = 10;
+			
+			for ($i = 0; $i < 10; $i++) {
+				
+				$a = $a + intval(substr($oib, $i, 1), 10);
+				$a = $a % 10;
+				
+				if ( $a == 0 ) { $a = 10; }
+				
+				$a *= 2;
+				$a = $a % 11;
+				
+			}
+			
+			$kontrolni = 11 - $a;
+			
+			if ( $kontrolni == 10 ) { $kontrolni = 0; }
+			
+			return $kontrolni == intval(substr($oib, 10, 1), 10);
+			
+		} else {
+			return false;
+		}
+		
+	    } else {
+		    return false;	
+	    }
         }
         // if you didn't give me anything to check i'll just return true
         return true;
