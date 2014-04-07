@@ -318,6 +318,14 @@ CREATE TABLE JeUUdruzi (
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+CREATE TABLE MEDIJ (
+    idMedija INT UNSIGNED AUTO_INCREMENT,
+    nazivMedija VARCHAR(100) NOT NULL,    
+    PRIMARY KEY (idMedija),
+    UNIQUE(nazivMedija)
+
+);
+
 CREATE TABLE KONTAKTOSOBE (
     idKontakta INT UNSIGNED AUTO_INCREMENT,
     imeKontakt VARCHAR(100) NOT NULL,
@@ -326,8 +334,12 @@ CREATE TABLE KONTAKTOSOBE (
     radnoMjesto VARCHAR(100),
     idTvrtke INT UNSIGNED,
     idSponzora INT UNSIGNED,
+    idMedija INT UNSIGNED,
     FOREIGN KEY (idSponzora)
         REFERENCES SPONZOR (idSponzora)
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (idMedija)
+        REFERENCES MEDIJ (idMedija)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idTvrtke)
         REFERENCES TVRTKA (idTvrtke)
@@ -393,16 +405,7 @@ CREATE TABLE PodrucjeSudjelovanja (
 );
 
 
-CREATE TABLE MEDIJ (
-    idMedija INT UNSIGNED AUTO_INCREMENT,
-    nazivMedija VARCHAR(100) NOT NULL,
-    idKontakta INT(10) UNSIGNED,
-    PRIMARY KEY (idMedija),
-    UNIQUE(nazivMedija),
-    FOREIGN KEY (idKontakta)
-        REFERENCES KONTAKTOSOBE (idKontakta)
-        ON UPDATE CASCADE ON DELETE CASCADE
-);
+
 
 CREATE TABLE OBJAVA (
     idObjave INT UNSIGNED AUTO_INCREMENT,
@@ -431,6 +434,8 @@ CREATE TABLE ObjavaOElektrijadi (
         REFERENCES ELEKTRIJADA (idElektrijade)
         ON UPDATE CASCADE ON DELETE CASCADE 
 );
+
+
 
 
 

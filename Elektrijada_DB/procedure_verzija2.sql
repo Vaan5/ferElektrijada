@@ -110,13 +110,26 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `azurirajKontakt`(IN idKontakta INT(10), IN imeKontakt VARCHAR(100), IN prezimeKontakt VARCHAR(100), IN telefon VARCHAR(20), IN radnoMjesto VARCHAR(100), IN idTvrtke INT(10), IN idSponzora INT(10))
+CREATE  PROCEDURE `azurirajKontakt`(IN idKontakta INT(10), IN imeKontakt VARCHAR(100), IN prezimeKontakt VARCHAR(100), IN telefon VARCHAR(20), IN radnoMjesto VARCHAR(100), IN idTvrtke INT(10), IN idSponzora INT(10),IN idMedija INT(10))
 BEGIN
-	IF EXISTS (SELECT * FROM KONTAKTOSOBE.idKontakta=idKontakta) && (telefon REGEXP '[0-9]') THEN
+	IF EXISTS (SELECT * FROM KONTAKTOSOBE WHERE KONTAKTOSOBE.idKontakta=idKontakta) && (telefon REGEXP '[0-9]') THEN
+     IF EXISTS (SELECT * FROM MEDIJ  WHERE MEDIJ.idMedija = idMedija ) || (idMedija IS NULL ) THEN
+       IF EXISTS (SELECT * FROM TVRTKA  WHERE TVRTKA.idTvrtke = idTvrtke) || (idTvrtke IS NULL ) THEN
+        IF EXISTS (SELECT * FROM SPONZOR  WHERE SPONZOR.idSponzora = idSponzora) || (idSponzora IS NULL ) THEN
 		UPDATE KONTAKTOSOBE
 		SET KONTAKTOSOBE.imeKontakt=imeKontakt, KONTAKTOSOBE.prezimeKontakt=prezimeKontakt, KONTAKTOSOBE.telefon=telefon, KONTAKTOSOBE.radnoMjesto=radnoMjesto, KONTAKTOSOBE.idTvrtke=idTvrtke, KONTAKTOSOBE.idSponzora=idSponzora
 		WHERE KONTAKTOSOBE.idKontakta=idKontakta;
-	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji kontakt sa upisanim identifikatorom!';
+        ELSE
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrani sponzor ne postoji! ';
+	    END IF;
+       ELSE
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrana tvrtka ne postoji! ';
+	   END IF;
+	 ELSE 
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrani medij ne postoji!';
+	 END IF;
+	ELSE 
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrani kontakt ne postoji!';
 	END IF;
 END $$
 DELIMITER ;
@@ -1034,11 +1047,12 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `dodajKontakt`(IN imeKontakt VARCHAR(100), IN prezimeKontakt VARCHAR(100), IN telefon VARCHAR(20), IN radnoMjesto VARCHAR(100), IN idTvrtke INT(10), IN idSponzora INT(10))
+CREATE  PROCEDURE `dodajKontakt`(IN imeKontakt VARCHAR(100), IN prezimeKontakt VARCHAR(100), IN telefon VARCHAR(20), IN radnoMjesto VARCHAR(100), IN idTvrtke INT(10), IN idSponzora INT(10), IN idMedija INT(10))
 BEGIN
 IF EXISTS (SELECT * FROM KONTAKTOSOBE WHERE KONTAKTOSOBE.imeKontakt=imeKontakt && KONTAKTOSOBE.prezimeKontakt=prezimeKontakt && KONTAKTOSOBE.telefon=telefon && KONTAKTOSOBE.radnoMjesto=radnoMjesto && KONTAKTOSOBE.idTvrtke=idTvrtke &&KONTAKTOSOBE.idSponzora=idSponzora) THEN
 	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Zapis vec postoji u bazi!';
 ELSE
+  IF EXISTS (SELECT * FROM MEDIJ  WHERE MEDIJ.idMedija = idMedija ) || (idMedija IS NULL ) THEN
 	IF EXISTS (SELECT * FROM TVRTKA WHERE TVRTKA.idTvrtke=idTvrtke) THEN
 		IF EXISTS (SELECT * FROM SPONZOR WHERE SPONZOR.idSponzora=idSponzora) THEN
 			IF (telefon REGEXP '[0-9]') THEN
@@ -1047,7 +1061,9 @@ ELSE
 			END IF;
 		ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji sponzor sa upisanim identifikatorom!';
 		END IF;
-	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Ne postoji tvrtka sa unesenim identifikatorom';
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji tvrtka sa unesenim identifikatorom';
+	END IF;
+    ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji medij sa unesenim identifikatorom';
 	END IF;
 END IF;
 END $$
@@ -1776,17 +1792,15 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `dodajMedij`(IN nazivMedija VARCHAR(10), IN idKontakta INT(10))
+CREATE  PROCEDURE `dodajMedij`(IN nazivMedija VARCHAR(10))
 BEGIN
-	IF EXISTS (SELECT * FROM kontaktosobe WHERE kontaktosobe.idKontakta=idKontakta ) THEN 
+	
       If (SELECT * FROM BUS WHERE BUS.idBusa=idBusa) > brojSjedala THEN		
-			INSERT INTO MEDIJ VALUES (NULL,nazivMedija,idKontakta);		
+			INSERT INTO MEDIJ VALUES (NULL,nazivMedija);		
       ELSE 
 	       SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: brojSjedala je veči od ukupnog broja sjedećih mjesta u busu!';
 	  END IF;
-	ELSE 
-		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Unesen nepostojeći kontakt!';
-	END IF;
+	
 END $$
 DELIMITER ;
 
@@ -1893,17 +1907,13 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `azurirajMedij`(IN idMedija INT(10), IN nazivMedija VARCHAR(10), IN idKontakta INT(10))
+CREATE  PROCEDURE `azurirajMedij`(IN idMedija INT(10), IN nazivMedija VARCHAR(10))
 BEGIN
 	IF EXISTS (SELECT * FROM MEDIJ WHERE BUS.nazivMedija=inazivMedija) THEN
-      IF  EXISTS(SELECT * FROM KONTAKTOSOBE WHERE KONTAKTOSOBE.idKontakta=idKontakta)  THEN
 		
 				UPDATE MEDIJ
 				SET MEDIJ.idKontakta=idKontakta,MEDIJ.nazivMedija=nazivMedija
 				WHERE MEDIJ.idMedija=idMedija;
-       ELSE 
-           SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Kontakt ne postoji u bazi!';
-	   END IF;
 			
 	ELSE 
        SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Naziv medija već postoji u bazi!';
