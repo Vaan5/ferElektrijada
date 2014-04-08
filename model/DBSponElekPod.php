@@ -22,4 +22,18 @@ class DBSponElekPod extends AbstractDBModel {
             throw $e;
         }
     }
+    
+    public function addRow($idSponzora, $idPodrucja, $idElektrijade, $iznosDonacije, $valutaDonacije, $napomena) {
+	try {
+	    $atributi = $this->getColumns();
+	    foreach($atributi as $a) {
+		$this->{$a} = ${$a};
+	    }
+	    if ($this->napomena === '' || $this->napomena === ' ')
+		$this->napomena = NULL;
+            $this->save();
+        } catch (\PDOException $e) {
+            throw $e;
+        }
+    }
 }

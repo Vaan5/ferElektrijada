@@ -539,7 +539,78 @@ class Ozsn implements Controller {
     }
     
     public function addAreaSponzor() {
+	$this->checkRole();
+	$this->checkMessages();
 	
+	$podrucje = new \model\DBPodrucje();
+	$sponzor = new \model\DBSponzor();
+	
+	$podrucja = null;
+	$sponzori = null;
+	
+	try {
+	    $podrucja = $podrucje->getAll();
+	    $sponzori = $sponzor->getAll();
+	} catch (\PDOException $e) {
+	    $handler = new \model\ExceptionHandlerModel($e);
+	    $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayAreaSponzor"
+            )) . "?msg=excep");
+	}
+	
+	if (!postEmpty()) {
+	    try {
+		// first do the db work
+		$validacija = new \model\formModel\AreaSponzorFormModel(array("iznosDonacije" => post("iznosDonacije"),
+									"napomena" => post("napomena"),
+									"idSponzora" => post("idSponzora"),
+									"idPodrucja" => post("idPodrucja")));
+		$pov = $validacija->validate();
+		if ($pov !== true) {
+		    $message = $validacija->decypherErrors($pov);
+		    $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+		    $_SESSION["exception"] = serialize($handler);
+		    preusmjeri(\route\Route::get('d3')->generate(array(
+			"controller" => "ozsn",
+			"action" => "addAreaSponzor"
+		    )) . "?msg=excep");
+		}
+		
+		// data checked and ok
+		$sponElek = new \model\DBSponElekPod();
+		
+		if (post("iznosDonacije") !== false && post("valutaDonacije") !== false) {
+		    $elektrijada = new \model\DBElektrijada();
+		    $i = $elektrijada->getCurrentElektrijadaId();
+		    $sponElek->addRow(post("idSponzora", null), post("idPodrucja", null), $i, 
+			    post("iznosDonacije", null), post("valutaDonacije", null), post("napomena", null));
+		}
+
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "ozsn",
+		    "action" => "displayAreaSponzor"
+		)) . "?msg=succa");
+	    } catch (\PDOException $e) {
+		$handler = new \model\ExceptionHandlerModel($e);
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "ozsn",
+		    "action" => "addAreaSponzor"
+		)) . "?msg=excep");
+	    } 
+	}
+
+	echo new \view\Main(array(
+	    "body" => new \view\ozsn\AreaSponzorAdding(array(
+		"errorMessage" => $this->errorMessage,
+		"resultMessage" => $this->resultMessage,
+		"sponzori" => $sponzori,
+		"podrucja" => $podrucja
+	    )),
+	    "title" => "Pojedinačne Donacije"
+	));
     }
     
     /**
