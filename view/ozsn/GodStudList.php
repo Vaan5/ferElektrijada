@@ -34,7 +34,7 @@ class GodStudList extends AbstractView {
 
 		if(count($this->godine))
 		{
-			// Foreach atribut, generate row in table
+			// Foreach GodStud, generate row in table
 			foreach($this->godine as $val)
 			{
 				echo '<form action="modifyGodStud" method="POST">';
