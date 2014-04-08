@@ -37,6 +37,18 @@ class DBSponzor extends AbstractDBModel {
 	    throw $e;
 	}
     }
+    
+    public function getAllArea($idElektrijade) {
+	try {
+	    $pdo = $this->getPdo();
+	    $q = $pdo->prepare("SELECT sponzor.* FROM sponzor JOIN sponelekpod ON sponzor.idSponzora = sponelekpod.idSponzora WHERE sponelekpod.idElektrijade = :id");
+	    $q->bindValue(":id", $idElektrijade);
+	    $q->execute();
+	    return $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+	} catch (\PDOException $e) {
+	    throw $e;
+	}
+    }
 
     public function addRow($imeTvrtke, $adresaTvrtke, $logotip) {
 	try {

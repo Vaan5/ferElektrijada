@@ -348,12 +348,40 @@ class Ozsn implements Controller {
         }
 
         echo new \view\Main(array(
-            "body" => new \view\ozsn\SponzorList(array(
+            "body" => new \view\ozsn\ActiveSponzorList(array(
                 "errorMessage" => $this->errorMessage,
                 "resultMessage" => $this->resultMessage,
                 "sponzori" => $sponzori
             )),
-            "title" => "Sponzori",
+            "title" => "Ovogodišnji Sponzori",
+        ));
+    }
+    
+    /**
+     * Display sponzors for current Elektrijada (who have sponsored some competition areas)
+     */
+    public function displayAreaSponzor() {
+	$this->checkRole();
+        $this->checkMessages();
+        
+        $sponzor = new \model\DBSponzor();
+	$sponzori = null;
+        try {
+	    $elektrijada = new \model\DBElektrijada();
+	    $id = $elektrijada->getCurrentElektrijadaId();
+            $sponzori = $sponzor->getAllArea($id);
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->errorMessage = $handler;
+        }
+
+        echo new \view\Main(array(
+            "body" => new \view\ozsn\AreaSponzorList(array(
+                "errorMessage" => $this->errorMessage,
+                "resultMessage" => $this->resultMessage,
+                "sponzori" => $sponzori
+            )),
+            "title" => "Sponzori Područja",
         ));
     }
     
@@ -425,11 +453,11 @@ class Ozsn implements Controller {
 		$sponzor->addRow(post("imeTvrtke"), post("adresaTvrtke"), NULL);
 		$idSponzora = $sponzor->getPrimaryKey();
 		
-		if (post("iznosDonacije") !== false && post("valuta") !== false) {
+		if (post("iznosDonacije") !== false && post("valutaDonacije") !== false) {
 		    $elektrijada = new \model\DBElektrijada();
 		    $i = $elektrijada->getCurrentElektrijadaId();
 		    $imaSponzora->addRow($idSponzora, post("idKategorijeSponzora", null), post("idPromocije", null), $i, 
-			    post("iznosDonacije", null), post("valuta", null), post("napomena", null));
+			    post("iznosDonacije", null), post("valutaDonacije", null), post("napomena", null));
 		}
 		
 		// now i check the image
@@ -590,16 +618,16 @@ class Ozsn implements Controller {
 		$idSponzora = $sponzor->getPrimaryKey();
 		$sponzor->modifyRow($idSponzora, post("imeTvrtke"), post("adresaTvrtke"), NULL);
 		
-		if (post("iznosDonacije") !== false && post("valuta") !== false) {
+		if (post("iznosDonacije") !== false && post("valutaDonacije") !== false) {
 		    $elektrijada = new \model\DBElektrijada();
 		    $i = $elektrijada->getCurrentElektrijadaId();
 		    if ($imaSponzora->getPrimaryKey() !== null) {
 			$imaSponzora->modifyRow($imaSponzora->getPrimaryKey(), $idSponzora, post("idKategorijeSponzora", null), post("idPromocije", null), $i, 
-				post("iznosDonacije", null), post("valuta", null), post("napomena", null));
+				post("iznosDonacije", null), post("valutaDonacije", null), post("napomena", null));
 		    } else {
 			// completely new row
 			$imaSponzora->addRow($idSponzora, post("idKategorijeSponzora", null), post("idPromocije", null), $i, 
-			    post("iznosDonacije", null), post("valuta", null), post("napomena", null));
+			    post("iznosDonacije", null), post("valutaDonacije", null), post("napomena", null));
 		    }
 		}
 		
@@ -699,6 +727,112 @@ class Ozsn implements Controller {
     }
     
     /**
+     * Modifies data from SponElekPod table
+     */
+    public function modifyActiveSponzor() {
+	$this->checkRole();
+	$this->checkMessages();
+	
+	$kategorija = new \model\DBKategorija();
+	$promocija = new \model\DBNacinPromocije();
+	$sponzor = new \model\DBSponzor();
+	$imaSponzora = new \model\DBImaSponzora();
+	$kategorije = null;
+	$promocije = null;
+	
+	$this->idCheck("displayActiveSponzor");
+	
+	// get needed display data
+	try {
+	    $kategorije = $kategorija->getAll();
+	    $promocije = $promocija->getAll();
+	    $sponzor->load(get("id"));
+	    $elektrijada = new \model\DBElektrijada();
+	    $i = $elektrijada->getCurrentElektrijadaId();
+	    $imaSponzora->loadRow($sponzor->getPrimaryKey(), $i);
+	    if ($imaSponzora->getPrimaryKey() !== null) {
+		$kategorija->load($imaSponzora->idKategorijeSponzora);
+		$promocija->load($imaSponzora->idPromocije);
+	    } else {
+		$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati sponzor!");
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "ozsn",
+		    "action" => "displayActiveSponzor"
+		)) . "?msg=excep");
+	    }
+	} catch (\app\model\NotFoundException $e) {
+	    $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator!");
+	    $_SESSION["exception"] = serialize($handler);
+	    preusmjeri(\route\Route::get('d3')->generate(array(
+		"controller" => "ozsn",
+		"action" => "displayActiveSponzor"
+	    )) . "?msg=excep");
+	} catch (\PDOException $e) {
+	    $handler = new \model\ExceptionHandlerModel($e);
+	    $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayActiveSponzor"
+            )) . "?msg=excep");
+	}
+	
+	
+	if (!postEmpty()) {
+	    try {
+		// first do the db work and after that the image work
+		
+		$validacija = new \model\formModel\ActiveSponzorFormModel(array("iznosDonacije" => post("iznosDonacije"),
+									"napomena" => post("napomena")));
+		$pov = $validacija->validate();
+		if ($pov !== true) {
+		    $message = $validacija->decypherErrors($pov);
+		    $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+		    $_SESSION["exception"] = serialize($handler);
+		    preusmjeri(\route\Route::get('d3')->generate(array(
+			"controller" => "ozsn",
+			"action" => "modifyActiveSponzor"
+		    )) . "?msg=excep&id=" . get("id"));
+		}
+		
+		// data checked and ok
+		if (post("iznosDonacije") !== false && post("valutaDonacije") !== false) {
+		    $elektrijada = new \model\DBElektrijada();
+		    $i = $elektrijada->getCurrentElektrijadaId();
+		    $imaSponzora->modifyRow($imaSponzora->getPrimaryKey(), $sponzor->getPrimaryKey(), post("idKategorijeSponzora" , null), post("idPromocije", null),
+			    $i, post("iznosDonacije", null), post("valutaDonacije", null), post("napomena", null));
+		}
+		
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "ozsn",
+		    "action" => "displayActiveSponzor"
+		)) . "?msg=succm");
+	    } catch (\PDOException $e) {
+		$handler = new \model\ExceptionHandlerModel($e);
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "ozsn",
+		    "action" => "modifyActiveSponzor"
+		)) . "?msg=excep&id=" . get("id"));
+	    }
+	}
+	
+	echo new \view\Main(array(
+	    "body" => new \view\ozsn\ActiveSponzorModification(array(
+		"errorMessage" => $this->errorMessage,
+		"resultMessage" => $this->resultMessage,
+		"kategorije" => $kategorije,
+		"promocije" => $promocije,
+		"sponzor" => $sponzor,
+		"imasponzora" => $imaSponzora,
+		"kategorija" => $kategorija,
+		"promocija" => $promocija
+	    )),
+	    "title" => "Mijenjanje Ovogodišnjeg Sponzora"
+	));
+    }
+    
+    /**
      * Deletes a sponsor via get request
      */
     public function deleteSponzor() {
@@ -727,7 +861,7 @@ class Ozsn implements Controller {
     /**
      * Removes sponsor from current elektrijada
      */
-    public function removeSponzor() {
+    public function deleteActiveSponzor() {
 	$this->checkRole();
         
         $this->idCheck("displayActiveSponzor");
@@ -736,7 +870,7 @@ class Ozsn implements Controller {
         try {
 	    $elektrijada = new \model\DBElektrijada();
 	    $id = $elektrijada->getCurrentElektrijadaId();
-            $imaSponzora->deleteActiveRowRow(get("id"), $id);
+            $imaSponzora->deleteActiveRow(get("id"), $id);
             
             preusmjeri(\route\Route::get('d3')->generate(array(
                 "controller" => "ozsn",

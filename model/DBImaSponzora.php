@@ -74,12 +74,14 @@ class DBImaSponzora extends AbstractDBModel {
     public function modifyRow($primaryKey, $idSponzora, $idKategorijeSponzora, $idPromocije, $idElektrijade, $iznosDonacije,
 	    $valutaDonacije, $napomena) {
 	try {
-            $this->load($idSponzora);
-	    $this->imeTvrtke = $imeTvrtke;
-	    $this->adresaTvrtke = $adresaTvrtke;
-	    if ($this->logotip !== NULL && $this->logotip !== '' && $this->logotip !== false)
-		$this->logotip = $logotip;
-	    $this->save();
+            $this->load($primaryKey);
+	    $atributi = $this->getColumns();
+	    foreach($atributi as $a) {
+		$this->{$a} = ${$a};
+	    }
+	    if ($this->napomena === '' || $this->napomena === ' ')
+		$this->napomena = NULL;
+            $this->save();
         } catch (\app\model\NotFoundException $e) {
             $e = new \PDOException();
             $e->errorInfo[0] = '02000';
