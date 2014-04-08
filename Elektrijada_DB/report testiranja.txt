@@ -1,0 +1,70 @@
+PROCEDURA DODAJ ELEKTRIJADU:
+	
+	- prilikom unosa "glupog" datuma, npr. YYYY-MM-32 unosi: 0000:00:00, mozda bi bilo dobro stavit u proceduru provjeru tih datuma ili NOT NULL; taj slucaj nije
+	  problem kod unosa datuma za pocetak i kraj elektrijade jer oni imaju NOT NULL, a i javlja gresku da je krivi rok za znanje ili za sport, sto je ok;
+	  
+	- prilikom unosa datuma tipa: 2015-05-3s --> workbench mi da warning, ali se unese u bazu kao: 2015-05-03; 
+	  ako unesem 2015-05-s3 --> workbench ne dopusta unos; 
+	  "2015-1^^5-0^^14", "2015-05-0^^1" ovakav unos interpretira kao: 2015-01-05 i 2015-05-00, slicno se moze unijet i da mjesec bude 00;
+	  
+	- kod grada i drzave se moze unijeti NULL;
+	
+	- ukupanRezultat s obzirom da je int moze biti i negativan i 0, to bi mozda bilo ok popravit; isto vrijedi i za brojSudionika;
+	  
+	- svi unique-ovi i IF-ovi u proceduri rade dobro; 
+	- po meni ovo s idiotskim unosom nije problem jer je aplikacija za internu upotrebu, ako im bude tolika zelja unosit ovakve stvari-nek unese smece.
+	
+PROCEDURA AZURIRAJ ELEKTRIJADU:
+
+	- u SET dijelu treba promjenit ELEKTRIJADA.ukupanBrojSudionika, mozes isto promjenit i u parametrima procedure i kod pridruzivanja tog parametra u SET dijelu. (inace ti pise ukupni na tim mjestima)
+	
+	- ostalo radi ok, osim stvari koje sam naveo gore kod samog dodavanja;
+	
+PROCEDURA BRISI ELEKTRIJADU:
+
+	- radi ok;
+	
+PROCEDURA DODAJ OSOBU:
+	
+	- broj putovnice, broj osobne i mail trebaju biti unique; mozda i broj moba;
+	- ostalo sto se tice ovih IF-ova radi dobro;
+	
+TRIGGER OSOBA INSERT:
+
+	- radi dobro sve osim ovog s ID-em nadređene osobe. Tu kad stavim bilo sta drugo osim NULL kaze: "Table osoba.idNadredjena doesn't exist". Ne znam u cemu je 
+	  tu problem. Pokuso sam promjenit src stavit 0200 signal i ponovo uvest u bazu, ali ista je stvar. 
+	  prilikom uvoza bilo koje verzije u bazu mi kaze ovo: 11:20:44 Restoring C:\Users\Matoo\Documents\GitHub\ferElektrijada\Elektrijada_DB\novi_triggeri.sql
+	  Running: mysql.exe --defaults-file="c:\users\matoo\appdata\local\temp\tmprb4gwl.cnf"  --host=localhost --user=root --port=3306 --default-character-set=utf8 --comments --database=ferelektrijada < "C:\\Users\\Matoo\\Documents\\GitHub\\ferElektrijada\\Elektrijada_DB\\novi_triggeri.sql"
+	  ERROR 1235 (42000) at line 2: This version of MySQL doesn't yet support 'multiple triggers with the same action time and event for one table'
+
+	  Operation failed with exitcode 1
+	  11:20:44 Import of C:\Users\Matoo\Documents\GitHub\ferElektrijada\Elektrijada_DB\novi_triggeri.sql has finished with 1 errors
+	  ali ako stavim ulogu "b" uredno mi baci gresku i ispise sta treba.
+	  
+PROCEDURA AZURIRAJ OSOBU:
+
+	- dopusta unos datuma rodjenja koji je veci od danasnjeg zato sto si to reguliro triggerom i postavio da se on okida samo prilikom unosa. 
+	  najbolje sve to stavi u proceduru i izbaci trigger.
+	
+	- dopusta unos nedopustene uloge --> razlog kao i gore
+	
+	- ovim putem se moze za nadredjenog postavit nesto razlicito od NULL, ali to moze biti nepostojeci ID ili mozes postavit samog sebe kao sebi nadredjenog.
+	
+	- pri ispisu za krivo uneseni spol imas tipfeler
+	
+PROCEDURA BRISI OSOBU:
+
+	- tipfeler kod ispisa za krivi id osobe, inace radi ok.
+	
+PROCEDURA DODAJ OBAVLJA FUNKCIJU:
+
+	- dobro radi i sto se tice procedura i stranih kljuceva
+	
+PROCEDURA AZURIRAJ OBAVLJA FUNKCIJU:
+
+	- ne baca nikakvu gresku ako uneses nepostojeci idObavljaFunkciju, trebas stavit tu provjeru u proceduru
+	
+PROCEDURA BRISI OBAVLJA FUNKCIJU:
+	
+	- tipfeleri kod ispisa;
+	
