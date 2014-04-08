@@ -14,7 +14,7 @@ class DBMedij extends AbstractDBModel {
 	}
 	
 	public function getColumns() {
-		return array ('nazivMedija','idKontakta');
+		return array ('nazivMedija');
 	}
 }
 

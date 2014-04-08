@@ -36,7 +36,7 @@ ELSE
     SIGNAL SQLSTATE '02000'SET MESSAGE_TEXT = 'Greška: Pogrešan unos datuma pocetka i datuma kraja Elektrijade!!'; 
 END IF;
 ELSE
-    SIGNAL SQLSTATE '02000'SET MESSAGE_TEXT = 'Greška: Odabrana elektrijada je već unešena!';  
+    SIGNAL SQLSTATE '42000'SET MESSAGE_TEXT = 'Greška: Odabrana elektrijada je već unešena!';  
 END IF;
 
 END $$
@@ -299,6 +299,146 @@ ELSE
 	    SIGNAL SQLSTATE '23000' SET MESSAGE_TEXT = 'Greška: Upisan nepostojeće područje!';
 END IF;
 
+
+END $$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE  PROCEDURE `azurirajElekPodrucje`(IN idElekPodrucje INT(10), IN idPodrucja INT(10), IN rezultatGrupni SMALLINT(6),IN slikaLink VARCHAR(255), IN slikaBLOB BLOB, IN idElektrijade INT(10), IN ukupanBrojEkipa INT)
+BEGIN
+IF EXISTS (SELECT* FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idPodrucja) THEN
+IF EXISTS (SELECT* FROM ELEKTRIJADA WHERE ELEKTRIJADA.idElektrijade = idElektrijade) THEN
+IF NOT EXISTS (SELECT* 
+		FROM ElekPodrucje WHERE ElekPodrucje.idElekPodrucje = idElekPodrucje ) THEN
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji područje koje želite ažurirati';
+ELSE
+	UPDATE ElekPodrucje
+    SET ElekPodrucje.datumPocetka=datumPocetka, ElekPodrucje.rezultatGrupni=rezultatGrupni, ElekPodrucje.slikaLink=slikaLink, ElekPodrucje.slikaBLOB=slikaBLOB, ElekPodrucje.idPodrucja=idPodrucja, ElekPodrucje.ukupanBrojEkipa=ukupanBrojEkipa
+	WHERE ElekPodrucje.idElekPodrucje = idElekPodrucje  ;
+
+END IF;
+ELSE 
+	    SIGNAL SQLSTATE '23000' SET MESSAGE_TEXT = 'Greška: Upisana nepostojeća Elektrijada!';
+END IF;
+
+ELSE 
+	    SIGNAL SQLSTATE '23000' SET MESSAGE_TEXT = 'Greška: Upisan nepostojeće područje!';
+END IF;
+
+END $$
+DELIMITER ; 
+
+DELIMITER $$
+CREATE  PROCEDURE `azurirajSponElekPod`(IN idSponElekPod INT(10), IN idSponzora INT(10), IN idPodrucja INT(10),IN idElektrijade INT(10), IN iznosDonacije DECIMAL(13,2), IN valutaDonacije VARCHAR(3), IN napomena VARCHAR(300))
+BEGIN
+IF EXISTS (SELECT* FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idPodrucja) THEN
+IF EXISTS (SELECT * FROM SPONZOR WHERE SPONZOR.idSponzora = idSponzora) THEN
+IF EXISTS (SELECT* FROM ELEKTRIJADA WHERE ELEKTRIJADA.idElektrijade = idElektrijade) THEN
+IF NOT EXISTS (SELECT* 
+		FROM ElekPodrucje WHERE ElekPodrucje.idSponElekPod = idSponElekPod ) THEN
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji područje za sponzora na elektrijadi koje želite ažurirati';
+ELSE
+	UPDATE SponElekPod
+    SET SponElekPod.idElektrijade=idElektrijade, SponElekPod.idPodrucja=idPodrucja, SponElekPod.idSponzora=idSponzora, SponElekPod.iznosDonacije=iznosDonacije,SponElekPod.valutaDonacije=valutaDonacije,SponElekPod.napomena=napomena
+	WHERE SponElekPod.idSponElekPod= idSponElekPod  ;
+
+END IF;
+ELSE 
+	    SIGNAL SQLSTATE '23000' SET MESSAGE_TEXT = 'Greška: Upisana nepostojća elektrijada!';
+END IF;
+
+ELSE 
+	    SIGNAL SQLSTATE '23000' SET MESSAGE_TEXT = 'Greška: Upisan nepostojeći sponzor!';
+END IF;
+
+ELSE 
+	    SIGNAL SQLSTATE '23000' SET MESSAGE_TEXT = 'Greška: Upisan nepostojeće područje!';
+END IF;
+
+END $$
+DELIMITER ; 
+
+DELIMITER $$
+CREATE  PROCEDURE `brisiElekPodrucje`(IN idElekPodrucje INT(10))
+BEGIN
+
+IF NOT EXISTS (SELECT* 
+		FROM ElekPodrucje WHERE ElekPodrucje.idElekPodrucje = idElekPodrucje ) THEN
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji područje koje želite izbrisati';
+ELSE
+	DELETE FROM ElekPodrucje
+	WHERE ElekPodrucje.idElekPodrucje = idElekPodrucje ;
+
+END IF;
+
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `brisiSponElekPod`(IN idSponElekPod INT(10))
+BEGIN
+
+IF NOT EXISTS (SELECT* 
+		FROM SponElekPod WHERE SponElekPod.idSponElekPod = idSponElekPod ) THEN
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji sponzorstvo za područje koje želite izbrisati';
+ELSE
+	DELETE FROM SponElekPod
+	WHERE SponElekPod.idSponElekPod = idSponElekPod ;
+
+END IF;
+
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `dodajElekPodrucje`(IN idPodrucja INT(10), IN rezultatGrupni SMALLINT(6),IN slikaLink VARCHAR(255), IN slikaBLOB BLOB, IN idElektrijade INT(10), IN ukupanBrojEkipa INT(10))
+BEGIN
+IF EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idPodrucja) THEN
+IF EXISTS (SELECT * FROM ELEKTRIJADA WHERE ELEKTRIJADA.idElektrijade = idElektrijade) THEN
+IF NOT EXISTS (SELECT * FROM ElekPodrucje WHERE ElekPodrucje.idElektrijade = idElektrijade  AND ElekPodrucje.idPodrucja = idPodrucja ) THEN
+
+		INSERT INTO ElekPodrucje VALUES (NULL,idPodrucja,rezultatGrupni,slikaLink,slikaBLOB,idElektrijade,ukupanBrojEkipa);
+   
+ELSE
+	    SIGNAL SQLSTATE '42000' SET MESSAGE_TEXT = 'Greška: Već postoji unos za ovo podrucje na ovoj Elektrijadi!';
+END IF;
+
+ELSE 
+	    SIGNAL SQLSTATE '23000' SET MESSAGE_TEXT = 'Greška: Upisan nepostojeći datum Elektrijade!';
+END IF;
+
+ELSE 
+	    SIGNAL SQLSTATE '23000' SET MESSAGE_TEXT = 'Greška: Upisan nepostojeće područje!';
+END IF;
+
+END $$
+DELIMITER ;
+DELIMITER $$
+CREATE  PROCEDURE `dodajSponElekPod`(IN idSponzora INT(10), IN idPodrucja INT(10),IN idElektrijade INT(10), IN iznosDonacije DECIMAL(13,2), IN valutaDonacije VARCHAR(3), IN napomena VARCHAR(300))
+BEGIN
+IF EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idPodrucja) THEN
+IF EXISTS (SELECT * FROM ELEKTRIJADA WHERE ELEKTRIJADA.idElektrijade = idElektrijade) THEN
+IF EXISTS (SELECT * FROM SPONZOR WHERE SPONZOR.idSponzora = idSponzora) THEN
+IF NOT EXISTS (SELECT * FROM SponElekPod WHERE SponElekPod.idElektrijade = idElektrijade  AND SponElekPod.idPodrucja = idPodrucja AND SponElekPod.idSponzora = idSponzora ) THEN
+
+		INSERT INTO SponElekPod VALUES (NULL,idSponzora, idPodrucja, idElektrijade, iznosDonacije, valutaDonacije, napomena );
+   
+ELSE
+	    SIGNAL SQLSTATE '42000' SET MESSAGE_TEXT = 'Greška: Već postoji unos za ovo podrucje na ovoj Elektrijadi!';
+END IF;
+
+ELSE 
+	    SIGNAL SQLSTATE '23000' SET MESSAGE_TEXT = 'Greška: Upisan nepostojeći sponzor!';
+END IF;
+
+ELSE 
+	    SIGNAL SQLSTATE '23000' SET MESSAGE_TEXT = 'Greška: Upisan nepostojeća Elektrijada!';
+END IF;
+
+ELSE 
+	    SIGNAL SQLSTATE '23000' SET MESSAGE_TEXT = 'Greška: Upisan nepostojeće područje!';
+END IF;
 
 END $$
 DELIMITER ;

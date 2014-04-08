@@ -87,8 +87,7 @@ CREATE TABLE ElekPodrucje (
     rezultatGrupni SMALLINT,
     slikaLink VARCHAR(255),
     slikaBLOB BLOB,
-    idElektrijade INT UNSIGNED NOT NULL,
-    idSponzora INT UNSIGNED,
+    idElektrijade INT UNSIGNED NOT NULL,    
     ukupanBrojEkipa INT,
     PRIMARY KEY (idElekPodrucje),
     UNIQUE (idElekPodrucje , idPodrucja),
@@ -97,10 +96,28 @@ CREATE TABLE ElekPodrucje (
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idPodrucja)
         REFERENCES PODRUCJE (idPodrucja)
+        ON UPDATE CASCADE ON DELETE CASCADE  
+);
+
+CREATE TABLE SponElekPod (
+    idSponElekPod INT UNSIGNED AUTO_INCREMENT,
+    idSponzora INT UNSIGNED NOT NULL,
+    idPodrucja INT UNSIGNED NOT NULL,
+    idElektrijade INT UNSIGNED NOT NULL, 
+	iznosDonacije DECIMAL(13 , 2 ) NOT NULL,
+    valutaDonacije VARCHAR(3) NOT NULL,
+    napomena VARCHAR(300),
+    PRIMARY KEY (idSponElekPod),
+    UNIQUE (idSponzora , idPodrucja, idElektrijade),
+    FOREIGN KEY (idElektrijade)
+        REFERENCES ELEKTRIJADA (idElektrijade)
         ON UPDATE CASCADE ON DELETE CASCADE,
-   FOREIGN KEY (idSponzora)
+    FOREIGN KEY (idPodrucja)
+        REFERENCES PODRUCJE (idPodrucja)
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (idSponzora)
         REFERENCES SPONZOR (idSponzora)
-        ON UPDATE CASCADE ON DELETE CASCADE
+        ON UPDATE CASCADE ON DELETE CASCADE  
 );
 
 

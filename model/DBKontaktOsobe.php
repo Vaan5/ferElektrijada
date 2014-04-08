@@ -14,10 +14,10 @@ class DBKontaktOsobe extends AbstractDBModel {
 	}
 	
 	public function getColumns() {
-		return array ('imeKontakt','prezimeKontakt','telefon','radnoMjesto','idTvrtke','idSponzora');
+		return array ('imeKontakt','prezimeKontakt','telefon','radnoMjesto','idTvrtke','idSponzora','idMedija');
 	}
         
-        public function addNewContact($imeKontakt, $prezimeKontakt, $telefon, $radnoMjesto, $idTvrtke, $idSponzora) {
+        public function addNewContact($imeKontakt, $prezimeKontakt, $telefon, $radnoMjesto, $idTvrtke, $idSponzora, $idMedija) {
             $this->{$this->getPrimaryKeyColumn()} = null;
             $atributi = $this->getColumns();
             foreach($atributi as $a) {
