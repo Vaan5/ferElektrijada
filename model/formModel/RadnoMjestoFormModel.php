@@ -3,11 +3,11 @@
 namespace model\formModel;
 use app\model\AbstractFormModel;
 
-class RadnoFormModel extends AbstractFormModel {
+class RadnoMjestoFormModel extends AbstractFormModel {
     
     protected function rules() {
         if ($this->rulesArray === null) {
-            $this->rulesArray = array('naziv' => array('required', 'alnum'));
+            $this->rulesArray = array('naziv' => array('required', 'words'));
         }
         return $this->rulesArray;
     }

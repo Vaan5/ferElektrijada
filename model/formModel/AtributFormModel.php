@@ -7,7 +7,7 @@ class AtributFormModel extends AbstractFormModel {
     
     protected function rules() {
         if ($this->rulesArray === null) {
-            $this->rulesArray = array('nazivAtributa' => array('required', 'alnum'));
+            $this->rulesArray = array('nazivAtributa' => array('required', 'words'));
         }
         return $this->rulesArray;
     }

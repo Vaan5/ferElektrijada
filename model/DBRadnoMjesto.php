@@ -79,7 +79,7 @@ class DBRadnoMjesto extends AbstractDBModel {
      */
     public function addRow($naziv) {
         try {
-            $this->velicina = $naziv;
+            $this->naziv = $naziv;
             $this->save();
         } catch (\PDOException $e) {
             throw $e;

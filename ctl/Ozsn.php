@@ -1773,7 +1773,7 @@ public function addRadnoMjesto() {
         $this->checkRole();
 
         $zavod = new \model\DBZavod();
-        $validacija = new \model\formModel\ZavodFormModel(array('nazivZavoda' => post("nazivZavoda"),'skraceniNaziv'=>post("SkraceniNaziv")));
+        $validacija = new \model\formModel\ZavodFormModel(array('nazivZavoda' => post("nazivZavoda"),'skraceniNaziv'=>post("skraceniNaziv")));
         $pov = $validacija->validate();
         if($pov !== true) {
             $message = $validacija->decypherErrors($pov);
@@ -1810,7 +1810,7 @@ public function addRadnoMjesto() {
         $this->checkRole();
         
         $zavod = new \model\DBZavod();
-        $validacija = new \model\formModel\ZavodFormModel(array('nazivZavoda' => post("nazivZavoda"),'skraceniNaziv'=>post("SkraceniNaziv")));
+        $validacija = new \model\formModel\ZavodFormModel(array('nazivZavoda' => post("nazivZavoda"),'skraceniNaziv'=>post("skraceniNaziv")));
         $pov = $validacija->validate();
         if($pov !== true) {
             $message = $validacija->decypherErrors($pov);
