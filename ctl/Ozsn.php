@@ -200,9 +200,10 @@ class Ozsn implements Controller {
             "body" => new \view\ozsn\KategorijaList(array(
                 "errorMessage" => $this->errorMessage,
                 "resultMessage" => $this->resultMessage,
-                "nacini" => $kategorije
+                "kategorije" => $kategorije
             )),
             "title" => "Kategorije Sponzora",
+			"script" => new \view\scripts\ozsn\KategorijaListJs()
         ));
     }
     
