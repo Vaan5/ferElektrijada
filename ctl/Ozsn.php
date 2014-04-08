@@ -1883,7 +1883,7 @@ public function addRadnoMjesto() {
                 "resultMessage" => $this->resultMessage,
                 "smjerovi" => $smjerovi
             )),
-            "title" => "Lista sjerova",
+            "title" => "Lista smjerova",
             "script" => new \view\scripts\ozsn\SmjerListJs()
         ));
 	}
