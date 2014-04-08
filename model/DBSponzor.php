@@ -41,10 +41,11 @@ class DBSponzor extends AbstractDBModel {
     public function getAllArea($idElektrijade) {
 	try {
 	    $pdo = $this->getPdo();
-	    $q = $pdo->prepare("SELECT sponzor.* FROM sponzor JOIN sponelekpod ON sponzor.idSponzora = sponelekpod.idSponzora WHERE sponelekpod.idElektrijade = :id");
+	    $q = $pdo->prepare("SELECT * FROM sponzor JOIN sponelekpod ON sponzor.idSponzora = sponelekpod.idSponzora
+		JOIN podrucje ON sponelekpod.idPodrucja = podrucje.idPodrucja WHERE sponelekpod.idElektrijade = :id");
 	    $q->bindValue(":id", $idElektrijade);
 	    $q->execute();
-	    return $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+	    return $q->fetchAll();
 	} catch (\PDOException $e) {
 	    throw $e;
 	}

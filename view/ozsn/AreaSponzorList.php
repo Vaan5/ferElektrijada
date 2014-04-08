@@ -17,9 +17,10 @@ class AreaSponzorList extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 	
-	// samo ispisati osnovne podatke // ime trvtke i adresu
+	// samo ispisati osnovne podatke // ime trvtke i adresu iznos i podrucje
 	// opcije(nazovi ih kako ti pase) su Dodaj novog, Uredi, i Brisi - odnosi se na add/modify/deleteAreaSponzor
 		
+	// PAZI var_dumpaj sponzore (NIJE OBJEKTNI OBLIK JER IMAS U NJEMU I sponElekPodrucje, pa mi za modify u get parametar id stavi identifikator od sponelekpod tablice)
     }
     
     public function setErrorMessage($errorMessage) {

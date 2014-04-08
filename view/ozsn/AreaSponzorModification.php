@@ -24,6 +24,7 @@ class AreaSponzorModification extends AbstractView {
 	// padajuci meniji su kategorije i promocije
 	// onaj koji je u $kategorija, i $promocija nek bude oznacen (ako postoji)
 		
+	// ne prikazuj drop down sponzore (jer ih ne moze promijeniti);
     }
     
     public function setErrorMessage($errorMessage) {

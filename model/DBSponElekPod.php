@@ -36,4 +36,49 @@ class DBSponElekPod extends AbstractDBModel {
             throw $e;
         }
     }
+    
+    public function modifyRow($primaryKey, $idSponzora, $idPodrucja, $idElektrijade, $iznosDonacije,
+	    $valutaDonacije, $napomena) {
+	try {
+            $this->load($primaryKey);
+	    $atributi = $this->getColumns();
+	    foreach($atributi as $a) {
+		$this->{$a} = ${$a};
+	    }
+	    if ($this->napomena === '' || $this->napomena === ' ')
+		$this->napomena = NULL;
+            $this->save();
+        } catch (\app\model\NotFoundException $e) {
+            $e = new \PDOException();
+            $e->errorInfo[0] = '02000';
+            $e->errorInfo[1] = 1604;
+            $e->errorInfo[2] = "Zapis ne postoji!";
+            throw $e;
+        } catch (\PDOException $e) {
+            throw $e;
+        }
+    }
+    
+    public function loadRow($idSponzora, $idElektrijade, $idPodrucja) {
+	try {
+            $pov = $this->select()->where(array(
+		"idSponzora" => $idSponzora,
+		"idElektrijade" => $idElektrijade,
+		"idPodrucja" => $idPodrucja
+	    ));
+	    if (count($pov)) {
+		$this->load($pov[0]->getPrimaryKey());
+	    } else {
+		$this->{$this->getPrimaryKeyColumn()} = null;
+	    }
+        } catch (\app\model\NotFoundException $e) {
+            $e = new \PDOException();
+            $e->errorInfo[0] = '02000';
+            $e->errorInfo[1] = 1604;
+            $e->errorInfo[2] = "Zapis ne postoji!";
+            throw $e;
+        } catch (\PDOException $e) {
+            throw $e;
+        }
+    }
 }

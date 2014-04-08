@@ -908,7 +908,81 @@ class Ozsn implements Controller {
     }
     
     public function modifyAreaSponzor() {
+	$this->checkRole();
+	$this->checkMessages();
 	
+	$podrucje = new \model\DBPodrucje();
+	$podrucja = null;
+	$sponElekPod = new \model\DBSponElekPod();
+	
+	$this->idCheck("displayAreaSponzor");
+	
+	// get needed display data
+	try {
+	    $podrucja = $podrucje->getAll();
+	    $sponElekPod->load(get("id"));
+	} catch (\app\model\NotFoundException $e) {
+	    $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator!");
+	    $_SESSION["exception"] = serialize($handler);
+	    preusmjeri(\route\Route::get('d3')->generate(array(
+		"controller" => "ozsn",
+		"action" => "displayAreaSponzor"
+	    )) . "?msg=excep");
+	} catch (\PDOException $e) {
+	    $handler = new \model\ExceptionHandlerModel($e);
+	    $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayAreaSponzor"
+            )) . "?msg=excep");
+	}
+	
+	if (!postEmpty()) {
+	    try {
+		// first do the db work
+		$validacija = new \model\formModel\AreaSponzorFormModel(array("iznosDonacije" => post("iznosDonacije"),
+										"napomena" => post("napomena"),
+										"idPodrucja" => post("idPodrucja")));
+		$pov = $validacija->validate();
+		if ($pov !== true) {
+		    $message = $validacija->decypherErrors($pov);
+		    $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+		    $_SESSION["exception"] = serialize($handler);
+		    preusmjeri(\route\Route::get('d3')->generate(array(
+			"controller" => "ozsn",
+			"action" => "modifyAreaSponzor"
+		    )) . "?msg=excep&id=" . get("id"));
+		}
+		
+		// data checked and ok
+		if (post("iznosDonacije") !== false && post("valutaDonacije") !== false) {
+		    $sponElekPod->modifyRow($sponElekPod->getPrimaryKey(), $sponElekPod->idSponzora, post("idPodrucja", null),
+			    $sponElekPod->idElektrijade, post("iznosDonacije", null), post("valutaDonacije", null), post("napomena", null));
+		}
+		
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "ozsn",
+		    "action" => "displayAreaSponzor"
+		)) . "?msg=succm");
+	    } catch (\PDOException $e) {
+		$handler = new \model\ExceptionHandlerModel($e);
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "ozsn",
+		    "action" => "modifyAreaSponzor"
+		)) . "?msg=excep&id=" . get("id"));
+	    }
+	}
+	
+	echo new \view\Main(array(
+	    "body" => new \view\ozsn\AreaSponzorModification(array(
+		"errorMessage" => $this->errorMessage,
+		"resultMessage" => $this->resultMessage,
+		"sponelekpod" => $sponElekPod,
+		"podrucja" => $podrucja
+	    )),
+	    "title" => "Mijenjanje Djelomičnog Sponzora"
+	));
     }
     
     /**
