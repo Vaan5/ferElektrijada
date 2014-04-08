@@ -34,12 +34,12 @@ class GodStudList extends AbstractView {
 
 		if(count($this->godine))
 		{
-			// Foreach atribut, generate row in table
+			// Foreach GodStud, generate row in table
 			foreach($this->godine as $val)
 			{
 				echo '<form action="modifyGodStud" method="POST">';
 				echo '<tr><td><span class="modify-' . $val->idGodStud . '">' . $val->studij . '</span><input type="text" class="modifyOn-' . $val->idGodStud . '" style="display:none;" name="studij" value="' . $val->studij . '"><input type="hidden" name="idGodStud" value="' . $val->idGodStud . '"></td>';
-				echo '<tr><td><span class="modify-' . $val->idGodStud . '">' . $val->studij . '</span><input type="text" class="modifyOn-' . $val->idGodStud . '" style="display:none;" name="godina" value="' . $val->godina . '"></td>';
+				echo '<td><span class="modify-' . $val->idGodStud . '">' . $val->godina . '</span><input type="text" class="modifyOn-' . $val->idGodStud . '" style="display:none;" name="godina" value="' . $val->godina . '">';
 				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idGodStud . '" value="Spremi" /><a href="javascript:;" class="editGodStud modify-' . $val->idGodStud . '" data-id="' . $val->idGodStud . '">Uredi</a> &nbsp; <a class="deleteGodStud modify-' . $val->idGodStud . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(

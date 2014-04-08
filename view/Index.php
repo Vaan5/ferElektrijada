@@ -75,15 +75,27 @@ class Index extends AbstractView {
         "action" => 'displayGodStud'
     ));?>">DBM Godine studija</a>
 	
+	<br>
+	
 	<a href="<?php echo \route\Route::get('d3')->generate(array(
         "controller" => 'ozsn',
         "action" => 'displayNacinPromocije'
     ));?>">DBM Nacina promocije</a>
 	
+	<br>
+	
 	<a href="<?php echo \route\Route::get('d3')->generate(array(
         "controller" => 'ozsn',
         "action" => 'displayKategorija'
     ));?>">DBM Kategorija sponzora</a>
+	
+	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'displayZavod'
+    ));?>">DBM Zavodi</a>
 </p>
 
 <?php
