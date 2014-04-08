@@ -11,7 +11,6 @@ class AreaSponzorForm extends AbstractView {
     protected function outputHTML() {
 	// dodati settere !!!!!!!!!!!!
 	// podaci iz tablice SponElekPod
-
 ?>
 
 <?php

@@ -538,6 +538,10 @@ class Ozsn implements Controller {
 	));
     }
     
+    public function addAreaSponzor() {
+	
+    }
+    
     /**
      * Modifies sponsor data and sponsorship data if given. The logo is overwritten if given
      */
@@ -832,6 +836,10 @@ class Ozsn implements Controller {
 	));
     }
     
+    public function modifyAreaSponzor() {
+	
+    }
+    
     /**
      * Deletes a sponsor via get request
      */
@@ -882,6 +890,34 @@ class Ozsn implements Controller {
             preusmjeri(\route\Route::get('d3')->generate(array(
                 "controller" => "ozsn",
                 "action" => "displayActiveSponzor"
+            )) . "?msg=excep");
+        }
+    }
+    
+    /**
+     * Removes sponsor from current elektrijada
+     */
+    public function deleteAreaSponzor() {
+	$this->checkRole();
+        
+        $this->idCheck("displayAreaSponzor");
+	
+        $spon = new \model\DBSponElekPod();
+        try {
+	    $elektrijada = new \model\DBElektrijada();
+	    $id = $elektrijada->getCurrentElektrijadaId();
+            $spon->deleteAreaRow(get("id"), $id);
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayAreaSponzor"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayAreaSponzor"
             )) . "?msg=excep");
         }
     }
