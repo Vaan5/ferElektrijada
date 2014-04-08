@@ -13,7 +13,7 @@ $desc=array (
 );
 $up=-63;
 $ut=44;
-$ttffile='C:\wamp\www\projekt\tfpdf/font/unifont/DejaVuSansCondensed.ttf';
+$ttffile='lib/tfpdf/font/unifont/DejaVuSansCondensed.ttf';
 $originalsize=643852;
 $fontkey='dejavu';
 ?>
