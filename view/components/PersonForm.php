@@ -35,44 +35,47 @@ class PersonForm extends AbstractView {
 ?>
         <form class="form-horizontal" role="form" action="<?php echo $this->postAction;?>" method="POST">
         <div class="form-group">
-            <label for="korisnickoime" class="col-sm-2 control-label">Korisničko ime</label>            
-            <div class="col-sm-10">
+            <label for="korisnickoime" class="col-sm-3 control-label">Korisničko ime</label>            
+            <div class="col-sm-9">
             <input type="text" name="ferId" class="form-control" placeholder="Upišite korisničko ime" <?php if($this->osoba && $this->osoba->ferId){ echo 'value="' . $this->osoba->ferId . '"'; } ?> autocomplete="off"  />
             </div>  
         </div>
 		
 <?php if($this->osoba){ ?>
-		
-	<input type="button" id="promjeniLozinku" class="btn btn-default" value="Promjeni lozinku" />
-		
+	<div class="form-group">
+            <label for="button" class="col-sm-3 control-label"></label>
+            <div class="col-sm-9">
+            <input type="button" id="promjeniLozinku" class="btn btn-default form-control" value="Promijeni lozinku" />
+	    </div>
+        </div>
 	<div class="promjeniLozinku form-group" style="display: none;">
-            <label for="staralozinka" class="col-sm-2 control-label">Stara lozinka</label>
-            <div class="col-sm-10">
+            <label for="staralozinka" class="col-sm-3 control-label">Stara lozinka</label>
+            <div class="col-sm-9">
             <input type="password" name="password" class="form-control" placeholder="Upišite staru lozinku" autocomplete="off"  />
             </div>
         </div>
 		
 	<div class="promjeniLozinku form-group" style="display: none;">
-            <label for="novalozinka" class="col-sm-2 control-label">Nova lozinka</label>
-            <div class="col-sm-10">        
+            <label for="novalozinka" class="col-sm-3 control-label">Nova lozinka</label>
+            <div class="col-sm-9">        
             <input type="password" name="password_new" class="form-control" placeholder="Upišite novu lozinku" autocomplete="off"  />
             </div>
         </div>
 		
 	<div class="promjeniLozinku form-group" style="display: none;">
-            <label for="ponovilozinku" class="col-sm-2 control-label">Ponovi novu lozinku</label>
-            <div class="col-sm-10">		
+            <label for="ponovilozinku" class="col-sm-3 control-label">Ponovi novu lozinku</label>
+            <div class="col-sm-9">		
             <input type="password" name="password_new2" class="form-control" placeholder="Upišite povnovno lozinku" autocomplete="off"  />
-	    </div>
+            <br></div>
         </div>
 	
-	<span id="passBr"><br><br></span>
+	<span id="passBr"></span>
 		
 <?php } else{ ?>
 		
         <div class="form-group">
-            <label for="lozinka" class="col-sm-2 control-label">Lozinka</label>
-             <div class="col-sm-10">
+            <label for="lozinka" class="col-sm-3 control-label">Lozinka</label>
+             <div class="col-sm-9">
             <input type="password" name="password" class="form-control" placeholder="Upišite lozinku" />
             </div>
         </div>
@@ -80,83 +83,83 @@ class PersonForm extends AbstractView {
 <?php }?>
 		
 		<div class="form-group">
-            <label for="ime" class="col-sm-2 control-label">Ime</label>
-        <div class="col-sm-10">
+            <label for="ime" class="col-sm-3 control-label">Ime</label>
+        <div class="col-sm-9">
             <input type="text" name="ime" class="form-control" placeholder="Upišite ime" <?php if($this->osoba && $this->osoba->ime){ echo 'value="' . $this->osoba->ime . '"'; } ?> />
         </div>
                 </div>
 		<div class="form-group">
-            <label for="prezime" class="col-sm-2 control-label">Prezime</label>
-        <div class="col-sm-10">
+            <label for="prezime" class="col-sm-3 control-label">Prezime</label>
+        <div class="col-sm-9">
             <input type="text" name="prezime" class="form-control" placeholder="Upišite prezime" <?php if($this->osoba && $this->osoba->prezime){ echo 'value="' . $this->osoba->prezime . '"'; } ?> />
         </div>
                </div>
 		<div class="form-group">
-            <label for="spol" class="col-sm-2 control-label">Spol</label>
-        <div class="col-sm-10">
+            <label for="spol" class="col-sm-3 control-label">Spol</label>
+        <div class="col-sm-9">
 			<input type="radio" name="spol" value="M" <?php if($this->osoba && $this->osoba->spol == 'M'){ echo 'checked'; } ?>> Muški
 			&nbsp; &nbsp;
 			<input type="radio" name="spol" value="Ž" <?php if($this->osoba && $this->osoba->spol == 'Ž'){ echo 'checked'; } ?>> Ženski
         </div>        
         </div>
 		<div class="form-group">
-            <label for="email" class="col-sm-2 control-label">E-mail</label>
-        <div class="col-sm-10">
+            <label for="email" class="col-sm-3 control-label">E-mail</label>
+        <div class="col-sm-9">
             <input type="text" name="mail" class="form-control" placeholder="Upišite e-mail" <?php if($this->osoba && $this->osoba->mail){ echo 'value="' . $this->osoba->mail . '"'; } ?> />
         </div>
                 </div>
 		<div class="form-group">
-            <label for="brojmob" class="col-sm-2 control-label">Broj mobitela</label>
-        <div class="col-sm-10">        
+            <label for="brojmob" class="col-sm-3 control-label">Broj mobitela</label>
+        <div class="col-sm-9">        
             <input type="text" name="brojMob" class="form-control" placeholder="Upišite broj mobitela" <?php if($this->osoba && $this->osoba->brojMob){ echo 'value="' . $this->osoba->brojMob . '"'; } ?> />
         </div>
             </div>
 		<div class="form-group">
-            <label for="jmbag" class="col-sm-2 control-label">JMBAG</label>
-        <div class="col-sm-10">        
+            <label for="jmbag" class="col-sm-3 control-label">JMBAG</label>
+        <div class="col-sm-9">        
         <input type="text" name="JMBAG" class="form-control" placeholder="Upišite JMBAG" <?php if($this->osoba && $this->osoba->JMBAG){ echo 'value="' . $this->osoba->JMBAG . '"'; } ?> />
         </div>
                 </div>
 		<div class="form-group">
-            <label for="oib" class="col-sm-2 control-label">OIB</label>
-        <div class="col-sm-10">        
+            <label for="oib" class="col-sm-3 control-label">OIB</label>
+        <div class="col-sm-9">        
         <input type="text" name="OIB" class="form-control" placeholder="Upišite OIB" <?php if($this->osoba && $this->osoba->OIB){ echo 'value="' . $this->osoba->OIB . '"'; } ?> />
         </div>
                 </div>
 		<div class="form-group">
-            <label for="mbg" class="col-sm-2 control-label">Matični broj osiguranika</label>
-        <div class="col-sm-10">         
+            <label for="mbg" class="col-sm-4 control-label">Matični broj osiguranika</label>
+        <div class="col-sm-8">         
         <input type="text" name="MBG" class="form-control" placeholder="Upišite matični broj" <?php if($this->osoba && $this->osoba->MBG){ echo 'value="' . $this->osoba->MBG . '"'; } ?> />
         </div>
                 </div>
 		<div class="form-group">
-            <label for="datrod" class="col-sm-2 control-label">Datum rođenja</label>
-        <div class="col-sm-10">
+            <label for="datrod" class="col-sm-4 control-label">Datum rođenja</label>
+        <div class="col-sm-8">
         <input type="text" name="datRod" class="form-control datePicker" placeholder="Upišite datum rođenja" <?php if($this->osoba && $this->osoba->datRod){ echo 'value="' . $this->osoba->datRod . '"'; } ?> />
         </div>
                 </div>
 		<div class="form-group">
-            <label for="brojosobne" class="col-sm-2 control-label">Broj osobne iskaznice</label>
-        <div class="col-sm-10">
+            <label for="brojosobne" class="col-sm-4 control-label">Broj osobne iskaznice</label>
+        <div class="col-sm-8">
         <input type="text" name="brOsobne" class="form-control" placeholder="Upišite broj osobne iskaznice" <?php if($this->osoba && $this->osoba->brOsobne){ echo 'value="' . $this->osoba->brOsobe . '"'; } ?> />
         </div>
                 </div>
 		<div class="form-group">
-            <label for="osobnavrijedido" class="col-sm-2 control-label">Osobna iskaznica vrijedi do</label>
-        <div class="col-sm-10">        
-        <input type="text" name="osobnaVrijediDo" class="form-control" placeholder="Upišite do kada vrijedi osobna" class="datePicker" <?php if($this->osoba && $this->osoba->osobnaVrijediDo){ echo 'value="' . $this->osoba->osobnaVrijediDo . '"'; } ?> />
+            <label for="osobnavrijedido" class="col-sm-4 control-label">Osobna iskaznica vrijedi do</label>
+        <div class="col-sm-8">        
+        <input type="text" name="osobnaVrijediDo" class="form-control datePicker" placeholder="Upišite do kada vrijedi osobna" <?php if($this->osoba && $this->osoba->osobnaVrijediDo){ echo 'value="' . $this->osoba->osobnaVrijediDo . '"'; } ?> />
         </div>
                 </div>
 		<div class="form-group">
-            <label for="brojputovnice" class="col-sm-2 control-label">Broj putovnice</label>
-        <div class="col-sm-10">        
+            <label for="brojputovnice" class="col-sm-4 control-label">Broj putovnice</label>
+        <div class="col-sm-8">        
         <input type="text" name="brPutovnice" class="form-control" placeholder="Upišite broj putovnice" <?php if($this->osoba && $this->osoba->brPutovnice){ echo 'value="' . $this->osoba->brPutovnice . '"'; } ?> />
         </div>
                 </div>
 		<div class="form-group">
-            <label for="putovnicavrijedido" class="col-sm-2 control-label">Putovnica vrijedi do</label>
-        <div class="col-sm-10">          
-        <input type="text" name="putovnicaVrijediDo" class="form-control" placeholder="Upišite do kada vrijedi putovnica" class="datePicker" <?php if($this->osoba && $this->osoba->putovnicaVrijediDo){ echo 'value="' . $this->osoba->putovnicaVrijediDo . '"'; } ?> />
+            <label for="putovnicavrijedido" class="col-sm-4 control-label">Putovnica vrijedi do</label>
+        <div class="col-sm-8">          
+        <input type="text" name="putovnicaVrijediDo" class="form-control datePicker" placeholder="Upišite do kada vrijedi putovnica" <?php if($this->osoba && $this->osoba->putovnicaVrijediDo){ echo 'value="' . $this->osoba->putovnicaVrijediDo . '"'; } ?> />
         </div>
                 </div>
         
