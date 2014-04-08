@@ -9,14 +9,71 @@ class NacinPromocijeList extends AbstractView {
     private $nacini;
     
     protected function outputHTML() {
-	// print messages if any
+		// print messages if any
         echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
         ));
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
+?>
+		<div class="panel panel-default">
+			<div class="panel-heading">Popis načina promocije</div>
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Naziv</th>
+						<th>Opcije</th>
+					</tr>
+				</thead>
+
+				<tbody>
+<?php
+
+		if(count($this->nacini))
+		{
+			// Foreach način promocije, generate row in table
+			foreach($this->nacini as $val)
+			{
+				echo '<form action="modifyNacinPromocije" method="POST">';
+				echo '<tr><td><span class="modify-' . $val->idPromocije . '">' . $val->tipPromocije . '</span><input type="text" class="modifyOn-' . $val->idPromocije . '" style="display:none;" name="tipPromocije" value="' . $val->tipPromocije . '"><input type="hidden" name="idPromocije" value="' . $val->idPromocije . '"></td>';
+				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idPromocije . '" value="Spremi" /><a href="javascript:;" class="editNacinPromocije modify-' . $val->idPromocije . '" data-id="' . $val->idPromocije . '">Uredi</a> &nbsp; <a class="deleteNacinPromocije modify-' . $val->idPromocije . '" href="';
+				
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'deleteNacinPromocije'
+				));
+				echo '?id=' . $val->idPromocije . '">Obriši</a>';
+				echo '</td></tr></form>';
+			}
+		}
 		
+		else
+		{
+?>
+						<tr>
+							<td class="addNacinPromocije" colspan="2"><i>Ne postoji niti jedan način promocije</i></td>
+						</tr>
+<?php
+		}
+?>
+					<tr class="addNacinPromocije">
+						<td colspan="2">
+							<a id="addNacinPromocije" href="javascript:;"><span class="glyphicon glyphicon-plus"></span> Dodaj novi način promocije</a>
+						</td>
+					</tr>
+					<tr style="display: none;" class="addNacinPromocijeOn">
+						<form action="addNacinPromocije" method="post">
+							<td><input type="text" name="tipPromocije" placeholder="Upišite tip promocije"></td>
+							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
+						</form>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+<?php		
     }
     
     public function setErrorMessage($errorMessage) {
@@ -28,11 +85,10 @@ class NacinPromocijeList extends AbstractView {
         $this->resultMessage = $resultMessage;
         return $this;
     }
-    
-    public function setNacini($nacini) {
-	$this->nacini = $nacini;
-	return $this;
+	
+	public function setNacini($nacini) {
+        $this->nacini = $nacini;
+        return $this;
     }
-
 
 }

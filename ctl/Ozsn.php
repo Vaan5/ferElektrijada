@@ -78,6 +78,7 @@ class Ozsn implements Controller {
                 "nacini" => $nacini
             )),
             "title" => "Načini Promocije",
+			"script" => new \view\scripts\ozsn\NacinPromocijeListJs()
         ));
     }
     
