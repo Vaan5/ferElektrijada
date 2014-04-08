@@ -110,6 +110,14 @@ class Index extends AbstractView {
         "action" => 'displaySmjer'
     ));?>">DBM Smjerovi</a>
 	
+		
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'addSponzor'
+    ));?>">Dodaj sponzora</a>
+	
 	<p>
 	<b>Generator Pdfova</b>
 	<a href="<?php echo \route\Route::get('d3')->generate(array(

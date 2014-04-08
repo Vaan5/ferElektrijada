@@ -18,8 +18,16 @@ class SponzorAdding extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 	
-	// ispis forme za dodavanje
-		
+		// print out the form
+		echo new \view\components\SponzorForm(array(
+			"route" => \route\Route::get('d3')->generate(array(
+				"controller" => 'ozsn',
+				"action" => 'addSponzor'
+			)),
+			"submitButtonText" => "Dodaj sponzora",
+			"kategorije" => $this->kategorije,
+			"promocije" => $this->promocije
+		));		
     }
     
     public function setErrorMessage($errorMessage) {
