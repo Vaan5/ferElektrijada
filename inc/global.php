@@ -4,6 +4,7 @@ require_once 'inc/pomocna.php';
 require_once "lib/fluentpdo/FluentPDO/FluentPDO.php";
 require_once "lib/fpdf/fpdf.php";
 require_once "lib/tfpdf/tfpdf.php";
+require_once "lib/excel/Classes/PHPExcel.php";
 
 session_name("sesija");
 session_start();

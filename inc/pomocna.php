@@ -111,6 +111,8 @@ function post($key, $default = false) {
  * @return mixed
  */
 function files($key, $mainKey, $default = false) {
+    if (!count($_FILES))
+	return false;
     return element($key, $_FILES[$mainKey], $default);
 }
 
