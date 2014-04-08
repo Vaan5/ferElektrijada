@@ -49,8 +49,52 @@ class DBSponzor extends AbstractDBModel {
         }
     }
     
-    public function modifyRow() {
-	
+    public function deleteRow($idSponzora) {
+	try {
+            $this->load($idSponzora);
+	    if ($this->logotip != null) {
+		// delete logo image
+		$p = unlink($this->logotip);
+		if ($p === false) {
+		    $e = new \PDOException();
+		    $e->errorInfo[0] = '02000';
+		    $e->errorInfo[1] = 1604;
+		    $e->errorInfo[2] = "Greška prilikom brisanja logotipa!";
+		    throw $e;
+		}
+	    }
+	    $this->delete();
+        } catch (\app\model\NotFoundException $e) {
+            $e = new \PDOException();
+            $e->errorInfo[0] = '02000';
+            $e->errorInfo[1] = 1604;
+            $e->errorInfo[2] = "Zapis ne postoji!";
+            throw $e;
+        } catch (\PDOException $e) {
+            throw $e;
+        }
+    }
+    
+    /**
+     * Modifies row, but can't delete logotype with this function (use addLogo for that)
+     */
+    public function modifyRow($idSponzora, $imeTvrtke, $adresaTvrtke, $logotip) {
+	try {
+            $this->load($idSponzora);
+	    $this->imeTvrtke = $imeTvrtke;
+	    $this->adresaTvrtke = $adresaTvrtke;
+	    if ($this->logotip !== NULL && $this->logotip !== '' && $this->logotip !== false)
+		$this->logotip = $logotip;
+	    $this->save();
+        } catch (\app\model\NotFoundException $e) {
+            $e = new \PDOException();
+            $e->errorInfo[0] = '02000';
+            $e->errorInfo[1] = 1604;
+            $e->errorInfo[2] = "Zapis ne postoji!";
+            throw $e;
+        } catch (\PDOException $e) {
+            throw $e;
+        }
     }
     
     public function addLogo($idSponzora, $logotip) {

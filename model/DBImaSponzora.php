@@ -36,6 +36,60 @@ class DBImaSponzora extends AbstractDBModel {
             throw $e;
         }
     }
+    
+    public function deleteActiveRow($idSponzora, $idElektrijade) {
+	try {
+            $pdo = $this->getPdo();
+	    $q = $pdo->prepare("DELETE FROM imasponzora WHERE idSponzora = :ids AND idElektrijade = :ide");
+	    $q->bindValue(":ids", $idSponzora);
+	    $q->bindValue(":ide", $idElektrijade);
+	    $q->execute();
+        } catch (\PDOException $e) {
+            throw $e;
+        }
+    }
+    
+    public function loadRow($idSponzora, $idElektrijade) {
+	try {
+            $pov = $this->select()->where(array(
+		"idSponzora" => $idSponzora,
+		"idElektrijade" => $idElektrijade
+	    ));
+	    if (count($pov)) {
+		$this->load($pov[0]->getPrimaryKey());
+	    } else {
+		$this->{$this->getPrimaryKeyColumn()} = null;
+	    }
+        } catch (\app\model\NotFoundException $e) {
+            $e = new \PDOException();
+            $e->errorInfo[0] = '02000';
+            $e->errorInfo[1] = 1604;
+            $e->errorInfo[2] = "Zapis ne postoji!";
+            throw $e;
+        } catch (\PDOException $e) {
+            throw $e;
+        }
+    }
+    
+    public function modifyRow($primaryKey, $idSponzora, $idKategorijeSponzora, $idPromocije, $idElektrijade, $iznosDonacije,
+	    $valutaDonacije, $napomena) {
+	try {
+            $this->load($idSponzora);
+	    $this->imeTvrtke = $imeTvrtke;
+	    $this->adresaTvrtke = $adresaTvrtke;
+	    if ($this->logotip !== NULL && $this->logotip !== '' && $this->logotip !== false)
+		$this->logotip = $logotip;
+	    $this->save();
+        } catch (\app\model\NotFoundException $e) {
+            $e = new \PDOException();
+            $e->errorInfo[0] = '02000';
+            $e->errorInfo[1] = 1604;
+            $e->errorInfo[2] = "Zapis ne postoji!";
+            throw $e;
+        } catch (\PDOException $e) {
+            throw $e;
+        }
+    }
 }
 
 
