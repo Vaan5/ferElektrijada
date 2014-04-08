@@ -91,6 +91,15 @@ abstract class AbstractFormModel implements FormModel {
         return true;
     }
     
+    protected function validateDecimal($data) {
+        if(isset($data) && $data !== '') {
+            $pattern = '/^[0-9]+(\.[0-9]+)?$/';
+            return $this->test_pattern($pattern, $data);
+        }
+        // if you didn't give me anything to check i'll just return true
+        return true;
+    }
+    
      protected function validatePhone($data) {
         if(isset($data) && $data !== '') {
             $pattern = '/^[0-9]{6,}$/';
@@ -180,7 +189,7 @@ abstract class AbstractFormModel implements FormModel {
     
     private function validateAlnumpunct($data) {
         if(isset($data) && $data !== '') {
-            $pattern = '/^[A-Za-z0-9čćžšđČĆŽŠĐ \t._,-]+$/u';
+            $pattern = '/^[A-Za-z0-9čćžšđČĆŽŠĐ \t\n._,-]+$/u';
             return $this->test_pattern($pattern, $data);
         }
         // if you didn't give me anything to check i'll just return true

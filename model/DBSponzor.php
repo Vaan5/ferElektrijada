@@ -19,11 +19,54 @@ class DBSponzor extends AbstractDBModel {
     }
 
     public function getColumns(){
-        return array ('imeTvrtke', 'adresaTvrtke');
+        return array ('imeTvrtke', 'adresaTvrtke', 'logotip');
     }
     
-     public function getAll() {
+    public function getAll() {
         return $this->select()->fetchAll();
+    }
+    
+    public function getAllActive($idElektrijade) {
+	try {
+	    $pdo = $this->getPdo();
+	    $q = $pdo->prepare("SELECT sponzor.* FROM sponzor JOIN imasponzora ON sponzor.idSponzora = imasponzora.idSponzora WHERE imasponzora.idElektrijade = :id");
+	    $q->bindValue(":id", $idElektrijade);
+	    $q->execute();
+	    return $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+	} catch (\PDOException $e) {
+	    throw $e;
+	}
+    }
+
+    public function addRow($imeTvrtke, $adresaTvrtke, $logotip) {
+	try {
+            $this->imeTvrtke = $imeTvrtke;
+	    $this->adresaTvrtke = $adresaTvrtke;
+	    $this->logotip = NULL;
+            $this->save();
+        } catch (\PDOException $e) {
+            throw $e;
+        }
+    }
+    
+    public function modifyRow() {
+	
+    }
+    
+    public function addLogo($idSponzora, $logotip) {
+	try {
+	    $this->load($idSponzora);
+	    $this->logotip = $logotip;
+	    $this->save();
+	} catch (app\model\NotFoundException $e) {
+	    $e = new \PDOException();
+            $e->errorInfo[0] = '02000';
+            $e->errorInfo[1] = 1604;
+            $e->errorInfo[2] = "Zapis ne postoji!";
+            throw $e;
+	} catch (\PDOException $e) {
+	    throw $e;
+	}
     }
 }
 

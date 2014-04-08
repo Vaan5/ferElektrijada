@@ -8,7 +8,6 @@ class SponzorAdding extends AbstractView {
     private $resultMessage;
     private $kategorije;
     private $promocije;
-    private $podrucja;
     
     protected function outputHTML() {
 	// print messages if any
@@ -40,11 +39,6 @@ class SponzorAdding extends AbstractView {
 
     public function setPromocije($promocije) {
 	$this->promocije = $promocije;
-	return $this;
-    }
-    
-    public function setPodrucja($podrucja) {
-	$this->podrucja = $podrucja;
 	return $this;
     }
   

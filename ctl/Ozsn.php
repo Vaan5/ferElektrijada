@@ -329,21 +329,49 @@ class Ozsn implements Controller {
         ));
     }
     
+    /**
+     * Display sponzors for current Elektrijada
+     */
+    public function displayActiveSponzor() {
+	$this->checkRole();
+        $this->checkMessages();
+        
+        $sponzor = new \model\DBSponzor();
+	$sponzori = null;
+        try {
+	    $elektrijada = new \model\DBElektrijada();
+	    $id = $elektrijada->getCurrentElektrijadaId();
+            $sponzori = $sponzor->getAllActive($id);
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->errorMessage = $handler;
+        }
+
+        echo new \view\Main(array(
+            "body" => new \view\ozsn\SponzorList(array(
+                "errorMessage" => $this->errorMessage,
+                "resultMessage" => $this->resultMessage,
+                "sponzori" => $sponzori
+            )),
+            "title" => "Sponzori",
+        ));
+    }
+    
+    /**
+     * Adds a new sponsor and sponsorship data for current Elektrijada (if any)
+     */
     public function addSponzor() {
 	$this->checkRole();
 	$this->checkMessages();
 	
 	$kategorija = new \model\DBKategorija();
 	$promocija = new \model\DBNacinPromocije();
-	$podrucje = new \model\DBPodrucje();
 	$kategorije = null;
 	$promocije = null;
-	$podrucja = null;
 	
 	try {
 	    $kategorije = $kategorija->getAll();
 	    $promocije = $promocija->getAll();
-	    $podrucja = $podrucje->getAll();
 	} catch (\PDOException $e) {
 	    $handler = new \model\ExceptionHandlerModel($e);
 	    $_SESSION["exception"] = serialize($handler);
@@ -375,14 +403,33 @@ class Ozsn implements Controller {
 	if (!postEmpty()) {
 	    try {
 		// first do the db work and after that the image work
-		$idSponzora = null; // 
-		//
-		//
-		//
-		//STAVI ID SPONZORA TU !!!!!!!!!!!
-		//
-		//
-		// if you have uploaded a logo
+		$sponzor = new \model\DBSponzor();
+		$imaSponzora = new \model\DBImaSponzora();
+		
+		$validacija = new \model\formModel\SponzorFormModel(array("imeTvrtke" => post("imeTvrtke"),
+									"adresaTvrtke" => post("adresaTvrtke"),
+									"iznosDonacije" => post("iznosDonacije"),
+									"napomena" => post("napomena")));
+		$pov = $validacija->validate();
+		if ($pov !== true) {
+		    $message = $validacija->decypherErrors($pov);
+		    $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+		    $_SESSION["exception"] = serialize($handler);
+		    preusmjeri(\route\Route::get('d3')->generate(array(
+			"controller" => "ozsn",
+			"action" => "addSponzor"
+		    )) . "?msg=excep");
+		}
+		
+		// data checked and ok
+		$sponzor->addRow(post("imeTvrtke"), post("adresaTvrtke"), NULL);
+		$idSponzora = $sponzor->getPrimaryKey();
+		
+		if (post("iznosDonacije") !== false && post("valuta") !== false) {
+		    $imaSponzora->addRow(post("iznosDonacije", null), post("valuta", null), post("napomena", null));
+		}
+		
+		// now i check the image
 		if (files("tmp_name", "datoteka") !== false) {
 		    $mime = null;
 		    $finfo = null;
@@ -420,18 +467,11 @@ class Ozsn implements Controller {
 		    imagecopyresampled($image_p, $img, 0, 0, 0, 0, 300, 200, $width, $height);
 		    
 		    // save resized image
-		    $pov = imagejpeg($image_p, "./logotip/" . $idSponzora . ".jpeg");
-		    if ($pov === true) {
+		    $putanja = "./logotip/" . $idSponzora . ".jpeg";
+		    $pov = imagejpeg($image_p, $putanja);
+		    if ($pov !== true) {
 			// add path to db
-			
-			// NASTAVI
-			//
-			//
-			//
-			//
-			//
-			//
-			
+			$sponzor->addLogo($idSponzora, $putanja);			
 		    } else {
 			$handler = new \model\ExceptionHandlerModel($e, "Problem s spremanjem slike!");
 			$_SESSION["exception"] = serialize($handler);
@@ -441,6 +481,10 @@ class Ozsn implements Controller {
 			)) . "?msg=excep");
 		    }
 		    
+		    preusmjeri(\route\Route::get('d3')->generate(array(
+			"controller" => "ozsn",
+			"action" => "displaySponzor"
+		    )) . "?msg=succa");
 		}
 	    } catch (\PDOException $e) {
 		$handler = new \model\ExceptionHandlerModel($e);
@@ -457,8 +501,7 @@ class Ozsn implements Controller {
 		"errorMessage" => $this->errorMessage,
 		"resultMessage" => $this->resultMessage,
 		"kategorije" => $kategorije,
-		"promocije" => $promocije,
-		"podrucja" => $podrucja
+		"promocije" => $promocije
 	    )),
 	    "title" => "Dodavanje Sponzora"
 	));
