@@ -412,17 +412,7 @@ class Ozsn implements Controller {
 	}
 	
 	if (postEmpty() && files("tmp_name", "datoteka") !== false) {
-	    $handler = new \model\ExceptionHandlerModel($e, "Da biste dodali logotip, morate unijeti i podatke o sponzoru!");
-	    $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "addSponzor"
-            )) . "?msg=excep");
-	}
-	
-	// check if the image is too big
-	if (files("tmp_name", "datoteka") !== false && files("size", "datoteka") > 1024 * 1024) {
-	    $handler = new \model\ExceptionHandlerModel($e, "Veličina slike mora biti manja od 1MB!");
+	    $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Da biste dodali logotip, morate unijeti i podatke o sponzoru!");
 	    $_SESSION["exception"] = serialize($handler);
             preusmjeri(\route\Route::get('d3')->generate(array(
                 "controller" => "ozsn",
@@ -464,49 +454,21 @@ class Ozsn implements Controller {
 		
 		// now i check the image
 		if (files("tmp_name", "datoteka") !== false) {
-		    $mime = null;
-		    $finfo = null;
-		    // check file type -finfo extension needs to be enables in PHP
-		    if(function_exists('finfo_file')) {
-			$finfo = \finfo_open(FILEINFO_MIME_TYPE);
-			$mime = finfo_file($finfo, files("tmp_name", "datoteka"));
-		    } else {
-			$mime = \mime_content_type(files("tmp_name", "datoteka"));
-		    }
-		    
-		    if($mime != 'image/jpeg') {
-			$handler = new \model\ExceptionHandlerModel($e, "Možete poslati logotip samo u jpeg (jpg) formatu!");
+		    if(!is_uploaded_file(files("tmp_name", "datoteka"))) {
+			$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Morate poslati datoteku!");
 			$_SESSION["exception"] = serialize($handler);
 			preusmjeri(\route\Route::get('d3')->generate(array(
 			    "controller" => "ozsn",
 			    "action" => "addSponzor"
 			)) . "?msg=excep");
 		    }
-		    
-		    // now i should add the file to my file system
-		    $img = imagecreatefromjpeg(files("tmp_name", "datoteka"));
-		    if ($img === false) {
-			$handler = new \model\ExceptionHandlerModel($e, "Ne mogu obraditi predani logo!");
-			$_SESSION["exception"] = serialize($handler);
-			preusmjeri(\route\Route::get('d3')->generate(array(
-			    "controller" => "ozsn",
-			    "action" => "addSponzor"
-			)) . "?msg=excep");
-		    }
-		    
-		    // resize logo
-		    list($width, $height) = getimagesize(files("tmp_name", "datoteka"));
-		    $image_p = imagecreatetruecolor(300, 200);
-		    imagecopyresampled($image_p, $img, 0, 0, 0, 0, 300, 200, $width, $height);
-		    
 		    // save resized image
-		    $putanja = "./logotip/" . $idSponzora . ".jpeg";
-		    $pov = imagejpeg($image_p, $putanja);
-		    if ($pov !== true) {
+		    $putanja = "./logotip/" . date("Y_m_d_H_i_s") . "_" . basename(files("name", "datoteka"));
+		    if (move_uploaded_file(files("tmp_name", "datoteka"), $putanja)) {
 			// add path to db
 			$sponzor->addLogo($idSponzora, $putanja);			
 		    } else {
-			$handler = new \model\ExceptionHandlerModel($e, "Problem s spremanjem slike!");
+			$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Dogodio se problem s spremanjem datoteke! Podaci o sponzoru su uneseni!");
 			$_SESSION["exception"] = serialize($handler);
 			preusmjeri(\route\Route::get('d3')->generate(array(
 			    "controller" => "ozsn",
@@ -662,16 +624,6 @@ class Ozsn implements Controller {
             )) . "?msg=excep");
 	}
 	
-	// check if the image is too big
-	if (files("tmp_name", "datoteka") !== false && files("size", "datoteka") > 1024 * 1024) {
-	    $handler = new \model\ExceptionHandlerModel($e, "Veličina slike mora biti manja od 1MB!");
-	    $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "modifySponzor"
-            )) . "?msg=excep&id=" . get("id"));
-	}
-	
 	if (!postEmpty()) {
 	    try {
 		// first do the db work and after that the image work
@@ -710,54 +662,37 @@ class Ozsn implements Controller {
 		
 		// now i check the image
 		if (files("tmp_name", "datoteka") !== false) {
-		    $mime = null;
-		    $finfo = null;
-		    // check file type -finfo extension needs to be enables in PHP
-		    if(function_exists('finfo_file')) {
-			$finfo = \finfo_open(FILEINFO_MIME_TYPE);
-			$mime = finfo_file($finfo, files("tmp_name", "datoteka"));
-		    } else {
-			$mime = \mime_content_type(files("tmp_name", "datoteka"));
-		    }
-		    
-		    if($mime != 'image/jpeg') {
-			$handler = new \model\ExceptionHandlerModel($e, "Možete poslati logotip samo u jpeg (jpg) formatu!");
+		    if(!is_uploaded_file(files("tmp_name", "datoteka"))) {
+			$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Morate poslati datoteku!");
 			$_SESSION["exception"] = serialize($handler);
 			preusmjeri(\route\Route::get('d3')->generate(array(
 			    "controller" => "ozsn",
 			    "action" => "modifySponzor"
-			)) . "?msg=excep&id=" . get("id"));
+			)) . "?msg=excep");
 		    }
-		    
-		    // now i should add the file to my file system
-		    $img = imagecreatefromjpeg(files("tmp_name", "datoteka"));
-		    if ($img === false) {
-			$handler = new \model\ExceptionHandlerModel($e, "Ne mogu obraditi predani logo!");
-			$_SESSION["exception"] = serialize($handler);
-			preusmjeri(\route\Route::get('d3')->generate(array(
-			    "controller" => "ozsn",
-			    "action" => "modifySponzor"
-			)) . "?msg=excep&id=" . get("id"));
-		    }
-		    
-		    // resize logo
-		    list($width, $height) = getimagesize(files("tmp_name", "datoteka"));
-		    $image_p = imagecreatetruecolor(300, 200);
-		    imagecopyresampled($image_p, $img, 0, 0, 0, 0, 300, 200, $width, $height);
-		    
-		    // save resized image over the old one if there was any
-		    $putanja = "./logotip/" . $idSponzora . ".jpeg";
-		    $pov = imagejpeg($image_p, $putanja);
-		    if ($pov !== true) {
+		    // save image over the old one if there was any
+		    $putanja = "./logotip/" . date("Y_m_d_H_i_s") . "_" . basename(files("name", "datoteka"));
+		    if (move_uploaded_file(files("tmp_name", "datoteka"), $putanja)) {
 			// add path to db
+			if ($sponzor->logotip != NULL) {
+			    $p = unlink($sponzor->logotip);
+			    if ($p === false) {
+				$e = new \PDOException();
+				$e->errorInfo[0] = '02000';
+				$e->errorInfo[1] = 1604;
+				$e->errorInfo[2] = "Greška prilikom brisanja logotipa!";
+				throw $e;
+			    }
+			}
+			    
 			$sponzor->addLogo($idSponzora, $putanja);			
 		    } else {
-			$handler = new \model\ExceptionHandlerModel($e, "Problem s spremanjem slike!");
+			$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Dogodio se problem s spremanjem datoteke! Podaci o sponzoru su uneseni!");
 			$_SESSION["exception"] = serialize($handler);
 			preusmjeri(\route\Route::get('d3')->generate(array(
 			    "controller" => "ozsn",
 			    "action" => "modifySponzor"
-			)) . "?msg=excep&id=" . get("id"));
+			)) . "?msg=excep");
 		    }
 		} else {
 		    // check if he wants to delete the old one
@@ -800,6 +735,34 @@ class Ozsn implements Controller {
 		"promocija" => $promocija
 	    )),
 	    "title" => "Mijenjanje Sponzora"
+	));
+    }
+    
+    public function downloadLogo() {
+	$this->checkRole();
+	$this->checkMessages();
+	
+	if (postEmpty() || post("id") === false) {
+	    $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati sponzor!");
+	    $_SESSION["exception"] = serialize($handler);
+	    preusmjeri(\route\Route::get('d1')->generate());
+	}
+	
+	$sponzor = new \model\DBSponzor();
+	try {
+	    $sponzor->load(post("id"));
+	} catch (\app\model\NotFoundException $e) {
+	    $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati sponzor!");
+	    $_SESSION["exception"] = serialize($handler);
+	    preusmjeri(\route\Route::get('d1')->generate());
+	} catch (\PDOException $e) {
+	    $handler = new \model\ExceptionHandlerModel($e);
+	    $_SESSION["exception"] = serialize($handler);
+	    preusmjeri(\route\Route::get('d1')->generate());
+	}
+	
+	echo new \view\Download(array(
+	    "path" => $sponzor->logotip
 	));
     }
     

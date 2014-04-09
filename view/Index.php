@@ -124,6 +124,10 @@ class Index extends AbstractView {
         "controller" => 'reportGenerator',
         "action" => 'pdfTest'
     ));?>">pdf-ovi</a>
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'downloadLogo'
+    ));?>">download</a>
 	</p>
 </p>
 
