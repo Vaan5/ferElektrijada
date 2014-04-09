@@ -128,6 +128,10 @@ class Index extends AbstractView {
         "controller" => 'ozsn',
         "action" => 'downloadLogo'
     ));?>">download</a>
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'reportGenerator',
+        "action" => 'xlsTest'
+    ));?>">excel</a>
 	</p>
 </p>
 
