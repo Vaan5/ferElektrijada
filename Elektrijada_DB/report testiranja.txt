@@ -1,4 +1,4 @@
-﻿PROCEDURA DODAJ ELEKTRIJADU:
+PROCEDURA DODAJ ELEKTRIJADU:
 	
 	- prilikom unosa "glupog" datuma, npr. YYYY-MM-32 unosi: 0000:00:00, mozda bi bilo dobro stavit u proceduru provjeru tih datuma ili NOT NULL; taj slucaj nije
 	  problem kod unosa datuma za pocetak i kraj elektrijade jer oni imaju NOT NULL, a i javlja gresku da je krivi rok za znanje ili za sport, sto je ok;
@@ -7,7 +7,7 @@
 	  ako unesem 2015-05-s3 --> workbench ne dopusta unos; 
 	  "2015-1^^5-0^^14", "2015-05-0^^1" ovakav unos interpretira kao: 2015-01-05 i 2015-05-00, slicno se moze unijet i da mjesec bude 00;
 	  
-	+ kod grada i drzave se moze unijeti NULL;
+	- kod grada i drzave se moze unijeti NULL;
 	
 	- ukupanRezultat s obzirom da je int moze biti i negativan i 0, to bi mozda bilo ok popravit; isto vrijedi i za brojSudionika;
 	  
@@ -16,7 +16,7 @@
 	
 PROCEDURA AZURIRAJ ELEKTRIJADU:
 
-	+ u SET dijelu treba promjenit ELEKTRIJADA.ukupanBrojSudionika, mozes isto promjenit i u parametrima procedure i kod pridruzivanja tog parametra u SET dijelu. (inace ti pise ukupni na tim mjestima)
+	- u SET dijelu treba promjenit ELEKTRIJADA.ukupanBrojSudionika, mozes isto promjenit i u parametrima procedure i kod pridruzivanja tog parametra u SET dijelu. (inace ti pise ukupni na tim mjestima)
 	
 	- ostalo radi ok, osim stvari koje sam naveo gore kod samog dodavanja;
 	
@@ -26,12 +26,12 @@ PROCEDURA BRISI ELEKTRIJADU:
 	
 PROCEDURA DODAJ OSOBU:
 	
-	+ broj putovnice, broj osobne i mail trebaju biti unique; mozda i broj moba;
+	- broj putovnice, broj osobne i mail trebaju biti unique; mozda i broj moba;
 	- ostalo sto se tice ovih IF-ova radi dobro;
 	
 TRIGGER OSOBA INSERT:
 
-	+(DENIS) radi dobro sve osim ovog s ID-em nadređene osobe. Tu kad stavim bilo sta drugo osim NULL kaze: "Table osoba.idNadredjena doesn't exist". Ne znam u cemu je 
+	- radi dobro sve osim ovog s ID-em nadređene osobe. Tu kad stavim bilo sta drugo osim NULL kaze: "Table osoba.idNadredjena doesn't exist". Ne znam u cemu je 
 	  tu problem. Pokuso sam promjenit src stavit 0200 signal i ponovo uvest u bazu, ali ista je stvar. 
 	  prilikom uvoza bilo koje verzije u bazu mi kaze ovo: 11:20:44 Restoring C:\Users\Matoo\Documents\GitHub\ferElektrijada\Elektrijada_DB\novi_triggeri.sql
 	  Running: mysql.exe --defaults-file="c:\users\matoo\appdata\local\temp\tmprb4gwl.cnf"  --host=localhost --user=root --port=3306 --default-character-set=utf8 --comments --database=ferelektrijada < "C:\\Users\\Matoo\\Documents\\GitHub\\ferElektrijada\\Elektrijada_DB\\novi_triggeri.sql"
@@ -50,21 +50,32 @@ PROCEDURA AZURIRAJ OSOBU:
 	
 	- ovim putem se moze za nadredjenog postavit nesto razlicito od NULL, ali to moze biti nepostojeci ID ili mozes postavit samog sebe kao sebi nadredjenog.
 	
-	+ pri ispisu za krivo uneseni spol imas tipfeler
+	- pri ispisu za krivo uneseni spol imas tipfeler
 	
 PROCEDURA BRISI OSOBU:
 
-	+ tipfeler kod ispisa za krivi id osobe, inace radi ok.
+	- tipfeler kod ispisa za krivi id osobe, inace radi ok.
 	
 PROCEDURA DODAJ OBAVLJA FUNKCIJU:
 
-	+ dobro radi i sto se tice procedura i stranih kljuceva
+	- dobro radi i sto se tice procedura i stranih kljuceva
 	
 PROCEDURA AZURIRAJ OBAVLJA FUNKCIJU:
 
-	+ ne baca nikakvu gresku ako uneses nepostojeci idObavljaFunkciju, trebas stavit tu provjeru u proceduru
+	- ne baca nikakvu gresku ako uneses nepostojeci idObavljaFunkciju, trebas stavit tu provjeru u proceduru
 	
 PROCEDURA BRISI OBAVLJA FUNKCIJU:
 	
-	+ tipfeleri kod ispisa;
+	- tipfeleri kod ispisa;
 	
+<---- prilikom unosa datuma ovog oblika: 2020-12-09°°, prolazi na svim mjestima kao 2020-12-09 ---->
+
+
+PROCEDURA DOHVACANJA PODRUCJA:
+
+	- umjesto zasebne provjere osobe i elektrijade bolje je staviti provjeru da li ta kombinacija osoba-elektrijada postoji u relaciji sudjelovanje jer 
+	  je moguce da postoji i osoba i elektrijada, ali ta osoba nije bila te godine na elektrijadi. ovdje si se malo spetljo s ovim leftom, jednom ga stavis
+	  onda kod iduceg spajanje ne i zapravo nisi nista napravio, sve ono sta si ostavio zbog lijevog spajanja opet mices ovim iducim spajanjem. left join uopce nije potreban iako i
+	  ovako sasvim ok radi, ali neke poslove radi nepotrebno.
+	  
+<---- baza dopusta da 2 osobe na istoj elektrijadi sjede u istom busu na istom mjestu, ne znam jel to ok, mozda bi se moglo stavit da je idputovanja unique u sudjelovanju. ---->
