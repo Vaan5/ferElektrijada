@@ -227,36 +227,35 @@ DELIMITER ;
 
 
 DELIMITER $$
-CREATE  PROCEDURE `dohvatiPopisSvihBusevaNaElektrijadi`(IN idElektrijade INT(10))
+CREATE PROCEDURE `dohvatiPopisSvihBusevaNaElektrijadi`(IN idElektrijade INT(10))
 BEGIN
      IF EXISTS (SELECT * FROM Elektrijada WHERE Elektrijada.idElektrijade = idElektrijade) THEN
-		SELECT DISTINCT BUS.idBusa=idBusa, BUS.registracija , BUS.brojMjesta=brojMjesta, BUS.brojBusa
+		SELECT DISTINCT BUS.idBusa, BUS.registracija , BUS.brojMjesta, BUS.brojBusa
 		FROM BUS 
 		RIGHT JOIN PUTOVANJE ON PUTOVANJE.idBusa=BUS.idBusa
-		RIGHT JOIN SUDJELOVANJE ON SUDJELOVANJE.idPutovanja=idPutovanja
+		RIGHT JOIN SUDJELOVANJE ON SUDJELOVANJE.idPutovanja=PUTOVANJE.idPutovanja
 		WHERE SUDJELOVANJE.idElektrijade = idElektrijade;
 		
       ELSE
           SIGNAL SQLSTATE '23000'SET MESSAGE_TEXT = 'Greška: Unesen je nepostojeci idElektrijade';
 	  END IF;
 
-SELECT * FROM BUS ORDER BY brojMjesta ASC;
 
-END $$
+END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `dohvatiPopisSvihObjavaOElektrijadi`(IN idElektrijade INT(10))
+CREATE PROCEDURE `dohvatiPopisSvihObjavaOElektrijadi`(IN idElektrijade INT(10))
 BEGIN
 	IF EXISTS (SELECT * FROM Elektrijada WHERE Elektrijada.idElektrijade = idElektrijade) THEN
 		SELECT DISTINCT OBJAVA.idObjave, OBJAVA.datumObjave,OBJAVA.link, OBJAVA.autorIme ,OBJAVA.autorPrezime,OBJAVA.idMedija ,OBJAVA.dokument
 		FROM OBJAVA
-		JOIN 	obajvaOElektrijadi ON OBJAVA.idObjave = obajvaOElektrijadi.idObjave		
-		WHERE obajvaOElektrijadi.idElektrijade = idElektrijade;
+		JOIN 	objavaOElektrijadi ON OBJAVA.idObjave = objavaOElektrijadi.idObjave		
+		WHERE objavaOElektrijadi.idElektrijade = idElektrijade;
     ELSE 
        SIGNAL SQLSTATE '23000'SET MESSAGE_TEXT = 'Greška: Unesen je nepostojeci idElektrijade';
 	END IF;
-END $$
+END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -308,14 +307,14 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `dodajGrupniRezultat`(IN idPodrucja INT(10),IN idElektrijade DATE,IN rezultatGrupni SMALLINT(6))
+CREATE PROCEDURE `dodajGrupniRezultat`(IN idPodrucja INT(10),IN idElektrijade INT,IN rezultatGrupni SMALLINT(6))
 BEGIN
 IF EXISTS (SELECT* FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idPodrucja) THEN
 IF EXISTS (SELECT* FROM ELEKTRIJADA WHERE ELEKTRIJADA.idElektrijade = idElektrijade) THEN
 
 IF NOT EXISTS (SELECT* 
 		FROM ElekPodrucje WHERE ElekPodrucje.idPodrucja = idPodrucja and ElekPodrucje.idElektrijade=idElektrijade) THEN
-		 SIGNAL SQLSTATE '23000' SET MESSAGE_TEXT = 'Greška: Ne postoji područje kojem želote dodati sliku';
+		 SIGNAL SQLSTATE '23000' SET MESSAGE_TEXT = 'Greška: Na toj elektrijadi ne postoji to područje!';
 ELSE
 	UPDATE ElekPodrucje
     SET ElekPodrucje.rezultatGrupni=rezultatGrupni
@@ -327,11 +326,11 @@ ELSE
 END IF;
 
 ELSE 
-	    SIGNAL SQLSTATE '23000' SET MESSAGE_TEXT = 'Greška: Upisan nepostojeće područje!';
+	    SIGNAL SQLSTATE '23000' SET MESSAGE_TEXT = 'Greška: Upisano nepostojeće područje!';
 END IF;
 
 
-END $$
+END$$
 DELIMITER ;
 
 
