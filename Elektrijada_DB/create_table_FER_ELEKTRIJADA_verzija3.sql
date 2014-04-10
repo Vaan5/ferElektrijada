@@ -411,6 +411,8 @@ CREATE TABLE PodrucjeSudjelovanja (
     rezultatPojedinacni SMALLINT,
     vrstaPodrucja TINYINT(1),
     ukupanBrojSudionika INT,
+	iznosUplate INT,
+    valuta VARCHAR(3),
     PRIMARY KEY (idPodrucjeSudjelovanja),
     UNIQUE (idPodrucja , idSudjelovanja),
     FOREIGN KEY (idPodrucja)

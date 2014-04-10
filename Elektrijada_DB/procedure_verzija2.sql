@@ -303,7 +303,7 @@ DELIMITER ;
 
 
 DELIMITER $$
-CREATE  PROCEDURE `azurirajPodrucjeSudjelovanja`(IN idPodrucjeSudjelovanja INT UNSIGNED, IN idPodrucja INT UNSIGNED, IN idSudjelovanja INT UNSIGNED, IN rezultatPojedinacni SMALLINT, IN vrstaPodrucja TINYINT(1))
+CREATE  PROCEDURE `azurirajPodrucjeSudjelovanja`(IN idPodrucjeSudjelovanja INT UNSIGNED, IN idPodrucja INT UNSIGNED, IN idSudjelovanja INT UNSIGNED, IN rezultatPojedinacni SMALLINT, IN vrstaPodrucja TINYINT(1),IN iznosUplate INT, IN valuta VARCHAR(3))
 BEGIN
 
 IF EXISTS (SELECT * FROM PODRUCJESUDJELOVANJA WHERE PODRUCJESUDJELOVANJA.idPodrucjeSudjelovanja = idPodrucjeSudjelovanja) THEN
@@ -312,7 +312,7 @@ IF EXISTS (SELECT* FROM SUDJELOVANJE WHERE SUDJELOVANJE.idSudjelovanja = idSudje
 	IF (vrstaPodrucja = 0 AND rezultatPojedinacni IS NOT NULL) THEN
 		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Pojedinacni rezultat se ne može upisat u ekipnu disciplinu.';
 	ELSE
-		UPDATE PODRUCJESUDJELOVANJA SET PODRUCJESUDJELOVANJA.rezultatPojedinacni = rezultatPojedinacni, PODRUCJESUDJELOVANJA.vrstaPodrucja = vrstaPodrucja, PODRUCJESUDJELOVANJA.idPodrucja=idPodrucja ,PODRUCJESUDJELOVANJA.idSudjelovanja=idSudjelovanja
+		UPDATE PODRUCJESUDJELOVANJA SET PODRUCJESUDJELOVANJA.rezultatPojedinacni = rezultatPojedinacni, PODRUCJESUDJELOVANJA.vrstaPodrucja = vrstaPodrucja, PODRUCJESUDJELOVANJA.idPodrucja=idPodrucja ,PODRUCJESUDJELOVANJA.idSudjelovanja=idSudjelovanja,PODRUCJESUDJELOVANJA.iznosUplate=iznosUplate,PODRUCJESUDJELOVANJA.valuta=valuta
 		WHERE PODRUCJESUDJELOVANJA.idPodrucjeSudjelovanja=idPodrucjeSudjelovanja;
 	END IF;
 ELSE
@@ -1226,7 +1226,7 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `dodajPodrucjeSudjelovanja`(IN idPodrucja INT UNSIGNED, IN idSudjelovanja INT UNSIGNED, IN rezultatPojedinacni SMALLINT, IN vrstaPodrucja TINYINT(1))
+CREATE  PROCEDURE `dodajPodrucjeSudjelovanja`(IN idPodrucja INT UNSIGNED, IN idSudjelovanja INT UNSIGNED, IN rezultatPojedinacni SMALLINT, IN vrstaPodrucja TINYINT(1),IN iznosUplate INT, IN valuta VARCHAR(3))
 BEGIN
 IF EXISTS (SELECT * FROM PODRUCJESUDJELOVANJA WHERE PODRUCJESUDJELOVANJA.idPodrucja = idPodrucja && PODRUCJESUDJELOVANJA.idSudjelovanja=idSudjelovanja) THEN
 	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Zapis već postoji!';
@@ -1239,7 +1239,7 @@ ELSE
 				IF (vrstaPodrucja = 0 && rezultatPojedinacni IS NOT NULL) THEN
 					 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Pojedinacni rezultat se ne može upisat u ekipnu disciplinu.';
 				ELSE
-					INSERT INTO PODRUCJESUDJELOVANJA VALUES(NULL,idPodrucja, idSudjelovanja, rezultatPojedinacni, vrstaPodrucja);
+					INSERT INTO PODRUCJESUDJELOVANJA VALUES(NULL,idPodrucja, idSudjelovanja, rezultatPojedinacni, vrstaPodrucja,iznosUplate,valuta);
 				END IF;
 			END IF;
 		ELSE
