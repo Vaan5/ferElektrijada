@@ -32,7 +32,8 @@ class DBOsoba extends AbstractDBModel {
 private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
 		try{
 			$pdo = $this->getPdo();
-			$q = $pdo->prepare("CALL dohvatiOdredeniAtribut($idOsobe)");
+			$q = $pdo->prepare("CALL dohvatiOdredeniAtribut(:id)");
+			$q->bindValue(":id", $idOsobe);
 			$q->execute();
 			$rez=$q->fetch(); //dohvatili smo ulogu
 		}catch (\PDOException $e) {
@@ -55,7 +56,9 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
 			if($id === false){
 				return null;
 			}
-			$q = $pdo->prepare("CALL dohvatiOsobnaPodrucja($id,$idOsobe)");
+			$q = $pdo->prepare("CALL dohvatiOsobnaPodrucja(:id,:Osoba)");
+			$q->bindValue(":id", $id);
+			$q->bindValue(":Osoba", $idOsobe);
 			$q->execute();
 			$rez  = $q->fetchAll();
 		}catch (\PDOException $e) {
