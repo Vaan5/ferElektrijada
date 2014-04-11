@@ -70,8 +70,7 @@ class ReportGenerator implements Controller {
 		}
 
 	}
-	//$pdf->Ln();
-	//$pdf->Write(10,$w[8]);
+	
 
 	//podijeli na manja polja - svako polje će imati broj elemenata jednak broju redaka
 	$rows = array_chunk($w,$size);
@@ -92,7 +91,7 @@ class ReportGenerator implements Controller {
 	}
 	//****************************************************
 
-	//echo $sum;
+	
 
 	if ( $sum < 180 ) {
 
@@ -108,35 +107,24 @@ class ReportGenerator implements Controller {
 	$header = $polje[0];  //zaglavlje-0.redak
 
 	//pocetak kreiranja tablice
-	$pdf->SetFillColor(176,0,0);   //boja zaglavlja
-	$pdf->SetTextColor(255); //boja teksta
+	$pdf->SetFillColor(175);   //boja zaglavlja
+	$pdf->SetTextColor(0); //boja teksta
 
 	$pdf->SetDrawColor(0); //rub
 	$pdf->SetLineWidth(.5); //debljina ruba
 
 
 
-	/*for($i=0;$i<3;$i++)
-	   { 
-			$pdf->Write(10,$max[$i] . ' ');
-	   }*/
-
-
-
-	//$w=array(18,20,18,20,20,20,25,20,20,20,25); //širina ćelija   version1
-	//$w=array(40,40,50,35,40,40,50,30,40,40,50); //širina ćelija   version2
-
-	//$pdf->Write(10,$header[3].' ');
 	// ********************************************
 	for($i=0; $i < $size1; $i++){
 
 		$pdf->Cell($max[$i],10,$header[$i],1,0,'C',1); //zaglavlje
-		//$pdf->Ln();
+		
 
 
 	}
 	$pdf->Ln(); //novi red
-	$pdf->SetFillColor(175); //boja ispune ćelije
+	$pdf->SetFillColor(255); //boja ispune ćelije
 	$pdf->SetTextColor(0); //crna boja
 	$pdf->SetFont('');
 
@@ -145,7 +133,7 @@ class ReportGenerator implements Controller {
 		{	
 		    $pdf->Cell($max[$k],10,$polje[$j][$k],1,0,'L',1); 
 
-			//$pdf->Write(10,$polje[$j][$k].' ');
+		
 		}
 		$pdf->Ln(); 
 	}
@@ -156,60 +144,104 @@ class ReportGenerator implements Controller {
 	return $pdf;
     }
     
-    public function xlsTest() {
+    private function generateExcel(array $polje, $tip) {
+	/** ukljuci biblioteku PHPExcel */ 
+	require_once "lib/excel/Classes/PHPExcel.php";
 
-
-	// kreiraj novi objekt
+	// kreiraj novi excel objekt
 	$objPHPExcel = new \PHPExcel();
 
+	$objPHPExcel->setActiveSheetIndex(0); //aktivni radni list
+	$sheet = $objPHPExcel->getActiveSheet();
+	$row = '1';
+	$col = "A";
 
-	// dodaj podatke
+	foreach($polje as $row_cells) {
+	    if(!is_array($row_cells)) { continue; }
+		foreach($row_cells as $cell) {
+		    $sheet->setCellValue($col.$row, $cell);
+		    $col++;
+				    $nd = $col; // nd pamti zadnji stupac
+		}
+	    $row += 1;
+	    $col = "A";
+	}
 
-	$row=1;
+	//autosize širine ćelija
 
-	$objPHPExcel->setActiveSheetIndex(0)
-		    ->setCellValue('A'.$row, 'Ime')
-				->setCellValue('B'.$row, 'Prezime')
-				->setCellValue('C'.$row, 'Godine');
-
-	$row++;
-
-	$objPHPExcel->setActiveSheetIndex(0)
-		    ->setCellValue('A'.$row, 'Anastazijalijepa')
-				->setCellValue('B'.$row, 'Ivic')
-				->setCellValue('C'.$row, '22');
-
-	$row++;
-
-	$objPHPExcel->setActiveSheetIndex(0)
-				->setCellValue('A'.$row, 'Juraaaaaaaaaaaaaaaa')
-				->setCellValue('B'.$row, 'Jurić')
-				->setCellValue('C'.$row, '21');
-
-
-	// preimenuj radni list
-	$objPHPExcel->getActiveSheet()->setTitle('Primjer');
-
-	//postavi aktivnim radnim listom prvi radni list
-	$objPHPExcel->setActiveSheetIndex(0);
-
-	// spremanje u .xlsx format
-	//echo " Kreiraj .xlsx datoteku".'<br />';
-	$objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-	$objWriter->save('xls/primjer.xlsx');
-	//echo " Zapisano u  " , str_replace('.php', '.xlsx', pathinfo(__FILE__, PATHINFO_BASENAME)) .'<br />';
-
-
-//	// spremanje u .xls format
-//	echo " Kreiraj .xls datoteku".'<br />';
-//	$objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
-//	$objWriter->save('primjer');
-//	echo " Zapisano u " , str_replace('.php', '.xls', pathinfo(__FILE__, PATHINFO_BASENAME)).'<br />';
-
-	// kraj
+	//PHPExcel_Shared_Font::setAutoSizeMethod(PHPExcel_Shared_Font::AUTOSIZE_METHOD_EXACT);
+	foreach(range('A',$nd) as $columnID) {
+	    $objPHPExcel->getActiveSheet()->getColumnDimension($columnID)
+		->setAutoSize(true);
+	}
 	
+	$putanja = 'xls/report_' . date("Y_m_d_H_i_s") . "." . $tip;
+
+	if ($tip === 'xlsx') {
+	    $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+	    $objWriter->save($putanja);
+	} else if ($tip === 'xls') {
+	    $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+	    $objWriter->save($putanja);
+	}
+
+	return $putanja;
+    }
+    
+    public function xlsTest() {
+	$data = array(  array('Ime', 'Prezime', 'JMBAG','Grad','Ime', 'Prezime', 'JMBAG','Grad','Ime', 'Prezime', 'JMBAG'),
+				array('Ivo4567890', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '001122334455'),
+				array('Žurko', 'Žurković', '9988776655','Solin','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Đeneva','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Osijek','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Čakovec','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Zagreb','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Rijeka','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Županja','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Anastazija', 'Đurić', '2233447755','Ićiči','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Žurko', 'Žurković', '9988776655','Solin','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Đeneva','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Osijek','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Čakovec','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Zagreb','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Rijeka','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Županja','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Žurko', 'Žurković', '9988776655','Solin','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Đeneva','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Osijek','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Čakovec','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Zagreb','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Rijeka','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Županja','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Žurko', 'Žurković', '9988776655','Solin','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Đeneva','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Osijek','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Čakovec','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Zagreb','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Rijeka','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Županja','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Žurko', 'Žurković', '9988776655','Solin','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Đeneva','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Osijek','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Čakovec','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Zagreb','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Rijeka','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'),
+				array('Jure', 'Đurić', '2233447755','Županja','Ivo', 'Ivić', '0011223344','Sisak','Ivo', 'Ivić', '0011223344'));
+	
+	$putanja = null;
+	if (get('type') === 'xlsx') {
+	    $putanja = $this->generateExcel($data, 'xlsx');
+	} else if (get('type') === 'xls') {
+	    $putanja = $this->generateExcel($data, 'xls');
+	}
+
 	echo new \view\ShowXls(array(
-	    "fileName" => './xls/primjer.xlsx'
+	    "fileName" => './' . $putanja,
+	    "tip" => get("type")
 	));
 
     }

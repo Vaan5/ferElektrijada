@@ -131,7 +131,12 @@ class Index extends AbstractView {
 	<a href="<?php echo \route\Route::get('d3')->generate(array(
         "controller" => 'reportGenerator',
         "action" => 'xlsTest'
-    ));?>">excel</a>
+    )) . "?type=xls";?>">excel_xls</a>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'reportGenerator',
+        "action" => 'xlsTest'
+    )) . "?type=xlsx";?>">excel_xlsx</a>
 	</p>
 </p>
 
