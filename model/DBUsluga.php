@@ -4,12 +4,7 @@ namespace model;
 use app\model\AbstractDBModel;
 	
 class DBUsluga extends AbstractDBModel {
-	    
-	/**
-	*
-	* @var boolean 
-	*/
-            
+  
     public function getTable(){
         return 'usluga';
     }
@@ -20,6 +15,10 @@ class DBUsluga extends AbstractDBModel {
             
     public function getColumns(){
         return array('nazivUsluge');
+    }
+    
+    public function getAll() {
+	return $this->select()->fetchAll();
     }
 }
 
