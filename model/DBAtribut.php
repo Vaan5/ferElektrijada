@@ -36,7 +36,7 @@ class DBAtribut extends AbstractDBModel {
     public function modifyRow($idAtributa, $nazivAtributa) {
         try {
             $this->load($idAtributa);
-            if ($this->nazivAtributa === 'voditelj') {
+            if (strtolower($this->nazivAtributa) === 'voditelj') {
                 $e = new \PDOException();
                 $e->errorInfo[0] = '02000';
                 $e->errorInfo[1] = 1604;

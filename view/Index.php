@@ -16,12 +16,6 @@ class Index extends AbstractView {
      */
     private $resultMessage;
     
-    /**
-     * Opisuje prijenos varijable iz controllera ctl\Index
-     * MORATE NAPRAVITI SETTER
-     */
-    private $varijablaPrenesenaIzControllera;
-    
     protected function outputHTML() {
 ?>
 
@@ -53,6 +47,13 @@ class Index extends AbstractView {
         "controller" => 'ozsn',
         "action" => 'addContact'
     ));?>">Dodavanje Kontakt Osobe</a>
+	
+	<br>
+        
+        <a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'searchContacts'
+    ));?>">Pretraživanje Kontakt Osoba</a>
 	
 	<br>
         
@@ -160,16 +161,6 @@ class Index extends AbstractView {
      */
     public function setResultMessage($resultMessage) {
         $this->resultMessage = $resultMessage;
-        return $this;
-    }
-    
-    /**
-     * 
-     * @param mixed $varijablaPrenesenaIzControllera
-     * @return \view\Index
-     */
-    public function setVarijablaPrenesenaIzControllera($varijablaPrenesenaIzControllera) {
-        $this->varijablaPrenesenaIzControllera = $varijablaPrenesenaIzControllera;
         return $this;
     }
 }
