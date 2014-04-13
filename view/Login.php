@@ -21,9 +21,10 @@ class Login extends AbstractView {
 
     <?php echo new LoginForm(array(
         "actionRoute" => \route\Route::get('d3')->generate(array(
-                                                            "controller" => "login",
-                                                            "action" => "display"
-                                                        ))
+			"controller" => "login",
+			"action" => "display"
+		)),
+		"submitButtonText" => "Prijavi me!"
     )); ?>
 
 <?php
