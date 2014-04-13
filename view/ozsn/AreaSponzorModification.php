@@ -10,14 +10,32 @@ class AreaSponzorModification extends AbstractView {
     private $sponelekpod;
     
     protected function outputHTML() {
-	// print messages if any
+		// print messages if any
         echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
         ));
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
+		
+		// print out the form
+		echo new \view\components\AreaSponzorForm(array(
+			"route" => \route\Route::get('d3')->generate(array(
+				"controller" => 'ozsn',
+				"action" => 'modifyActiveSponzor'
+			)) . "?id=" . $this->sponelekpod->getPrimaryKey(),
+			"submitButtonText" => "Spremi promjene",
+			"podrucja" => $this->podrucja,
+			"sponelekpod" => $this->sponelekpod
+		));		
 	
+	// Zasebna forma za ovo
+	// od sponzor samo prikazi podatke (ne mogu se mijenjati)
+	// u obrascu stavljas podatke od imasponzora
+	// padajuci meniji su kategorije i promocije
+	// onaj koji je u $kategorija, i $promocija nek bude oznacen (ako postoji)
+		
+	// ne prikazuj drop down sponzore (jer ih ne moze promijeniti);
     }
     
     public function setErrorMessage($errorMessage) {

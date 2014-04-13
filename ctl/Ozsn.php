@@ -11,8 +11,7 @@ class Ozsn implements Controller {
     
     private function checkRole() {
         // you must be logged in, and an Ozsn member with or without leadership
-	$o = new \model\DBOsoba();
-        if (!(\model\DBOsoba::isLoggedIn() && (\model\DBOsoba::getUserRole() === 'O' || \model\DBOsoba::getUserRole() === 'OV') && $o->isActiveOzsn(session("auth")))) {
+        if (!(\model\DBOsoba::isLoggedIn() && (\model\DBOsoba::getUserRole() === 'O' || \model\DBOsoba::getUserRole() === 'OV'))) {
             preusmjeri(\route\Route::get('d1')->generate() . "?msg=accessDenied");
         }
     }
@@ -1212,7 +1211,7 @@ class Ozsn implements Controller {
                 "sponzori" => $sponzori
             )),
             "title" => "Ovogodišnji Sponzori",
-	    "script" => new \view\scripts\ozsn\ActiveSponzorListJs()
+			"script" => new \view\scripts\ozsn\ActiveSponzorListJs()
         ));
     }
     
@@ -1241,6 +1240,7 @@ class Ozsn implements Controller {
                 "sponzori" => $sponzori
             )),
             "title" => "Sponzori Područja",
+			"script" => new \view\scripts\ozsn\AreaSponzorListJs()
         ));
     }
     
@@ -1650,8 +1650,8 @@ class Ozsn implements Controller {
 	    $i = $elektrijada->getCurrentElektrijadaId();
 	    $imaSponzora->loadRow($sponzor->getPrimaryKey(), $i);
 	    if ($imaSponzora->getPrimaryKey() !== null) {
-		$kategorija = $kategorija->loadIfExists($imaSponzora->idKategorijeSponzora);
-		$promocija = $promocija->loadIfExists($imaSponzora->idPromocije);
+		$kategorija->load($imaSponzora->idKategorijeSponzora);
+		$promocija->load($imaSponzora->idPromocije);
 	    } else {
 		$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati sponzor!");
 		$_SESSION["exception"] = serialize($handler);

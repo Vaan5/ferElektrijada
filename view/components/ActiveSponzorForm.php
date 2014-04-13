@@ -20,12 +20,6 @@ class ActiveSponzorForm extends AbstractView {
 	// za valute stavi drop down s onim valutama koje ante dozvoljava iz triggera
 ?>
     <form method="post" action="<?php echo $this->route;?>" enctype="multipart/form-data">
-<?php
-		if($this->sponzor && $this->sponzor->idSponzora)
-		{
-			echo '<input type="hidden" name="id" value="' . $this->sponzor->idSponzora . '" />';
-		}
-?>		
 		<label for="kategorija">Kategorija</label><br>
 		<select name="idKategorijeSponzora">
 			<option <?php if(!$this->kategorija) echo 'selected="selected"'; ?> value=""><?php if(!$this->kategorija) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
@@ -44,7 +38,7 @@ class ActiveSponzorForm extends AbstractView {
 		
 		<label for="nacinPromocije">Način promocije</label><br>
 		<select name="idPromocije">
-			<option <?php if(!$this->promocija) echo 'selected="selected"'; ?> selected="selected" value=""><?php if(!$this->promocija) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
+			<option <?php if(!$this->promocija) echo 'selected="selected"'; ?> value=""><?php if(!$this->promocija) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
 <?php
 		foreach($this->promocije as $val)
 		{

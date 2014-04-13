@@ -8,14 +8,70 @@ class AreaSponzorList extends AbstractView {
     private $resultMessage;
     private $sponzori;
     
-    protected function outputHTML() {
-	// print messages if any
-        echo new \view\components\ErrorMessage(array(
+    protected function outputHTML() {		
+		// Show messages if any
+		if($this->resultMessage)
+		{
+			echo new \view\components\ResultMessage(array(
+				"resultMessage" => $this->resultMessage
+			));
+		}
+		
+		if($this->errorMessage)
+		{
+			echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
-        ));
-        echo new \view\components\ResultMessage(array(
-            "resultMessage" => $this->resultMessage
-        ));
+			));
+		}
+		
+		// Else list sponzori in table
+		else
+		{
+			
+?>
+			<div class="panel panel-default">
+				<div class="panel-heading">Sponzori područja</div>
+				
+				<table class="table">
+				<thead>
+					<tr>
+						<th>Ime tvrtke</th>
+						<th>Adresa</th>
+						<th>Opcije</th>
+					</tr>
+				</thead>
+				
+				<tbody>
+<?php
+			// Foreach areaSponzor, generate row in table
+			foreach($this->sponzori as $val)
+			{
+				echo '<tr><td>' . $val->imeTvrtke . '</td><td>' . $val->adresaTvrtke . '</td>';
+				echo '<td><a href="';
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'modifyAreaSponzor'
+				));
+				echo '?id=' . $val->idSponElekPod . '">Uredi</a> &nbsp; <a class="deleteAreaSponzor" href="';
+				
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'deleteAreaSponzor'
+				));
+				echo '?id=' . $val->idSponElekPod . '">Obriši</a></td></tr>';
+			}
+?>
+				</tbody>
+			</table>
+		</div>
+
+		<a href="<?php echo \route\Route::get('d3')->generate(array(
+			"controller" => 'ozsn',
+			"action" => 'addAreaSponzor'
+		));?>"><span class="glyphicon glyphicon-plus"></span> Dodaj novog sponzora područja</a>
+<?php
+		}		
+		
 	
 	// samo ispisati osnovne podatke // ime trvtke i adresu iznos i podrucje
 	// opcije(nazovi ih kako ti pase) su Dodaj novog, Uredi, i Brisi - odnosi se na add/modify/deleteAreaSponzor
