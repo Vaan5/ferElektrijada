@@ -66,7 +66,7 @@ class DBTvrtka extends AbstractDBModel {
     public function getAllActive($idElektrijade) {
 	$pdo = $this->getPdo();
 	try {
-	    $q = $pdo->prepare("SELECT * FROM koristipruza JOIN tvrtka ON koristipruza.idTvrtke = tvrtka.idTvrtke WHERE idElektrijade = :id");
+	    $q = $pdo->prepare("SELECT * FROM koristipruza JOIN tvrtka ON koristipruza.idTvrtke = tvrtka.idTvrtke JOIN usluga ON usluga.idUsluge = koristipruza.idUsluge WHERE idElektrijade = :id");
 	    $q->bindValue(":id", $idElektrijade);
 	    $q->execute();
 	    return $q->fetchAll();
