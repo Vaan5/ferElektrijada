@@ -71,6 +71,10 @@ class SponzorForm extends AbstractView {
 			"controller" => 'ozsn',
 			"action" => 'downloadLogo'
 		));?>?id=<?php echo $this->sponzor->idSponzora; ?>">Preuzmi logotip</a>
+		
+		&nbsp; 
+		
+		<input type="checkbox" name="delete"> Obriši logotip
 <?php				
 		}
 
