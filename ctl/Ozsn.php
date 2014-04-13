@@ -2434,4 +2434,128 @@ public function addSmjer() {
         }
     }
 	
+			/**
+         *Displays all "usluga" from database
+         */
+    public function displayUsluga(){
+        $this->checkRole();
+        $this->checkMessages();
+	
+	$usluga = new \model\DBUsluga();
+	$usluge = null;
+	try {
+            $usluge = $usluga->getAllUsluga();
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->errorMessage = $handler;
+        }
+		
+	echo new \view\Main(array(
+            "body" => new \view\ozsn\UslugaList(array(
+                "errorMessage" => $this->errorMessage,
+                "resultMessage" => $this->resultMessage,
+                "usluge" => $usluge
+            )),
+            "title" => "Lista usluga",
+            "script" => new \view\scripts\ozsn\UslugaListJs()
+        ));
+	}
+
+	/**
+     * Inserts new data into database via post request
+     */
+    public function addUsluga() {
+        $this->checkRole();
+
+        $usluga = new \model\DBUsluga();
+        $validacija = new \model\formModel\UslugaFormModel(array('nazivUsluge' => post("nazivUsluge")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUsluga"
+            )) . "?msg=excep");
+        }
+        
+        try {
+            $usluga->addRow(post("nazivUsluga", null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUsluga"
+            )) . '?msg=succa');
+        } catch (\PDOException $e){
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUsluga"
+            )) . "?msg=excep");
+        }
+        
+    }
+	
+	/**
+     * Modifies usluga data via post request
+     */
+    public function modifyUsluga() {
+        $this->checkRole();
+        
+        $usluga = new \model\DBUsluga();
+        $validacija = new \model\formModel\UslugaFormModel(array('nazivUsluge' => post("nazivUsluge")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUsluga"
+            )) . "?msg=excep");
+        }
+        try {
+            $usluga->modifyRow(post($usluga->getPrimaryKeyColumn(), null), post('nazivUsluge', null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUsluga"
+            )) . '?msg=succm');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUsluga"
+            )) . "?msg=excep");
+        }
+    }
+	/**
+     * Deletes usluga via get request
+     */
+    public function deleteUsluga() {
+        $this->checkRole();
+        
+        $this->idCheck("displayUsluga");
+        
+        $usluga = new \model\DBUsluga();
+        try {
+            $usluga->deleteRow(get("id"));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUsluga"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUsluga"
+            )) . "?msg=excep");
+        }
+    }
+	
 }
