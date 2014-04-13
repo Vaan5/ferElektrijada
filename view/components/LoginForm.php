@@ -10,6 +10,8 @@ class LoginForm extends AbstractView {
     private $actionRoute;
     
     private $id;
+	
+	private $submitButtonText;
     
     protected function outputHTML() {
 ?>
@@ -36,7 +38,7 @@ class LoginForm extends AbstractView {
                                             <input type="hidden" name="id" value="<?php echo $this->id;?>" />
                                         <?php }?>
 					
-					<input type="submit" class="btn btn-primary" value="Prijavi me!" />
+					<input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText; ?>" />
 			</div>
 		</div>
 	</div>
@@ -59,6 +61,9 @@ class LoginForm extends AbstractView {
         return $this;
     }
 
-
+	public function setSubmitButtonText($submitButtonText) {
+        $this->submitButtonText = $submitButtonText;
+        return $this;
+    }
 
 }

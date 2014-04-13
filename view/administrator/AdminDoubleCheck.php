@@ -26,7 +26,8 @@ class AdminDoubleCheck extends AbstractView {
 				"controller" => "administrator",
 				"action" => "doubleCheckAdmin"
 			)),
-			"id" => $this->id
+			"id" => $this->id,
+			"submitButtonText" => "Potvrdi"
 		)); 
     }
     

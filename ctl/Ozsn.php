@@ -1182,6 +1182,7 @@ class Ozsn implements Controller {
                 "sponzori" => $sponzori
             )),
             "title" => "Sponzori",
+			"script" => new \view\scripts\ozsn\SponzorListJs()
         ));
     }
     
