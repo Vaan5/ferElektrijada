@@ -835,6 +835,7 @@ class Ozsn implements Controller {
                 "sponzori" => $sponzori
             )),
             "title" => "Sponzori",
+			"script" => new \view\scripts\ozsn\SponzorListJs()
         ));
     }
     
@@ -862,7 +863,7 @@ class Ozsn implements Controller {
                 "resultMessage" => $this->resultMessage,
                 "sponzori" => $sponzori
             )),
-            "title" => "Ovogodišnji Sponzori",
+            "title" => "Ovogodišnji Sponzori"
         ));
     }
     
