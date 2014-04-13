@@ -423,6 +423,117 @@ class Ozsn implements Controller {
         }
     }
 
+    public function displayMediji() {
+	$this->checkRole();
+        $this->checkMessages();
+        
+        $medij = new \model\DBMedij();
+	$mediji = array();
+        try {
+            $mediji = $medij->getAll();
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->errorMessage = $handler;
+        }
+
+        echo new \view\Main(array(
+            "body" => new \view\ozsn\MedijList(array(
+                "errorMessage" => $this->errorMessage,
+                "resultMessage" => $this->resultMessage,
+                "mediji" => $mediji
+            )),
+            "title" => "Načini Promocije"
+        ));
+    }
+    
+    public function addMedij() {
+	$this->checkRole();
+
+        $medij = new \model\DBMedij();
+        $validacija = new \model\formModel\MedijFormModel(array('nazivMedija' => post("nazivMedija")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayMediji"
+            )) . "?msg=excep");
+        }
+        
+        try {
+            $medij->addRow(post("nazivMedija", null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayMediji"
+            )) . '?msg=succa');
+        } catch (\PDOException $e){
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayMediji"
+            )) . "?msg=excep");
+        }
+    }
+    
+    public function modifyMedij() {
+	$this->checkRole();
+        
+        $medij = new \model\DBMedij();
+        $validacija = new \model\formModel\MedijFormModel(array('nazivMedija' => post("nazivMedija")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayMediji"
+            )) . "?msg=excep");
+        }
+        try {
+            $medij->modifyRow(post($medij->getPrimaryKeyColumn(), null), post('nazivMedija', null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayMediji"
+            )) . '?msg=succm');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayMediji"
+            )) . "?msg=excep");
+        }
+    }
+    
+    public function deleteMedij() {
+	$this->checkRole();
+        
+        $this->idCheck("displayMediji");
+	
+        $medij = new \model\DBMedij();
+        try {
+            $medij->deleteRow(get("id"));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayMediji"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayMediji"
+            )) . "?msg=excep");
+        }
+    }
+	    
     /**
      * Displays all promotion types in database
      */
