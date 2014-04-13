@@ -24,7 +24,7 @@ class SponzorForm extends AbstractView {
 ?>		
 		<label for="kategorija">Kategorija</label><br>
 		<select name="idKategorijeSponzora">
-			<option <?php if(!$this->kategorija) echo 'selected="selected"' ?> value="" disabled>Odaberi...</option>
+			<option <?php if(!$this->kategorija) echo 'selected="selected"'; ?> value=""><?php if(!$this->kategorija) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
 <?php
 		foreach($this->kategorije as $val)
 		{
@@ -40,7 +40,7 @@ class SponzorForm extends AbstractView {
 		
 		<label for="nacinPromocije">Način promocije</label><br>
 		<select name="idPromocije">
-			<option <?php if(!$this->promocija) echo 'selected="selected"' ?> selected="selected" value="" disabled>Odaberi...</option>
+			<option <?php if(!$this->promocija) echo 'selected="selected"'; ?> selected="selected" value=""><?php if(!$this->promocija) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
 <?php
 		foreach($this->promocije as $val)
 		{
