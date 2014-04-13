@@ -533,6 +533,34 @@ class Ozsn implements Controller {
             )) . "?msg=excep");
         }
     }
+    
+    /**
+     * Shows posts about faculty competitors success on current Elektrijada
+     */
+    public function displayActiveObjava() {
+	$this->checkRole();
+	$this->checkMessages();
+	
+	$objavaOElektrijadi = new \model\DBObjavaOElektrijadi();
+	$objave = array();
+        try {
+	    $elektrijada = new \model\DBElektrijada();
+	    $idElektrijade = $elektrijada->getCurrentElektrijadaId();
+            $objave = $objavaOElektrijadi->getAllActive($idElektrijade);
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->errorMessage = $handler;
+        }
+
+        echo new \view\Main(array(
+            "body" => new \view\ozsn\ActiveObjavaList(array(
+                "errorMessage" => $this->errorMessage,
+                "resultMessage" => $this->resultMessage,
+		"objave" => $objave
+            )),
+            "title" => "Aktualne objave"
+        ));
+    }
 	    
     /**
      * Displays all promotion types in database
@@ -1160,6 +1188,7 @@ class Ozsn implements Controller {
 				$e->errorInfo[0] = '02000';
 				$e->errorInfo[1] = 1604;
 				$e->errorInfo[2] = "Greška prilikom brisanja logotipa!";
+				$sponzor->addLogo($idSponzora, NULL);
 				throw $e;
 			    }
 			}
@@ -1182,6 +1211,7 @@ class Ozsn implements Controller {
 			    $e->errorInfo[0] = '02000';
 			    $e->errorInfo[1] = 1604;
 			    $e->errorInfo[2] = "Greška prilikom brisanja logotipa!";
+			    $sponzor->addLogo($sponzor->getPrimaryKey(), NULL);
 			    throw $e;
 			}
 			$sponzor->addLogo($sponzor->getPrimaryKey(), NULL);	// delete path from db

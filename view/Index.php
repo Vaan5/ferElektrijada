@@ -71,6 +71,20 @@ class Index extends AbstractView {
 	
 	<br>
         
+        <a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'displayMediji'
+    ));?>">DBM Medija</a>
+	
+	<br>
+        
+        <a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'displayActiveObjava'
+    ));?>">Aktualne objave u medijima</a>
+	
+	<br>
+        
 	<a href="<?php echo \route\Route::get('d3')->generate(array(
         "controller" => 'ozsn',
         "action" => 'displayAtribut'

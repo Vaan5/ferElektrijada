@@ -17,5 +17,3 @@ class DBObjava extends AbstractDBModel {
 		return array ('datumObjave','link','autorIme','autorPrezime','idMedija','dokument');
 	}
 }
-
-?>
