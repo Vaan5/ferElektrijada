@@ -4,8 +4,18 @@ namespace model;
 use app\model\AbstractDBModel;
 
 class DBSponElekPod extends AbstractDBModel {     
+
+    public function getTable() {
+        return 'sponelekpod';
+    }
     
-    // dodaj one prve tri metode
+    public function getPrimaryKeyColumn() {
+        return 'idSponElekPod';
+    }
+    
+    public function getColumns() {
+        return array('idSponzora', 'idPodrucja', 'idElektrijade', 'iznosDonacije', 'valutaDonacije', 'napomena');
+    }
     
     public function getAll() {
 	return $this->select()->fetchAll();
