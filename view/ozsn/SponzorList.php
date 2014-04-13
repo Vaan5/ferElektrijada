@@ -65,6 +65,11 @@ class SponzorList extends AbstractView {
 				</tbody>
 			</table>
 		</div>
+
+		<a href="<?php echo \route\Route::get('d3')->generate(array(
+			"controller" => 'ozsn',
+			"action" => 'addSponzor'
+		));?>"><span class="glyphicon glyphicon-plus"></span> Dodaj novog sponzora</a>
 <?php
 		}		
     }
