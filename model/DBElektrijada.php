@@ -17,6 +17,10 @@ class DBElektrijada extends AbstractDBModel {
         return array('mjestoOdrzavanja', 'datumPocetka', 'datumKraja', 'ukupniRezultat', 'drzava', 'rokZaZnanje', 'rokZaSport', 'ukupanBrojSudionika');
     }
     
+    public function getAll() {
+	return $this->select()->fetchAll();
+    }
+    
     /**
      * Adds new row to the table
      * Check date constraints

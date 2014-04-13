@@ -73,6 +73,7 @@ class DBSponzor extends AbstractDBModel {
 		    $e->errorInfo[0] = '02000';
 		    $e->errorInfo[1] = 1604;
 		    $e->errorInfo[2] = "Greška prilikom brisanja logotipa!";
+		    $this->delete();
 		    throw $e;
 		}
 	    }
