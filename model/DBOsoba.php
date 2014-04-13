@@ -235,6 +235,18 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
         return $this->uloga == 'O' ? true : false;
     }
     
+    public function isActiveOzsn($id) {
+	$obavlja = new DBObavljaFunkciju();
+	$el = new DBElektrijada();
+	$idElektrijade = $el->getCurrentElektrijadaId();
+	$pov = $obavlja->select()->where(array(
+	    "idOsobe" => $id,
+	    "idElektrijade" => $idElektrijade
+	))->fetchAll();
+	
+	return count($pov) === 0 ? false : true;
+    }
+    
     public function getOldOzsn() {
         $elektrijada = new DBElektrijada();
         $idElektrijade = $elektrijada->getLastYearElektrijadaId();
