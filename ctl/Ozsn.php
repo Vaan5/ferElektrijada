@@ -1211,7 +1211,7 @@ class Ozsn implements Controller {
                 "sponzori" => $sponzori
             )),
             "title" => "Ovogodišnji Sponzori",
-			"script" => new \view\ozsn\scripts\ActiveSponzorListJs()
+	    "script" => new \view\scripts\ozsn\ActiveSponzorListJs()
         ));
     }
     
@@ -1649,8 +1649,8 @@ class Ozsn implements Controller {
 	    $i = $elektrijada->getCurrentElektrijadaId();
 	    $imaSponzora->loadRow($sponzor->getPrimaryKey(), $i);
 	    if ($imaSponzora->getPrimaryKey() !== null) {
-		$kategorija->load($imaSponzora->idKategorijeSponzora);
-		$promocija->load($imaSponzora->idPromocije);
+		$kategorija = $kategorija->loadIfExists($imaSponzora->idKategorijeSponzora);
+		$promocija = $promocija->loadIfExists($imaSponzora->idPromocije);
 	    } else {
 		$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati sponzor!");
 		$_SESSION["exception"] = serialize($handler);
