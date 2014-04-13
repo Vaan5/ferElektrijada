@@ -20,6 +20,10 @@ class DBUsluga extends AbstractDBModel {
     public function getAllUsluga() {
 	return $this->select()->fetchAll();
     }
+    
+    public function getAll() {
+	return $this->getAllUsluga();
+    }
 	
 	/**
      * Modifies row in the database

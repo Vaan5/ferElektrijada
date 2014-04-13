@@ -30,6 +30,17 @@ class DBNacinPromocije extends AbstractDBModel {
         }
     }
     
+    public function loadIfExists($id) {
+	try {
+	    $this->load($id);
+	    return $this;
+	} catch (\app\model\NotFoundException $e) {
+	    return null;
+	} catch (\PDOException $e) {
+	    return null;
+	}
+    }
+    
     public function modifyRow($idPromocije, $tipPromocije) {
 	try {
             $this->load($idPromocije);

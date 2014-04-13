@@ -862,8 +862,8 @@ class Ozsn implements Controller {
 	    $i = $elektrijada->getCurrentElektrijadaId();
 	    $imaSponzora->loadRow($sponzor->getPrimaryKey(), $i);
 	    if ($imaSponzora->getPrimaryKey() !== null) {
-		$kategorija->load($imaSponzora->idKategorijeSponzora);
-		$promocija->load($imaSponzora->idPromocije);
+		$kategorija = $kategorija->loadIfExists($imaSponzora->idKategorijeSponzora);
+		$promocija = $promocija->loadIfExists($imaSponzora->idPromocije);
 	    } else {
 		$kategorija = null;
 		$promocija = null;
@@ -928,7 +928,7 @@ class Ozsn implements Controller {
 			preusmjeri(\route\Route::get('d3')->generate(array(
 			    "controller" => "ozsn",
 			    "action" => "modifySponzor"
-			)) . "?msg=excep");
+			)) . "?msg=excep&id=" . get("id"));
 		    }
 		    // save image over the old one if there was any
 		    $putanja = "./logotip/" . date("Y_m_d_H_i_s") . "_" . basename(files("name", "datoteka"));
@@ -952,7 +952,7 @@ class Ozsn implements Controller {
 			preusmjeri(\route\Route::get('d3')->generate(array(
 			    "controller" => "ozsn",
 			    "action" => "modifySponzor"
-			)) . "?msg=excep");
+			)) . "?msg=excep&id=" . get("id"));
 		    }
 		} else {
 		    // check if he wants to delete the old one
@@ -1001,24 +1001,24 @@ class Ozsn implements Controller {
     public function downloadLogo() {
 	$this->checkRole();
 	$this->checkMessages();
-	
-	if (postEmpty() || post("id") === false) {
+
+	if (count($_GET) === 0 || get("id") === false) {
 	    $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati sponzor!");
 	    $_SESSION["exception"] = serialize($handler);
-	    preusmjeri(\route\Route::get('d1')->generate());
+	    preusmjeri(\route\Route::get('d1')->generate() . "?msg=excep");
 	}
 	
 	$sponzor = new \model\DBSponzor();
 	try {
-	    $sponzor->load(post("id"));
+	    $sponzor->load(get("id"));
 	} catch (\app\model\NotFoundException $e) {
 	    $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati sponzor!");
 	    $_SESSION["exception"] = serialize($handler);
-	    preusmjeri(\route\Route::get('d1')->generate());
+	    preusmjeri(\route\Route::get('d1')->generate() . "?msg=excep");
 	} catch (\PDOException $e) {
 	    $handler = new \model\ExceptionHandlerModel($e);
 	    $_SESSION["exception"] = serialize($handler);
-	    preusmjeri(\route\Route::get('d1')->generate());
+	    preusmjeri(\route\Route::get('d1')->generate() . "?msg=excep");
 	}
 	
 	echo new \view\Download(array(

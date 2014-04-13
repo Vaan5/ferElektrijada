@@ -96,7 +96,7 @@ class DBSponzor extends AbstractDBModel {
             $this->load($idSponzora);
 	    $this->imeTvrtke = $imeTvrtke;
 	    $this->adresaTvrtke = $adresaTvrtke;
-	    if ($this->logotip !== NULL && $this->logotip !== '' && $this->logotip !== false)
+	    if ($logotip !== NULL && $logotip !== '' && $logotip !== false)
 		$this->logotip = $logotip;
 	    $this->save();
         } catch (\app\model\NotFoundException $e) {

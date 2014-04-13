@@ -39,7 +39,7 @@ class SponzorModification extends AbstractView {
 		"route" => \route\Route::get('d3')->generate(array(
 			"controller" => 'ozsn',
 			"action" => 'modifySponzor'
-		)),
+		)) . "?id=" . $this->sponzor->getPrimaryKey(),
 		"submitButtonText" => "Spremi promjene",
 		"kategorije" => $this->kategorije,
 		"promocije" => $this->promocije,

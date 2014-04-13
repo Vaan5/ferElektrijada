@@ -7,7 +7,7 @@ class SponzorFormModel extends AbstractFormModel {
     
     protected function rules() {
         if ($this->rulesArray === null) {
-            $this->rulesArray = array('imeTvrtke' => array('required', 'alnum'),
+            $this->rulesArray = array('imeTvrtke' => array('required', 'words'),
 					'adresaTvrtke' => array('required', 'alnumpunct'),
 					'iznosDonacije' => array('decimal'),
 					'napomena' => array('alnumpunct'));
