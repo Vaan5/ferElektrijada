@@ -168,6 +168,13 @@ class Index extends AbstractView {
         "action" => 'displaySponzor'
     ));?>">Lista sponzora</a>
 	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'displayActiveSponzor'
+    ));?>">Lista ovogodišnjih sponzora</a>
+	
 	<p>
 	<b>Generator Pdfova</b>
 	<a href="<?php echo \route\Route::get('d3')->generate(array(

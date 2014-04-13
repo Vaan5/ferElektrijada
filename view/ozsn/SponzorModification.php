@@ -14,40 +14,28 @@ class SponzorModification extends AbstractView {
     private $promocija;
     
     protected function outputHTML() {
-	// print messages if any
+		// print messages if any
         echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
         ));
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
-	
-	// ispis forme za mijenjanje (pazi na enctype zbog slike)
-	// u kategorije i promocije ti dajem sve moguce kategorije i promocije
-	// u sponzor su podaci iz tablice sponzor
-	// u imasponzora su podaci iz imasponzora (koristis napomenu, iznosDonacije i valutu)
-	// u kategorija i promocija su ucitane njegova kategorija i promocija (ako ih nije odabrao tu stoji null)
-	// imasponzora također moze biti prazan objekt (primarni kljuc mu je nula) - samo ostavi prazne kucice
-	
-	// VAŽNO: prije same forme u ovom pogledu prikazi sliku (putanja je u logotip od sponzora) - ako je NULL logotip na određeni način reci da nema slike
-	// VAŽNO: FORMU DOBRO PARAMETRIZIRAJ TAKO DA JE MOZES KORISTITI I ZA DODAVANJE I ZA MIJENJANJE
-	// VAŽNO: POLJE OD file-a mora imati name="datoteka"
-	// VAŽNO u formu dodaj opcinalni radio button brisi logotip value neka je "delete" - (PARAMETRIZIRAJ TAJ radio button) -> prikaz samo ako već postoji stari logotip
 		
-	// print out the form
-	echo new \view\components\SponzorForm(array(
-		"route" => \route\Route::get('d3')->generate(array(
-			"controller" => 'ozsn',
-			"action" => 'modifySponzor'
-		)) . "?id=" . $this->sponzor->getPrimaryKey(),
-		"submitButtonText" => "Spremi promjene",
-		"kategorije" => $this->kategorije,
-		"promocije" => $this->promocije,
-		"sponzor" => $this->sponzor,
-		"imasponzora" => $this->imasponzora,
-		"kategorija" => $this->kategorija,
-		"promocija" => $this->promocija
-	));	
+		// print out the form
+		echo new \view\components\SponzorForm(array(
+			"route" => \route\Route::get('d3')->generate(array(
+				"controller" => 'ozsn',
+				"action" => 'modifySponzor'
+			)) . "?id=" . $this->sponzor->getPrimaryKey(),
+			"submitButtonText" => "Spremi promjene",
+			"kategorije" => $this->kategorije,
+			"promocije" => $this->promocije,
+			"sponzor" => $this->sponzor,
+			"imasponzora" => $this->imasponzora,
+			"kategorija" => $this->kategorija,
+			"promocija" => $this->promocija
+		));	
 		
     }
     
