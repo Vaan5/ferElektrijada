@@ -34,6 +34,21 @@ class SponzorModification extends AbstractView {
 	// VAŽNO: POLJE OD file-a mora imati name="datoteka"
 	// VAŽNO u formu dodaj opcinalni radio button brisi logotip value neka je "delete" - (PARAMETRIZIRAJ TAJ radio button) -> prikaz samo ako već postoji stari logotip
 		
+	// print out the form
+	echo new \view\components\SponzorForm(array(
+		"route" => \route\Route::get('d3')->generate(array(
+			"controller" => 'ozsn',
+			"action" => 'modifySponzor'
+		)),
+		"submitButtonText" => "Spremi promjene",
+		"kategorije" => $this->kategorije,
+		"promocije" => $this->promocije,
+		"sponzor" => $this->sponzor,
+		"imasponzora" => $this->imasponzora,
+		"kategorija" => $this->kategorija,
+		"promocija" => $this->promocija
+	));	
+		
     }
     
     public function setErrorMessage($errorMessage) {
