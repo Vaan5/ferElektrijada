@@ -21,6 +21,22 @@ class DBSponElekPod extends AbstractDBModel {
 	return $this->select()->fetchAll();
     }
     
+    
+    public function deleteRow($primaryKey) {
+	try {
+            $this->load($primaryKey);
+	    $this->delete();
+        } catch (\app\model\NotFoundException $e) {
+            $e = new \PDOException();
+            $e->errorInfo[0] = '02000';
+            $e->errorInfo[1] = 1604;
+            $e->errorInfo[2] = "Zapis ne postoji!";
+            throw $e;
+        } catch (\PDOException $e) {
+            throw $e;
+        }
+    }
+    
     public function deleteAreaRow($idSponzora, $idElektrijade) {
 	try {
             $pdo = $this->getPdo();

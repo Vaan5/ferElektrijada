@@ -11,7 +11,9 @@ class Ozsn implements Controller {
     
     private function checkRole() {
         // you must be logged in, and an Ozsn member with or without leadership
-        if (!(\model\DBOsoba::isLoggedIn() && (\model\DBOsoba::getUserRole() === 'O' || \model\DBOsoba::getUserRole() === 'OV'))) {
+	$o = new \model\DBOsoba();
+	if (!(\model\DBOsoba::isLoggedIn() && (\model\DBOsoba::getUserRole() === 'O' ||
+		\model\DBOsoba::getUserRole() === 'OV') && $o->isActiveOzsn(session("auth")))) {
             preusmjeri(\route\Route::get('d1')->generate() . "?msg=accessDenied");
         }
     }
@@ -1650,8 +1652,8 @@ class Ozsn implements Controller {
 	    $i = $elektrijada->getCurrentElektrijadaId();
 	    $imaSponzora->loadRow($sponzor->getPrimaryKey(), $i);
 	    if ($imaSponzora->getPrimaryKey() !== null) {
-		$kategorija->load($imaSponzora->idKategorijeSponzora);
-		$promocija->load($imaSponzora->idPromocije);
+		$kategorija = $kategorija->loadIfExists($imaSponzora->idKategorijeSponzora);
+		$promocija = $promocija->loadIfExists($imaSponzora->idPromocije);
 	    } else {
 		$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati sponzor!");
 		$_SESSION["exception"] = serialize($handler);
@@ -1740,7 +1742,6 @@ class Ozsn implements Controller {
 	$sponElekPod = new \model\DBSponElekPod();
 	
 	$this->idCheck("displayAreaSponzor");
-	
 	// get needed display data
 	try {
 	    $podrucja = $podrucje->getAll();
@@ -1873,9 +1874,7 @@ class Ozsn implements Controller {
 	
         $spon = new \model\DBSponElekPod();
         try {
-	    $elektrijada = new \model\DBElektrijada();
-	    $id = $elektrijada->getCurrentElektrijadaId();
-            $spon->deleteAreaRow(get("id"), $id);
+            $spon->deleteRow(get("id"));
             
             preusmjeri(\route\Route::get('d3')->generate(array(
                 "controller" => "ozsn",

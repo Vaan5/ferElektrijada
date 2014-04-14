@@ -22,7 +22,7 @@ class AreaSponzorModification extends AbstractView {
 		echo new \view\components\AreaSponzorForm(array(
 			"route" => \route\Route::get('d3')->generate(array(
 				"controller" => 'ozsn',
-				"action" => 'modifyActiveSponzor'
+				"action" => 'modifyAreaSponzor'
 			)) . "?id=" . $this->sponelekpod->getPrimaryKey(),
 			"submitButtonText" => "Spremi promjene",
 			"podrucja" => $this->podrucja,
