@@ -323,7 +323,76 @@ class ReportGenerator implements Controller {
 	
 	// if you have picked atributes which will be included in the report
 	if (!postEmpty()) {
-	    var_dump($_POST);
+	    // check if they have selected the required fields
+	    if (false === post("idPodrucja") || false === post("idElektrijade") || false === post("type")) {
+		$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Izbor područja, Elektrijade i formata je obavezan!");
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "reportGenerator",
+		    "action" => "generateDisciplineList"
+		)) . "?msg=excep");
+	    }
+	    
+	    // have they selected atleast one attribute
+	    if (count($_POST) <= 3) {
+		$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Odaberite barem jedan atribut!");
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "reportGenerator",
+		    "action" => "generateDisciplineList"
+		)) . "?msg=excep");
+	    }
+	    
+	    // now proccess input data
+	    try {
+		$osoba = new \model\DBOsoba();
+		$pov = $osoba->reportCompetitorList($_POST, post("idElektrijade"), post("idPodrucja"));
+		
+		$header = $this->decypherHeader();
+		
+		// now make array for generation function
+		$array = array();
+		$array[] = $header;
+		if (count($pov)) {
+		    foreach ($pov as $k => $v) {
+			$h = array();
+			foreach ($_POST as $kljuc => $vrijednost) {
+			    if((strpos($kljuc, "id") === false || strpos($kljuc, "id") !== 0) && $kljuc !== 'type') {
+				$h[] = $v->{$kljuc};
+			    }
+			}
+			$array[] = $h;
+		    }
+		}
+		
+		switch (post("type")) {
+		    case 'xls':
+		    case 'xlsx':
+			$putanja = $this->generateExcel($array, post("type"));
+			echo new \view\ShowXls(array(
+			    "fileName" => './' . $putanja,
+			    "tip" => post("type")
+			));
+			break;
+		    case 'pdf':
+			$objekt = $this->generatePdf($array);
+			echo new \view\ShowPdf(array(
+			    "pdf" => $objekt
+			));
+			break;
+		    default :
+			break;
+		}
+		
+		
+	    } catch (\PDOException $e) {
+		$handler = new \model\ExceptionHandlerModel($e);
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "reportGenerator",
+		    "action" => "generateDisciplineList"
+		)) . "?msg=excep");
+	    }
 	}
 	
 	echo new \view\Main(array(
@@ -335,6 +404,100 @@ class ReportGenerator implements Controller {
 		"elektrijade" => $elektrijade
 	    ))
 	));
+    }
+    
+    private function decypherHeader() {
+	$a = array();
+	foreach($_POST as $k => $v) {
+	    if((strpos($k, "id") === false || strpos($k, "id") !== 0) && $k !== 'type') {
+		switch($k) {
+		    case 'ime':
+			$a[] = "Ime";
+			break;
+		    case 'prezime':
+			$a[] = "Prezime";
+			break;
+		    case 'mail':
+			$a[] = "Email";
+			break;
+		    case 'brojMob':
+			$a[] = "Mobitel";
+			break;
+		    case 'ferId':
+			$a[] = "Korisničko ime";
+			break;
+		    case 'JMBAG':
+			$a[] = "JMBAG";
+			break;
+		    case 'brOsobne':
+			$a[] = "Osobna iskaznica";
+			break;
+		    case 'brPutovnice':
+			$a[] = "Putovnica";
+			break;
+		    case 'osobnaVrijediDo':
+			$a[] = "Osobna iskaznica vrijedi do";
+			break;
+		    case 'putovnicaVrijediDo':
+			$a[] = "Putovnica vrijedi do";
+			break;
+		    case 'uloga':
+			$a[] = "Uloga";
+			break;
+		    case 'MBG':
+			$a[] = "Matični broj osiguranika";
+			break;
+		    case 'OIB':
+			$a[] = "OIB";
+			break;
+		    case 'nazivAtributa':
+			$a[] = "Atribut";
+			break;
+		    case 'velicina':
+			$a[] = "Majica";
+			break;
+		    case 'studij':
+			$a[] = "Studij";
+			break;
+		    case 'godina':
+			$a[] = "Godina";
+			break;
+		    case 'nazivSmjera':
+			$a[] = "Smjer";
+			break;
+		    case 'nazivZavoda':
+			$a[] = "Zavod";
+			break;
+		    case 'skraceniNaziv':
+			$a[] = "Zavod";
+			break;
+		    case 'naziv':
+			$a[] = "Radno mjesto";
+			break;
+		    case 'brojBusa':
+			$a[] = "Bus";
+			break;
+		    case 'brojSjedala':
+			$a[] = "Sjedalo";
+			break;
+		    case 'napomena':
+			$a[] = "Napomena";
+			break;
+		    case 'tip':
+			$a[] = "Student/Djelatnik";
+			break;
+		    case 'rezultatPojedinacni':
+			$a[] = "Rezultat";
+			break;
+		    case 'ukupanBrojSudionika':
+			$a[] = "Ukupno sudionika";
+			break;
+		    default:
+			break;		    
+		}
+	    }
+	}
+	return $a;
     }
 
 }
