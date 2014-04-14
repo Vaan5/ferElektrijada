@@ -11,7 +11,9 @@ class ReportGenerator implements Controller {
     
     private function checkRole() {
         // you must be logged in, and an Ozsn member with or without leadership
-        if (!(\model\DBOsoba::isLoggedIn() && (\model\DBOsoba::getUserRole() === 'O' || \model\DBOsoba::getUserRole() === 'OV'))) {
+	$o = new \model\DBOsoba();
+	if (!(\model\DBOsoba::isLoggedIn() && (\model\DBOsoba::getUserRole() === 'O' ||
+		\model\DBOsoba::getUserRole() === 'OV') && $o->isActiveOzsn(session("auth")))) {
             preusmjeri(\route\Route::get('d1')->generate() . "?msg=accessDenied");
         }
     }
@@ -296,6 +298,43 @@ class ReportGenerator implements Controller {
 	    echo new \view\ShowPdf(array(
 		"pdf" => $objekt
 	    ));
+    }
+    
+    /**
+     * Generira popis sudionika po disciplinama
+     */
+    public function generateDisciplineList() {
+	$this->checkRole();
+	$this->checkMessages();
+	
+	$podrucje = new \model\DBPodrucje();
+	$e = new \model\DBElektrijada();
+	try {
+	    $podrucja = $podrucje->getAll();
+	    $elektrijade = $e->getAll();
+	} catch (\PDOException $e) {
+	    $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "reportGenerator",
+                "action" => "generateDisciplineList"
+            )) . "?msg=excep");
+	}
+	
+	// if you have picked atributes which will be included in the report
+	if (!postEmpty()) {
+	    var_dump($_POST);
+	}
+	
+	echo new \view\Main(array(
+	    "title" => "Popis Sudionika po Disciplinama",
+	    "body" => new \view\reports\DisciplineCompetitorList(array(
+		"errorMessage" => $this->errorMessage,
+		"resultMessage" => $this->resultMessage,
+		"podrucja" => $podrucja,
+		"elektrijade" => $elektrijade
+	    ))
+	));
     }
 
 }
