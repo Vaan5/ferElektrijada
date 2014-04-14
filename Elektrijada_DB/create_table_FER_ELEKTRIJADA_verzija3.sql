@@ -50,7 +50,7 @@ CREATE TABLE OSOBA (
     osobnaVrijediDo DATE,
     putovnicaVrijediDo DATE,
     uloga CHAR(1) NOT NULL,
-    zivotopis BLOB,
+    zivotopis VARCHAR(200),
     MBG VARCHAR(9),
     OIB VARCHAR(11) ,
     idNadredjena INT UNSIGNED,
@@ -86,7 +86,6 @@ CREATE TABLE ElekPodrucje (
     idPodrucja INT UNSIGNED NOT NULL,
     rezultatGrupni SMALLINT,
     slikaLink VARCHAR(255),
-    slikaBLOB BLOB,
     idElektrijade INT UNSIGNED NOT NULL,    
     ukupanBrojEkipa INT,
     PRIMARY KEY (idElekPodrucje),
@@ -433,7 +432,7 @@ CREATE TABLE OBJAVA (
     autorIme VARCHAR(50) NOT NULL,
     autorPrezime VARCHAR(50) NOT NULL,
     idMedija INT UNSIGNED NOT NULL,
-    dokument BLOB,
+    dokument VARCHAR(200),
     PRIMARY KEY (idObjave),
     FOREIGN KEY (idMedija)
         REFERENCES MEDIJ (idMedija)

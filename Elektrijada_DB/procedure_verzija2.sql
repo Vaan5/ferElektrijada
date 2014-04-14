@@ -15,7 +15,7 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `azurirajElekPodrucje`(IN idElekPodrucje INT(10), IN idPodrucja INT(10),IN datumPocetka DATE, IN rezultatGrupni SMALLINT(6),IN slikaLink VARCHAR(255), IN slikaBLOB BLOB, IN idSponzora INT(10))
+CREATE  PROCEDURE `azurirajElekPodrucje`(IN idElekPodrucje INT(10), IN idPodrucja INT(10),IN datumPocetka DATE, IN rezultatGrupni SMALLINT(6),IN slikaLink VARCHAR(255), IN idSponzora INT(10))
 BEGIN
 IF EXISTS (SELECT* FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idPodrucja) THEN
 IF EXISTS (SELECT* FROM ELEKTRIJADA WHERE ELEKTRIJADA.datumPocetka = datumPocetka) THEN
@@ -24,7 +24,7 @@ IF NOT EXISTS (SELECT*
 		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji područje koje želite ažurirati';
 ELSE
 	UPDATE ElekPodrucje
-    SET ElekPodrucje.datumPocetka=datumPocetka, ElekPodrucje.rezultatGrupni=rezultatGrupni, ElekPodrucje.slikaLink=slikaLink, ElekPodrucje.slikaBLOB=slikaBLOB, ElekPodrucje.idPodrucja=idPodrucja, ElekPodrucje.idSponzora=idSponzora
+    SET ElekPodrucje.datumPocetka=datumPocetka, ElekPodrucje.rezultatGrupni=rezultatGrupni, ElekPodrucje.slikaLink=slikaLink, ElekPodrucje.idPodrucja=idPodrucja, ElekPodrucje.idSponzora=idSponzora
 	WHERE ElekPodrucje.idElekPodrucje = idElekPodrucje  ;
 
 END IF;
@@ -223,7 +223,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE  PROCEDURE `azurirajOsobu`(IN idOsobe INT(10), ime VARCHAR(50), IN prezime VARCHAR(50), IN mail VARCHAR(50),
  IN ferId VARCHAR(50), IN brojMob VARCHAR(20), IN passwordVAR VARCHAR(255), IN JMBAG VARCHAR(10), IN datRod DATE, IN spol CHAR(1),
-IN brOsobne VARCHAR(20),IN brPutovnice VARCHAR(30),IN osobnaVrijediDo DATE,IN putovnicaVrijediDo DATE,IN uloga CHAR(1), IN zivotopis BLOB, IN MBG VARCHAR(9), IN OIB VARCHAR(11))
+IN brOsobne VARCHAR(20),IN brPutovnice VARCHAR(30),IN osobnaVrijediDo DATE,IN putovnicaVrijediDo DATE,IN uloga CHAR(1), IN zivotopis VARCHAR(200), IN MBG VARCHAR(9), IN OIB VARCHAR(11))
 BEGIN
 IF (spol IN ('m','z','M','Z')) THEN
 IF ((osobnaVrijediDo>CURDATE() OR osobnaVrijediDo IS NULL) AND (putovnicaVrijediDo>CURDATE() OR putovnicaVrijediDo IS NULL)) THEN
@@ -939,14 +939,14 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `dodajElekPodrucje`(IN idPodrucja INT(10), IN rezultatGrupni SMALLINT(6),IN slikaLink VARCHAR(255), IN slikaBLOB BLOB, IN idElektrijade INT(10), IN idSponzora INT(10))
+CREATE  PROCEDURE `dodajElekPodrucje`(IN idPodrucja INT(10), IN rezultatGrupni SMALLINT(6),IN slikaLink VARCHAR(255),  IN idElektrijade INT(10), IN idSponzora INT(10))
 BEGIN
 IF EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idPodrucja) THEN
 IF EXISTS (SELECT * FROM ELEKTRIJADA WHERE ELEKTRIJADA.idElektrijade = idElektrijade) THEN
 IF ((idSponzora IS NOT NULL) && EXISTS (SELECT * FROM SPONZOR WHERE SPONZOR.idSponzora = idSponzora)) THEN
 IF NOT EXISTS (SELECT * FROM ElekPodrucje WHERE ElekPodrucje.idElektrijade = idElektrijade  AND ElekPodrucje.idPodrucja = idPodrucja AND ElekPodrucje.idSponzora=idSponzora) THEN
 
-		INSERT INTO ElekPodrucje VALUES (NULL,idPodrucja,rezultatGrupni,slikaLink,slikaBLOB,idElektrijade,idSponzora);
+		INSERT INTO ElekPodrucje VALUES (NULL,idPodrucja,rezultatGrupni,slikaLink,idElektrijade,idSponzora);
    
 ELSE
 	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Već postoji unos za ovo podrucje na ovoj Elektrijadi!';
@@ -1154,7 +1154,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE  PROCEDURE `dodajOsobu`(IN ime VARCHAR(50), IN prezime VARCHAR(50), IN mail VARCHAR(50),
  IN ferId VARCHAR(50), IN brojMob VARCHAR(20), IN passwordVAR VARCHAR(255), IN JMBAG VARCHAR(10), IN datRod DATE, IN spol CHAR(1),
-IN brOsobne VARCHAR(20),IN brPutovnice VARCHAR(30),IN osobnaVrijediDo DATE,IN putovnicaVrijediDo DATE,IN uloga CHAR(1), IN zivotopis BLOB, IN MBG VARCHAR(9), IN OIB VARCHAR(11))
+IN brOsobne VARCHAR(20),IN brPutovnice VARCHAR(30),IN osobnaVrijediDo DATE,IN putovnicaVrijediDo DATE,IN uloga CHAR(1), IN zivotopis VARCHAR(200), IN MBG VARCHAR(9), IN OIB VARCHAR(11))
 BEGIN
 IF (spol IN ('m','z','M','Z')) THEN
 IF ((osobnaVrijediDo>CURDATE() OR osobnaVrijediDo IS NULL) AND (putovnicaVrijediDo>CURDATE() OR putovnicaVrijediDo IS NULL)) THEN
@@ -1278,7 +1278,7 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `dodajSliku`(IN idPodrucja INT(10),IN idElektrijade DATE,IN slikaLink VARCHAR(255), IN slikaBLOB BLOB)
+CREATE  PROCEDURE `dodajSliku`(IN idPodrucja INT(10),IN idElektrijade DATE,IN slikaLink VARCHAR(255))
 BEGIN
 IF EXISTS (SELECT* FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idPodrucja) THEN
 IF EXISTS (SELECT* FROM ELEKTRIJADA WHERE ELEKTRIJADA.idElektrijade = idElektrijade) THEN
@@ -1288,7 +1288,7 @@ IF NOT EXISTS (SELECT*
 		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji područje kojem želote dodati sliku';
 ELSE
 	UPDATE ElekPodrucje
-    SET ElekPodrucje.slikaLink=slikaLink, ElekPodrucje.slikaBLOB=slikaBLOB
+    SET ElekPodrucje.slikaLink=slikaLink
     WHERE ElekPodrucje.idPodrucja = idPodrucja and ElekPodrucje.idElektrijade=idElektrijade ;
 
 END IF;
@@ -1805,7 +1805,7 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `dodajObjavu`(IN datumObjave DATE, IN link VARCHAR(100), IN autorIme VARCHAR(50), IN autorPrezime VARCHAR(50), IN idMedijja INT(10),IN dokument BLOB)
+CREATE  PROCEDURE `dodajObjavu`(IN datumObjave DATE, IN link VARCHAR(100), IN autorIme VARCHAR(50), IN autorPrezime VARCHAR(50), IN idMedijja INT(10),IN dokument VARCHAR(200))
 BEGIN
 	IF EXISTS (SELECT * FROM MEDIJ WHERE MEDIJ.idMedijja=idMedijja ) THEN       	
 			INSERT INTO OBJAVA VALUES (NULL,datumObjave,link,autorIme,autorPrezime,idMedij,dokument);	    
@@ -1922,7 +1922,7 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `azurirajObjavu`(IN idObjave INT(10),IN datumObjave DATE, IN link VARCHAR(100), IN autorIme VARCHAR(50), IN autorPrezime VARCHAR(50), IN idMedija INT(10),IN dokument BLOB)
+CREATE  PROCEDURE `azurirajObjavu`(IN idObjave INT(10),IN datumObjave DATE, IN link VARCHAR(100), IN autorIme VARCHAR(50), IN autorPrezime VARCHAR(50), IN idMedija INT(10),IN dokument VARCHAR(200))
 BEGIN
 	IF EXISTS (SELECT * FROM MEDIJ WHERE MEDIJ.idMedija=idMedija) THEN
 		
