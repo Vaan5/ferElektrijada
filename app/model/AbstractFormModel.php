@@ -58,6 +58,11 @@ abstract class AbstractFormModel implements FormModel {
             return $this->test_pattern($pattern, $data);
     }
     
+    protected function validateUrl($data) {
+            $pattern = '/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/u';
+            return $this->test_pattern($pattern, $data);
+    }
+    
     protected function validateName($data) {
         if(isset($data) && $data !== '') {
             $pattern = '/^[A-ZČŠĐŽĆ][a-zčćžšđ]{2,}$/u';

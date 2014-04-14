@@ -32,7 +32,8 @@ class DBOsoba extends AbstractDBModel {
 private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
 		try{
 			$pdo = $this->getPdo();
-			$q = $pdo->prepare("CALL dohvatiOdredeniAtribut($idOsobe)");
+			$q = $pdo->prepare("CALL dohvatiOdredeniAtribut(:id)");
+			$q->bindValue(":id", $idOsobe);
 			$q->execute();
 			$rez=$q->fetch(); //dohvatili smo ulogu
 		}catch (\PDOException $e) {
@@ -55,7 +56,9 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
 			if($id === false){
 				return null;
 			}
-			$q = $pdo->prepare("CALL dohvatiOsobnaPodrucja($id,$idOsobe)");
+			$q = $pdo->prepare("CALL dohvatiOsobnaPodrucja(:id,:Osoba)");
+			$q->bindValue(":id", $id);
+			$q->bindValue(":Osoba", $idOsobe);
 			$q->execute();
 			$rez  = $q->fetchAll();
 		}catch (\PDOException $e) {
@@ -232,6 +235,18 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
         return $this->uloga == 'O' ? true : false;
     }
     
+    public function isActiveOzsn($id) {
+	$obavlja = new DBObavljaFunkciju();
+	$el = new DBElektrijada();
+	$idElektrijade = $el->getCurrentElektrijadaId();
+	$pov = $obavlja->select()->where(array(
+	    "idOsobe" => $id,
+	    "idElektrijade" => $idElektrijade
+	))->fetchAll();
+	
+	return count($pov) === 0 ? false : true;
+    }
+    
     public function getOldOzsn() {
         $elektrijada = new DBElektrijada();
         $idElektrijade = $elektrijada->getLastYearElektrijadaId();
@@ -406,5 +421,44 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
             return $pov;
         }
         return false;
+    }
+    
+    public function reportCompetitorList($array, $idElektrijade, $idPodrucja) {
+	try {
+	    $statement = 'SELECT ';
+	    // only if there aren't atributes with same name, otherwise do it one by one or
+	    // put in the checkbox form the name of the table, like atribut_nazivAtributa,
+	    // and then with php replace _ with .
+	    foreach ($array as $k => $v) {
+		if ($k !== 'idElektrijade' && $k !== 'idPodrucja' && $k !== 'type') {
+		    $statement .= $k . ', ';
+		}
+	    }
+	    // remove last ', ';
+	    $statement = rtrim($statement, ", ");
+	    
+	    // now generate rest of query
+	    $statement .= " FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
+					LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
+					LEFT JOIN godstud ON godstud.idGodStud = sudjelovanje.idGodStud
+					LEFT JOIN radnomjesto ON radnomjesto.idRadnogMjesta = sudjelovanje.idRadnogMjesta
+					LEFT JOIN zavod ON zavod.idZavoda = sudjelovanje.idZavoda
+					LEFT JOIN smjer ON smjer.idSmjera = sudjelovanje.idSmjera
+					LEFT JOIN imaatribut ON imaatribut.idSudjelovanja = sudjelovanje.idSudjelovanja
+					LEFT JOIN atribut ON imaatribut.idAtributa = atribut.idAtributa
+					LEFT JOIN podrucjesudjelovanja ON podrucjesudjelovanja.idSudjelovanja = sudjelovanje.idSudjelovanja
+					LEFT JOIN putovanje ON putovanje.idPutovanja = sudjelovanje.idPutovanja
+					LEFT JOIN bus ON bus.idBusa = putovanje.idBusa
+				WHERE sudjelovanje.idElektrijade = :idE AND podrucjesudjelovanja.idPodrucja = :idP AND imaatribut.idPodrucja = :idP";
+	    
+	    $pdo = $this->getPdo();
+	    $q = $pdo->prepare($statement);
+	    $q->bindValue(":idE", $idElektrijade);
+	    $q->bindValue(":idP", $idPodrucja);	    
+	    $q->execute();
+	    return $q->fetchAll();
+	} catch (\PDOException $e) {
+	    throw $e;
+	}
     }
 }

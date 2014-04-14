@@ -9,16 +9,63 @@ class ActiveSponzorList extends AbstractView {
     private $sponzori;
     
     protected function outputHTML() {
-	// print messages if any
-        echo new \view\components\ErrorMessage(array(
+		// Show messages if any
+		if($this->resultMessage)
+		{
+			echo new \view\components\ResultMessage(array(
+				"resultMessage" => $this->resultMessage
+			));
+		}
+		
+		if($this->errorMessage)
+		{
+			echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
-        ));
-        echo new \view\components\ResultMessage(array(
-            "resultMessage" => $this->resultMessage
-        ));
-	
-	// samo ispisati osnovne podatke // ime trvtke i adresu
-	// opcije(nazovi ih kako ti pase) su Uredi, i Brisi - odnosi se na modify/deleteActiveSponzor  (NE TREBA NAM DODAVANJE) -to se radi preko modifySponzor
+			));
+		}
+		
+		// Else list sponzori in table
+		else
+		{
+			
+?>
+			<div class="panel panel-default">
+				<div class="panel-heading">Aktivni sponzori</div>
+				
+				<table class="table">
+				<thead>
+					<tr>
+						<th>Ime tvrtke</th>
+						<th>Adresa</th>
+						<th>Opcije</th>
+					</tr>
+				</thead>
+				
+				<tbody>
+<?php
+			// Foreach activeSponzor, generate row in table
+			foreach($this->sponzori as $val)
+			{
+				echo '<tr><td>' . $val->imeTvrtke . '</td><td>' . $val->adresaTvrtke . '</td>';
+				echo '<td><a href="';
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'modifyActiveSponzor'
+				));
+				echo '?id=' . $val->idSponzora . '">Uredi</a> &nbsp; <a class="deleteActiveSponzor" href="';
+				
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'deleteActiveSponzor'
+				));
+				echo '?id=' . $val->idSponzora . '">Obriši</a></td></tr>';
+			}
+?>
+				</tbody>
+			</table>
+		</div>
+<?php
+		}		
 		
     }
     

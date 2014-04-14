@@ -30,4 +30,19 @@ class DBBrojeviMobitela extends AbstractDBModel {
                 return;
             }
         }
+	
+	public function deleteByContact($idKontakta) {
+	    try {
+		$pov = $this->select()->where(array(
+		    "idKontakta" => $idKontakta
+		))->fetchAll();
+		if (count($pov)) {
+		    foreach ($pov as $v) {
+			$v->delete();
+		    }
+		}
+	    } catch (\PDOException $e) {
+		throw $e;
+	    }
+	}
 }

@@ -44,6 +44,9 @@ class Index implements Controller {
             case 'succContact':
                 $this->resultMessage = "Uspješno dodan novi kontakt!";
                 break;
+	    case 'assignS':
+		$this->resultMessage = "Uspješno zabilježeno korištenje usluga tvrtke!";
+		break;
             case 'excep':
                 if(isset($_SESSION['exception'])) {
                     $e = unserialize($_SESSION['exception']);   // don't forget 'use \PDOException;'

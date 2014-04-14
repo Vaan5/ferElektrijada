@@ -10,13 +10,24 @@ class AreaSponzorAdding extends AbstractView {
     private $podrucja;
     
     protected function outputHTML() {
-	// print messages if any
+		// print messages if any
         echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
         ));
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
+		
+		// print out the form
+		echo new \view\components\AreaSponzorForm(array(
+			"route" => \route\Route::get('d3')->generate(array(
+				"controller" => 'ozsn',
+				"action" => 'addAreaSponzor'
+			)),
+			"submitButtonText" => "Dodaj sponzora područja",
+			"podrucja" => $this->podrucja,
+			"sponzori" => $this->sponzori
+		));		
 	
 	// ispis forme za dodavanje
 	// sponzore i podrucja kao drop down liste value im je id, a name je idSponzora odnosno idPodrucja

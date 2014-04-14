@@ -6,10 +6,15 @@ use app\view\AbstractView;
 class ShowXls extends AbstractView {
     
     private $fileName;
+    private $tip;
     
     protected function outputHTML() {
         header('Content-disposition: attachment; filename='.basename($this->fileName));
-	header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+	if ($this->tip === 'xls')
+	    header("Content-Type: application/vnd.ms-excel");
+	else
+	    header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+	
 	header('Content-Length: ' . filesize($this->fileName));
 	header('Content-Transfer-Encoding: binary');
 	header('Cache-Control: must-revalidate');
@@ -27,4 +32,8 @@ class ShowXls extends AbstractView {
 	return $this;
     }
 
+    public function setTip($tip) {
+	$this->tip = $tip;
+	return $this;
+    }
 }

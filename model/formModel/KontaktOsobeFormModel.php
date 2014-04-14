@@ -12,7 +12,8 @@ class KontaktOsobeFormModel extends AbstractFormModel {
                 'telefon' => array('phone'),
                 'radnoMjesto' => array('alnum'),
                 'idTvrtke' => array('numbers'),
-                'idSponzora' => array('numbers'));
+                'idSponzora' => array('numbers'),
+		'idMedija' => array('numbers'));
         }
         return $this->rulesArray;
     }
@@ -33,6 +34,8 @@ class KontaktOsobeFormModel extends AbstractFormModel {
                         return "Pogrešan identifikator tvrtke!";
                     case 'idSponzora':
                         return "Pogrešan identifikator sponzora!";
+		    case 'idMedija':
+                        return "Pogrešan identifikator medija!";
                     default:
                         break;
                 }

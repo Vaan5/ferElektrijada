@@ -9,16 +9,69 @@ class SponzorList extends AbstractView {
     private $sponzori;
     
     protected function outputHTML() {
-	// print messages if any
-        echo new \view\components\ErrorMessage(array(
-            "errorMessage" => $this->errorMessage
-        ));
-        echo new \view\components\ResultMessage(array(
-            "resultMessage" => $this->resultMessage
-        ));
-	
-	// samo ispisati osnovne podatke // ime trvtke i adresu a opcije ce biti brisi uredi i dodaj novog (kod dodaj novog otvarat cemo novu formu (ne onako ispod tablice))
 		
+		// Show messages if any
+		if($this->resultMessage)
+		{
+			echo new \view\components\ResultMessage(array(
+				"resultMessage" => $this->resultMessage
+			));
+		}
+		
+		if($this->errorMessage)
+		{
+			echo new \view\components\ErrorMessage(array(
+            "errorMessage" => $this->errorMessage
+			));
+		}
+		
+		// Else list sponzori in table
+		else
+		{
+			
+?>
+			<div class="panel panel-default">
+				<div class="panel-heading">Sponzori</div>
+				
+				<table class="table">
+				<thead>
+					<tr>
+						<th>Ime tvrtke</th>
+						<th>Adresa</th>
+						<th>Opcije</th>
+					</tr>
+				</thead>
+				
+				<tbody>
+<?php
+			// Foreach sponzor, generate row in table
+			foreach($this->sponzori as $val)
+			{
+				echo '<tr><td>' . $val->imeTvrtke . '</td><td>' . $val->adresaTvrtke . '</td>';
+				echo '<td><a href="';
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'modifySponzor'
+				));
+				echo '?id=' . $val->idSponzora . '">Uredi</a> &nbsp; <a class="deleteSponzor" href="';
+				
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'deleteSponzor'
+				));
+				echo '?id=' . $val->idSponzora . '">Obriši</a></td></tr>';
+			}
+?>
+				</tbody>
+			</table>
+		</div>
+
+		<a href="<?php echo \route\Route::get('d3')->generate(array(
+			"controller" => 'ozsn',
+			"action" => 'addSponzor'
+		));?>"><span class="glyphicon glyphicon-plus"></span> Dodaj novog sponzora</a>
+<?php
+		}		
     }
     
     public function setErrorMessage($errorMessage) {

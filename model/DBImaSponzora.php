@@ -54,7 +54,7 @@ class DBImaSponzora extends AbstractDBModel {
             $pov = $this->select()->where(array(
 		"idSponzora" => $idSponzora,
 		"idElektrijade" => $idElektrijade
-	    ));
+	    ))->fetchAll();
 	    if (count($pov)) {
 		$this->load($pov[0]->getPrimaryKey());
 	    } else {

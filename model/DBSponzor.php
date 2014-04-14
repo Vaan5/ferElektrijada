@@ -4,12 +4,7 @@ namespace model;
 use app\model\AbstractDBModel;
 	
 class DBSponzor extends AbstractDBModel {
-	    
-	/**
-	*
-	* @var boolean 
-	*/
-            
+ 
     public function getTable(){
         return 'sponzor';
     }
@@ -24,6 +19,23 @@ class DBSponzor extends AbstractDBModel {
     
     public function getAll() {
         return $this->select()->fetchAll();
+    }
+    
+    public function getAllByElektrijada($idElektrijade) {
+	try {
+	    $pdo = $this->getPdo();
+	    $q = $pdo->prepare("SELECT * FROM sponzor LEFT JOIN imasponzora ON sponzor.idSponzora = imasponzora.idSponzora
+						    JOIN kategorija ON kategorija.idKategorijeSponzora = imasponzora.idKategorijeSponzora
+						    JOIN nacinpromocije ON nacinpromocije.idPromocije = imasponzora.idPromocije
+						    JOIN sponelekpod ON sponelekpod.idSponzora = sponzor.idSponzora
+						    JOIN podrucje ON podrucje.idPodrucja = sponelekpod.idPodrucja
+						    WHERE imasponzora.idElektrijade = :id OR sponelekpod.idElektrijade = :id");
+	    $q->bindValue(":id", $idElektrijade);
+	    $q->execute();
+	    return $q->fetchAll();
+	} catch (\PDOException $e) {
+	    throw $e;
+	}
     }
     
     public function getAllActive($idElektrijade) {
@@ -73,6 +85,7 @@ class DBSponzor extends AbstractDBModel {
 		    $e->errorInfo[0] = '02000';
 		    $e->errorInfo[1] = 1604;
 		    $e->errorInfo[2] = "Greška prilikom brisanja logotipa!";
+		    $this->delete();
 		    throw $e;
 		}
 	    }
@@ -96,7 +109,7 @@ class DBSponzor extends AbstractDBModel {
             $this->load($idSponzora);
 	    $this->imeTvrtke = $imeTvrtke;
 	    $this->adresaTvrtke = $adresaTvrtke;
-	    if ($this->logotip !== NULL && $this->logotip !== '' && $this->logotip !== false)
+	    if ($logotip !== NULL && $logotip !== '' && $logotip !== false)
 		$this->logotip = $logotip;
 	    $this->save();
         } catch (\app\model\NotFoundException $e) {

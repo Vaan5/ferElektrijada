@@ -8,8 +8,11 @@ class AddContact extends AbstractView {
     private $resultMessage;
     private $sponzori;
     private $tvrtke;
+    private $mediji;
     
     protected function outputHTML() {
+	
+	// mediji na isti nacin kao i sponzori i tvrtke (drop down list)
         echo new \view\components\KontaktOsobeForm();
     }
     
@@ -32,4 +35,10 @@ class AddContact extends AbstractView {
         $this->tvrtke = $tvrtke;
         return $this;
     }
+    
+    public function setMediji($mediji) {
+	$this->mediji = $mediji;
+	return $this;
+    }
+
 }

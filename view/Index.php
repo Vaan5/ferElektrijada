@@ -16,12 +16,6 @@ class Index extends AbstractView {
      */
     private $resultMessage;
     
-    /**
-     * Opisuje prijenos varijable iz controllera ctl\Index
-     * MORATE NAPRAVITI SETTER
-     */
-    private $varijablaPrenesenaIzControllera;
-    
     protected function outputHTML() {
 ?>
 
@@ -53,6 +47,55 @@ class Index extends AbstractView {
         "controller" => 'ozsn',
         "action" => 'addContact'
     ));?>">Dodavanje Kontakt Osobe</a>
+	
+	<br>
+        
+        <a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'searchContacts'
+    ));?>">Pretraživanje Kontakt Osoba</a>
+	
+	<br>
+        
+        <a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'displayTvrtke'
+    ));?>">DBM Tvrtke</a>
+	
+	<br>
+        
+        <a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'displayActiveTvrtke'
+    ));?>">DBM Korištenja usluga tvrtki</a>
+	
+	<br>
+        
+        <a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'displayMediji'
+    ));?>">DBM Medija</a>
+	
+	<br>
+        
+        <a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'displayActiveObjava'
+    ));?>">Aktualne objave u medijima</a>
+	
+	<br>
+        
+        <a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'displayObjava'
+    ));?>">DBM Objava</a>
+	
+	<br>
+        
+        <a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'displayActiveObjava'
+    ));?>">DBM Aktualnih Objava</a>
 	
 	<br>
         
@@ -118,6 +161,34 @@ class Index extends AbstractView {
         "action" => 'addSponzor'
     ));?>">Dodaj sponzora</a>
 	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'displaySponzor'
+    ));?>">Lista sponzora</a>
+	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'displaySponzorsByElektrijada'
+    ));?>">Lista sponzora po elektrijadama</a>
+	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'displayAreaSponzor'
+    ));?>">Lista područnih sponzora ovogodišnje elektrijade</a>
+	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'displayActiveSponzor'
+    ));?>">Lista ovogodišnjih sponzora</a>
+	
 	<p>
 	<b>Generator Pdfova</b>
 	<a href="<?php echo \route\Route::get('d3')->generate(array(
@@ -131,8 +202,24 @@ class Index extends AbstractView {
 	<a href="<?php echo \route\Route::get('d3')->generate(array(
         "controller" => 'reportGenerator',
         "action" => 'xlsTest'
-    ));?>">excel</a>
+    )) . "?type=xls";?>">excel_xls</a>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'reportGenerator',
+        "action" => 'xlsTest'
+    )) . "?type=xlsx";?>">excel_xlsx</a>
 	</p>
+	
+	<br><br>
+	<b>Izvještaji</b>
+	
+	<br>
+        
+        <a href="<?php echo \route\Route::get('d3')->generate(array(
+	    "controller" => 'reportGenerator',
+	    "action" => 'generateDisciplineList'
+	));?>">Popis sudionika po disciplinama</a>
+	
 </p>
 
 <?php
@@ -155,16 +242,6 @@ class Index extends AbstractView {
      */
     public function setResultMessage($resultMessage) {
         $this->resultMessage = $resultMessage;
-        return $this;
-    }
-    
-    /**
-     * 
-     * @param mixed $varijablaPrenesenaIzControllera
-     * @return \view\Index
-     */
-    public function setVarijablaPrenesenaIzControllera($varijablaPrenesenaIzControllera) {
-        $this->varijablaPrenesenaIzControllera = $varijablaPrenesenaIzControllera;
         return $this;
     }
 }
