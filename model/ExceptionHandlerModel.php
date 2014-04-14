@@ -36,7 +36,11 @@ class ExceptionHandlerModel implements \app\model\Model {
                 $i2 = strpos($string, "'", $i1 + 1);
                 $vrijednost = substr($string, $i1 + 1, $i2 - $i1 - 1);
                 $vrijednost = __($vrijednost);
-                $this->message = "Zapis s vrijednošću {$vrijednost} već postoji!";
+		if (strpos($vrijednost, "-") !== false) {
+		    $this->message = "Zapis s takvim podacima već postoji!";
+		} else {
+		    $this->message = "Zapis s vrijednošću {$vrijednost} već postoji!";
+		}
                 break;
             default :
                 if (!(isset($this->message) && $this->message !== null))
