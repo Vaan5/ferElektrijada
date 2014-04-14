@@ -172,6 +172,20 @@ class Index extends AbstractView {
 	
 	<a href="<?php echo \route\Route::get('d3')->generate(array(
         "controller" => 'ozsn',
+        "action" => 'displaySponzorsByElektrijada'
+    ));?>">Lista sponzora po elektrijadama</a>
+	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'displayAreaSponzor'
+    ));?>">Lista područnih sponzora ovogodišnje elektrijade</a>
+	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
         "action" => 'displayActiveSponzor'
     ));?>">Lista ovogodišnjih sponzora</a>
 	
