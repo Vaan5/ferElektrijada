@@ -1436,6 +1436,39 @@ class Ozsn implements Controller {
 	));
     }
     
+    public function displaySponzorsByElektrijada() {
+	$this->checkRole();
+	$this->checkMessages();
+	
+	$e = new \model\DBElektrijada();
+	$elektrijade = array();
+	$sponzori = null;
+	
+	try {
+	    if (postEmpty()) {
+		$elektrijade = $e->getAll();
+	    } else {
+		$sponzor = new \model\DBSponzor();
+		$sponzori = $sponzor->getAllByElektrijada(post("idElektrijade"));
+	    }
+	} catch (\PDOException $e) {
+	    $sponzori = null;
+	    $handler = new \model\ExceptionHandlerModel($e);
+            $this->errorMessage = $handler;
+	}
+	
+	echo new \view\Main(array(
+	    "title" => "Pregled Sponzora",
+	    "body" => new \view\ozsn\SponsorsByElektrijadaList(array(
+		"resultMessage" => $this->resultMessage,
+		"errorMessage" => $this->errorMessage,
+		"sponzori" => $sponzori,
+		"elektrijade" => $elektrijade
+	    ))
+	));
+	
+    }
+    
     /**
      * Modifies sponsor data and sponsorship data if given. The logo is overwritten if given
      */
