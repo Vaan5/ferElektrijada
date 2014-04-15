@@ -11,11 +11,11 @@ class DisciplineCompetitorForm extends AbstractView {
     
     protected function outputHTML() {
 ?>
-    <form method="post" action="<?php echo $this->route;?>">
-
-	<label for="disciplina">Odaberite disciplinu</label><br>
-		<select name="idPodrucja">
-			<option value="">Odaberi...</option>
+    <form class="form-inline" role="form" method="post" action="<?php echo $this->route;?>">
+        <center><div class="form-group">
+        <label class="sr-only" for="podrucje">Podrucje</label>
+            <select name="idPodrucja" class="form-control">
+			<option value="">Odaberi područje</option>
 <?php
 		foreach($this->podrucja as $val)
 		{
@@ -23,11 +23,12 @@ class DisciplineCompetitorForm extends AbstractView {
 			echo '>' . $val->nazivPodrucja . '</option>';
 		}
 ?>					
-		</select><br><br>
-		
-	<label for="elektrijada">Odaberite elektrijadu</label><br>
-		<select name="idElektrijade">
-			<option value="">Odaberi...</option>
+        </select>	
+        </div>
+	<div class="form-group">		
+        <label class="sr-only" for="elektrijada">Elektrijada</label>
+            <select name="idElektrijade" class="form-control">
+			<option value="">Odaberi elektrijadu</option>
 <?php
 		foreach($this->elektrijade as $val)
 		{
@@ -35,43 +36,147 @@ class DisciplineCompetitorForm extends AbstractView {
 			echo '>' . $val->mjestoOdrzavanja . " " . $val->datumPocetka . '</option>';
 		}
 ?>					
-		</select><br><br>
-	
-		
-	<input type="checkbox" name="ime">Ime<br/>
-	<input type="checkbox" name="prezime">Prezime<br/>
-	<input type="checkbox" name="mail">E-mail<br/>
-	<input type="checkbox" name="brojMob">Broj mobitela<br/>
-	<input type="checkbox" name="ferId">Korisničko ime<br/>
-	<input type="checkbox" name="JMBAG">JMBAG<br/>
-	<input type="checkbox" name="brOsobne">Broj osobne<br/>
-	<input type="checkbox" name="brPutovnice">Broj putovnice<br/>
-	<input type="checkbox" name="osobnaVrijediDo">Datum isteka osobne iskaznice<br/>
-	<input type="checkbox" name="putovnicaVrijediDo">Datum isteka putovnice<br/>
-	<input type="checkbox" name="uloga">Uloga<br/>
-	<input type="checkbox" name="MBG">Matični broj osigurane osobe<br/>
-	<input type="checkbox" name="OIB">OIB<br/>
-	
-	<input type="checkbox" name="nazivAtributa">Atribut<br/>
-	<input type="checkbox" name="velicina">Veličina majice<br/>
-	<input type="checkbox" name="studij">Studij<br/>
-	<input type="checkbox" name="godina">Godina<br/>
-	<input type="checkbox" name="nazivSmjera">Smjer<br/>
-	<input type="checkbox" name="nazivZavoda">Naziv zavoda<br/>
-	<input type="checkbox" name="skraceniNaziv">Skraćeni naziv zavoda<br/>
-	<input type="checkbox" name="naziv">Radno mjesto<br/>
-	
-	<input type="checkbox" name="brojBusa">Redni broj autobusa<br/>
-	<input type="checkbox" name="brojSjedala">Broj sjedala<br/>
-	<input type="checkbox" name="napomena">Napomena uz putovanje<br/>
-	
-	<input type="checkbox" name="tip">Student / Djelatnik<br/>
-	<input type="checkbox" name="rezultatPojedinacni">Postignuti rezultat<br/>
-	<input type="checkbox" name="ukupanBrojSudionika">Ukupan broj sudionika<br/>
+        </select>
+        </div></center><br/><br/>
+	<div class="checkbox">
+            <label>
+                <input type="checkbox" name="ime"> Ime &nbsp;
+            </label>
+        </div>
+	<div class="checkbox">
+            <label>
+                <input type="checkbox" name="Prezime"> Prezime &nbsp;
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="mail"> E-mail &nbsp;
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="brojMob"> Broj mobitela &nbsp;
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="ferId"> Korisničko ime &nbsp;
+            </label>
+        </div>
+       <div class="checkbox">
+            <label>
+                <input type="checkbox" name="JMBAG"> JMBAG &nbsp;
+            </label>
+        </div><br><br>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="brOsobne"> Broj osobne &nbsp;
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="brPutovnice"> Broj putovnice &nbsp;
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="osobnaVrijediDo"> Datum isteka osobne iskaznice &nbsp;
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="putovnicaVrijediDo"> Datum isteka putovnice &nbsp;
+            </label>
+        </div><br><br>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="uloga"> Uloga &nbsp;
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="MBG"> Matični broj osigurane osobe &nbsp;
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="OIB"> OIB &nbsp;
+            </label>
+        </div><br><br>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="nazivAtributa"> Atribut &nbsp;
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="velicina"> Veličina majice &nbsp;
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="studij"> Studij &nbsp;
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="godina"> Godina &nbsp;
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="nazivSmjera"> Smjer &nbsp;
+            </label>
+        </div><br><br>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="nazivZavoda"> Naziv zavoda &nbsp;
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="skraceniNaziv"> Skraćeni naziv zavoda &nbsp;
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="naziv"> Radno mjesto &nbsp;
+            </label>
+        </div><br><br>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="brojBusa"> Redni broj autobusa &nbsp;
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="brojSjedala"> Broj sjedala &nbsp;
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="napomena"> Napomena uz putovanje &nbsp;
+            </label>
+        </div><br><br>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="tip"> Student / Djelatnik &nbsp;
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="rezultatPojedinacni"> Postignuti rezultat &nbsp;
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="ukupanBrojSudionika"> Ukupan broj sudionika &nbsp;
+            </label>
+        </div><br><br>
 
 	<?php echo new DownloadOptionsForm();?>	
 	
-	<input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText; ?>" />
+        <center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText; ?>" /></center>
     </form>
 <?php
     }

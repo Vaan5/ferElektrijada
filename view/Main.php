@@ -79,6 +79,9 @@ class Main extends AbstractView {
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">    
         <ul class="nav navbar-nav">
+        <?php if(\model\DBOsoba::isLoggedIn() && $_SESSION ['vrsta']==='O') echo new navbar\OzsnNavbar(); ?>
+        </ul>
+        <ul class="nav navbar-nav">
         <?php if(\model\DBOsoba::isLoggedIn() && $_SESSION ['vrsta']==='A') echo new navbar\AdminNavbar(); ?>
         </ul>
         <ul class="nav navbar-nav navbar-right">
@@ -89,12 +92,17 @@ class Main extends AbstractView {
                                                                                         "action" => "display"
                                                                                         )) . "\"> Prijava</a>"
 						; elseif ($_SESSION ['vrsta']==='A') echo 
-                                                    $_SESSION ['user']." ".
+                                                    $_SESSION ['user']." (Admin) ".
                                                     "<span class=\"glyphicon glyphicon-user\"></span> <a href=\"" . \route\Route::get('d3')->generate(array(
                                                                                         "controller" => "administrator",
                                                                                         "action" => "changeProfile"
                                                 )) . "\"> Profil</a>"
-				 ;?>
+				 ;elseif ($_SESSION ['vrsta']==='O') echo 
+                                                    $_SESSION ['user']." (Član OZSN-a) ".
+                                                    "<span class=\"glyphicon glyphicon-user\"></span> <a href=\"" . \route\Route::get('d3')->generate(array(
+                                                                                        "controller" => "ozsn",
+                                                                                        "action" => "changeProfile"
+                                                )) . "\"> Profil</a>"?>
 				<?php if(\model\DBOsoba::isLoggedIn())     echo "<span class=\"glyphicon glyphicon-off\"></span><a href=\"" . \route\Route::get('d3')->generate(array(
                                                                                         "controller" => "login",
                                                                                         "action" => "logout"

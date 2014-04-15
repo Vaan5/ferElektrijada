@@ -15,16 +15,19 @@ class SponzorForm extends AbstractView {
 
     protected function outputHTML() {
 ?>
-    <form method="post" action="<?php echo $this->route;?>" enctype="multipart/form-data">
+    <form class="form-horizontal" role="form" method="post" action="<?php echo $this->route;?>" enctype="multipart/form-data">
 <?php
 		if($this->sponzor && $this->sponzor->idSponzora)
 		{
 			echo '<input type="hidden" name="id" value="' . $this->sponzor->idSponzora . '" />';
 		}
 ?>		
-		<label for="kategorija">Kategorija</label><br>
-		<select name="idKategorijeSponzora">
+	<div class="form-group">	
+                <label for="kategorija" class="col-sm-3 control-label">Kategorija</label>
+		<div class="col-sm-9">
+                <select name="idKategorijeSponzora" class="form-control">
 			<option <?php if(!$this->kategorija) echo 'selected="selected"'; ?> value=""><?php if(!$this->kategorija) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
+
 <?php
 		foreach($this->kategorije as $val)
 		{
@@ -36,11 +39,14 @@ class SponzorForm extends AbstractView {
 			echo '>' . $val->tipKategorijeSponzora . '</option>';
 		}
 ?>					
-		</select><br><br>
-		
-		<label for="nacinPromocije">Način promocije</label><br>
-		<select name="idPromocije">
+</select></div>
+        </div>
+	<div class="form-group">
+		<label for="nacinPromocije" class="col-sm-3 control-label">Način promocije</label>
+		<div class="col-sm-9">
+                <select name="idPromocije" class="form-control">
 			<option <?php if(!$this->promocija) echo 'selected="selected"'; ?> selected="selected" value=""><?php if(!$this->promocija) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
+
 <?php
 		foreach($this->promocije as $val)
 		{
@@ -52,62 +58,77 @@ class SponzorForm extends AbstractView {
 			echo '>' . $val->tipPromocije . '</option>';
 		}
 ?>					
-		</select><br><br>
-		
-		<label for="imeTvrtke">Ime tvrtke</label><br>
-		<input type="text" name="imeTvrtke" placeholder="Upišite ime tvrtke" <?php if($this->sponzor && $this->sponzor->imeTvrtke) echo 'value="' . $this->sponzor->imeTvrtke . '"' ?> />
-		
-		<br><br>
-		
-		<label for="adresaTvrtke">Adresa tvrtke</label><br>
-		<input type="text" name="adresaTvrtke" placeholder="Upišite adresu tvrtke" <?php if($this->sponzor && $this->sponzor->adresaTvrtke) echo 'value="' . $this->sponzor->adresaTvrtke . '"' ?> />
-		
-		<br><br>
+		</select></div>
+        </div>
+        <div class="form-group">
+		<label for="imeTvrtke" class="col-sm-3 control-label">Ime tvrtke</label>
+		<div class="col-sm-9">
+                <input type="text" name="imeTvrtke" class="form-control" placeholder="Upišite ime tvrtke" <?php if($this->sponzor && $this->sponzor->imeTvrtke) echo 'value="' . $this->sponzor->imeTvrtke . '"' ?> />
+                </div>
+        </div>
+	<div class="form-group">	
+		<label for="adresaTvrtke" class="col-sm-3 control-label">Adresa tvrtke</label>
+		<div class="col-sm-9">
+                <input type="text" name="adresaTvrtke" class="form-control" placeholder="Upišite adresu tvrtke" <?php if($this->sponzor && $this->sponzor->adresaTvrtke) echo 'value="' . $this->sponzor->adresaTvrtke . '"' ?> />
+                </div>
+        </div>
 <?php
 		if($this->sponzor && $this->sponzor->logotip)
 		{
 ?>
-		<a href="<?php echo \route\Route::get('d3')->generate(array(
+		
+        <div class="form-group">        
+        <label for="preuzmi" class="col-sm-3 control-label"></label>
+            <div class="col-sm-9">
+            <a href="<?php echo \route\Route::get('d3')->generate(array(
 			"controller" => 'ozsn',
 			"action" => 'downloadLogo'
-		));?>?id=<?php echo $this->sponzor->idSponzora; ?>">Preuzmi logotip</a>
+		));?>?id=<?php echo $this->sponzor->idSponzora; ?>">Preuzmi logotip &nbsp;</a>
+            <input type="checkbox" name="delete"> Obriši logotip    
+            </div>
+        </div>
 		
-		&nbsp; 
 		
-		<input type="checkbox" name="delete"> Obriši logotip
 <?php				
 		}
 
 		else
 		{
-?>
-		<label for="logotip">Logotip</label><br>
-		<input type="file" class="btn btn-default" name="datoteka" />
+?>              <div class="form-group">
+		<label for="logotip" class="col-sm-3 control-label">Logotip</label>
+		<div class="col-sm-9">
+                <input type="file" name="datoteka" />
+                </div>
+                </div>
 <?php
 		}
 ?>	
-		<br><br>
+		<div class="form-group">
+		<label for="iznosDonacije" class="col-sm-3 control-label">Iznos donacije</label>
+		<div class="col-sm-9">
+                <input type="text" name="iznosDonacije" class="form-control" placeholder="Upišite iznos donacije" <?php if($this->imasponzora && $this->imasponzora->iznosDonacije) echo 'value="' . $this->imasponzora->iznosDonacije . '"' ?> />
+                </div>
+                </div>
 		
-		<label for="iznosDonacije">Iznos donacije</label><br>
-		<input type="text" name="iznosDonacije" placeholder="Upišite iznos donacije" <?php if($this->imasponzora && $this->imasponzora->iznosDonacije) echo 'value="' . $this->imasponzora->iznosDonacije . '"' ?> />
-		
-		<br><br>
-		
-		<label for="valutaDonacije">Valuta donacije</label><br>
-		<select name="valutaDonacije">
+                <div class="form-group">
+		<label for="valutaDonacije" class="col-sm-3 control-label">Valuta donacije</label>
+		<div class="col-sm-9">
+                <select name="valutaDonacije" class="form-control">
 			<option <?php if(!$this->imasponzora || ($this->imasponzora && $this->imasponzora->valutaDonacije == 'HRK')) echo 'selected="selected"' ?> value="HRK">HRK</option>
 			<option <?php if($this->imasponzora && $this->imasponzora->valutaDonacije == 'USD') echo 'selected="selected"' ?> value="USD">USD</option>
 			<option <?php if($this->imasponzora && $this->imasponzora->valutaDonacije == 'EUR') echo 'selected="selected"' ?> value="EUR">EUR</option>
 		</select>
+                </div>
+                </div>
 		
-		<br><br>
-		
-		<label for="napomena">Napomena</label><br>
-		<textarea name="napomena"><?php if($this->imasponzora && $this->imasponzora->napomena) echo $this->imasponzora->napomena; ?></textarea>
-		
-		<br>
+                <div class="form-group">
+		<label for="napomena" class="col-sm-3 control-label">Napomena</label>
+		<div class="col-sm-9">
+                <textarea name="napomena" class="form-control"><?php if($this->imasponzora && $this->imasponzora->napomena) echo $this->imasponzora->napomena; ?></textarea>
+		</div>
+                </div>
 			
-		<input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText; ?>" />
+                <center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText; ?>" /></center>
     </form>
 <?php
     }
