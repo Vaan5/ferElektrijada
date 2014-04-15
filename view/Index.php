@@ -52,6 +52,13 @@ class Index extends AbstractView {
         
         <a href="<?php echo \route\Route::get('d3')->generate(array(
         "controller" => 'ozsn',
+        "action" => 'displayUserFunctions'
+    ));?>">Moje funkcije</a>
+	
+	<br>
+        
+        <a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
         "action" => 'addContact'
     ));?>">Dodavanje Kontakt Osobe</a>
 	

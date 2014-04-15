@@ -122,6 +122,100 @@ class Ozsn implements Controller {
 	));
     }
     
+    public function displayUserFunctions() {
+	$this->checkRole();
+	$this->checkMessages();
+	
+	$funkcija = new \model\DBFunkcija();
+	$obavljaFunkciju = new \model\DBObavljaFunkciju();
+	$sveFunkcije = array();
+	$funkcijeKorisnika = array();
+	try {
+	    $elektrijada = new \model\DBElektrijada();
+	    $idElektrijade = $elektrijada->getCurrentElektrijadaId();
+	    $sveFunkcije = $funkcija->getAllFunkcija();
+	    $funkcijeKorisnika = $obavljaFunkciju->loadOzsnFunctions(session("auth"), $idElektrijade);
+	} catch (\PDOException $e) {
+	    $handler = new \model\ExceptionHandlerModel($e);
+            $this->errorMessage = $handler;
+	}
+	
+	echo new \view\Main(array(
+	    "body" => new \view\ozsn\OzsnUdrugeList(array(
+		"errorMessage" => $this->errorMessage,
+		"resultMessage" => $this->resultMessage,
+		"sveFunkcije" => $sveFunkcije,
+		"funkcijeKorisnika" => $funkcijeKorisnika
+	    )),
+	    "title" => "Vaše Funkcije"
+	));
+    }
+    
+    public function deleteUserFunction() {
+	$this->checkRole();
+        
+        $this->idCheck("displayUserFunctions");
+	
+        $obavljaFunkciju = new \model\DBObavljaFunkciju();
+        try {
+	    if ($obavljaFunkciju->checkOzsnFunction(get("id"), session("auth"))) {
+		$obavljaFunkciju->deleteRow(get("id"));
+	    } else {
+		$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Ne možete brisati tuđe funkcije!");
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "ozsn",
+		    "action" => "displayUserFunctions"
+		)) . "?msg=excep");
+	    }
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUserFunctions"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUserFunctions"
+            )) . "?msg=excep");
+        }
+    }
+    
+    public function addUserFunction() {
+	$this->checkRole();
+
+        $obavljaFunkciju = new \model\DBObavljaFunkciju();
+        
+	if (!postEmpty()) {
+	    try {
+		$elektrijada = new \model\DBElektrijada();
+		$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+		$obavljaFunkciju->addNewRow(post("idFunkcije", null), session("auth"), $idElektrijade);
+
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "ozsn",
+		    "action" => "displayUserFunctions"
+		)) . '?msg=succa');
+	    } catch (\PDOException $e){
+		$handler = new \model\ExceptionHandlerModel($e);
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "ozsn",
+		    "action" => "displayUserFunctions"
+		)) . "?msg=excep");
+	    }
+	} else {
+	    $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznata funkcija!");
+	    $_SESSION["exception"] = serialize($handler);
+	    preusmjeri(\route\Route::get('d3')->generate(array(
+		"controller" => "ozsn",
+		"action" => "displayUserFunctions"
+	    )) . "?msg=excep");
+	}
+    }
+    
     /**
      * Displays associations in which the logged in user is registered
      */
@@ -148,7 +242,7 @@ class Ozsn implements Controller {
 		"sveUdruge" => $sveUdruge,
 		"udrugeKorisnika" => $udrugeKorisnika
 	    )),
-	    "title" => "Tvrtke"
+	    "title" => "Vaše Udruge"
 	));
     }
     
