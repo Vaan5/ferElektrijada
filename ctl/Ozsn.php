@@ -123,6 +123,96 @@ class Ozsn implements Controller {
     }
     
     /**
+     * Displays associations in which the logged in user is registered
+     */
+    public function displayUserUdruge() {
+	$this->checkRole();
+	$this->checkMessages();
+	
+	$udruga = new \model\DBUdruga();
+	$jeUUdruzi = new \model\DBJeUUdruzi();
+	$sveUdruge = array();
+	$udrugeKorisnika = array();
+	try {
+	    $sveUdruge = $udruga->getAllUdruga();
+	    $udrugeKorisnika = $jeUUdruzi->loadUserUdruge(session("auth"));
+	} catch (\PDOException $e) {
+	    $handler = new \model\ExceptionHandlerModel($e);
+            $this->errorMessage = $handler;
+	}
+	
+	echo new \view\Main(array(
+	    "body" => new \view\ozsn\OzsnUdrugeList(array(
+		"errorMessage" => $this->errorMessage,
+		"resultMessage" => $this->resultMessage,
+		"sveUdruge" => $sveUdruge,
+		"udrugeKorisnika" => $udrugeKorisnika
+	    )),
+	    "title" => "Tvrtke"
+	));
+    }
+    
+    /**
+     * Registers a user to an association via post parameter idUdruge
+     */
+    public function addUserUdruga() {
+	$this->checkRole();
+
+        $jeuudruzi = new \model\DBJeUUdruzi();
+        
+	if (!postEmpty()) {
+	    try {
+		$jeuudruzi->addRow(post("idUdruge", null), session("auth"));
+
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "ozsn",
+		    "action" => "displayUserUdruge"
+		)) . '?msg=succa');
+	    } catch (\PDOException $e){
+		$handler = new \model\ExceptionHandlerModel($e);
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "ozsn",
+		    "action" => "displayUserUdruge"
+		)) . "?msg=excep");
+	    }
+	} else {
+	    $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznata udruga!");
+	    $_SESSION["exception"] = serialize($handler);
+	    preusmjeri(\route\Route::get('d3')->generate(array(
+		"controller" => "ozsn",
+		"action" => "displayUserUdruge"
+	    )) . "?msg=excep");
+	}
+    }
+    
+    /**
+     * Deletes user registration from an association via get parameter
+     */
+    public function deleteUserUdruga() {
+	$this->checkRole();
+        
+        $this->idCheck("displayUserUdruge");
+	
+        $jeuudruzi = new \model\DBJeUUdruzi();
+        try {
+            $jeuudruzi->deleteRow(get("id"), session("auth"));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUserUdruge"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUserUdruge"
+            )) . "?msg=excep");
+        }
+    }
+    
+    /**
      * Adds a new company which stil isn't related to any Elektrijada competition
      */
     public function addTvrtka() {
