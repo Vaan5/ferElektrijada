@@ -45,7 +45,7 @@ class DisciplineCompetitorForm extends AbstractView {
         </div>
 	<div class="checkbox">
             <label>
-                <input type="checkbox" name="Prezime"> Prezime &nbsp;
+                <input type="checkbox" name="prezime"> Prezime &nbsp;
             </label>
         </div>
         <div class="checkbox">

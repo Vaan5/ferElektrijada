@@ -455,7 +455,7 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
 					LEFT JOIN podrucjesudjelovanja ON podrucjesudjelovanja.idSudjelovanja = sudjelovanje.idSudjelovanja
 					LEFT JOIN putovanje ON putovanje.idPutovanja = sudjelovanje.idPutovanja
 					LEFT JOIN bus ON bus.idBusa = putovanje.idBusa
-				WHERE sudjelovanje.idElektrijade = :idE AND podrucjesudjelovanja.idPodrucja = :idP AND imaatribut.idPodrucja = :idP";
+				WHERE sudjelovanje.idElektrijade = :idE AND (podrucjesudjelovanja.idPodrucja = :idP OR imaatribut.idPodrucja = :idP)";
 	    
 	    $pdo = $this->getPdo();
 	    $q = $pdo->prepare($statement);
