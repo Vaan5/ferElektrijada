@@ -31,20 +31,26 @@ class DBOsoba extends AbstractDBModel {
     
 private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
 		try{
+			$elektrijada = new DBElektrijada();
 			$pdo = $this->getPdo();
-			$q = $pdo->prepare("CALL dohvatiOdredeniAtribut(:id)");
+			$id = $elektrijada->getCurrentElektrijadaId();
+			if($id === false){
+				return null;
+			}
+			$q = $pdo->prepare("CALL dohvatiOdredeniAtribut(:id,:elektrijada)");
 			$q->bindValue(":id", $idOsobe);
+			$q->bindValue(":elektrijada", $id);
 			$q->execute();
-			$rez=$q->fetch(); //dohvatili smo ulogu
+			$rez=$q->fetchAll(); //dohvatili smo uloge
 		}catch (\PDOException $e) {
            return false;
 		}
-		if(isset($rez->nazivAtributa) && strtoupper($rez->nazivAtributa)=="VODITELJ"&& $rez!=false){
-			return $uloga.'V'; //ako je korisnik i voditelj dobiva nastavak "V"
+		foreach($rez as $x){ //ako je u bar jednom atributu voditelj
+		if(isset($x->nazivAtributa) && strtoupper($x->nazivAtributa)=="VODITELJ"&& $x!=false){
+				return $uloga.'V'; //ako je korisnik i voditelj dobiva nastavak "V"
+			}
 		}
-		else{
 			return $uloga;
-		}
 	}
 	
 	private function getPodrucja($idOsobe){//vraca sva podrucja u kojima sudjeluje osoba
