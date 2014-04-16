@@ -13,7 +13,16 @@ class AddContact extends AbstractView {
     protected function outputHTML() {
 	
 	// mediji na isti nacin kao i sponzori i tvrtke (drop down list)
-        echo new \view\components\KontaktOsobeForm();
+        echo new \view\components\KontaktOsobeForm(array(
+			"postAction" => \route\Route::get('d3')->generate(array(
+				"controller" => 'ozsn',
+				"action" => 'addContact'
+			)),
+			"submitButtonText" => "Dodaj kontakt osobu",
+			"sponzori" => $this->sponzori,
+			"tvrtke" => $this->tvrtke,
+			"mediji" => $this->mediji
+		));
     }
     
     public function setErrorMessage($errorMessage) {

@@ -2242,7 +2242,8 @@ class Ozsn implements Controller {
                         "sponzori" => $sponzori,
 			"mediji" => $mediji
 		)),
-            "title" => "Dodavanje Kontakta"
+            "title" => "Dodavanje Kontakta",
+			"script" => new \view\scripts\KontaktOsobeFormJs()
             ));
     }
     
@@ -2399,7 +2400,8 @@ class Ozsn implements Controller {
 		"mailovi" => $mailovi,
 		"mobiteli" => $mobiteli
 	    )),
-	    "title" => "Mijenjanje Kontakta"
+	    "title" => "Mijenjanje Kontakta",
+		"script" => new \view\scripts\KontaktOsobeFormJs()
 	));
     }
     
@@ -2494,7 +2496,8 @@ class Ozsn implements Controller {
                 "resultMessage" => $this->resultMessage,
                 "kontakti" => $kontakti,
             )),
-            "title" => "Kontakt Osobe"
+            "title" => "Kontakt Osobe",
+			"script" => new \view\scripts\ozsn\ContactListJs()
         ));
     }
     

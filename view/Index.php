@@ -59,6 +59,20 @@ class Index extends AbstractView {
         "controller" => 'reportGenerator',
         "action" => 'xlsTest'
     )) . "?type=xlsx";?>">excel_xlsx</a>
+	
+	<br><br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'addContact'
+    )) . "?type=xlsx";?>">Dodaj kontakt osobu</a>
+	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'displayContact'
+    )) . "?type=xlsx";?>">Lista kontakt osoba</a>
 	</p>
 	
 	<br><br>
