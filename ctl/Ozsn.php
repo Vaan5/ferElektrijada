@@ -18,6 +18,27 @@ class Ozsn implements Controller {
         }
     }
     
+    private function generateFile($type, $array) {
+	$reportGen = new \model\reports\ReportModel();
+	$tmp = sys_get_temp_dir();
+	$path = $tmp . "/" . date("Y_m_d_H_i_s") . "_" . session("auth");
+	switch ($type) {
+	    case 'pdf':
+		$pdf = $reportGen->generatePdf($array);
+		$path .= ".pdf";
+		$pdf->Output($path);
+		break;
+	    case 'xls':
+	    case 'xlsx':
+		$path = $reportGen->generateExcel($array, $type);
+		break;
+	    default:
+		preusmjeri(\route\Route::get('d1')->generate() . "?msg=typeconf");
+		break;
+	}
+	return $path;
+    }
+    
     /**
      * function to check if get("id") is a number
      */
@@ -2643,16 +2664,34 @@ class Ozsn implements Controller {
             $handler = new \model\ExceptionHandlerModel($e);
             $this->errorMessage = $handler;
         }
-		
-	echo new \view\Main(array(
-            "body" => new \view\ozsn\VelMajiceList(array(
-                "errorMessage" => $this->errorMessage,
-                "resultMessage" => $this->resultMessage,
-                "velicine" => $velicine
-            )),
-            "title" => "Lista velicina",
-            "script" => new \view\scripts\ozsn\VelMajiceListJs()
-        ));
+	
+	// put in try catch block
+	if (get("type")) {
+	    // generate file
+	    $pomPolje = array("Veličina majice");
+	    $array = array();
+	    $array[] = $pomPolje;
+	    foreach ($velicine as $v) {
+		$pom = array();
+		$pom[] = $v->velicina;
+		$array[] = $pom;
+	    }
+	    $path = $this->generateFile(get("type"), $array);
+	    
+	    echo new \view\ShowFile(array(
+		"path" => $path,
+		"type" => get("type")
+	    ));
+	}
+	    echo new \view\Main(array(
+		"body" => new \view\ozsn\VelMajiceList(array(
+		    "errorMessage" => $this->errorMessage,
+		    "resultMessage" => $this->resultMessage,
+		    "velicine" => $velicine
+		)),
+		"title" => "Lista velicina",
+		"script" => new \view\scripts\ozsn\VelMajiceListJs()
+	    ));
 	}
 	
     /**

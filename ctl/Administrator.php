@@ -21,6 +21,27 @@ class Administrator implements Controller {
         return false;
     }
     
+    private function generateFile($type, $array) {
+	$reportGen = new \model\reports\ReportModel();
+	$tmp = sys_get_temp_dir();
+	$path = $tmp . "/" . date("Y_m_d_H_i_s") . "_" . session("auth");
+	switch ($type) {
+	    case 'pdf':
+		$pdf = $reportGen->generatePdf($array);
+		$path .= ".pdf";
+		$pdf->Output($path);
+		break;
+	    case 'xls':
+	    case 'xlsx':
+		$path = $reportGen->generateExcel($array, $type);
+		break;
+	    default:
+		preusmjeri(\route\Route::get('d1')->generate() . "?msg=typeconf");
+		break;
+	}
+	return $path;
+    }
+    
     private function checkMessages() {
         switch(get("msg")) {
             case 'succ':
@@ -615,6 +636,31 @@ class Administrator implements Controller {
         $osobe = array();
         $osoba = new \model\DBOsoba();
         
+	if (get("type")) {
+	    // generate file
+	    $pomPolje = array("Ime", "Prezime", "Korisničko ime", "JMBAG", "Datum Rođenja", "Mobitel", "Email", "OIB", "Uloga");
+	    $array = array();
+	    $array[] = $pomPolje;
+	    if (session('search') === 'all') {
+		$osobe = $osoba->getAllPersons();
+	    } else {
+		$polje = unserialize(session('search'));
+		$osobe = $osoba->find($polje[0], $polje[1], $polje[2], $polje[3], $polje[4]);
+	    }
+	    if($osobe !== false && count($osobe)) {
+		foreach ($osobe as $v) {
+		    $pom = array($v->ime, $v->prezime, $v->ferId, $v->JMBAG, $v->datRod, $v->brojMob, $v->mail, $v->OIB, $v->uloga);
+		    $array[] = $pom;
+		}
+	    }
+	    $path = $this->generateFile(get("type"), $array);
+	    
+	    echo new \view\ShowFile(array(
+		"path" => $path,
+		"type" => get("type")
+	    ));
+	}
+	
         if(!postEmpty()) {
             // search db
             // first validate input
@@ -632,12 +678,16 @@ class Administrator implements Controller {
             } else {
                 // ok the data is correct now lets find what they're looking for
                 $osobe = $osoba->find(post('ime'), post('prezime'), post('ferId'), post('OIB'), post('JMBAG'));
+		
+		$_SESSION['search'] = serialize(array(post('ime'), post('prezime'), post('ferId'), post('OIB'), post('JMBAG')));
+		
                 if($osobe === false)
                     $this->errorMessage = "Nije pronađena niti jedna osoba!";
             }
         } else if (get("a") !== false) {
             // get all persons
             $osobe = $osoba->getAllPersons();
+	    $_SESSION['search'] = 'all';
             if($osobe === false)
                 $this->errorMessage = "Ne postoji niti jedna osoba!";
         } else {
