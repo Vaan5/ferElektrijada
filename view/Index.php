@@ -65,17 +65,27 @@ class Index extends AbstractView {
 	<a href="<?php echo \route\Route::get('d3')->generate(array(
         "controller" => 'ozsn',
         "action" => 'addContact'
-    )) . "?type=xlsx";?>">Dodaj kontakt osobu</a>
+    )) . "";?>">Dodaj kontakt osobu</a>
 	
 	<br>
 	
 	<a href="<?php echo \route\Route::get('d3')->generate(array(
         "controller" => 'ozsn',
         "action" => 'displayContact'
-    )) . "?type=xlsx";?>">Lista kontakt osoba</a>
-	</p>
+    )) . "";?>">Lista kontakt osoba</a>
+	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'searchContacts'
+    )) . "";?>">Pretraži kontakt osobe</a>
+	
+	
+	</p>	
 	
 	<br><br>
+	
 	<b>Izvještaji</b>
 	
 	<br>
