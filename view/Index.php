@@ -71,7 +71,7 @@ class Index extends AbstractView {
 	
 	<a href="<?php echo \route\Route::get('d3')->generate(array(
         "controller" => 'ozsn',
-        "action" => 'displayContact'
+        "action" => 'displayContacts'
     )) . "";?>">Lista kontakt osoba</a>
 	
 	<br>

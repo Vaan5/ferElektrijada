@@ -45,4 +45,10 @@ class DBEmailAdrese extends AbstractDBModel {
 		throw $e;
 	    }
 	}
+	
+	public function getContactEmails($idKontakta) {
+	    return $this->select()->where(array(
+		"idKontakta" => $idKontakta
+	    ))->fetchAll();
+	}
 }

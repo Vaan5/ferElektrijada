@@ -48,7 +48,7 @@ class KontaktOsobeForm extends AbstractView {
 		</div>
 		
 		<div class="form-group">
-			<label for="prezimeKontakt" class="col-sm-3 control-label">Ime</label>
+			<label for="prezimeKontakt" class="col-sm-3 control-label">Prezime</label>
 			<div class="col-sm-9">
 				<input type="text" name="prezimeKontakt" class="form-control" placeholder="Upišite prezime kontakta" <?php if($this->kontakt && $this->kontakt->prezimeKontakt) echo 'value="' . $this->sponzor->prezimeKontakt . '"' ?> />
 			</div>

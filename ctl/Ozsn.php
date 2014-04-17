@@ -2194,8 +2194,8 @@ class Ozsn implements Controller {
             }
             
             $k = 1;
-            while (post("mail" . $i) !== false) {
-                $validator = new \model\formModel\NumberValidationModel(array("mail" => post("mail" . $k)));
+            while (post("mail" . $k) !== false) {
+                $validator = new \model\formModel\MailValidationModel(array("mail" => post("mail" . $k)));
                 $pov = $validator->validate();
                 if ($pov !== true) {
                     $message = $validacija->decypherErrors($pov);
@@ -2222,7 +2222,7 @@ class Ozsn implements Controller {
                     $mail->addNewOrIgnore($kontak->getPrimaryKey(), post("mail" . $j));
                 }
                 
-                preusmjeri(\route\Route::get('d1')->generate() . "msg=succContact");
+                preusmjeri(\route\Route::get('d1')->generate() . "?msg=succContact");
                 
             } catch (\PDOException $e) {
                 $handler = new \model\ExceptionHandlerModel($e);
@@ -2341,8 +2341,8 @@ class Ozsn implements Controller {
             }
             
             $k = 1;
-            while (post("mail" . $i) !== false) {
-                $validator = new \model\formModel\NumberValidationModel(array("mail" => post("mail" . $k)));
+            while (post("mail" . $k) !== false) {
+                $validator = new \model\formModel\MailValidationModel(array("mail" => post("mail" . $k)));
                 $pov = $validator->validate();
                 if ($pov !== true) {
                     $message = $validacija->decypherErrors($pov);
