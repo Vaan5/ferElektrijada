@@ -63,7 +63,7 @@ DELIMITER $$
 
 CREATE  PROCEDURE `dodajOsobu`(IN ime VARCHAR(50), IN prezime VARCHAR(50), IN mail VARCHAR(50),
  IN ferId VARCHAR(50), IN brojMob VARCHAR(20), IN passwordVAR VARCHAR(255), IN JMBAG VARCHAR(10), IN datRod DATE, IN spol CHAR(1),
-IN brOsobne VARCHAR(20),IN brPutovnice VARCHAR(30),IN osobnaVrijediDo DATE,IN putovnicaVrijediDo DATE,IN uloga CHAR(1), IN zivotopis VARCHAR(200), IN MBG VARCHAR(9), IN OIB VARCHAR(11), IN idNadredjena INT(10) )
+IN brOsobne VARCHAR(20),IN brPutovnice VARCHAR(30),IN osobnaVrijediDo DATE,IN putovnicaVrijediDo DATE,IN uloga CHAR(1), IN zivotopis VARCHAR(200), IN MBG VARCHAR(9), IN OIB VARCHAR(11), IN idNadredjena INT(10), IN vrijedi BOOLEAN )
 BEGIN
 IF (spol IN ('m','z','M','Z') OR spol IS NULL) THEN
 IF NOT EXISTS (SELECT * FROM OSOBA WHERE OSOBA.brOsobne=brOsobne ) THEN
@@ -75,7 +75,7 @@ IF NOT EXISTS (SELECT * FROM OSOBA WHERE OSOBA.MBG=MBG ) THEN
 IF NOT EXISTS (SELECT * FROM OSOBA WHERE OSOBA.ferId=ferId ) THEN
 IF ((osobnaVrijediDo>CURDATE() OR osobnaVrijediDo IS NULL) AND (putovnicaVrijediDo>CURDATE() OR putovnicaVrijediDo IS NULL)) THEN
 
-INSERT INTO OSOBA VALUES (NULL, ime, prezime, mail, brojMob, ferId, passwordVAR,  JMBAG, spol,datRod,brOsobne,brPutovnice,osobnaVrijediDo,putovnicaVrijediDo,uloga,zivotopis,MBG,OIB,idNadredjena);
+INSERT INTO OSOBA VALUES (NULL, ime, prezime, mail, brojMob, ferId, passwordVAR,  JMBAG, spol,datRod,brOsobne,brPutovnice,osobnaVrijediDo,putovnicaVrijediDo,uloga,zivotopis,MBG,OIB,idNadredjena,vrijedi);
 
 ELSE 
 	   SIGNAL SQLSTATE '02000'SET MESSAGE_TEXT =' Istekla je putovnica ili osobna iskaznica!';
@@ -111,13 +111,13 @@ DELIMITER ;
 DELIMITER $$
 CREATE  PROCEDURE `azurirajOsobu`(IN idOsobe INT(10), ime VARCHAR(50), IN prezime VARCHAR(50), IN mail VARCHAR(50),
  IN ferId VARCHAR(50), IN brojMob VARCHAR(20), IN passwordVAR VARCHAR(255), IN JMBAG VARCHAR(10), IN datRod DATE, IN spol CHAR(1),
-IN brOsobne VARCHAR(20),IN brPutovnice VARCHAR(30),IN osobnaVrijediDo DATE,IN putovnicaVrijediDo DATE,IN uloga CHAR(1), IN zivotopis VARCHAR(200), IN MBG VARCHAR(9), IN OIB VARCHAR(11),IN idNadredjena INT(10))
+IN brOsobne VARCHAR(20),IN brPutovnice VARCHAR(30),IN osobnaVrijediDo DATE,IN putovnicaVrijediDo DATE,IN uloga CHAR(1), IN zivotopis VARCHAR(200), IN MBG VARCHAR(9), IN OIB VARCHAR(11),IN idNadredjena INT(10), IN vrijedi BOOLEAN)
 BEGIN
 IF (spol IN ('m','z','M','Z')) THEN 
 IF ((osobnaVrijediDo>CURDATE() OR osobnaVrijediDo IS NULL) AND (putovnicaVrijediDo>CURDATE() OR putovnicaVrijediDo IS NULL)) THEN
 IF EXISTS (SELECT * FROM OSOBA WHERE OSOBA.idOsobe=idOsobe) THEN
 UPDATE OSOBA
-SET OSOBA.JMBAG=JMBAG, OSOBA.password=passwordVAR, OSOBA.ime=ime, OSOBA.prezime=prezime, OSOBA.mail=mail, OSOBA.ferId=ferId, OSOBA.brojMob=brojMob, OSOBA.datRod=datRod, OSOBA.spol=spol, OSOBA.brOsobne=brOsobne, OSOBA.brPutovnice=brPutovnice, OSOBA.putovnicaVrijediDo=putovnicaVrijediDo, OSOBA.osobnaVrijediDo=osobnaVrijediDo, OSOBA.uloga=uloga,OSOBA.zivotopis=zivotopis, OSOBA.MBG=MBG, OSOBA.OIB=OIB, OSOBA.idNadredjena=idNadredjena
+SET OSOBA.JMBAG=JMBAG, OSOBA.password=passwordVAR, OSOBA.ime=ime, OSOBA.prezime=prezime, OSOBA.mail=mail, OSOBA.ferId=ferId, OSOBA.brojMob=brojMob, OSOBA.datRod=datRod, OSOBA.spol=spol, OSOBA.brOsobne=brOsobne, OSOBA.brPutovnice=brPutovnice, OSOBA.putovnicaVrijediDo=putovnicaVrijediDo, OSOBA.osobnaVrijediDo=osobnaVrijediDo, OSOBA.uloga=uloga,OSOBA.zivotopis=zivotopis, OSOBA.MBG=MBG, OSOBA.OIB=OIB, OSOBA.idNadredjena=idNadredjena,OSOBA.vrijedi=vrijedi
 WHERE OSOBA.idOsobe=idOsobe ;
 
 
