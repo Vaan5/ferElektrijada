@@ -22,11 +22,11 @@ Route::register("d2", new DefaultRoute("<controller>", array(
                                                           )) 
 );
 
-Route::register("d4", new DefaultRoute("<controller>/<action>/<id>", array(), array(
-                                                                              "controller" => "[^/]+",
-                                                                              "action" => "[^/]+"
-                                                                         ))
-);
+//Route::register("d4", new DefaultRoute("<controller>/<action>/<id>", array(), array(
+//                                                                              "controller" => "[^/]+",
+//                                                                              "action" => "[^/]+"
+//                                                                         ))
+//);
 
 Route::register("d3", new DefaultRoute("<controller>/<action>", array(), array(
                                                                               "controller" => "[^/]+",

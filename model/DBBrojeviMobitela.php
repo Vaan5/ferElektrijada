@@ -45,4 +45,10 @@ class DBBrojeviMobitela extends AbstractDBModel {
 		throw $e;
 	    }
 	}
+	
+	public function getContactNumbers($idKontakta) {
+	    return $this->select()->where(array(
+		"idKontakta" => $idKontakta
+	    ))->fetchAll();
+	}
 }

@@ -40,155 +40,6 @@ class Index extends AbstractView {
 	
 	<br><br>
 	<b>OZSN</b>
-	
-	<br>
-        
-        <a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'addContact'
-    ));?>">Dodavanje Kontakt Osobe</a>
-	
-	<br>
-        
-        <a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'searchContacts'
-    ));?>">Pretraživanje Kontakt Osoba</a>
-	
-	<br>
-        
-        <a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'displayTvrtke'
-    ));?>">DBM Tvrtke</a>
-	
-	<br>
-        
-        <a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'displayActiveTvrtke'
-    ));?>">DBM Korištenja usluga tvrtki</a>
-	
-	<br>
-        
-        <a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'displayMediji'
-    ));?>">DBM Medija</a>
-	
-	<br>
-        
-        <a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'displayActiveObjava'
-    ));?>">Aktualne objave u medijima</a>
-	
-	<br>
-        
-        <a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'displayObjava'
-    ));?>">DBM Objava</a>
-	
-	<br>
-        
-        <a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'displayActiveObjava'
-    ));?>">DBM Aktualnih Objava</a>
-	
-	<br>
-        
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'displayAtribut'
-    ));?>">DBM Atributi</a>
-	
-	<br>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'displayVelMajice'
-    ));?>">DBM Veličine majica</a>
-	
-	<br>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'displayGodStud'
-    ));?>">DBM Godine studija</a>
-	
-	<br>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'displayNacinPromocije'
-    ));?>">DBM Nacina promocije</a>
-	
-	<br>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'displayKategorija'
-    ));?>">DBM Kategorija sponzora</a>
-		
-	<br>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'displayZavod'
-    ));?>">DBM Zavodi</a>
-		
-	<br>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'displayRadnoMjesto'
-    ));?>">DBM Radna mjesta</a>
-		
-	<br>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'displaySmjer'
-    ));?>">DBM Smjerovi</a>
-	
-		
-	<br>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'addSponzor'
-    ));?>">Dodaj sponzora</a>
-	
-	<br>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'displaySponzor'
-    ));?>">Lista sponzora</a>
-	
-	<br>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'displaySponzorsByElektrijada'
-    ));?>">Lista sponzora po elektrijadama</a>
-	
-	<br>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'displayAreaSponzor'
-    ));?>">Lista područnih sponzora ovogodišnje elektrijade</a>
-	
-	<br>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'displayActiveSponzor'
-    ));?>">Lista ovogodišnjih sponzora</a>
-	
 	<p>
 	<b>Generator Pdfova</b>
 	<a href="<?php echo \route\Route::get('d3')->generate(array(
@@ -208,9 +59,33 @@ class Index extends AbstractView {
         "controller" => 'reportGenerator',
         "action" => 'xlsTest'
     )) . "?type=xlsx";?>">excel_xlsx</a>
-	</p>
 	
 	<br><br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'addContact'
+    )) . "";?>">Dodaj kontakt osobu</a>
+	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'displayContacts'
+    )) . "";?>">Lista kontakt osoba</a>
+	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+        "controller" => 'ozsn',
+        "action" => 'searchContacts'
+    )) . "";?>">Pretraži kontakt osobe</a>
+	
+	
+	</p>	
+	
+	<br><br>
+	
 	<b>Izvještaji</b>
 	
 	<br>

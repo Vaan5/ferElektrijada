@@ -69,7 +69,7 @@ class DBKontaktOsobe extends AbstractDBModel {
 	    $query = "SELECT * FROM kontaktosobe WHERE ";
 	    $number = 0;
 	    if ($search !== NULL) {
-		$query .= "(imeKontakt = :s1 OR prezimeKontakt = :s2)";
+		$query .= "(UPPER(imeKontakt) LIKE :s1 OR UPPER(prezimeKontakt) LIKE :s2)";
 		$number++;
 	    }
 	    if ($idTvrtke !== NULL) {
@@ -90,12 +90,12 @@ class DBKontaktOsobe extends AbstractDBModel {
 	    $pdo = $this->getPdo();
 	    $q = $pdo->prepare($query);
 	    if ($search !== NULL) {
-		$q->bindValue (":s1", $search);
-		$q->bindValue (":s2", $search);
+		$q->bindValue (":s1", "%" . strtoupper($search) . "%");
+		$q->bindValue (":s2", "%" . strtoupper($search) . "%");
 	    }
 	    if ($idTvrtke !== NULL) $q->bindValue (":idTvrtke", $idTvrtke);
 	    if ($idSponzora !== NULL) $q->bindValue (":idSponzora", $idSponzora);
-	    if ($idMedija !== NULL) $q->bindValue (":Medija", $idMedija);
+	    if ($idMedija !== NULL) $q->bindValue (":idMedija", $idMedija);
 	    
 	    $q->execute();
 	    return $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));	    

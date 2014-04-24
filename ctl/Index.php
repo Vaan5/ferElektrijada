@@ -26,6 +26,9 @@ class Index implements Controller {
             case 'dunno':
                 $this->errorMessage = "Tražena osoba ne postoji!";
                 break;
+	    case 'typeconf':
+                $this->errorMessage = "Nepoznati tip datoteke!";
+                break;
             case 'notOzsn':
                 $this->errorMessage = "Osoba nije član OZSN-a";
                 break;

@@ -18,6 +18,27 @@ class Ozsn implements Controller {
         }
     }
     
+    private function generateFile($type, $array) {
+	$reportGen = new \model\reports\ReportModel();
+	$tmp = sys_get_temp_dir();
+	$path = $tmp . "/" . date("Y_m_d_H_i_s") . "_" . session("auth");
+	switch ($type) {
+	    case 'pdf':
+		$pdf = $reportGen->generatePdf($array);
+		$path .= ".pdf";
+		$pdf->Output($path);
+		break;
+	    case 'xls':
+	    case 'xlsx':
+		$path = $reportGen->generateExcel($array, $type);
+		break;
+	    default:
+		preusmjeri(\route\Route::get('d1')->generate() . "?msg=typeconf");
+		break;
+	}
+	return $path;
+    }
+    
     /**
      * function to check if get("id") is a number
      */
@@ -120,6 +141,190 @@ class Ozsn implements Controller {
 	    )),
 	    "title" => "Tvrtke"
 	));
+    }
+    
+    public function displayUserFunctions() {
+	$this->checkRole();
+	$this->checkMessages();
+	
+	$funkcija = new \model\DBFunkcija();
+	$obavljaFunkciju = new \model\DBObavljaFunkciju();
+	$sveFunkcije = array();
+	$funkcijeKorisnika = array();
+	try {
+	    $elektrijada = new \model\DBElektrijada();
+	    $idElektrijade = $elektrijada->getCurrentElektrijadaId();
+	    $sveFunkcije = $funkcija->getAllFunkcija();
+	    $funkcijeKorisnika = $obavljaFunkciju->loadOzsnFunctions(session("auth"), $idElektrijade);
+	} catch (\PDOException $e) {
+	    $handler = new \model\ExceptionHandlerModel($e);
+            $this->errorMessage = $handler;
+	}
+	
+	echo new \view\Main(array(
+	    "body" => new \view\ozsn\OzsnUdrugeList(array(
+		"errorMessage" => $this->errorMessage,
+		"resultMessage" => $this->resultMessage,
+		"sveFunkcije" => $sveFunkcije,
+		"funkcijeKorisnika" => $funkcijeKorisnika
+	    )),
+	    "title" => "Vaše Funkcije"
+	));
+    }
+    
+    public function deleteUserFunction() {
+	$this->checkRole();
+        
+        $this->idCheck("displayUserFunctions");
+	
+        $obavljaFunkciju = new \model\DBObavljaFunkciju();
+        try {
+	    if ($obavljaFunkciju->checkOzsnFunction(get("id"), session("auth"))) {
+		$obavljaFunkciju->deleteRow(get("id"));
+	    } else {
+		$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Ne možete brisati tuđe funkcije!");
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "ozsn",
+		    "action" => "displayUserFunctions"
+		)) . "?msg=excep");
+	    }
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUserFunctions"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUserFunctions"
+            )) . "?msg=excep");
+        }
+    }
+    
+    public function addUserFunction() {
+	$this->checkRole();
+
+        $obavljaFunkciju = new \model\DBObavljaFunkciju();
+        
+	if (!postEmpty()) {
+	    try {
+		$elektrijada = new \model\DBElektrijada();
+		$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+		$obavljaFunkciju->addNewRow(post("idFunkcije", null), session("auth"), $idElektrijade);
+
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "ozsn",
+		    "action" => "displayUserFunctions"
+		)) . '?msg=succa');
+	    } catch (\PDOException $e){
+		$handler = new \model\ExceptionHandlerModel($e);
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "ozsn",
+		    "action" => "displayUserFunctions"
+		)) . "?msg=excep");
+	    }
+	} else {
+	    $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznata funkcija!");
+	    $_SESSION["exception"] = serialize($handler);
+	    preusmjeri(\route\Route::get('d3')->generate(array(
+		"controller" => "ozsn",
+		"action" => "displayUserFunctions"
+	    )) . "?msg=excep");
+	}
+    }
+    
+    /**
+     * Displays associations in which the logged in user is registered
+     */
+    public function displayUserUdruge() {
+	$this->checkRole();
+	$this->checkMessages();
+	
+	$udruga = new \model\DBUdruga();
+	$jeUUdruzi = new \model\DBJeUUdruzi();
+	$sveUdruge = array();
+	$udrugeKorisnika = array();
+	try {
+	    $sveUdruge = $udruga->getAllUdruga();
+	    $udrugeKorisnika = $jeUUdruzi->loadUserUdruge(session("auth"));
+	} catch (\PDOException $e) {
+	    $handler = new \model\ExceptionHandlerModel($e);
+            $this->errorMessage = $handler;
+	}
+	
+	echo new \view\Main(array(
+	    "body" => new \view\ozsn\OzsnUdrugeList(array(
+		"errorMessage" => $this->errorMessage,
+		"resultMessage" => $this->resultMessage,
+		"sveUdruge" => $sveUdruge,
+		"udrugeKorisnika" => $udrugeKorisnika
+	    )),
+	    "title" => "Vaše Udruge"
+	));
+    }
+    
+    /**
+     * Registers a user to an association via post parameter idUdruge
+     */
+    public function addUserUdruga() {
+	$this->checkRole();
+
+        $jeuudruzi = new \model\DBJeUUdruzi();
+        
+	if (!postEmpty()) {
+	    try {
+		$jeuudruzi->addRow(post("idUdruge", null), session("auth"));
+
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "ozsn",
+		    "action" => "displayUserUdruge"
+		)) . '?msg=succa');
+	    } catch (\PDOException $e){
+		$handler = new \model\ExceptionHandlerModel($e);
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "ozsn",
+		    "action" => "displayUserUdruge"
+		)) . "?msg=excep");
+	    }
+	} else {
+	    $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznata udruga!");
+	    $_SESSION["exception"] = serialize($handler);
+	    preusmjeri(\route\Route::get('d3')->generate(array(
+		"controller" => "ozsn",
+		"action" => "displayUserUdruge"
+	    )) . "?msg=excep");
+	}
+    }
+    
+    /**
+     * Deletes user registration from an association via get parameter
+     */
+    public function deleteUserUdruga() {
+	$this->checkRole();
+        
+        $this->idCheck("displayUserUdruge");
+	
+        $jeuudruzi = new \model\DBJeUUdruzi();
+        try {
+            $jeuudruzi->deleteRow(get("id"), session("auth"));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUserUdruge"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUserUdruge"
+            )) . "?msg=excep");
+        }
     }
     
     /**
@@ -1989,8 +2194,8 @@ class Ozsn implements Controller {
             }
             
             $k = 1;
-            while (post("mail" . $i) !== false) {
-                $validator = new \model\formModel\NumberValidationModel(array("mail" => post("mail" . $k)));
+            while (post("mail" . $k) !== false) {
+                $validator = new \model\formModel\MailValidationModel(array("mail" => post("mail" . $k)));
                 $pov = $validator->validate();
                 if ($pov !== true) {
                     $message = $validacija->decypherErrors($pov);
@@ -2017,7 +2222,7 @@ class Ozsn implements Controller {
                     $mail->addNewOrIgnore($kontak->getPrimaryKey(), post("mail" . $j));
                 }
                 
-                preusmjeri(\route\Route::get('d1')->generate() . "msg=succContact");
+                preusmjeri(\route\Route::get('d1')->generate() . "?msg=succContact");
                 
             } catch (\PDOException $e) {
                 $handler = new \model\ExceptionHandlerModel($e);
@@ -2037,7 +2242,8 @@ class Ozsn implements Controller {
                         "sponzori" => $sponzori,
 			"mediji" => $mediji
 		)),
-            "title" => "Dodavanje Kontakta"
+            "title" => "Dodavanje Kontakta",
+			"script" => new \view\scripts\KontaktOsobeFormJs()
             ));
     }
     
@@ -2135,8 +2341,8 @@ class Ozsn implements Controller {
             }
             
             $k = 1;
-            while (post("mail" . $i) !== false) {
-                $validator = new \model\formModel\NumberValidationModel(array("mail" => post("mail" . $k)));
+            while (post("mail" . $k) !== false) {
+                $validator = new \model\formModel\MailValidationModel(array("mail" => post("mail" . $k)));
                 $pov = $validator->validate();
                 if ($pov !== true) {
                     $message = $validacija->decypherErrors($pov);
@@ -2194,7 +2400,8 @@ class Ozsn implements Controller {
 		"mailovi" => $mailovi,
 		"mobiteli" => $mobiteli
 	    )),
-	    "title" => "Mijenjanje Kontakta"
+	    "title" => "Mijenjanje Kontakta",
+		"script" => new \view\scripts\KontaktOsobeFormJs()
 	));
     }
     
@@ -2289,7 +2496,8 @@ class Ozsn implements Controller {
                 "resultMessage" => $this->resultMessage,
                 "kontakti" => $kontakti,
             )),
-            "title" => "Kontakt Osobe"
+            "title" => "Kontakt Osobe",
+			"script" => new \view\scripts\ozsn\ContactListJs()
         ));
     }
     
@@ -2459,16 +2667,34 @@ class Ozsn implements Controller {
             $handler = new \model\ExceptionHandlerModel($e);
             $this->errorMessage = $handler;
         }
-		
-	echo new \view\Main(array(
-            "body" => new \view\ozsn\VelMajiceList(array(
-                "errorMessage" => $this->errorMessage,
-                "resultMessage" => $this->resultMessage,
-                "velicine" => $velicine
-            )),
-            "title" => "Lista velicina",
-            "script" => new \view\scripts\ozsn\VelMajiceListJs()
-        ));
+	
+	// put in try catch block
+	if (get("type")) {
+	    // generate file
+	    $pomPolje = array("Veličina majice");
+	    $array = array();
+	    $array[] = $pomPolje;
+	    foreach ($velicine as $v) {
+		$pom = array();
+		$pom[] = $v->velicina;
+		$array[] = $pom;
+	    }
+	    $path = $this->generateFile(get("type"), $array);
+	    
+	    echo new \view\ShowFile(array(
+		"path" => $path,
+		"type" => get("type")
+	    ));
+	}
+	    echo new \view\Main(array(
+		"body" => new \view\ozsn\VelMajiceList(array(
+		    "errorMessage" => $this->errorMessage,
+		    "resultMessage" => $this->resultMessage,
+		    "velicine" => $velicine
+		)),
+		"title" => "Lista velicina",
+		"script" => new \view\scripts\ozsn\VelMajiceListJs()
+	    ));
 	}
 	
     /**
