@@ -146,7 +146,7 @@ class Sudionik implements Controller {
 				$radnoMjesto->loadIfExists($sudjelovanje->idRadnogMjesta);
 				$zavod->loadIfExists($sudjelovanje->idZavoda);
 				$godina->loadIfExists($sudjelovanje->idGodStud);
-				$smjer->loadIfExists($sudjelovanje->idSmjera);
+				$smjerovi = null;
 			} else if ($sudjelovanje->isStudent()) {
 				$godina->loadIfExists($sudjelovanje->idGodStud);
 				$smjer->loadIfExists($sudjelovanje->idSmjera);
@@ -254,7 +254,7 @@ class Sudionik implements Controller {
 					
 					if ($sudjelovanje->isStaff()) {
 						$sudjelovanje->modifyRow(post("idSudjelovanja"), FALSE, FALSE, FALSE, post("idVelicine", NULL),
-								post("idGodStud", NULL), post("idSmjera", NULL), post("idRadnogMjesta", NULL), post("idZavoda", NULL), FALSE);
+								post("idGodStud", NULL), NULL, post("idRadnogMjesta", NULL), post("idZavoda", NULL), FALSE);
 					} else {
 						$sudjelovanje->modifyRow(post("idSudjelovanja"), FALSE, FALSE, FALSE, post("idVelicine", NULL),
 								post("idGodStud", NULL), post("idSmjera", NULL), NULL, NULL, FALSE);
@@ -350,6 +350,53 @@ class Sudionik implements Controller {
 
 		echo new \view\Download(array(
 			"path" => $osoba->zivotopis
+		));
+	}
+	
+	public function displayMyTeam() {
+		$this->checkRole();
+		$this->checkMessages();
+		
+		$elektrijada = new \model\DBElektrijada();
+		$sudjelovanje = new \model\DBSudjelovanje();
+		$podrucja = null;
+		$podrucje = new \model\DBPodrucje();
+		$osoba = new \model\DBOsoba();
+		$takmicari = null;
+		$voditelji = null;
+		
+		try {
+			$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+			if (!postEmpty()) {
+				$podrucje->load(post("idPodrucja"));
+				$podrucjeSudjelovanja = new \model\DBPodrucjeSudjelovanja();
+				
+				$takmicari = $podrucjeSudjelovanja->getPaticipants(post("idPodrucja"), $idElektrijade);
+				
+				$osoba->load(session("auth"));
+				$imaatribut = new \model\DBImaatribut();
+				$voditelji = $imaatribut->getVoditelji(post("idPodrucja"), $idElektrijade);
+			} else {
+				$podrucja = $sudjelovanje->getContestantAreas(session("auth"), $idElektrijade);
+			}
+		} catch (\app\model\NotFoundException $e) {
+			$this->createMessage("Nepostojeći identifikator!", "d3", "sudionik", "displayMyTeam");
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->createMessage($handler, "d3", "sudionik", "displayMyTeam");
+		}
+
+		echo new \view\Main(array(
+			"title" => "Moj Tim",
+			"body" => new \view\sudionik\MyTeam(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"podrucja" => $podrucja,
+				"takmicari" => $takmicari,
+				"podrucje" => $podrucje,
+				"voditelji" => $voditelji,
+				"osoba" => $osoba
+			))
 		));
 	}
 }

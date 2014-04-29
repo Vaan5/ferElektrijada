@@ -1,4 +1,6 @@
-﻿
+-- ﻿ZAKOMENTIRANE PROCEDURE SU PREBACENE U procedure_koristene_u_aplikaciji
+
+
 DELIMITER $$
 CREATE  PROCEDURE `azurirajAtribut`(IN idAtributa INT(10),IN nazivAtributa VARCHAR(100))
 BEGIN
@@ -1656,21 +1658,22 @@ END IF;
 END $$
 DELIMITER ;
 
-DELIMITER $$
-CREATE  PROCEDURE `dohvatiPopisSvihSudionikaIzPodrucja`(IN idElektrijade INT(10), IN idPodrucja INT)
-BEGIN
-	IF EXISTS (SELECT * FROM Elektrijada WHERE Elektrijada.idElektrijade = idElektrijade) THEN
-		IF EXISTS (SELECT * FROM podrucje WHERE podrucje.idPodrucja = idPodrucja) THEN
-			SELECT DISTINCT osoba.idOsobe, osoba.ime, osoba.prezime, podrucjeSudjelovanja.rezultatPojedinacni
-			FROM osoba
-			JOIN podrucjeSudjelovanja ON osoba.idOsobe = podrucjeSudjelovanja.idOsobe
-			WHERE podrucjeSudjelovanja.idElektrijade = idElektrijade AND podrucjeSudjelovanja.idPodrucja = idPodrucja;
-		ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeci ID podrucja';
-		END IF;
-ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeci idELEKTRIJADE';
-	END IF;
-END $$
-DELIMITER ;
+-- DELIMITER $$
+-- CREATE  PROCEDURE `dohvatiPopisSvihSudionikaIzPodrucja`(IN idElektrijade INT(10), IN idPodrucja INT)
+-- BEGIN
+-- 	IF EXISTS (SELECT * FROM Elektrijada WHERE Elektrijada.idElektrijade = idElektrijade) THEN
+-- 		IF EXISTS (SELECT * FROM podrucje WHERE podrucje.idPodrucja = idPodrucja) THEN
+-- 			SELECT DISTINCT osoba.*, podrucjeSudjelovanja.*, sudjelovanje.*
+-- 			FROM osoba
+-- 			JOIN sudjelovanje ON sudjelovanje.idOsobe = osoba.idOsobe
+-- 			JOIN podrucjeSudjelovanja ON sudjelovanje.idSudjelovanja = podrucjeSudjelovanja.idSudjelovanja
+-- 			WHERE sudjelovanje.idElektrijade = idElektrijade AND podrucjeSudjelovanja.idPodrucja = idPodrucja;
+-- 		ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeći identifikator područja';
+-- 		END IF;
+-- 	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeći identifikator Elektrijade!';
+-- 	END IF;
+-- END $$
+-- DELIMITER ;
 
 DELIMITER $$
 CREATE  PROCEDURE `dohvatiPopisSvihTvrtki`(IN idElektrijade INT(10))
