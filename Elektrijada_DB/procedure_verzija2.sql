@@ -1734,7 +1734,7 @@ DELIMITER $$
 CREATE  PROCEDURE `dohvatiZavode`()
 BEGIN
 
-SELECT idZavoda, skraceniNaziv FROM ZAVOD ORDER BY skraceniNaziv ASC;
+SELECT * FROM ZAVOD ORDER BY skraceniNaziv ASC;
 
 END $$
 DELIMITER ;

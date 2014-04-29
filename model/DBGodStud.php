@@ -4,12 +4,7 @@ namespace model;
 use app\model\AbstractDBModel;
 	
 class DBGodStud extends AbstractDBModel {
-	    
-	/**
-	*
-	* @var boolean 
-	*/
-            
+        
     public function getTable(){
         return 'godstud';
     }
@@ -92,6 +87,14 @@ class DBGodStud extends AbstractDBModel {
             throw $e;
         }
     }
+    
+    public function loadIfExists($primaryKey) {
+	try {
+	    $this->load($primaryKey);
+	} catch (\app\model\NotFoundException $e) {
+	    return;
+	} catch (\PDOException $e) {
+	    return;
+	}
+    }
 }
-
-

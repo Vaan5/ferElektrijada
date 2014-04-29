@@ -4,12 +4,7 @@ namespace model;
 use app\model\AbstractDBModel;
 	
 class DBRadnoMjesto extends AbstractDBModel {
-	    
-	/**
-	*
-	* @var boolean 
-	*/
-        
+
     public function getTable() {
         return 'radnomjesto';
     }
@@ -84,6 +79,16 @@ class DBRadnoMjesto extends AbstractDBModel {
         } catch (\PDOException $e) {
             throw $e;
         }
+    }
+    
+    public function loadIfExists($primaryKey) {
+	try {
+	    $this->load($primaryKey);
+	} catch (\app\model\NotFoundException $e) {
+	    return;
+	} catch (\PDOException $e) {
+	    return;
+	}
     }
 	
 }

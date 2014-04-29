@@ -93,6 +93,14 @@ class DBZavod extends AbstractDBModel {
         }
     }
 	
-	
+    public function loadIfExists($primaryKey) {
+	try {
+	    $this->load($primaryKey);
+	} catch (\app\model\NotFoundException $e) {
+	    return;
+	} catch (\PDOException $e) {
+	    return;
+	}
+    }
 }
 

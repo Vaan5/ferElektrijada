@@ -82,7 +82,18 @@ class Index extends AbstractView {
     )) . "";?>">Pretraži kontakt osobe</a>
 	
 	
-	</p>	
+	</p>
+	
+	<br><br>
+	
+	<b>Sudionik NavBar</b>
+	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+	    "controller" => 'sudionik',
+	    "action" => 'displayProfile'
+	)) . "";?>">Profil</a>
 	
 	<br><br>
 	

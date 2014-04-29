@@ -349,8 +349,7 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
             return count($pov) == 0 ? false : $pov[0];
         } catch (\PDOException $e) {
             return false;
-        }
-        
+        }  
     }
     
     public function promoteToOzsn($idOsobe) {
@@ -467,4 +466,24 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
 	    throw $e;
 	}
     }
+    
+    /**************************************************************************
+     *			   CONTESTANT FUNCTIONS
+     **************************************************************************/
+
+    public function checkPassword($idOsobe, $password) {
+	try {
+            $pdo = $this->getPdo();
+            $password = $this->kriptPass($password);
+            $query = $pdo->prepare("SELECT * FROM osoba WHERE idOsobe = :idOsobe AND password = :password");
+            $query->bindValue(":password", $password);
+	    $query->bindValue(":idOsobe", $idOsobe);
+            $query->execute();
+            $pov = $query->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+            return count($pov) == 0 ? false : $pov[0];
+        } catch (\PDOException $e) {
+            return false;
+        }
+    }
+    
 }

@@ -30,6 +30,23 @@ class PersonForm extends AbstractView {
     
     private $showDelete = true;
     
+    private $sudjelovanje;
+    
+    private $showCV = false;
+    
+    private $radnaMjesta;
+    private $velicine;
+    private $godine;
+    private $smjerovi;
+    private $zavodi;
+    private $velicina;
+    private $godina;
+    private $smjer;
+    private $radnoMjesto;
+    private $zavod;
+    private $showSubmit = true;
+    private $showDropDown = false;
+    
     protected function outputHTML() {
 		
 ?>
@@ -162,10 +179,166 @@ class PersonForm extends AbstractView {
         <input type="text" name="putovnicaVrijediDo" class="form-control datePicker" placeholder="Upišite do kada vrijedi putovnica" <?php if($this->osoba && $this->osoba->putovnicaVrijediDo){ echo 'value="' . $this->osoba->putovnicaVrijediDo . '"'; } ?> />
         </div>
                 </div>
+
+<?php
+	if ($this->showCV) {
+		if($this->osoba && $this->osoba->zivotopis)
+		{
+?>
+		
+        <div class="form-group">        
+        <label for="preuzmi" class="col-sm-3 control-label"></label>
+            <div class="col-sm-9">
+            <a href="<?php echo \route\Route::get('d3')->generate(array(
+			"controller" => 'sudionik',
+			"action" => 'downloadCV'
+		));?>?id=<?php echo $this->osoba->idOsobe; ?>">Preuzmi životopis &nbsp;</a>
+            <input type="checkbox" name="delete"> Obriši životopis    
+            </div>
+        </div>
+		
+		
+<?php				
+		}
+
+		else
+		{
+?>              <div class="form-group">
+		<label for="logotip" class="col-sm-3 control-label">Životopis</label>
+		<div class="col-sm-9">
+                <input type="file" name="datoteka" />
+                </div>
+                </div>
+<?php
+		}
+	}
+?>
+
+<?php if ($this->showDropDown) { 
+	 if ($this->velicine != null) {
+?>
+	<div class="form-group">	
+                <label for="velMajice" class="col-sm-3 control-label">Veličina majice</label>
+		<div class="col-sm-9">
+                <select name="idVelicine" class="form-control">
+			<option <?php if(!$this->velicina) echo 'selected="selected"'; ?> value=""><?php if(!$this->velicina) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
+
+<?php
+		foreach($this->velicine as $val)
+		{
+			echo '<option value="' . $val->idVelicine . '"';
+			if ($this->velicina && $this->velicina->idVelicine == $val->idVelicine)
+			{
+				echo 'selected="selected"';
+			}
+			echo '>' . $val->velicina . '</option>';
+		}
+?>					
+</select></div>
+        </div>
+	
+<?php }
+	if ($this->smjerovi !== null) {
+?>
+	
+	<div class="form-group">	
+                <label for="smjer" class="col-sm-3 control-label">Smjer</label>
+		<div class="col-sm-9">
+                <select name="idSmjera" class="form-control">
+			<option <?php if(!$this->smjer) echo 'selected="selected"'; ?> value=""><?php if(!$this->smjer) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
+
+<?php
+		foreach($this->smjerovi as $val)
+		{
+			echo '<option value="' . $val->idSmjera . '"';
+			if ($this->smjer && $this->smjer->idSmjera == $val->idSmjera)
+			{
+				echo 'selected="selected"';
+			}
+			echo '>' . $val->nazivSmjera . '</option>';
+		}
+?>					
+</select></div>
+        </div>
+	
+<?php }
+	if ($this->zavodi !== null) {
+?>
+	
+	<div class="form-group">	
+                <label for="zavod" class="col-sm-3 control-label">Zavod</label>
+		<div class="col-sm-9">
+                <select name="idZavoda" class="form-control">
+			<option <?php if(!$this->zavod) echo 'selected="selected"'; ?> value=""><?php if(!$this->zavod) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
+
+<?php
+		foreach($this->zavodi as $val)
+		{
+			echo '<option value="' . $val->idZavoda . '"';
+			if ($this->zavod && $this->zavod->idZavoda == $val->idZavoda)
+			{
+				echo 'selected="selected"';
+			}
+			echo '>' . $val->skraceniNaziv . '</option>';
+		}
+?>					
+</select></div>
+        </div>
+	
+<?php }
+	if ($this->godine !== null) {
+?>
+	<div class="form-group">	
+                <label for="godina" class="col-sm-3 control-label">Godina studija</label>
+		<div class="col-sm-9">
+                <select name="idGodStud" class="form-control">
+			<option <?php if(!$this->godina) echo 'selected="selected"'; ?> value=""><?php if(!$this->godina) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
+
+<?php
+		foreach($this->godine as $val)
+		{
+			echo '<option value="' . $val->idGodStud . '"';
+			if ($this->godina && $this->godina->idGodStud == $val->idGodStud)
+			{
+				echo 'selected="selected"';
+			}
+			echo '>' . $val->godina . " " . $val->studij . '</option>';
+		}
+?>					
+</select></div>
+        </div>
+	
+<?php }
+	if ($this->radnaMjesta !== null) {
+?>	
+
+	<div class="form-group">	
+                <label for="radnomjesto" class="col-sm-3 control-label">Radno mjesto</label>
+		<div class="col-sm-9">
+                <select name="idRadnogMjesta" class="form-control">
+			<option <?php if(!$this->radnoMjesto) echo 'selected="selected"'; ?> value=""><?php if(!$this->radnoMjesto) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
+
+<?php
+		foreach($this->radnaMjesta as $val)
+		{
+			echo '<option value="' . $val->idRadnogMjesta . '"';
+			if ($this->radnoMjesto && $this->radnoMjesto->idRadnogMjesta == $val->idRadnogMjesta)
+			{
+				echo 'selected="selected"';
+			}
+			echo '>' . $val->naziv . '</option>';
+		}
+?>					
+</select></div>
+        </div>
+	
+	<?php }} ?>
+	
+		<?php if($this->sudjelovanje && $this->sudjelovanje->idSudjelovanja){ ?><input type="hidden" name="idSudjelovanja" value="<?php echo $this->sudjelovanje->idSudjelovanja; ?>" /> <?php } ?>
         
 		<?php if($this->osoba && $this->osoba->idOsobe){ ?><input type="hidden" name="idOsobe" value="<?php echo $this->osoba->idOsobe; ?>" /> <?php } ?>
         
-        <center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText;?>" />
+    <?php if($this->showSubmit) { ?><center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText;?>" /><?php }?>
 		
 		<?php if($this->osoba && $this->osoba->idOsobe && $this->showDelete === true){ ?>
 		<a type="button" class="btn btn-danger deletePerson" href="<?php echo \route\Route::get('d3')->generate(array(
@@ -202,6 +375,76 @@ class PersonForm extends AbstractView {
     public function setShowDelete($showDelete) {
         $this->showDelete = $showDelete;
         return $this;
+    }
+    
+    public function setSudjelovanje($sudjelovanje) {
+	$this->sudjelovanje = $sudjelovanje;
+	return $this;
+    }
+
+    public function setShowCV($showCV) {
+	$this->showCV = $showCV;
+	return $this;
+    }
+
+    public function setRadnaMjesta($radnaMjesta) {
+	$this->radnaMjesta = $radnaMjesta;
+	return $this;
+    }
+
+    public function setVelicine($velicine) {
+	$this->velicine = $velicine;
+	return $this;
+    }
+
+    public function setGodine($godine) {
+	$this->godine = $godine;
+	return $this;
+    }
+
+    public function setSmjerovi($smjerovi) {
+	$this->smjerovi = $smjerovi;
+	return $this;
+    }
+
+    public function setZavodi($zavodi) {
+	$this->zavodi = $zavodi;
+	return $this;
+    }
+
+    public function setVelicina($velicina) {
+	$this->velicina = $velicina;
+	return $this;
+    }
+
+    public function setGodina($godina) {
+	$this->godina = $godina;
+	return $this;
+    }
+
+    public function setSmjer($smjer) {
+	$this->smjer = $smjer;
+	return $this;
+    }
+
+    public function setRadnoMjesto($radnoMjesto) {
+	$this->radnoMjesto = $radnoMjesto;
+	return $this;
+    }
+
+    public function setZavod($zavod) {
+	$this->zavod = $zavod;
+	return $this;
+    }
+
+    public function setShowSubmit($showSubmit) {
+	$this->showSubmit = $showSubmit;
+	return $this;
+    }
+
+    public function setShowDropDown($showDropDown) {
+	$this->showDropDown = $showDropDown;
+	return $this;
     }
 
 }

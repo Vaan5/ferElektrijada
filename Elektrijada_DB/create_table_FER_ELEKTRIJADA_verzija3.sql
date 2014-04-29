@@ -49,6 +49,7 @@ CREATE TABLE OSOBA (
     brPutovnice VARCHAR(30),
     osobnaVrijediDo DATE,
     putovnicaVrijediDo DATE,
+    aktivanDokument BOOLEAN,
     uloga CHAR(1) NOT NULL,
     zivotopis VARCHAR(200),
     MBG VARCHAR(9),
