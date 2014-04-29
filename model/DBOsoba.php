@@ -22,7 +22,7 @@ class DBOsoba extends AbstractDBModel {
     public function getColumns() {
         return array('ime', 'prezime', 'mail', 'brojMob', 'ferId', 'password', 'JMBAG',
             'spol', 'datRod', 'brOsobne', 'brPutovnice', 'osobnaVrijediDo', 'putovnicaVrijediDo',
-            'uloga', 'zivotopis', 'MBG', 'OIB', 'idNadredjena');
+            'uloga', 'zivotopis', 'MBG', 'OIB', 'idNadredjena', 'aktivanDokument');
     }
     
     public function kriptPass($pass) {
@@ -149,7 +149,7 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
     
     public function addNewPerson($ime, $prezime, $mail, $brojMob, $ferId, $password, $JMBAG,
             $spol, $datRod, $brOsobne, $brPutovnice, $osobnaVrijediDo, $putovnicaVrijediDo, 
-            $uloga, $zivotopis, $MBG, $OIB, $idNadredjena) {
+            $uloga, $zivotopis, $MBG, $OIB, $idNadredjena, $aktivanDokument = 0) {
         
         $this->idOsobe = null;
         $atributi = $this->getColumns();
@@ -282,7 +282,7 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
     }
     
     public function modifyRow($primaryKey, $ime, $prezime, $mail, $brojMob, $ferId, $password, $JMBAG,
-            $spol, $datRod, $brOsobne, $brPutovnice, $osobnaVrijediDo, $putovnicaVrijediDo, $uloga, $zivotopis, $MBG, $OIB) {
+            $spol, $datRod, $brOsobne, $brPutovnice, $osobnaVrijediDo, $putovnicaVrijediDo, $uloga, $zivotopis, $MBG, $OIB, $aktivanDokument = 0) {
         $atributi = $this->getColumns();
         $this->load($primaryKey);
         $stariPass = null;
@@ -300,21 +300,28 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
     }
     
     public function modifyPerson($primaryKey, $ime, $prezime, $mail, $brojMob, $ferId, $password, $JMBAG,
-            $spol, $datRod, $brOsobne, $brPutovnice, $osobnaVrijediDo, $putovnicaVrijediDo, $zivotopis, $MBG, $OIB) {
+            $spol, $datRod, $brOsobne, $brPutovnice, $osobnaVrijediDo, $putovnicaVrijediDo, $zivotopis,
+			$MBG, $OIB, $aktivanDokument = 0, $idNadredjena = null) {
         $atributi = $this->getColumns();
         $this->load($primaryKey);
         $stariPass = null;
         if($password === null || $password === false) {
             $stariPass = $this->password;
         }
+		$stariNadredjeni = null;
+		if($idNadredjena === null) {
+			$stariNadredjeni = $this->idNadredjena;
+		}
         foreach($atributi as $a) {
-            if ($a !== 'uloga')     // don't change the role
+            if ($a !== 'uloga' && !($a === 'zivotopis' && $zivotopis === NULL))     // don't change the role
                 $this->{$a} = ${$a};
         }
         if($stariPass !== null)
             $this->password = $stariPass;
         else
             $this->password = $this->kriptPass ($this->password);
+		if ($stariNadredjeni !== null)
+			$this->idNadredjena = $stariNadredjeni;
         $this->save();
     }
     
@@ -471,13 +478,14 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
      *			   CONTESTANT FUNCTIONS
      **************************************************************************/
 
+	// FINISHED
     public function checkPassword($idOsobe, $password) {
-	try {
+		try {
             $pdo = $this->getPdo();
             $password = $this->kriptPass($password);
             $query = $pdo->prepare("SELECT * FROM osoba WHERE idOsobe = :idOsobe AND password = :password");
             $query->bindValue(":password", $password);
-	    $query->bindValue(":idOsobe", $idOsobe);
+			$query->bindValue(":idOsobe", $idOsobe);
             $query->execute();
             $pov = $query->fetchAll(\PDO::FETCH_CLASS, get_class($this));
             return count($pov) == 0 ? false : $pov[0];
@@ -485,5 +493,21 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
             return false;
         }
     }
-    
+	
+	// FINISHED
+	public function addCV($idOsobe, $zivotopis) {
+		try {
+			$this->load($idOsobe);
+			$this->zivotopis = $zivotopis;
+			$this->save();
+		} catch (app\model\NotFoundException $e) {
+			$e = new \PDOException();
+			$e->errorInfo[0] = '02000';
+			$e->errorInfo[1] = 1604;
+			$e->errorInfo[2] = "Zapis ne postoji!";
+			throw $e;
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
 }

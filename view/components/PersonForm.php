@@ -46,11 +46,12 @@ class PersonForm extends AbstractView {
     private $zavod;
     private $showSubmit = true;
     private $showDropDown = false;
+	private $controllerCV;
     
     protected function outputHTML() {
 		
 ?>
-        <form class="form-horizontal" role="form" action="<?php echo $this->postAction;?>" method="POST">
+        <form class="form-horizontal" role="form" action="<?php echo $this->postAction;?>" method="POST" enctype="multipart/form-data">
         <div class="form-group">
             <label for="korisnickoime" class="col-sm-3 control-label">Korisničko ime</label>            
             <div class="col-sm-9">
@@ -158,7 +159,7 @@ class PersonForm extends AbstractView {
 		<div class="form-group">
             <label for="brojosobne" class="col-sm-4 control-label">Broj osobne iskaznice</label>
         <div class="col-sm-8">
-        <input type="text" name="brOsobne" class="form-control" placeholder="Upišite broj osobne iskaznice" <?php if($this->osoba && $this->osoba->brOsobne){ echo 'value="' . $this->osoba->brOsobe . '"'; } ?> />
+        <input type="text" name="brOsobne" class="form-control" placeholder="Upišite broj osobne iskaznice" <?php if($this->osoba && $this->osoba->brOsobne){ echo 'value="' . $this->osoba->brOsobne . '"'; } ?> />
         </div>
                 </div>
 		<div class="form-group">
@@ -179,6 +180,15 @@ class PersonForm extends AbstractView {
         <input type="text" name="putovnicaVrijediDo" class="form-control datePicker" placeholder="Upišite do kada vrijedi putovnica" <?php if($this->osoba && $this->osoba->putovnicaVrijediDo){ echo 'value="' . $this->osoba->putovnicaVrijediDo . '"'; } ?> />
         </div>
                 </div>
+	
+	<div class="form-group">
+            <label for="aktivanDokument" class="col-sm-3 control-label">Dokument s kojim putujete</label>
+        <div class="col-sm-9">
+			<input type="radio" name="aktivanDokument" value="0" <?php if($this->osoba && $this->osoba->aktivanDokument == '0'){ echo 'checked'; } ?>> Putovnica
+			&nbsp; &nbsp;
+			<input type="radio" name="aktivanDokument" value="1" <?php if($this->osoba && $this->osoba->aktivanDokument == '1'){ echo 'checked'; } ?>> Osobna iskaznica
+        </div>        
+        </div>
 
 <?php
 	if ($this->showCV) {
@@ -190,7 +200,7 @@ class PersonForm extends AbstractView {
         <label for="preuzmi" class="col-sm-3 control-label"></label>
             <div class="col-sm-9">
             <a href="<?php echo \route\Route::get('d3')->generate(array(
-			"controller" => 'sudionik',
+			"controller" => $this->controllerCV,
 			"action" => 'downloadCV'
 		));?>?id=<?php echo $this->osoba->idOsobe; ?>">Preuzmi životopis &nbsp;</a>
             <input type="checkbox" name="delete"> Obriši životopis    
@@ -378,73 +388,78 @@ class PersonForm extends AbstractView {
     }
     
     public function setSudjelovanje($sudjelovanje) {
-	$this->sudjelovanje = $sudjelovanje;
-	return $this;
+		$this->sudjelovanje = $sudjelovanje;
+		return $this;
     }
 
     public function setShowCV($showCV) {
-	$this->showCV = $showCV;
-	return $this;
+		$this->showCV = $showCV;
+		return $this;
     }
 
     public function setRadnaMjesta($radnaMjesta) {
-	$this->radnaMjesta = $radnaMjesta;
-	return $this;
+		$this->radnaMjesta = $radnaMjesta;
+		return $this;
     }
 
     public function setVelicine($velicine) {
-	$this->velicine = $velicine;
-	return $this;
+		$this->velicine = $velicine;
+		return $this;
     }
 
     public function setGodine($godine) {
-	$this->godine = $godine;
-	return $this;
+		$this->godine = $godine;
+		return $this;
     }
 
     public function setSmjerovi($smjerovi) {
-	$this->smjerovi = $smjerovi;
-	return $this;
+		$this->smjerovi = $smjerovi;
+		return $this;
     }
 
     public function setZavodi($zavodi) {
-	$this->zavodi = $zavodi;
-	return $this;
+		$this->zavodi = $zavodi;
+		return $this;
     }
 
     public function setVelicina($velicina) {
-	$this->velicina = $velicina;
-	return $this;
+		$this->velicina = $velicina;
+		return $this;
     }
 
     public function setGodina($godina) {
-	$this->godina = $godina;
-	return $this;
+		$this->godina = $godina;
+		return $this;
     }
 
     public function setSmjer($smjer) {
-	$this->smjer = $smjer;
-	return $this;
+		$this->smjer = $smjer;
+		return $this;
     }
 
     public function setRadnoMjesto($radnoMjesto) {
-	$this->radnoMjesto = $radnoMjesto;
-	return $this;
+		$this->radnoMjesto = $radnoMjesto;
+		return $this;
     }
 
     public function setZavod($zavod) {
-	$this->zavod = $zavod;
-	return $this;
+		$this->zavod = $zavod;
+		return $this;
     }
 
     public function setShowSubmit($showSubmit) {
-	$this->showSubmit = $showSubmit;
-	return $this;
+		$this->showSubmit = $showSubmit;
+		return $this;
     }
 
     public function setShowDropDown($showDropDown) {
-	$this->showDropDown = $showDropDown;
-	return $this;
+		$this->showDropDown = $showDropDown;
+		return $this;
     }
+	
+	public function setControllerCV($controllerCV) {
+		$this->controllerCV = $controllerCV;
+		return $this;
+	}
 
 }

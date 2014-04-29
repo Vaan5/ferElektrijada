@@ -25,6 +25,11 @@ class Profile extends AbstractView {
         echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
         ));
+		if ($this->disabled)
+			echo new \view\components\ResultMessage(array(
+			"resultMessage" => "Protekao je rok za unos promjena!"
+			));
+	
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
@@ -36,97 +41,98 @@ class Profile extends AbstractView {
             )),
             "submitButtonText" => "Spremi promjene",
             "osoba" => $this->osoba,
-	    "radnaMjesta" => $this->radnaMjesta,
-	    "velicine" => $this->velicine,
-	    "godine" => $this->godine,
-	    "smjerovi" => $this->smjerovi,
-	    "zavodi" => $this->zavodi,
-	    "velicina" => $this->velicina,
-	    "godina" => $this->godina,
-	    "smjer" => $this->smjer,
-	    "radnoMjesto" => $this->radnoMjesto,
-	    "zavod" => $this->zavod,
-	    "sudjelovanje" => $this->sudjelovanje,
-            "showDelete" => false,
-	    "showCV" => true,
-	    "showSubmit" => !$this->disabled,
-	    "showDropDown" => true
-	));        
+			"radnaMjesta" => $this->radnaMjesta,
+			"velicine" => $this->velicine,
+			"godine" => $this->godine,
+			"smjerovi" => $this->smjerovi,
+			"zavodi" => $this->zavodi,
+			"velicina" => $this->velicina,
+			"godina" => $this->godina,
+			"smjer" => $this->smjer,
+			"radnoMjesto" => $this->radnoMjesto,
+			"zavod" => $this->zavod,
+			"sudjelovanje" => $this->sudjelovanje,
+			"showDelete" => false,
+			"showCV" => true,
+			"showSubmit" => !$this->disabled,
+			"showDropDown" => true,
+			"controllerCV" => "sudionik"
+		));        
     }
     
     public function setErrorMessage($errorMessage) {
-	$this->errorMessage = $errorMessage;
-	return $this;
+		$this->errorMessage = $errorMessage;
+		return $this;
     }
 
     public function setResultMessage($resultMessage) {
-	$this->resultMessage = $resultMessage;
-	return $this;
+		$this->resultMessage = $resultMessage;
+		return $this;
     }
 
     public function setOsoba($osoba) {
-	$this->osoba = $osoba;
-	return $this;
+		$this->osoba = $osoba;
+		return $this;
     }
 
     public function setRadnaMjesta($radnaMjesta) {
-	$this->radnaMjesta = $radnaMjesta;
-	return $this;
+		$this->radnaMjesta = $radnaMjesta;
+		return $this;
     }
 
     public function setVelicine($velicine) {
-	$this->velicine = $velicine;
-	return $this;
+		$this->velicine = $velicine;
+		return $this;
     }
 
     public function setGodine($godine) {
-	$this->godine = $godine;
-	return $this;
+		$this->godine = $godine;
+		return $this;
     }
 
     public function setSmjerovi($smjerovi) {
-	$this->smjerovi = $smjerovi;
-	return $this;
+		$this->smjerovi = $smjerovi;
+		return $this;
     }
 
     public function setZavodi($zavodi) {
-	$this->zavodi = $zavodi;
-	return $this;
+		$this->zavodi = $zavodi;
+		return $this;
     }
 
     public function setVelicina($velicina) {
-	$this->velicina = $velicina;
-	return $this;
+		$this->velicina = $velicina;
+		return $this;
     }
 
     public function setGodina($godina) {
-	$this->godina = $godina;
-	return $this;
+		$this->godina = $godina;
+		return $this;
     }
 
     public function setSmjer($smjer) {
-	$this->smjer = $smjer;
-	return $this;
+		$this->smjer = $smjer;
+		return $this;
     }
 
     public function setRadnoMjesto($radnoMjesto) {
-	$this->radnoMjesto = $radnoMjesto;
-	return $this;
+		$this->radnoMjesto = $radnoMjesto;
+		return $this;
     }
 
     public function setZavod($zavod) {
-	$this->zavod = $zavod;
-	return $this;
+		$this->zavod = $zavod;
+		return $this;
     }
     
     public function setSudjelovanje($sudjelovanje) {
-	$this->sudjelovanje = $sudjelovanje;
-	return $this;
+		$this->sudjelovanje = $sudjelovanje;
+		return $this;
     }
     
     public function setDisabled($disabled) {
-	$this->disabled = $disabled;
-	return $this;
+		$this->disabled = $disabled;
+		return $this;
     }
 
 }

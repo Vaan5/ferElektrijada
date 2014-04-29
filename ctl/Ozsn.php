@@ -1838,31 +1838,31 @@ class Ozsn implements Controller {
     }
     
     public function downloadLogo() {
-	$this->checkRole();
-	$this->checkMessages();
+		$this->checkRole();
+		$this->checkMessages();
 
-	if (count($_GET) === 0 || get("id") === false) {
-	    $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati sponzor!");
-	    $_SESSION["exception"] = serialize($handler);
-	    preusmjeri(\route\Route::get('d1')->generate() . "?msg=excep");
-	}
-	
-	$sponzor = new \model\DBSponzor();
-	try {
-	    $sponzor->load(get("id"));
-	} catch (\app\model\NotFoundException $e) {
-	    $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati sponzor!");
-	    $_SESSION["exception"] = serialize($handler);
-	    preusmjeri(\route\Route::get('d1')->generate() . "?msg=excep");
-	} catch (\PDOException $e) {
-	    $handler = new \model\ExceptionHandlerModel($e);
-	    $_SESSION["exception"] = serialize($handler);
-	    preusmjeri(\route\Route::get('d1')->generate() . "?msg=excep");
-	}
-	
-	echo new \view\Download(array(
-	    "path" => $sponzor->logotip
-	));
+		if (count($_GET) === 0 || get("id") === false) {
+			$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati sponzor!");
+			$_SESSION["exception"] = serialize($handler);
+			preusmjeri(\route\Route::get('d1')->generate() . "?msg=excep");
+		}
+
+		$sponzor = new \model\DBSponzor();
+		try {
+			$sponzor->load(get("id"));
+		} catch (\app\model\NotFoundException $e) {
+			$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati sponzor!");
+			$_SESSION["exception"] = serialize($handler);
+			preusmjeri(\route\Route::get('d1')->generate() . "?msg=excep");
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$_SESSION["exception"] = serialize($handler);
+			preusmjeri(\route\Route::get('d1')->generate() . "?msg=excep");
+		}
+
+		echo new \view\Download(array(
+			"path" => $sponzor->logotip
+		));
     }
     
     /**
