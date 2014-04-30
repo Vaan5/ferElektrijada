@@ -62,17 +62,22 @@ class ActiveSponzorForm extends AbstractView {
 
 		<br><br>
 		
-		<label for="iznosDonacije">Iznos donacije</label><br>
-		<input type="text" name="iznosDonacije" placeholder="Upišite iznos donacije" <?php if($this->imasponzora && $this->imasponzora->iznosDonacije) echo 'value="' . $this->imasponzora->iznosDonacije . '"' ?> />
-		
-		<br><br>
-		
-		<label for="valutaDonacije">Valuta donacije</label><br>
-		<select name="valutaDonacije">
-			<option <?php if(!$this->imasponzora || ($this->imasponzora && $this->imasponzora->valutaDonacije == 'HRK')) echo 'selected="selected"' ?> value="HRK">HRK</option>
-			<option <?php if($this->imasponzora && $this->imasponzora->valutaDonacije == 'USD') echo 'selected="selected"' ?> value="USD">USD</option>
-			<option <?php if($this->imasponzora && $this->imasponzora->valutaDonacije == 'EUR') echo 'selected="selected"' ?> value="EUR">EUR</option>
-		</select>
+		<div class="form-group">
+			<label for="iznosDonacije" class="col-sm-3 control-label">Iznos donacije</label>
+			<div class="col-sm-9">
+				<div class="input-group">
+					<input type="text" name="iznosDonacije" class="form-control" placeholder="Upišite iznos donacije" <?php if($this->imasponzora && $this->imasponzora->iznosDonacije) echo 'value="' . $this->imasponzora->iznosDonacije . '"' ?> />
+					
+					<div class="input-group-btn">
+						<select name="valutaDonacije" class="form-control btn btn-default" style="width:80px;">
+						<option <?php if(!$this->imasponzora || ($this->imasponzora && $this->imasponzora->valutaDonacije == 'HRK')) echo 'selected="selected"' ?> value="HRK">HRK</option>
+						<option <?php if($this->imasponzora && $this->imasponzora->valutaDonacije == 'USD') echo 'selected="selected"' ?> value="USD">USD</option>
+						<option <?php if($this->imasponzora && $this->imasponzora->valutaDonacije == 'EUR') echo 'selected="selected"' ?> value="EUR">EUR</option>
+						</select>
+					</div>	
+				</div>
+			</div>
+		</div>
 		
 		<br><br>
 		

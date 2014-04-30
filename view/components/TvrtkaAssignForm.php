@@ -61,9 +61,8 @@ class TvrtkaAssignForm extends AbstractView {
 						<option <?php if($this->koristiPruza && $this->koristiPruza->valutaDonacije == 'USD') echo 'selected="selected"' ?> value="USD">USD</option>
 						<option <?php if($this->koristiPruza && $this->koristiPruza->valutaDonacije == 'EUR') echo 'selected="selected"' ?> value="EUR">EUR</option>
 						</select>
-					</div>
-					
-					</div>
+					</div>	
+				</div>
 			</div>
 		</div>
 		
