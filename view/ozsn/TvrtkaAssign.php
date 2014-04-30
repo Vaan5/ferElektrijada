@@ -38,7 +38,7 @@ class TvrtkaAssign extends AbstractView {
 			"route" => \route\Route::get('d3')->generate(array(
 				"controller" => 'ozsn',
 				"action" => 'assignTvrtka'
-			)) . "?id=" . $this->tvrtka->idTvrtke,
+			)),
 			"submitButtonText" => "Spremi promjene",
 			"tvrtka" => $this->tvrtka,
 			"usluge" => $this->usluge

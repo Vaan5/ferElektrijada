@@ -19,6 +19,11 @@ class TvrtkaAssignForm extends AbstractView {
 		{
 			echo '<input type="hidden" name="id" value="' . $this->koristiPruza->idKoristiPruza . '" />';
 		}
+		
+		else
+		{
+			echo '<input type="hidden" name="id" value="' . $this->tvrtka->idTvrtke . '" />';
+		}
 ?>
 		<label>Ime tvrtke:</label> <?php echo $this->tvrtka->imeTvrtke; ?><br>
 		<label>Adresa tvrtke:</label> <?php echo $this->tvrtka->adresaTvrtke; ?><br>
