@@ -21,7 +21,7 @@ class DBSudjelovanje extends AbstractDBModel {
     /**************************************************************************
      *			   CONTESTANT FUNCTIONS
      **************************************************************************/
-    
+	
     public function isActiveContestant($id) {
 		$elektrijada = new DBElektrijada();
 		$idElektrijade = $elektrijada->getCurrentElektrijadaId();
@@ -123,5 +123,22 @@ class DBSudjelovanje extends AbstractDBModel {
 			throw $e;
 		}
 		
+	}
+	
+	/**************************************************************************
+     *			   TEAM LEADER FUNCTIONS
+     **************************************************************************/
+	
+	public function addRow($idOsobe, $idElektrijade, $tip, $idVelicine, $idGodStud, $idSmjera,
+            $idRadnogMjesta, $idZavoda, $idPutovanja) {
+		try {
+			$atributi = $this->getColumns();
+			foreach ($atributi as $a) {
+				$this->{$a} = ${$a};
+			}
+			$this->save();
+		} catch (\PDOException $e) {
+			throw $e;
+		}		
 	}
 }

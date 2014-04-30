@@ -4,36 +4,13 @@ namespace view\components;
 use app\view\AbstractView;
 
 class PersonForm extends AbstractView {
-    /**
-     *
-     * @var string url of the script to handle this form data
-     */
     private $postAction;
-    
-    /**
-     *
-     * @var string submit button text
-     */
     private $submitButtonText;
-	
-	/**
-     *
-     * @var object
-     */
     private $osoba;
-    
-    /**
-     *
-     * @var boolean 
-     */
     private $prikazSpola = true;
-    
     private $showDelete = true;
-    
     private $sudjelovanje;
-    
     private $showCV = false;
-    
     private $radnaMjesta;
     private $velicine;
     private $godine;
@@ -47,6 +24,9 @@ class PersonForm extends AbstractView {
     private $showSubmit = true;
     private $showDropDown = false;
 	private $controllerCV;
+	private $idPodrucja = null;
+	private $showTip = false;
+	private $showVrstaPodrucja = false;
     
     protected function outputHTML() {
 		
@@ -182,7 +162,7 @@ class PersonForm extends AbstractView {
                 </div>
 	
 	<div class="form-group">
-            <label for="aktivanDokument" class="col-sm-3 control-label">Dokument s kojim putujete</label>
+            <label for="aktivanDokument" class="col-sm-3 control-label">Dokument za putovanje</label>
         <div class="col-sm-9">
 			<input type="radio" name="aktivanDokument" value="0" <?php if($this->osoba && $this->osoba->aktivanDokument == '0'){ echo 'checked'; } ?>> Putovnica
 			&nbsp; &nbsp;
@@ -342,12 +322,42 @@ class PersonForm extends AbstractView {
 </select></div>
         </div>
 	
-	<?php }} ?>
+	<?php }} 
+		if ($this->showTip !== false) {
+?>
+		<div class="form-group">
+            <label for="tip" class="col-sm-3 control-label">Tip sudionika</label>
+        <div class="col-sm-9">
+			<input type="radio" name="tip" value="S" > Student
+			&nbsp; &nbsp;
+			<input type="radio" name="tip" value="D" > Djelatnik
+			<?php if (session("vrsta") === "OV") {?>
+			&nbsp; &nbsp;
+			<input type="radio" name="tip" value="O" > Ozsn
+			<?php } ?>
+        </div>        
+        </div>
+<?php
+		}
+		if ($this->showVrstaPodrucja !== false) {
+?>
+		<div class="form-group">
+            <label for="vrstaPodrucja" class="col-sm-3 control-label">Vrsta discipline</label>
+        <div class="col-sm-9">
+			<input type="radio" name="vrstaPodrucja" value="1" > Timsko natjecanje
+			&nbsp; &nbsp;
+			<input type="radio" name="vrstaPodrucja" value="0" > Pojedinačno natjecanje
+        </div>        
+        </div>
+<?php
+		}
+	?>
 	
 		<?php if($this->sudjelovanje && $this->sudjelovanje->idSudjelovanja){ ?><input type="hidden" name="idSudjelovanja" value="<?php echo $this->sudjelovanje->idSudjelovanja; ?>" /> <?php } ?>
         
 		<?php if($this->osoba && $this->osoba->idOsobe){ ?><input type="hidden" name="idOsobe" value="<?php echo $this->osoba->idOsobe; ?>" /> <?php } ?>
         
+		<?php if($this->idPodrucja !== null){ ?><input type="hidden" name="idPodrucja" value="<?php echo $this->idPodrucja; ?>" /> <?php } ?>
     <?php if($this->showSubmit) { ?><center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText;?>" /><?php }?>
 		
 		<?php if($this->osoba && $this->osoba->idOsobe && $this->showDelete === true){ ?>
@@ -459,6 +469,21 @@ class PersonForm extends AbstractView {
 	
 	public function setControllerCV($controllerCV) {
 		$this->controllerCV = $controllerCV;
+		return $this;
+	}
+	
+	public function setIdPodrucja($idPodrucja) {
+		$this->idPodrucja = $idPodrucja;
+		return $this;
+	}
+
+	public function setShowTip($showTip) {
+		$this->showTip = $showTip;
+		return $this;
+	}
+	
+	public function setShowVrstaPodrucja($showVrstaPodrucja) {
+		$this->showVrstaPodrucja = $showVrstaPodrucja;
 		return $this;
 	}
 

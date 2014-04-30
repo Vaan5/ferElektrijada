@@ -111,6 +111,17 @@ class Index extends AbstractView {
 	
 	<br><br>
 	
+	<b>Voditelj NavBar</b>
+	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+	    "controller" => 'voditelj',
+	    "action" => 'displayPodrucja'
+	)) . "";?>">Upravljanje Disciplinama</a>
+	
+	<br><br>
+	
 	<b>Izvještaji</b>
 	
 	<br>

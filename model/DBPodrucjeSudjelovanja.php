@@ -14,7 +14,7 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
     }
 
     public function getColumns() {
-		return array ('idPodrucja','idSudjelovanja','rezultatPojedinacni','vrstaPodrucja', 'ukupanBrojSudionika');
+		return array ('idPodrucja','idSudjelovanja','rezultatPojedinacni','vrstaPodrucja', 'ukupanBrojSudionika', 'iznosUplate', 'valuta');
     }
     
     public function getContestantAreas($idSudjelovanja) {
@@ -53,6 +53,18 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
 			$q->execute();
 			$pov = $q->fetchAll();
 			return $pov;
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
+	
+	public function addRow($idPodrucja, $idSudjelovanja, $rezultatPojedinacni, $vrstaPodrucja, $ukupanBrojSudionika, $iznosUplate, $valuta = "HRK") {
+		try {
+			$atributi = $this->getColumns();
+			foreach ($atributi as $a) {
+				$this->{$a} = ${$a};
+			}
+			$this->save();
 		} catch (\PDOException $e) {
 			throw $e;
 		}

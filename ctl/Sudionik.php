@@ -78,7 +78,7 @@ class Sudionik implements Controller {
 			}
 			$this->changesDisabled = false;
 		} catch (\app\model\NotFoundException $e) {
-			$this->createMessage("Problem prilikom provjere dozvoljenosti provjera!");
+			$this->createMessage("Problem prilikom provjere dozvoljenosti promjena!");
 		} catch (\PDOException $e) {
 			$handler = new \model\ExceptionHandlerModel($e);
 			$this->createMessage($handler);

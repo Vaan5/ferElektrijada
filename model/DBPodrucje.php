@@ -48,4 +48,26 @@ class DBPodrucje extends AbstractDBModel {
 			throw $e;
 		}
     }
+	
+	/**************************************************************
+	 *				Team Leader
+	 **************************************************************/
+	
+	public function loadDisciplines(array $podrucja) {
+		$pov = array();
+		try {
+			if (count($podrucja)) {
+				foreach ($podrucja as $p) {
+					$this->idPodrucja = null;
+					$this->load($p->idPodrucja);
+					$pov[] = $this;
+				}
+			}
+			return $pov;
+		} catch (app\model\NotFoundException $e) {
+			return array();
+		} catch (\PDOException $e) {
+			return array();
+		}
+	}
 }
