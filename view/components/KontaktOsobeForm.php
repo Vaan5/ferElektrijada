@@ -143,10 +143,15 @@ class KontaktOsobeForm extends AbstractView {
 				$i++;
 ?>
 		
-			<div class="form-group">
-				<label for="mob" class="col-sm-3 control-label"><?php if($i == 1) echo 'Brojevi mobitela'; ?></label>
+			<div class="form-group" id="brojMoba<?php echo $i; ?>">
+				<label for="mob" class="col-sm-3 control-label"><span id="brojMobaSpan<?php echo $i; ?>" <?php if($i != 1) echo 'style="display: none;"'; ?>>Brojevi mobitela</span></label>
 				<div class="col-sm-9">
-					<input type="text" name="mob<?php echo $i; ?>" class="form-control<?php if($i == $mobNumber) echo ' lastMob" data-number="' . $i; ?>" value="<?php echo $val->broj; ?>" />
+					<div class="input-group">
+						<input type="text" name="mob<?php echo $i; ?>" class="form-control<?php if($i == $mobNumber) echo ' lastMob" data-number="' . $i; ?>" value="<?php echo $val->broj; ?>" />
+						<div class="input-group-btn">
+							<button type="button" class="btn btn-danger removeMob" data-toggle="tooltip" data-removeId="<?php echo $i; ?>" data-placement="right" data-title="Obriši broj">x</button>
+						</div>
+					</div>
 				</div>
 			</div>
 <?php
@@ -189,10 +194,15 @@ class KontaktOsobeForm extends AbstractView {
 				$j++;
 ?>
 		
-			<div class="form-group">
-				<label for="mail" class="col-sm-3 control-label"><?php if($j == 1) echo 'E-mail adrese'; ?></label>
+			<div class="form-group" id="mailAdresa<?php echo $j; ?>">
+				<label for="mail" class="col-sm-3 control-label"><span id="mailAdresaSpan<?php echo $j; ?>" <?php if($j != 1) echo 'style="display: none;"'; ?>>E-mail adrese</span></label>
 				<div class="col-sm-9">
-					<input type="text" name="mail<?php echo $j; ?>" class="form-control<?php if($j == $mailNumber) echo ' lastMail" data-number="' . $j; ?>" value="<?php echo $val->email; ?>" />
+					<div class="input-group">
+						<input type="text" name="mail<?php echo $j; ?>" class="form-control<?php if($j == $mailNumber) echo ' lastMail" data-number="' . $j; ?>" value="<?php echo $val->email; ?>" />
+						<div class="input-group-btn">
+							<button type="button" class="btn btn-danger removeMail" data-toggle="tooltip" data-removeId="<?php echo $j; ?>" data-placement="right" data-title="Obriši e-mail adresu">x</button>
+						</div>
+					</div>
 				</div>
 			</div>
 <?php

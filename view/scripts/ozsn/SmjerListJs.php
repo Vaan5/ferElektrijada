@@ -13,9 +13,9 @@ class SmjerListJs extends AbstractView {
 			// When Uredi is clicked, show form
 			var idSmjera;
 			$('.editSmjer').click(function () {
-				$idSmjera = $(this).data("id");
-				$('.modify-' + $idSmjera).hide();
-				$('.modifyOn-' + $idSmjera).show();
+				idSmjera = $(this).data("id");
+				$('.modify-' + idSmjera).hide();
+				$('.modifyOn-' + idSmjera).show();
 			});
 			
 			// When Obriši is clicked, show confirmation
