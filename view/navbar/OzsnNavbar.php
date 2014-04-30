@@ -6,9 +6,6 @@ class OzsnNavbar extends AbstractView{
     
     protected function outputHTML() {
                ?>
-<!DOCTYPE html>
-<html>
-    <body>
         <ul class="nav navbar-nav">
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">O meni<b class="caret"></b></a>
@@ -130,8 +127,6 @@ class OzsnNavbar extends AbstractView{
           </ul>
         </li>
       </ul>
-    </body>
-</html>
 <?php
     }
 }
