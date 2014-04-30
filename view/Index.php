@@ -102,6 +102,13 @@ class Index extends AbstractView {
 	    "action" => 'displayMyTeam'
 	)) . "";?>">Moj Tim</a>
 	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+	    "controller" => 'sudionik',
+	    "action" => 'displayOtherTeams'
+	)) . "";?>">Ovogodišnji Timovi</a>
+	
 	<br><br>
 	
 	<b>Izvještaji</b>

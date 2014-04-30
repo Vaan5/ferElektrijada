@@ -3,7 +3,7 @@
 namespace view\sudionik;
 use app\view\AbstractView;
 
-class MyTeam extends AbstractView {
+class OtherTeams extends AbstractView {
     private $errorMessage;
     private $resultMessage;
 	private $podrucja;
@@ -27,7 +27,7 @@ class MyTeam extends AbstractView {
 				?>
 				<form class="form-horizontal" role="form" method="post" action="<?php echo \route\Route::get('d3')->generate(array(
 					"controller" => "sudionik",
-					"action" => "displayMyTeam"
+					"action" => "displayOtherTeams"
 				));?>">
 					<div class="form-group">	
 								<label for="podrucje" class="col-sm-3 control-label">Odaberite disciplinu:</label>
@@ -114,12 +114,12 @@ class MyTeam extends AbstractView {
 
 		echo new \view\components\DownloadLinks(array("route" => \route\Route::get("d3")->generate(array(
 			"controller" => "sudionik",
-			"action" => "displayMyTeam"
+			"action" => "displayOtherTeams"
 		))));
 			?>
 				<a href="<?php echo \route\Route::get('d3')->generate(array(
 					"controller" => "sudionik",
-					"action" => "displayMyTeam"))?>">Povratak</a>
+					"action" => "displayOtherTeams"))?>">Povratak</a>
 			<?php
 		}
     }

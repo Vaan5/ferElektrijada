@@ -11,9 +11,11 @@ class Sudionik implements Controller {
     private $changesDisabled;
     
     private function checkRole() {
-		// you must be an active contestant
+		// you must be an active contestant / ozsn member / team leader
 		$sudjelovanje = new \model\DBSudjelovanje();
-		if (\model\DBOsoba::isLoggedIn() && session("vrsta") === "S" && $sudjelovanje->isActiveContestant(session("auth")))
+		if (\model\DBOsoba::isLoggedIn() && (session("vrsta") === "S" ||  session("vrsta") === "SV" 
+				|| session("vrsta") === "O" || session("vrsta") === "OV")
+				&& $sudjelovanje->isActiveContestant(session("auth")))
 			return;
 
 		preusmjeri(\route\Route::get('d1')->generate() . "?msg=accessDenied");
@@ -365,9 +367,15 @@ class Sudionik implements Controller {
 		$takmicari = null;
 		$voditelji = null;
 		
+		if (get("type")) {
+			// refill $_POST array
+			$_POST = unserialize(session("search"));
+		}
+		
 		try {
 			$idElektrijade = $elektrijada->getCurrentElektrijadaId();
 			if (!postEmpty()) {
+				$_SESSION["search"] = serialize($_POST);		// save it for file generation
 				$podrucje->load(post("idPodrucja"));
 				$podrucjeSudjelovanja = new \model\DBPodrucjeSudjelovanja();
 				
@@ -385,10 +393,146 @@ class Sudionik implements Controller {
 			$handler = new \model\ExceptionHandlerModel($e);
 			$this->createMessage($handler, "d3", "sudionik", "displayMyTeam");
 		}
+		
+		if (get("type")) {
+			// generate file
+			$pomPolje = array("Ime", "Prezime", "Email", "Rezultat", "Ukupno Sudionika", "Voditelj");
+			$array = array();
+			$array[] = $pomPolje;
+
+			$idVoditelja = array();
+			if (count($voditelji)) {
+				foreach ($voditelji as $v) {
+					$idVoditelja[] = $v->idOsobe;
+				}
+			}
+			
+			if (count($takmicari)) {
+				foreach ($takmicari as $v) {
+					if (in_array($v->idOsobe, $idVoditelja)) {
+						$pom = array($v->ime, $v->prezime, $v->mail, $v->rezultatPojedinacni, $v->ukupanBrojSudionika, "Voditelj");
+						if (($key = array_search($v->idOsobe, $idVoditelja)) !== false) {
+							unset($idVoditelja[$key]);
+						}
+					} else {
+						$pom = array($v->ime, $v->prezime, $v->mail, $v->rezultatPojedinacni, $v->ukupanBrojSudionika, NULL);
+					}
+					$array[] = $pom;
+				}
+			}
+			
+			if (count($idVoditelja)) {
+				foreach ($voditelji as $v) {
+					if (in_array($v->idOsobe, $idVoditelja))
+						$pom = array($v->ime, $v->prezime, $v->mail, $v->rezultatPojedinacni, $v->ukupanBrojSudionika, "Voditelj");
+				}
+			}
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
 
 		echo new \view\Main(array(
 			"title" => "Moj Tim",
 			"body" => new \view\sudionik\MyTeam(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"podrucja" => $podrucja,
+				"takmicari" => $takmicari,
+				"podrucje" => $podrucje,
+				"voditelji" => $voditelji,
+				"osoba" => $osoba
+			))
+		));
+	}
+	
+	public function displayOtherTeams() {
+		$this->checkRole();
+		$this->checkMessages();
+		
+		$elektrijada = new \model\DBElektrijada();
+		$podrucja = null;
+		$podrucje = new \model\DBPodrucje();
+		$osoba = new \model\DBOsoba();
+		$takmicari = null;
+		$voditelji = null;
+		
+		if (get("type")) {
+			// refill $_POST array
+			$_POST = unserialize(session("search"));
+		}
+		
+		try {
+			$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+			if (!postEmpty()) {
+				$_SESSION["search"] = serialize($_POST);		// save it for file generation
+				$podrucje->load(post("idPodrucja"));
+				$podrucjeSudjelovanja = new \model\DBPodrucjeSudjelovanja();
+				
+				$takmicari = $podrucjeSudjelovanja->getPaticipants(post("idPodrucja"), $idElektrijade);
+				
+				$osoba->load(session("auth"));
+				$imaatribut = new \model\DBImaatribut();
+				$voditelji = $imaatribut->getVoditelji(post("idPodrucja"), $idElektrijade);
+			} else {
+				$podrucja = $podrucje->getAll();
+			}
+		} catch (\app\model\NotFoundException $e) {
+			$this->createMessage("Nepostojeći identifikator!", "d3", "sudionik", "displayOtherTeams");
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->createMessage($handler, "d3", "sudionik", "displayOtherTeams");
+		}
+		
+		if (get("type")) {
+			// generate file
+			$pomPolje = array("Ime", "Prezime", "Email", "Rezultat", "Ukupno Sudionika", "Voditelj");
+			$array = array();
+			$array[] = $pomPolje;
+
+			$idVoditelja = array();
+			if (count($voditelji)) {
+				foreach ($voditelji as $v) {
+					$idVoditelja[] = $v->idOsobe;
+				}
+			}
+			
+			if (count($takmicari)) {
+				foreach ($takmicari as $v) {
+					if (in_array($v->idOsobe, $idVoditelja)) {
+						$pom = array($v->ime, $v->prezime, $v->mail, $v->rezultatPojedinacni, $v->ukupanBrojSudionika, "Voditelj");
+						if (($key = array_search($v->idOsobe, $idVoditelja)) !== false) {
+							unset($idVoditelja[$key]);
+						}
+					} else {
+						$pom = array($v->ime, $v->prezime, $v->mail, $v->rezultatPojedinacni, $v->ukupanBrojSudionika, NULL);
+					}
+					$array[] = $pom;
+				}
+			}
+			
+			if (count($idVoditelja)) {
+				foreach ($voditelji as $v) {
+					if (in_array($v->idOsobe, $idVoditelja))
+						$pom = array($v->ime, $v->prezime, $v->mail, $v->rezultatPojedinacni, $v->ukupanBrojSudionika, "Voditelj");
+				}
+			}
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+
+		echo new \view\Main(array(
+			"title" => "Ovogodišnji Timovi",
+			"body" => new \view\sudionik\OtherTeams(array(
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage,
 				"podrucja" => $podrucja,
