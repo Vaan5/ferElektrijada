@@ -12,7 +12,7 @@ class KontaktOsobeFormJs extends AbstractView {
 			var j;
 			
 			i = $('.lastMob').data("number");
-			i = $('.lastMail').data("number");
+			j = $('.lastMail').data("number");
 			
 			$('#dodajMobPolje').click(function () {
 				i += 1;
@@ -21,7 +21,7 @@ class KontaktOsobeFormJs extends AbstractView {
 			
 			$('#dodajMailPolje').click(function () {
 				j += 1;
-				$('.mailovi').append('<div class="form-group"><label for="mail" class="col-sm-3 control-label"></label><div class="col-sm-9"><input type="text" name="mail' + i + '" class="form-control" placeholder="Upišite e-mail adresu" /></div></div>');
+				$('.mailovi').append('<div class="form-group"><label for="mail" class="col-sm-3 control-label"></label><div class="col-sm-9"><input type="text" name="mail' + j + '" class="form-control" placeholder="Upišite e-mail adresu" /></div></div>');
 			});
 		});
 	</script>    

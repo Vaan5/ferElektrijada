@@ -141,42 +141,15 @@ class KontaktOsobeForm extends AbstractView {
 			foreach($this->mobiteli as $val)
 			{
 				$i++;
-				if($i == 1)
-				{
 ?>
 		
 			<div class="form-group">
-				<label for="mob" class="col-sm-3 control-label">Brojevi mobitela</label>
+				<label for="mob" class="col-sm-3 control-label"><?php if($i == 1) echo 'Brojevi mobitela'; ?></label>
 				<div class="col-sm-9">
-					<input type="text" name="mob<?php echo $i; ?>" class="form-control" value="<?php echo $val->broj; ?>" />
+					<input type="text" name="mob<?php echo $i; ?>" class="form-control<?php if($i == $mobNumber) echo ' lastMob" data-number="' . $i; ?>" value="<?php echo $val->broj; ?>" />
 				</div>
 			</div>
 <?php
-				}
-				
-				else if($i = $mobNumber)
-				{
-?>
-			<div class="form-group">
-				<label for="mob" class="col-sm-3 control-label"></label>
-				<div class="col-sm-9">
-					<input type="text" name="mob<?php echo $i; ?>" class="form-control lastMob" data-number="<?php echo $mobNumber; ?>" value="<?php echo $val->broj; ?>" />
-				</div>
-			</div>
-<?php
-				}
-				
-				else
-				{
-?>
-			<div class="form-group">
-				<label for="mob" class="col-sm-3 control-label"></label>
-				<div class="col-sm-9">
-					<input type="text" name="mob<?php echo $i; ?>" class="form-control" value="<?php echo $val->broj; ?>" />
-				</div>
-			</div>		
-<?php
-				}
 			}
 			
 			echo '</div>';
@@ -214,41 +187,15 @@ class KontaktOsobeForm extends AbstractView {
 			foreach($this->mailovi as $val)
 			{
 				$j++;
-				if($j == 1)
-				{
 ?>
+		
 			<div class="form-group">
-				<label for="mail" class="col-sm-3 control-label">E-mail adrese</label>
+				<label for="mail" class="col-sm-3 control-label"><?php if($j == 1) echo 'E-mail adrese'; ?></label>
 				<div class="col-sm-9">
-					<input type="text" name="mail<?php echo $j; ?>" class="form-control" value="<?php echo $val->email; ?>" />
+					<input type="text" name="mail<?php echo $j; ?>" class="form-control<?php if($j == $mailNumber) echo ' lastMail" data-number="' . $j; ?>" value="<?php echo $val->email; ?>" />
 				</div>
 			</div>
 <?php
-				}
-				
-				else if($j = $mailNumber)
-				{
-?>
-			<div class="form-group">
-				<label for="mail" class="col-sm-3 control-label"></label>
-				<div class="col-sm-9">
-					<input type="text" name="mail<?php echo $j; ?>" class="form-control lastMail" data-number="<?php echo $mailNumber; ?>" value="<?php echo $val->email; ?>" />
-				</div>
-			</div>
-<?php
-				}
-				
-				else
-				{
-?>
-			<div class="form-group">
-				<label for="mail" class="col-sm-3 control-label"></label>
-				<div class="col-sm-9">
-					<input type="text" name="mail<?php echo $j; ?>" class="form-control" value="<?php echo $val->email; ?>" />
-				</div>
-			</div>		
-<?php
-				}
 			}
 			
 			echo '</div>';
