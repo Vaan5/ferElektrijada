@@ -25,8 +25,8 @@ class ContactModification extends AbstractView {
 		echo new \view\components\KontaktOsobeForm(array(
 			"postAction" => \route\Route::get('d3')->generate(array(
 				"controller" => 'ozsn',
-				"action" => 'addContact'
-			)),
+				"action" => 'modifyContact'
+			)) . "?id=" . $this->kontakt->idKontakta,
 			"submitButtonText" => "Spremi promjene",
 			"kontakt" => $this->kontakt,
 			"sponzori" => $this->sponzori,

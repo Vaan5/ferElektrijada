@@ -275,6 +275,7 @@ class KontaktOsobeForm extends AbstractView {
 			</div>
 		</div>
 			
+		<input type="hidden" name="id" value="<?php echo $this->kontakt->idKontakta?>"/>
 		<center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText; ?>" /></center>
 	</form>
 <?php		

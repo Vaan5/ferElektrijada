@@ -2251,158 +2251,158 @@ class Ozsn implements Controller {
      * Modifies Contact Data
      */
     public function modifyContact() {
-	$this->checkRole();
-	$this->checkMessages();
-	
-	$this->idCheck("displayContacts");
-	
-	$sponzor = new \model\DBSponzor();
-        $tvrtka = new \model\DBTvrtka();
-	$medij = new \model\DBMedij();
-        $mail = new \model\DBEmailAdrese();
-        $mob = new \model\DBBrojeviMobitela();
-        $kontakt = new \model\DBKontaktOsobe();
-	
-	// get data so that the view can show em
-	$mobiteli = null;
-	$mailovi = null;
-	$tvrtke = $tvrtka->getAll();
-	$sponzori = $sponzor->getAll();
-	$mediji = $medij->getAll();
-	
-	try {
-	    $kontakt->load(get("id"));
-	    // load contact other contact data
-	    $mailovi = $mail->getContactEmails($kontakt->getPrimaryKey());
-	    $mobiteli = $mob->getContactNumbers($kontakt->getPrimaryKey());
-	} catch (\app\model\NotFoundException $e) {
-	    $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator!");
-	    $_SESSION["exception"] = serialize($handler);
-	    preusmjeri(\route\Route::get('d3')->generate(array(
-		"controller" => "ozsn",
-		"action" => "displayContacts"
-	    )) . "?msg=excep");
-	} catch (\PDOException $e) {
-	    $handler = new \model\ExceptionHandlerModel($e);
-	    $_SESSION["exception"] = serialize($handler);
-	    preusmjeri(\route\Route::get('d3')->generate(array(
-		"controller" => "ozsn",
-		"action" => "modifyContact"
-	    )) . "?msg=excep&id=" . get("id"));
-	}
-	
-	// if you have sent me data i parse it
-	if (!postEmpty()) {
-	    $validacija = new \model\formModel\KontaktOsobeFormModel(array(
-						"imeKontakt" => post("imeKontakt"),
-						"prezimeKontakt" => post("prezimeKontakt"),
-						"telefon" => post("telefon"),
-						"radnoMjesto" => post("radnoMjesto"),
-						"idTvrtke" => post("idTvrtke"),
-						"idSponzora" => post("idSponzora"),
-						"idMedija" => post("idMedija")
-					    ));
-	    $pov = $validacija->validate();
-            if ($pov !== true) {
-                $message = $validacija->decypherErrors($pov);
-                $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-                $_SESSION["exception"] = serialize($handler);
-                preusmjeri(\route\Route::get('d3')->generate(array(
-                    "controller" => "ozsn",
-                    "action" => "modifyContact"
-                 )) . "?msg=excep&id=" . post("id"));
-            }
-	    
-	    // check if atleast one idTvrtke or idSponzora or idMedija is given
-            if (post('idTvrtke') === false && false === post('idSponzora') && false === post('idMedija')) {
-                $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Morate odabrati barem jednog sponzora, medij ili tvrtku!");
-                $_SESSION["exception"] = serialize($handler);
-                preusmjeri(\route\Route::get('d3')->generate(array(
-                    "controller" => "ozsn",
-                    "action" => "modifyContact"
-                 )) . "?msg=excep&id=" . post("id"));
-            }
-	    
-	    // check emails and cell numbers
-	    $i = 1;
-            while (post("mob" . $i) !== false) {
-                $validator = new \model\formModel\NumberValidationModel(array("number" => post("mob" . $i)));
-                $pov = $validator->validate();
-                if ($pov !== true) {
-                    $message = $validacija->decypherErrors($pov);
-                    $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-                    $_SESSION["exception"] = serialize($handler);
-                    preusmjeri(\route\Route::get('d3')->generate(array(
-                        "controller" => "ozsn",
-                        "action" => "modifyContact"
-                     )) . "?msg=excep&id=" . post("id"));
-                }
-                $i = $i + 1;
-            }
-            
-            $k = 1;
-            while (post("mail" . $k) !== false) {
-                $validator = new \model\formModel\MailValidationModel(array("mail" => post("mail" . $k)));
-                $pov = $validator->validate();
-                if ($pov !== true) {
-                    $message = $validacija->decypherErrors($pov);
-                    $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-                    $_SESSION["exception"] = serialize($handler);
-                    preusmjeri(\route\Route::get('d3')->generate(array(
-                        "controller" => "ozsn",
-                        "action" => "modifyContact"
-                     )) . "?msg=excep&id=" . post("id"));
-                }
-                $k = $k + 1;
-            }
-	    
-	    
-	    // i checked everything now i add data
-	    try {
-		$kontakt->modifyRow(post("id"), post("imeKontakt"), post("prezimeKontakt"), post("telefon", NULL), post('radnoMjesto', NULL),
-                        post('idTvrtke', NULL), post('idSponzora', NULL), post('idMedija', NULL));
-		
-		// first delete old numbers and mails
-		$mob->deleteByContact(post("id"));
-		$mail->deleteByContact(post("id"));
-		// now change phone numbers and mails
-		for ($j = 1; $j < $i; $j = $j + 1) {
-                    $mob->addNewOrIgnore(post("id"), post("mob" . $j));
-                }
-                
-                for ($j = 1; $j < $k; $j = $j + 1) {
-                    $mail->addNewOrIgnore(post("id"), post("mail" . $j));
-                }
-		
-		// everything ok let's redirect
-		preusmjeri(\route\Route::get('d3')->generate(array(
-		    "controller" => "ozsn",
-		    "action" => "displayContacts"
-		)) . "?msg=succMC");
-	    } catch (\PDOException $e) {
-		$handler = new \model\ExceptionHandlerModel($e);
-		$_SESSION["exception"] = serialize($handler);
-		preusmjeri(\route\Route::get('d3')->generate(array(
-		    "controller" => "ozsn",
-		    "action" => "modifyContact"
-		)) . "?msg=excep&id=" . post("id"));
-	    }
-	}
-	
-	echo new \view\Main(array(
-	    "body" => new \view\ozsn\ContactModification(array(
-		"errorMessage" => $this->errorMessage,
-		"resultMessage" => $this->resultMessage,
-		"kontakt" => $kontakt,
-		"tvrtke" => $tvrtke,
-		"sponzori" => $sponzori,
-		"mediji" => $mediji,
-		"mailovi" => $mailovi,
-		"mobiteli" => $mobiteli
-	    )),
-	    "title" => "Mijenjanje Kontakta",
-		"script" => new \view\scripts\KontaktOsobeFormJs()
-	));
+		$this->checkRole();
+		$this->checkMessages();
+
+		$this->idCheck("displayContacts");
+
+		$sponzor = new \model\DBSponzor();
+		$tvrtka = new \model\DBTvrtka();
+		$medij = new \model\DBMedij();
+		$mail = new \model\DBEmailAdrese();
+		$mob = new \model\DBBrojeviMobitela();
+		$kontakt = new \model\DBKontaktOsobe();
+
+		// get data so that the view can show em
+		$mobiteli = null;
+		$mailovi = null;
+		$tvrtke = $tvrtka->getAll();
+		$sponzori = $sponzor->getAll();
+		$mediji = $medij->getAll();
+
+		try {
+			$kontakt->load(get("id"));
+			// load contact other contact data
+			$mailovi = $mail->getContactEmails($kontakt->getPrimaryKey());
+			$mobiteli = $mob->getContactNumbers($kontakt->getPrimaryKey());
+		} catch (\app\model\NotFoundException $e) {
+			$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator!");
+			$_SESSION["exception"] = serialize($handler);
+			preusmjeri(\route\Route::get('d3')->generate(array(
+			"controller" => "ozsn",
+			"action" => "displayContacts"
+			)) . "?msg=excep");
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$_SESSION["exception"] = serialize($handler);
+			preusmjeri(\route\Route::get('d3')->generate(array(
+			"controller" => "ozsn",
+			"action" => "modifyContact"
+			)) . "?msg=excep&id=" . get("id"));
+		}
+
+		// if you have sent me data i parse it
+		if (!postEmpty()) {
+			$validacija = new \model\formModel\KontaktOsobeFormModel(array(
+							"imeKontakt" => post("imeKontakt"),
+							"prezimeKontakt" => post("prezimeKontakt"),
+							"telefon" => post("telefon"),
+							"radnoMjesto" => post("radnoMjesto"),
+							"idTvrtke" => post("idTvrtke"),
+							"idSponzora" => post("idSponzora"),
+							"idMedija" => post("idMedija")
+							));
+			$pov = $validacija->validate();
+				if ($pov !== true) {
+					$message = $validacija->decypherErrors($pov);
+					$handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+					$_SESSION["exception"] = serialize($handler);
+					preusmjeri(\route\Route::get('d3')->generate(array(
+						"controller" => "ozsn",
+						"action" => "modifyContact"
+					 )) . "?msg=excep&id=" . post("id"));
+				}
+
+			// check if atleast one idTvrtke or idSponzora or idMedija is given
+				if (post('idTvrtke') === false && false === post('idSponzora') && false === post('idMedija')) {
+					$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Morate odabrati barem jednog sponzora, medij ili tvrtku!");
+					$_SESSION["exception"] = serialize($handler);
+					preusmjeri(\route\Route::get('d3')->generate(array(
+						"controller" => "ozsn",
+						"action" => "modifyContact"
+					 )) . "?msg=excep&id=" . post("id"));
+				}
+
+			// check emails and cell numbers
+			$i = 1;
+				while (post("mob" . $i) !== false) {
+					$validator = new \model\formModel\NumberValidationModel(array("number" => post("mob" . $i)));
+					$pov = $validator->validate();
+					if ($pov !== true) {
+						$message = $validacija->decypherErrors($pov);
+						$handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+						$_SESSION["exception"] = serialize($handler);
+						preusmjeri(\route\Route::get('d3')->generate(array(
+							"controller" => "ozsn",
+							"action" => "modifyContact"
+						 )) . "?msg=excep&id=" . post("id"));
+					}
+					$i = $i + 1;
+				}
+
+				$k = 1;
+				while (post("mail" . $k) !== false) {
+					$validator = new \model\formModel\MailValidationModel(array("mail" => post("mail" . $k)));
+					$pov = $validator->validate();
+					if ($pov !== true) {
+						$message = $validacija->decypherErrors($pov);
+						$handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+						$_SESSION["exception"] = serialize($handler);
+						preusmjeri(\route\Route::get('d3')->generate(array(
+							"controller" => "ozsn",
+							"action" => "modifyContact"
+						 )) . "?msg=excep&id=" . post("id"));
+					}
+					$k = $k + 1;
+				}
+
+
+			// i checked everything now i add data
+			try {
+			$kontakt->modifyRow(post("id"), post("imeKontakt"), post("prezimeKontakt"), post("telefon", NULL), post('radnoMjesto', NULL),
+							post('idTvrtke', NULL), post('idSponzora', NULL), post('idMedija', NULL));
+
+			// first delete old numbers and mails
+			$mob->deleteByContact(post("id"));
+			$mail->deleteByContact(post("id"));
+			// now change phone numbers and mails
+			for ($j = 1; $j < $i; $j = $j + 1) {
+						$mob->addNewOrIgnore(post("id"), post("mob" . $j));
+					}
+
+					for ($j = 1; $j < $k; $j = $j + 1) {
+						$mail->addNewOrIgnore(post("id"), post("mail" . $j));
+					}
+
+			// everything ok let's redirect
+			preusmjeri(\route\Route::get('d3')->generate(array(
+				"controller" => "ozsn",
+				"action" => "displayContacts"
+			)) . "?msg=succMC");
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "modifyContact"
+				)) . "?msg=excep&id=" . post("id"));
+			}
+		}
+
+		echo new \view\Main(array(
+			"body" => new \view\ozsn\ContactModification(array(
+			"errorMessage" => $this->errorMessage,
+			"resultMessage" => $this->resultMessage,
+			"kontakt" => $kontakt,
+			"tvrtke" => $tvrtke,
+			"sponzori" => $sponzori,
+			"mediji" => $mediji,
+			"mailovi" => $mailovi,
+			"mobiteli" => $mobiteli
+			)),
+			"title" => "Mijenjanje Kontakta",
+			"script" => new \view\scripts\KontaktOsobeFormJs()
+		));
     }
     
     /**
