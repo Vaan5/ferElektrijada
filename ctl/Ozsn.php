@@ -519,7 +519,8 @@ class Ozsn implements Controller {
 		"errorMessage" => $this->errorMessage,
 		"resultMessage" => $this->resultMessage,
 		"tvrtke" => $tvrtke
-	    ))
+	    )),
+		"script" => new \view\scripts\ozsn\ActiveTvrtkeListJs()
 	));
     }
     

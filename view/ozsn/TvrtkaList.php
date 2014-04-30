@@ -42,9 +42,16 @@ class TvrtkaList extends AbstractView {
 			foreach($this->tvrtke as $val)
 			{
 				echo '<form action="modifyTvrtka" method="POST">';
-				echo '<tr><td><span class="modify-' . $val->idTvrtka . '">' . $val->imeTvrtke . '</span><input type="text" class="modifyOn-' . $val->idTvrtke . '" style="display:none;" name="imeTvrtke" value="' . $val->imeTvrtke . '"><input type="hidden" name="idTvrtke" value="' . $val->idTvrtke . '"></td>';
+				echo '<tr><td><span class="modify-' . $val->idTvrtke . '">' . $val->imeTvrtke . '</span><input type="text" class="modifyOn-' . $val->idTvrtke . '" style="display:none;" name="imeTvrtke" value="' . $val->imeTvrtke . '"><input type="hidden" name="idTvrtke" value="' . $val->idTvrtke . '"></td>';
 				echo '<td><span class="modify-' . $val->idTvrtke . '">' . $val->adresaTvrtke . '</span><input type="text" class="modifyOn-' . $val->idTvrtke . '" style="display:none;" name="adresaTvrtke" value="' . $val->adresaTvrtke . '">';
-				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idTvrtke . '" value="Spremi" /><a href="javascript:;" class="editTvrtka modify-' . $val->idTvrtke . '" data-id="' . $val->idTvrtke . '">Uredi</a> &nbsp; <a class="deleteTvrtka modify-' . $val->idTvrtke . '" href="';
+				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idTvrtke . '" value="Spremi" />';
+				echo '<a href="';
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'assignTvrtka'
+				)) . "?id=" . $val->idTvrtke;
+				echo '">Pridruži elektrijadi</a>  &nbsp; ';
+				echo'<a href="javascript:;" class="editTvrtka modify-' . $val->idTvrtke . '" data-id="' . $val->idTvrtke . '">Uredi</a> &nbsp; <a class="deleteTvrtka modify-' . $val->idTvrtke . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
