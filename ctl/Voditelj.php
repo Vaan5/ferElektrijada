@@ -90,6 +90,9 @@ class Voditelj implements Controller {
     
     private function checkMessages() {
         switch(get("msg")) {
+			case 'succA':
+				$this->resultMessage = "Uspješno zabilježeno sudjelovanje u natjecanju!";
+				break;
             case 'excep':
                 if(isset($_SESSION['exception'])) {
                     $e = unserialize($_SESSION['exception']);
@@ -240,7 +243,10 @@ class Voditelj implements Controller {
 					$podrucjeSudjelovanja->addRow(post("idPodrucja"), $sudjelovanje->getPrimaryKey(), NULL, post("vrstaPodrucja", NULL), NULL, NULL);
 					
 					// added successfully
-					$this->createMessage("Uspješno dodan novi član tima!", "d3", "voditelj", "displayPodrucja");
+					preusmjeri(\route\Route::get("d3")->generate(array(
+						"controller" => "voditelj",
+						"action" => "displayPodrucja"
+					)) . "?msg=succA");
 				}
 			} catch (\app\model\NotFoundException $e) {
 				$this->errorMessage = "Nepoznati identifikator!";
@@ -261,6 +267,90 @@ class Voditelj implements Controller {
 	}
 	
 	public function assignExistingPerson() {
+		$this->checkRole();
+		$this->checkMessages();
+		$this->changesAllowed();
+		
+		$osobe = array();
+		if (postEmpty()) {
+			$this->idCheck("displayPodrucja");
+			$osoba = new \model\DBOsoba();
+			$idPodrucja = get("id");
+			
+		} else {
+			// proccess query
+			$idPodrucja;
+			
+		}
+		
+		echo new \view\Main(array(
+			"title" => "Dodavanje Natjecatelja",
+			"body" => new \view\voditelj\AssignExistingPerson(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"idPodrucja" => $idPodrucja,
+				"disabled" => $this->changesDisabled,
+				"osobe" => $osobe
+			))
+		));		
+	}
+	
+	public function displayTeam() {
+		$this->checkRole();
+		$this->checkMessages();
+		$this->changesAllowed();
+		
+		$this->idCheck("displayPodrucja");
+		
+		$takmicari = null;
+		try {
+			$podrucjeSudjelovanja = new \model\DBPodrucjeSudjelovanja();
+			$elektrijada = new \model\DBElektrijada();
+			$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+			
+			$takmicari = $podrucjeSudjelovanja->getPaticipants(get("id"), $idElektrijade);
+		} catch (\app\model\NotFoundException $e) {
+			$this->createMessage("Nepostojeći identifikator!", "d3", "voditelj", "displayPodrucja");
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->createMessage($handler, "d3", "voditelj", "displayPodrucja");
+		}
+		
+		if (get("type")) {
+			// generate file
+			$pomPolje = array("Ime", "Prezime", "Email", "Mobitel", "JMBAG", "OIB", "Korisničko ime",
+				"Osobna iskaznica", "vrijedi do", "Putovnica", "vrijedi do", "Rezultat", "Ukupno Sudionika");
+			$array = array();
+			$array[] = $pomPolje;
+			
+			if ($takmicari !== null && count($takmicari)) {
+				foreach ($takmicari as $v) {
+					$array[] = array($v->ime, $v->prezime, $v->mail, $v->brojMob, $v->JMBAG, $v->OIB, $v->ferId,
+						$v->brOsobne, $v->osobnaVrijediDo, $v->brPutovnice, $v->putovnicaVrijediDo, $v->rezultatPojedinacni, $v->ukupanBrojSudionika);
+				}
+			}
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+
+		echo new \view\Main(array(
+			"title" => "Članovi Tima",
+			"body" => new \view\voditelj\TeamMembers(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"takmicari" => $takmicari,
+				"idPodrucja" => get("id"),
+				"disabled" => $this->changesDisabled
+			))
+		));
+	}
+	
+	public function modifyContestant() {
 		
 	}
 	
