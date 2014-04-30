@@ -2179,7 +2179,8 @@ class Ozsn implements Controller {
             // now we check the mail addresses and phone numbers
             // if you entered a number that already exists we won't add another one, just gonna apply it
             $i = 1;
-            while (post("mob" . $i) !== false) {
+            while (isset($_POST["mob" . $i])) {
+					if ($_POST["mob" . $i] !== "") {
                 $validator = new \model\formModel\NumberValidationModel(array("number" => post("mob" . $i)));
                 $pov = $validator->validate();
                 if ($pov !== true) {
@@ -2191,11 +2192,13 @@ class Ozsn implements Controller {
                         "action" => "addContact"
                      )) . "?msg=excep");
                 }
+					}
                 $i = $i + 1;
             }
             
             $k = 1;
-            while (post("mail" . $k) !== false) {
+            while (isset($_POST["mail" . $k])) {
+					if ($_POST["mail" . $k] !== "") {
                 $validator = new \model\formModel\MailValidationModel(array("mail" => post("mail" . $k)));
                 $pov = $validator->validate();
                 if ($pov !== true) {
@@ -2206,7 +2209,8 @@ class Ozsn implements Controller {
                         "controller" => "ozsn",
                         "action" => "addContact"
                      )) . "?msg=excep");
-                }
+					}
+				}
                 $k = $k + 1;
             }
             
@@ -2216,10 +2220,12 @@ class Ozsn implements Controller {
                         post('idTvrtke', NULL), post('idSponzora', NULL), post('idMedija', NULL));
                 // now lets add the phone numbers and e-mails
                 for ($j = 1; $j < $i; $j = $j + 1) {
+					if(post("mob" . $j))
                     $mob->addNewOrIgnore($kontak->getPrimaryKey(), post("mob" . $j));
                 }
                 
                 for ($j = 1; $j < $k; $j = $j + 1) {
+					if(post("mail" . $j))
                     $mail->addNewOrIgnore($kontak->getPrimaryKey(), post("mail" . $j));
                 }
                 
@@ -2326,7 +2332,8 @@ class Ozsn implements Controller {
 
 			// check emails and cell numbers
 			$i = 1;
-				while (post("mob" . $i) !== false) {
+				while (isset($_POST["mob" . $i])) {
+					if ($_POST["mob" . $i] !== "") {
 					$validator = new \model\formModel\NumberValidationModel(array("number" => post("mob" . $i)));
 					$pov = $validator->validate();
 					if ($pov !== true) {
@@ -2338,11 +2345,14 @@ class Ozsn implements Controller {
 							"action" => "modifyContact"
 						 )) . "?msg=excep&id=" . post("id"));
 					}
+					}
 					$i = $i + 1;
+					
 				}
 
 				$k = 1;
-				while (post("mail" . $k) !== false) {
+				while (isset($_POST["mail" . $k])) {
+					if ($_POST["mail" . $k] !== "") {
 					$validator = new \model\formModel\MailValidationModel(array("mail" => post("mail" . $k)));
 					$pov = $validator->validate();
 					if ($pov !== true) {
@@ -2353,6 +2363,7 @@ class Ozsn implements Controller {
 							"controller" => "ozsn",
 							"action" => "modifyContact"
 						 )) . "?msg=excep&id=" . post("id"));
+					}
 					}
 					$k = $k + 1;
 				}
@@ -2368,10 +2379,12 @@ class Ozsn implements Controller {
 			$mail->deleteByContact(post("id"));
 			// now change phone numbers and mails
 			for ($j = 1; $j < $i; $j = $j + 1) {
+					if (post("mob" . $j))
 						$mob->addNewOrIgnore(post("id"), post("mob" . $j));
 					}
 
 					for ($j = 1; $j < $k; $j = $j + 1) {
+						if(post("mail" . $j))
 						$mail->addNewOrIgnore(post("id"), post("mail" . $j));
 					}
 
