@@ -139,7 +139,8 @@ class Ozsn implements Controller {
 		"resultMessage" => $this->resultMessage,
 		"tvrtke" => $tvrtke
 	    )),
-	    "title" => "Tvrtke"
+	    "title" => "Tvrtke",
+		"script" => new \view\scripts\ozsn\TvrtkaListJs()
 	));
     }
     
