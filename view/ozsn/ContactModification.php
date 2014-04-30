@@ -21,6 +21,20 @@ class ContactModification extends AbstractView {
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
+		
+		echo new \view\components\KontaktOsobeForm(array(
+			"postAction" => \route\Route::get('d3')->generate(array(
+				"controller" => 'ozsn',
+				"action" => 'addContact'
+			)),
+			"submitButtonText" => "Spremi promjene",
+			"kontakt" => $this->kontakt,
+			"sponzori" => $this->sponzori,
+			"tvrtke" => $this->tvrtke,
+			"mediji" => $this->mediji,
+			"mobiteli" => $this->mobiteli,
+			"mailovi" => $this->mailovi
+		));
 	
 	// VAŽNO NA AKCIJU FORME NAKALEMI idKONTAKTA OBAVEZNO !!!! get("id")
 	// OBAVEZNO dodaj ga i u formu kao hidden polje id (parametriziraj -> zbog dodavanja kontakata)

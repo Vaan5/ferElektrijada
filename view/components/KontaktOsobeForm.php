@@ -43,28 +43,28 @@ class KontaktOsobeForm extends AbstractView {
 		<div class="form-group">
 			<label for="imeKontakt" class="col-sm-3 control-label">Ime</label>
 			<div class="col-sm-9">
-				<input type="text" name="imeKontakt" class="form-control" placeholder="Upišite ime kontakta" <?php if($this->kontakt && $this->kontakt->prezimeKontakt) echo 'value="' . $this->sponzor->prezimeKontakt . '"' ?> />
+				<input type="text" name="imeKontakt" class="form-control" placeholder="Upišite ime kontakta" <?php if($this->kontakt && $this->kontakt->imeKontakt) echo 'value="' . $this->kontakt->imeKontakt . '"' ?> />
 			</div>
 		</div>
 		
 		<div class="form-group">
 			<label for="prezimeKontakt" class="col-sm-3 control-label">Prezime</label>
 			<div class="col-sm-9">
-				<input type="text" name="prezimeKontakt" class="form-control" placeholder="Upišite prezime kontakta" <?php if($this->kontakt && $this->kontakt->prezimeKontakt) echo 'value="' . $this->sponzor->prezimeKontakt . '"' ?> />
+				<input type="text" name="prezimeKontakt" class="form-control" placeholder="Upišite prezime kontakta" <?php if($this->kontakt && $this->kontakt->prezimeKontakt) echo 'value="' . $this->kontakt->prezimeKontakt . '"' ?> />
 			</div>
 		</div>
 		
 		<div class="form-group">
 			<label for="telefon" class="col-sm-3 control-label">Broj telefona</label>
 			<div class="col-sm-9">
-				<input type="text" name="telefon" class="form-control" placeholder="Upišite broj telefona" <?php if($this->kontakt && $this->kontakt->telefon) echo 'value="' . $this->sponzor->telefon . '"' ?> />
+				<input type="text" name="telefon" class="form-control" placeholder="Upišite broj telefona" <?php if($this->kontakt && $this->kontakt->telefon) echo 'value="' . $this->kontakt->telefon . '"' ?> />
 			</div>
 		</div>
 		
 		<div class="form-group">
 			<label for="radnoMjesto" class="col-sm-3 control-label">Radno mjesto</label>
 			<div class="col-sm-9">
-				<input type="text" name="radnoMjesto" class="form-control" placeholder="Upišite radno mjesto" <?php if($this->kontakt && $this->kontakt->radnoMjesto) echo 'value="' . $this->sponzor->radnoMjesto . '"' ?> />
+				<input type="text" name="radnoMjesto" class="form-control" placeholder="Upišite radno mjesto" <?php if($this->kontakt && $this->kontakt->radnoMjesto) echo 'value="' . $this->kontakt->radnoMjesto . '"' ?> />
 			</div>
 		</div>
 		
