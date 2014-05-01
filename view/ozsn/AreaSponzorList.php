@@ -70,13 +70,7 @@ class AreaSponzorList extends AbstractView {
 			"action" => 'addAreaSponzor'
 		));?>"><span class="glyphicon glyphicon-plus"></span> Dodaj novog sponzora područja</a>
 <?php
-		}		
-		
-	
-	// samo ispisati osnovne podatke // ime trvtke i adresu iznos i podrucje
-	// opcije(nazovi ih kako ti pase) su Dodaj novog, Uredi, i Brisi - odnosi se na add/modify/deleteAreaSponzor
-		
-	// PAZI var_dumpaj sponzore (NIJE OBJEKTNI OBLIK JER IMAS U NJEMU I sponElekPodrucje, pa mi za modify u get parametar id stavi identifikator od sponelekpod tablice)
+		}
     }
     
     public function setErrorMessage($errorMessage) {
