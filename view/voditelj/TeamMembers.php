@@ -61,7 +61,7 @@ class TeamMembers extends AbstractView {
 		{
 ?>
 						<tr>
-							<td class="addAtribut" colspan="2"><i>Ne postoji niti jedan antjecatelj za izabrano područje!</i></td>
+							<td class="addAtribut" colspan="2"><i>Ne postoji niti jedan natjecatelj za izabrano područje!</i></td>
 						</tr>
 <?php
 		}

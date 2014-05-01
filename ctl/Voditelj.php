@@ -106,6 +106,9 @@ class Voditelj implements Controller {
 			case 'succM':
 				$this->resultMessage = "Uspješno ažurirani podaci o natecatelju!";
 				break;
+			case 'succR':
+				$this->resultMessage = "Uspješno ažurirani rezultati natjecatelja!";
+				break;
 			case 'fail':
 				$this->errorMessage = "Dogodila se greška! Pokušajte ponovno!";
 				break;
@@ -847,7 +850,100 @@ class Voditelj implements Controller {
 	}
 	
 	public function modifyResults() {
+		$this->checkRole();
+		$this->checkMessages();
 		
+		$elektrijada = new \model\DBElektrijada();
+		$podrucjeSudjelovanja = new \model\DBPodrucjeSudjelovanja();
+		$takmicari = null;
+		
+		if (postEmpty()) {
+			// display form
+			$this->idCheck("displayPodrucja");
+			$this->checkAuthority(get("id"));
+			$idPodrucje = get("id");
+			
+			try {
+				$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+				$takmicari = $podrucjeSudjelovanja->getPaticipants(get("id"), $idElektrijade);
+			} catch (app\model\NotFoundException $e) {
+				$this->createMessage("Nepoznati identifikator!", "d3", "voditelj", "displayPodrucja");
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler, "d3", "voditelj", "displayPodrucja");
+			}			
+		} else {
+			// proccess query
+			try {
+				$idPodrucje = post("idPodrucja");
+				$this->checkAuthority($idPodrucje);
+				foreach($_POST as $k => $r) {
+					if ($k !== "idPodrucja" && $k[0] !== 'b') {
+						$validacija = new \model\formModel\NumberValidationModel(array("number" => $r,
+																						"num" => post('b' . $k)));
+						$validacija->setRules(array("number" => array("numbers"),
+													"num" => array("numbers")));
+						$pov = $validacija->validate();
+						if ($pov !== true) {
+							var_dump($pov);
+							die();
+							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Rezultat i broj sudionika mogu biti samo brojevi!");
+							$_SESSION["exception"] = serialize($handler);
+							preusmjeri(\route\Route::get('d3')->generate(array(
+								"controller" => "voditelj",
+								"action" => "modifyResults"
+							)) . "?msg=excep&id=" . post("idPodrucja"));
+						}
+						
+						if ($r > post('b' . $k, "0")) {
+							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Rezultat mora biti manji ili jednak broju sudionika!");
+							$_SESSION["exception"] = serialize($handler);
+							preusmjeri(\route\Route::get('d3')->generate(array(
+								"controller" => "voditelj",
+								"action" => "modifyResults"
+							)) . "?msg=excep&id=" . post("idPodrucja"));
+						}
+					}
+				}
+				
+				// everything's okay lets add
+				foreach($_POST as $k => $r) {
+					if ($k !== "idPodrucja" && $k[0] !== 'b') {
+						$podrucjeSudjelovanja->modifyRow($k, FALSE, FALSE, ($r === '' ? NULL : $r), FALSE, post("b" . $k, NULL), FALSE);
+					}
+				}
+				
+				// success -> redirect
+				preusmjeri(\route\Route::get('d3')->generate(array(
+								"controller" => "voditelj",
+								"action" => "modifyResults"
+							)) . "?msg=succR&id=" . post("idPodrucja"));
+			} catch (app\model\NotFoundException $e) {
+				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator!");
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "voditelj",
+					"action" => "modifyResults"
+				)) . "?msg=excep&id=" . post("idPodrucja"));
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "voditelj",
+					"action" => "modifyResults"
+				)) . "?msg=excep&id=" . post("idPodrucja"));
+			}		
+		}
+		
+		echo new \view\Main(array(
+			"title" => "Rezultati",
+			"body" => new \view\voditelj\ModifyResults(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"idPodrucja" => $idPodrucje,
+				"takmicari" => $takmicari
+			))
+		));
 	}
 	
 	
