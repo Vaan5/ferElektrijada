@@ -93,6 +93,9 @@ class Voditelj implements Controller {
 			case 'succA':
 				$this->resultMessage = "Uspješno zabilježeno sudjelovanje u natjecanju!";
 				break;
+			case 'fail':
+				$this->errorMessage = "Dogodila se greška! Pokušajte ponovno!";
+				break;
             case 'excep':
                 if(isset($_SESSION['exception'])) {
                     $e = unserialize($_SESSION['exception']);
@@ -271,16 +274,60 @@ class Voditelj implements Controller {
 		$this->checkMessages();
 		$this->changesAllowed();
 		
-		$osobe = array();
+		$osobe = null;
 		if (postEmpty()) {
 			$this->idCheck("displayPodrucja");
 			$osoba = new \model\DBOsoba();
 			$idPodrucja = get("id");
 			
+			$osobe = $osoba->getAllPersons();
 		} else {
 			// proccess query
-			$idPodrucja;
-			
+			$idPodrucja = post("idPodrucja");
+
+			try {
+				$elektrijada = new \model\DBElektrijada();
+				$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+				$sudjelovanje = new \model\DBSudjelovanje();
+
+				if (count(post("osobe"))) {
+					// add them to the competition
+					foreach (post("osobe") as $o) {
+						$sudjelovanje->{$sudjelovanje->getPrimaryKeyColumn()} = null;
+						$sudjelovanje->loadByContestant($o, $idElektrijade);
+						if ($sudjelovanje->getPrimaryKey() === null)
+							$sudjelovanje->addRow($o, $idElektrijade, post("tip", "S"), NULL, NULL, NULL, NULL, NULL, NULL);
+						
+						$podrucjeSudjelovanja = new \model\DBPodrucjeSudjelovanja();
+						if (!$podrucjeSudjelovanja->alreadyExists(post("idPodrucja"), $sudjelovanje->getPrimaryKey(), post("vrstaPodrucja", NULL))) {
+							$podrucjeSudjelovanja->addRow(post("idPodrucja"), $sudjelovanje->getPrimaryKey(), NULL, post("vrstaPodrucja", NULL), NULL, NULL);
+						}
+					}
+					
+					preusmjeri(\route\Route::get("d3")->generate(array(
+						"controller" => "voditelj",
+						"action" => "displayTeam"
+					)) . "?msg=succA&id=" . post("idPodrucja"));
+				} else {
+					preusmjeri(\route\Route::get("d3")->generate(array(
+						"controller" => "voditelj",
+						"action" => "assignExistingPerson"
+					)) . "?id=" . post("idPodrucja"));
+				}	
+			} catch (app\model\NotFoundException $e) {
+				preusmjeri(\route\Route::get("d3")->generate(array(
+						"controller" => "voditelj",
+						"action" => "assignExistingPerson"
+					)) . "?id=" . post("idPodrucja") . "&msg=fail");
+			} catch (\PDOException $e) {
+				var_dump($e);
+				var_dump($_POST);
+				die();
+				preusmjeri(\route\Route::get("d3")->generate(array(
+						"controller" => "voditelj",
+						"action" => "assignExistingPerson"
+					)) . "?id=" . post("idPodrucja") . "&msg=fail");
+			}	
 		}
 		
 		echo new \view\Main(array(

@@ -409,12 +409,12 @@ CREATE TABLE PodrucjeSudjelovanja (
     idPodrucja INT UNSIGNED NOT NULL,
     idSudjelovanja INT UNSIGNED NOT NULL,
     rezultatPojedinacni SMALLINT,
-    vrstaPodrucja TINYINT(1),
+    vrstaPodrucja TINYINT(1) DEFAULT '0',
     ukupanBrojSudionika INT,
 	iznosUplate INT,
     valuta VARCHAR(3),
     PRIMARY KEY (idPodrucjeSudjelovanja),
-    UNIQUE (idPodrucja , idSudjelovanja),
+    UNIQUE (idPodrucja , idSudjelovanja, vrstaPodrucja),
     FOREIGN KEY (idPodrucja)
         REFERENCES PODRUCJE (idPodrucja)
         ON UPDATE CASCADE ON DELETE CASCADE,

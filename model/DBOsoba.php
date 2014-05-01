@@ -5,10 +5,6 @@ use app\model\AbstractDBModel;
 
 class DBOsoba extends AbstractDBModel {
     
-    /**
-     *
-     * @var boolean 
-     */
     private $isLoggedIn = false;
     
     public function getTable() {

@@ -69,4 +69,27 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
 			throw $e;
 		}
 	}
+	
+	public function alreadyExists($idPodrucja, $idSudjelovanja, $vrstaPodrucja) {
+		try {
+			if ($vrstaPodrucja !== NULL) {
+				$pov = $this->select()->where(array(
+					"idPodrucja" => $idPodrucja,
+					"idSudjelovanja" => $idSudjelovanja,
+					"vrstaPodrucja" => $vrstaPodrucja
+				))->fetchAll();
+			} else {
+				$pov = $this->select()->where(array(
+					"idPodrucja" => $idPodrucja,
+					"idSudjelovanja" => $idSudjelovanja
+				))->fetchAll();
+			}
+			
+			return count($pov) === 0 ? false : true;
+		} catch (app\model\NotFoundException $e) {
+			return true;
+		} catch (\PDOException $e) {
+			return true;
+		}
+	}
 }
