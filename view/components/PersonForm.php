@@ -374,7 +374,6 @@ if($this->osoba){ ?>
 		<?php } ?></center>
         <p></p>
     </form>
-    </div>
 <?php
     }
     

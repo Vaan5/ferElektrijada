@@ -141,4 +141,21 @@ class DBSudjelovanje extends AbstractDBModel {
 			throw $e;
 		}		
 	}
+	
+	/**************************************************************************
+     *			   OZSN FUNCTIONS
+     **************************************************************************/
+	public function exists($idOsobe, $idElektrijade) {
+		try {
+			$pov = $this->select()->where(array(
+				"idOsobe" => $idOsobe,
+				"idElektrijade" => $idElektrijade
+			))->fetchAll();
+			return count($pov) == 0 ? false : $pov[0]->getPrimaryKey();
+		} catch (app\model\NotFoundException $e) {
+			return false;
+		} catch (\PDOException $e) {
+			return false;
+		}
+	}
 }

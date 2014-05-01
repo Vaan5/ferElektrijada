@@ -16,23 +16,11 @@ class DBAtribut extends AbstractDBModel {
     public function getColumns() {
         return array('nazivAtributa');
     }
-    
-    /**
-     * Returns all rows from the table
-     * 
-     * @return array
-     */
+
     public function getAllAtributes() {
-        return $this->select()->fetchAll();     // Ante poziv tvoje procedure ako zelis
+        return $this->select()->fetchAll();
     }
-    
-    /**
-     * Modifies row ONLY IF nazivAtributa !== voditelj;
-     * If it is 'voditelj' then the function throws PDOException with SQL_STATE 02000 and according message
-     * 
-     * @param mixed $idAtributa
-     * @param mixed $nazivAtributa
-     */
+
     public function modifyRow($idAtributa, $nazivAtributa) {
         try {
             $this->load($idAtributa);
@@ -56,13 +44,7 @@ class DBAtribut extends AbstractDBModel {
             throw $e;
         }
     }
-    
-    /**
-     * Deletes a row from the table only if the attribute name isn't 'voditelj'
-     * 
-     * @param mixed $idAtributa
-     * @throws \model\NotFoundException
-     */
+
     public function deleteRow($idAtributa) {
         try {
             $this->load($idAtributa);
@@ -85,13 +67,7 @@ class DBAtribut extends AbstractDBModel {
             throw $e;
         }
     }
-    
-    /**
-     * Adds row to the database
-     * 
-     * @param mixed $nazivAtributa
-     * @throws \model\PDOException
-     */
+
     public function addRow($nazivAtributa) {
         try {
             $this->nazivAtributa = $nazivAtributa;
@@ -100,5 +76,16 @@ class DBAtribut extends AbstractDBModel {
             throw $e;
         }
     }
-    
+	
+	public function getTeamLeaderId() {
+		try {
+            $pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT idAtributa FROM atribut WHERE UPPER(nazivAtributa) = 'VODITELJ'");
+			$q->execute();
+			$pov = $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+			return count($pov) == 0 ? false : $pov[0]->idAtributa;
+        } catch (\PDOException $e) {
+            throw $e;
+        }
+	} 
 }

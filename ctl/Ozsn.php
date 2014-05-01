@@ -3765,6 +3765,7 @@ public function addFunkcija() {
 		$godine = null;
 		$mjesta = null;
 		$idPodrucja = null;
+		
 		if (post("idDolazak") !== false || post("idPodrucja") !== false || get("id") !== false) {
 			$idPodrucja = post("idDolazak") === false ? post("idPodrucja", NULL) : post("idDolazak");
 			if ($idPodrucja === NULL)
@@ -3789,8 +3790,6 @@ public function addFunkcija() {
 		}
 		
 		if (!postEmpty() && false === post("idDolazak")) {
-			var_dump($_POST);
-			die();
 			$validacija = new \model\PersonFormModel(array('password' => post('password'),
 								'ferId' => post('ferId'),
 								'ime' => post('ime'), 
@@ -3813,17 +3812,45 @@ public function addFunkcija() {
 				preusmjeri(\route\Route::get('d3')->generate(array(
 					"controller" => "ozsn",
 					"action" => "addTeamLeader"
-				)) . "?msg=excep&id" . post("idPodrucja"));
+				)) . "?msg=excep&id=" . post("idPodrucja"));
 			}
 			try {
-				if ($osoba->userExists(post("ferId"))) {
-					// the user already exists, let the Ozsn know that
-				} else {
+				if ($osoba->userExists(post("ferId")) === false) {
 					// add new user
+					$elektrijada = new \model\DBElektrijada();
+					$idElektrijade = $elektrijada->getCurrentElektrijadaId();
 					$osoba->addNewPerson(post("ime", NULL), post("prezime", NULL), post("mail", NULL), post("brojMob", NULL), 
-							post("ferId"), post("password"), post("JMBAG"), post("spol", "M"), post("datRod", NULL), 
+							post("ferId"), post("password"), post("JMBAG", NULL), post("spol", "M"), post("datRod", NULL), 
 							post("brOsobne", NULL), post("brPutovnice", NULL), post("osobnaVrijediDo", NULL), 
-							post("putovnicaVrijediDo", NULL), "S", NULL, post("MBG", NULL), post("OIB", NULL), sesion("auth"), post("aktivanDokument", "0"));
+							post("putovnicaVrijediDo", NULL), "S", NULL, post("MBG", NULL), post("OIB", NULL), session("auth"), 
+							post("aktivanDokument", "0"));
+					
+					// okay person added now let's add competition data
+					if (post("tip") === 'S') {
+						$sudjelovanje->addRow($osoba->getPrimaryKey(), $idElektrijade, post("tip", "S"), post("idVelicine", NULL), 
+								post("idGodStud", NULL), post("idSmjera", NULL), NULL, NULL, NULL);
+					} else {
+						$sudjelovanje->addRow($osoba->getPrimaryKey(), $idElektrijade, post("tip", "D"), post("idVelicine", NULL), 
+								post("idGodStud", NULL), NULL, post("idRadnogMjesta", NULL), post("idZavoda", NULL), NULL);
+					}
+					
+					// now lets add him for the team leadership
+					$imaAtribut = new \model\DBImaatribut();
+					$atribut = new \model\DBAtribut();
+					
+					$id = $atribut->getTeamLeaderId();
+					if ($id === false) {
+						$atribut->addRow("Voditelj");
+						$id = $atribut->getPrimaryKey();
+					}
+					
+					$imaAtribut->addRow(post("idPodrucja"), $id, $sudjelovanje->getPrimaryKey());
+					
+					// everything's okay redirect
+					preusmjeri(\route\Route::get('d3')->generate(array(
+						"controller" => "ozsn",
+						"action" => "displayTeamLeaders"
+					)) . "?msg=succa");
 				}
 			} catch (app\model\NotFoundException $e) {
 				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator!");
@@ -3831,14 +3858,150 @@ public function addFunkcija() {
 				preusmjeri(\route\Route::get('d3')->generate(array(
 					"controller" => "ozsn",
 					"action" => "addTeamLeader"
-				)) . "?msg=excep&id" . post("idPodrucja"));
+				)) . "?msg=excep&id=" . post("idPodrucja"));
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
 				$_SESSION["exception"] = serialize($handler);
 				preusmjeri(\route\Route::get('d3')->generate(array(
 					"controller" => "ozsn",
 					"action" => "addTeamLeader"
-				)) . "?msg=excep&id" . post("idPodrucja"));
+				)) . "?msg=excep&id=" . post("idPodrucja"));
+			}
+		} 
+		
+		echo new \view\Main(array(
+			"title" => "Dodavanje voditelja",
+			"body" => new \view\ozsn\AddTeamLeader(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"idPodrucja" => $idPodrucja,
+				"radnaMjesta" => $mjesta,
+				"velicine" => $velicine,
+				"smjerovi" => $smjerovi,
+				"godine" => $godine,
+				"zavodi" => $zavodi
+			))
+		));
+	}
+	
+	public function addExistingTeamLeader() {
+		$this->checkRole();
+		$this->checkMessages();
+		
+		$osoba = new \model\DBOsoba();
+		$sudjelovanje = new \model\DBSudjelovanje();
+		$velicina = new \model\DBVelMajice();
+		$smjer = new \model\DBSmjer();
+		$godina = new \model\DBGodStud();
+		$mjesto = new \model\DBRadnoMjesto();
+		$zavod = new \model\DBZavod();
+		
+		$smjerovi = null;
+		$zavodi = null;
+		$velicine = null;
+		$godine = null;
+		$mjesta = null;
+		$idPodrucja = null;
+		if (post("idDolazak") !== false || post("idPodrucja") !== false || get("id") !== false) {
+			$idPodrucja = post("idDolazak") === false ? post("idPodrucja", NULL) : post("idDolazak");
+			if ($idPodrucja === NULL)
+				$idPodrucja = get("id");
+			
+			try {	
+				// get drop down data
+				$godine = $godina->getAllGodStud();
+				$zavodi = $zavod->getAllZavod();
+				$smjerovi = $smjer->getAllSmjer();
+				$velicine = $velicina->getAllVelicina();
+				$mjesta = $mjesto->getAllRadnoMjesto();
+			} catch (app\model\NotFoundException $e) {
+				$this->createMessage("Nepostojeći zapis!", "d3", "ozsn", "displayTeamLeaders");
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler, "d3", "ozsn", "displayTeamLeaders");
+			}
+			
+		} else {
+			$this->createMessage("Nepoznata disciplina!", "d3", "ozsn", "displayTeamLeaders");
+		}
+		
+		if (!postEmpty() && false === post("idDolazak")) {
+			$validacija = new \model\PersonFormModel(array('password' => post('password'),
+								'ferId' => post('ferId'),
+								'ime' => post('ime'), 
+								'prezime' => post('prezime'), 
+								'mail' => post('mail'), 
+								'brojMob' => post('brojMob'), 
+								'JMBAG' => post('JMBAG'),
+								'spol' => post('spol'), 
+								'datRod' => post('datRod'), 
+								'brOsobne' => post('brOsobne'), 
+								'brPutovnice' => post('brPutovnice'), 
+								'osobnaVrijediDo' => post('osobnaVrijediDo'), 
+								'putovnicaVrijediDo' => post('putovnicaVrijediDo'),
+								'MBG' => post('MBG'),
+								'OIB' => post('OIB')));
+			$pov = $validacija->validate();
+			if($pov !== true) {
+				$handler = new \model\ExceptionHandlerModel(new \PDOException(), $validacija->decypherErrors($pov));
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "addTeamLeader"
+				)) . "?msg=excep&id=" . post("idPodrucja"));
+			}
+			try {
+				if ($osoba->userExists(post("ferId")) === false) {
+					// add new user
+					$elektrijada = new \model\DBElektrijada();
+					$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+					$osoba->addNewPerson(post("ime", NULL), post("prezime", NULL), post("mail", NULL), post("brojMob", NULL), 
+							post("ferId"), post("password"), post("JMBAG"), post("spol", "M"), post("datRod", NULL), 
+							post("brOsobne", NULL), post("brPutovnice", NULL), post("osobnaVrijediDo", NULL), 
+							post("putovnicaVrijediDo", NULL), "S", NULL, post("MBG", NULL), post("OIB", NULL), sesion("auth"), 
+							post("aktivanDokument", "0"));
+					
+					// okay person added now let's add competition data
+					if (post("tip") === 'S') {
+						$sudjelovanje->addRow($osoba->getPrimaryKey(), $idElektrijade, post("tip", "S"), post("idVelicine", NULL), 
+								post("idGodStud", NULL), post("idSmjera", NULL), NULL, NULL, NULL);
+					} else {
+						$sudjelovanje->addRow($osoba->getPrimaryKey(), $idElektrijade, post("tip", "D"), post("idVelicine", NULL), 
+								post("idGodStud", NULL), NULL, post("idRadnogMjesta", NULL), post("idZavoda", NULL), NULL);
+					}
+					
+					// now lets add him for the team leadership
+					$imaAtribut = new \model\DBImaatribut();
+					$atribut = new \model\DBAtribut();
+					
+					$id = $atribut->getTeamLeaderId();
+					if ($id === false) {
+						$atribut->addRow("Voditelj");
+						$id = $atribut->getPrimaryKey();
+					}
+					
+					$imaAtribut->addRow(post("idPodrucja"), $id, $sudjelovanje->getPrimaryKey());
+					
+					// everything's okay redirect
+					preusmjeri(\route\Route::get('d3')->generate(array(
+						"controller" => "ozsn",
+						"action" => "displayTeamLeaders"
+					)) . "?msg=succa");
+				}
+			} catch (app\model\NotFoundException $e) {
+				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator!");
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "addTeamLeader"
+				)) . "?msg=excep&id=" . post("idPodrucja"));
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "addTeamLeader"
+				)) . "?msg=excep&id=" . post("idPodrucja"));
 			}
 		} 
 		

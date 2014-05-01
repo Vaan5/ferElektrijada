@@ -35,4 +35,16 @@ class DBImaatribut extends AbstractDBModel {
 			throw $e;
 		}
 	}
+	
+	public function addRow($idPodrucja, $idAtributa, $idSudjelovanja) {
+		try {
+			$atributi = $this->getColumns();
+			foreach ($atributi as $a) {
+				$this->{$a} = ${$a};
+			}
+			$this->save();
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
 }

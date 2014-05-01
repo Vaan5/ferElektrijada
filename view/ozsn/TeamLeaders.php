@@ -85,11 +85,36 @@ if (count($this->podrucja)) {
 ?>					
 </select></div>
         </div>
-									<input type="submit" value="Dodaj"></form></td>
+									<input type="submit" value="Dodaj Novog Voditelja"></form></td>
+						</tr>
+						<tr>
+							<td class="addAtribut" colspan="7">
+								<form action="<?php echo \route\Route::get('d3')->generate(array(
+									"controller" => "ozsn",
+									"action" => "addExistingTeamLeader"
+								)) ?>" method="POST">
+									<div class="form-group">	
+                <label for="podrucje" class="col-sm-3 control-label">Područje</label>
+		<div class="col-sm-9">
+                <select name="idDolazak" class="form-control">
+<?php
+if (count($this->podrucja)) {
+		foreach($this->podrucja as $val)
+		{
+			echo '<option value="' . $val->idPodrucja . '"';
+			echo '>' . $val->nazivPodrucja . '</option>';
+		}
+}
+?>					
+</select></div>
+        </div>
+									<input type="submit" value="Proglasi postojećeg korisnika voditeljem"></form></td>
 						</tr>
 				</tbody>
 			</table>
 		</div>
+
+
 <?php
 
 		echo new \view\components\DownloadLinks(array(
@@ -124,6 +149,29 @@ if (count($this->podrucja)) {
 </select></div>
         </div>
 									<input type="submit" value="Dodaj"></form></td>
+						</tr>
+						<tr>
+							<td class="addAtribut" colspan="7">
+								<form action="<?php echo \route\Route::get('d3')->generate(array(
+									"controller" => "ozsn",
+									"action" => "addExistingTeamLeader"
+								)) ?>" method="POST">
+									<div class="form-group">	
+                <label for="podrucje" class="col-sm-3 control-label">Područje</label>
+		<div class="col-sm-9">
+                <select name="idDolazak" class="form-control">
+<?php
+if (count($this->podrucja)) {
+		foreach($this->podrucja as $val)
+		{
+			echo '<option value="' . $val->idPodrucja . '"';
+			echo '>' . $val->nazivPodrucja . '</option>';
+		}
+}
+?>					
+</select></div>
+        </div>
+									<input type="submit" value="Proglasi postojećeg korisnika voditeljem"></form></td>
 						</tr>
 					</table>
 </div>

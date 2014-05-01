@@ -185,6 +185,11 @@ class DBOsoba extends AbstractDBModel {
         $this->save();
     }
     
+	
+	
+	
+	
+	
     public function getAllActiveOzsn() {
         $pov = $this->select()->where(array(
             "uloga" => 'O'
