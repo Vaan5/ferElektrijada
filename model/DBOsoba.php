@@ -185,6 +185,16 @@ class DBOsoba extends AbstractDBModel {
         $this->save();
     }
     
+	public function getAllPersons() {
+        $pov = $this->select()->fetchAll();
+        if(count($pov)) {
+            foreach($pov as $k => $v) {
+                if ($v->uloga === 'A')
+                    unset($pov[$k]);
+            }
+        }
+        return $pov;
+    }
 	
 	
 	
@@ -394,22 +404,6 @@ class DBOsoba extends AbstractDBModel {
         if ($this->uloga !== 'A' && $this->uloga !== 'O')
             $this->uloga = 'O';
         $this->save();
-    }
-    
-    /**
-     * Returns all persons except Admin
-     * 
-     * @return array
-     */
-    public function getAllPersons() {
-        $pov = $this->select()->fetchAll();
-        if(count($pov)) {
-            foreach($pov as $k => $v) {
-                if ($v->uloga === 'A')
-                    unset($pov[$k]);
-            }
-        }
-        return $pov;
     }
     
     public function find($ime, $prezime, $ferId, $OIB, $JMBAG) {

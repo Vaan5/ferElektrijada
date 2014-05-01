@@ -3870,7 +3870,7 @@ public function addFunkcija() {
 		} 
 		
 		echo new \view\Main(array(
-			"title" => "Dodavanje voditelja",
+			"title" => "Dodavanje Voditelja",
 			"body" => new \view\ozsn\AddTeamLeader(array(
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage,
@@ -3902,6 +3902,8 @@ public function addFunkcija() {
 		$godine = null;
 		$mjesta = null;
 		$idPodrucja = null;
+		$osobe = null;
+		
 		if (post("idDolazak") !== false || post("idPodrucja") !== false || get("id") !== false) {
 			$idPodrucja = post("idDolazak") === false ? post("idPodrucja", NULL) : post("idDolazak");
 			if ($idPodrucja === NULL)
@@ -3914,6 +3916,7 @@ public function addFunkcija() {
 				$smjerovi = $smjer->getAllSmjer();
 				$velicine = $velicina->getAllVelicina();
 				$mjesta = $mjesto->getAllRadnoMjesto();
+				$osobe = $osoba->getAllPersons();
 			} catch (app\model\NotFoundException $e) {
 				$this->createMessage("Nepostojeći zapis!", "d3", "ozsn", "displayTeamLeaders");
 			} catch (\PDOException $e) {
@@ -4006,8 +4009,8 @@ public function addFunkcija() {
 		} 
 		
 		echo new \view\Main(array(
-			"title" => "Dodavanje voditelja",
-			"body" => new \view\ozsn\AddTeamLeader(array(
+			"title" => "Dodavanje Voditelja",
+			"body" => new \view\ozsn\AddExistingTeamLeader(array(
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage,
 				"idPodrucja" => $idPodrucja,
