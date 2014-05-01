@@ -109,6 +109,9 @@ class Voditelj implements Controller {
 			case 'fail':
 				$this->errorMessage = "Dogodila se greška! Pokušajte ponovno!";
 				break;
+			case 'succC':
+				$this->resultMessage = "Uspješno ažurirani podaci o disciplini!";
+				break;
             case 'excep':
                 if(isset($_SESSION['exception'])) {
                     $e = unserialize($_SESSION['exception']);
@@ -681,6 +684,174 @@ class Voditelj implements Controller {
 		}
 	}
 	
+	public function modifyCompetitionData() {
+		$this->checkRole();
+		$this->checkMessages();
+		
+		$elekPod = new \model\DBElekPodrucje();
+		$podrucje = new \model\DBPodrucje();
+
+		$naziv = "";
+		if (postEmpty()) {
+			// process query
+			try {
+				$this->idCheck("displayPodrucja");
+				$this->checkAuthority(get("id"));
+
+				$elektrijada = new \model\DBElektrijada();
+				$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+				$elekPod->loadByDiscipline(get("id"), $idElektrijade);
+				
+				$podrucje->load(get("id"));
+				$idPodrucja = get("id");
+				$naziv = $podrucje->nazivPodrucja;
+			} catch (app\model\NotFoundException $e) {
+				$this->createMessage("Nepoznati identifikator!", "d3", "voditelj", "displayPodrucja");
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler, "d3", "voditelj", "displayPodrucja");
+			}
+		} else {
+			// display
+			try {
+				$podrucje->load(post("idPodrucja"));
+				$idPodrucja = post("idPodrucja");
+				$naziv = $podrucje->nazivPodrucja;
+				$validacija = new \model\formModel\ElekPodFormModel(array('rezultatGrupni' => post('rezultatGrupni'),
+											'ukupanBrojEkipa' => post('ukupanBrojEkipa'),
+											));
+				$pov = $validacija->validate();
+				if($pov !== true) {
+					$this->errorMessage = $validacija->decypherErrors($pov);
+				} else if (post("rezultatGrupni", "0") > post("ukupanBrojEkipa", "0")) {
+					$this->errorMessage = "Rezultat ne može biti manji od broja ekipa!";
+				} else {	
+					// now add data
+					if (post("idElekPodrucje") === false) {
+						$elektrijada = new \model\DBElektrijada();
+						$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+						$elekPod->addRow(post("idPodrucja"),  post("rezultatGrupni", NULL), NULL, $idElektrijade, post("ukupanBrojEkipa", NULL));
+					} else {
+						$elekPod->modifyRow(post("idElekPodrucje"), FALSE, post("rezultatGrupni"), FALSE, FALSE, post("ukupanBrojEkipa", NULL));
+					}
+					
+					// process image
+					if (files("tmp_name", "datoteka") !== false) {
+						// security check
+						if(files("size", "datoteka") > 1024 * 1024) {
+							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Datoteka je prevelika! Maksimalna dozvoljena veličina je 1 MB!");
+							$_SESSION["exception"] = serialize($handler);
+							preusmjeri(\route\Route::get('d3')->generate(array(
+								"controller" => "voditelj",
+								"action" => "modifyCompetitionData"
+							)) . "?msg=excep&id=" . post("idPodrucja"));
+						}
+						if(!is_uploaded_file(files("tmp_name", "datoteka"))) {
+							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Morate poslati datoteku!");
+							$_SESSION["exception"] = serialize($handler);
+							preusmjeri(\route\Route::get('d3')->generate(array(
+								"controller" => "voditelj",
+								"action" => "modifyCompetitionData"
+							)) . "?msg=excep&id=" . post("idPodrucja"));
+						}
+						// check if it is a pdf
+						if(function_exists('finfo_file')) {
+							$finfo = \finfo_open(FILEINFO_MIME_TYPE);
+							$mime = finfo_file($finfo, files("tmp_name", "datoteka"));
+						} else {
+							$mime = \mime_content_type(files("tmp_name", "datoteka"));
+						}
+						if($mime != 'image/jpeg') {
+							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Sliku možete poslati samo u jpeg formatu!");
+							$_SESSION["exception"] = serialize($handler);
+							preusmjeri(\route\Route::get('d3')->generate(array(
+								"controller" => "voditelj",
+								"action" => "modifyCompetitionData"
+							)) . "?msg=excep&id=" . post("idPodrucja"));
+						}
+
+						// adding the path and the file
+						$putanja = "./elektrijada_slike/" . date("Y_m_d_H_i_s") . ".jpg";
+						if (move_uploaded_file(files("tmp_name", "datoteka"), $putanja)) {
+							// if there was already a CV on the server
+							// remove it
+							if ($elekPod->slikaLink !== NULL) {
+								$p = unlink($elekPod->slikaLink);
+								if ($p === false) {
+									$e = new \PDOException();
+									$e->errorInfo[0] = '02000';
+									$e->errorInfo[1] = 1604;
+									$e->errorInfo[2] = "Greška prilikom brisanja slike!";
+									throw $e;
+								}
+							}
+							
+							// add path to db
+							$elekPod->addImage($elekPod->getPrimaryKey(), $putanja);		
+						} else {
+							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Dogodio se problem sa spremanjem slike! Ostali podaci su ažurirani!");
+							$_SESSION["exception"] = serialize($handler);
+							preusmjeri(\route\Route::get('d3')->generate(array(
+								"controller" => "voditelj",
+								"action" => "modifyCompetitionData"
+							)) . "?msg=excep&id=" . post("idPodrucja"));
+						}
+					} else {
+						// check if he wants to delete the old CV
+						if (post("delete") !== false && $elekPod->slikaLink != NULL) {
+							$p = unlink($elekPod->slikaLink);
+							if ($p === false) {
+								$e = new \PDOException();
+								$e->errorInfo[0] = '02000';
+								$e->errorInfo[1] = 1604;
+								$e->errorInfo[2] = "Greška prilikom brisanja slike!";
+								$elekPod->addImage($elekPod->getPrimaryKey(), NULL);
+								throw $e;
+							}
+							$elekPod->addImage($elekPod->getPrimaryKey(), NULL);	// delete path from db
+						}
+					}
+					
+					// success -> redirect
+					preusmjeri(\route\Route::get('d3')->generate(array(
+								"controller" => "voditelj",
+								"action" => "modifyCompetitionData"
+							)) . "?msg=succC&id=" . post("idPodrucja"));
+				}
+			} catch (app\model\NotFoundException $e) {
+				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator!");
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "voditelj",
+					"action" => "modifyCompetitionData"
+				)) . "?msg=excep&id=" . post("idPodrucja"));
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "voditelj",
+					"action" => "modifyCompetitionData"
+				)) . "?msg=excep&id=" . post("idPodrucja"));
+			}
+		}
+		
+		echo new \view\Main(array(
+			"title" => $naziv,
+			"body" => new \view\voditelj\ModifyCompetitionData(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"elekPod" => $elekPod,
+				"idPodrucja" => $idPodrucja
+			))
+		));
+	}
+	
+	public function modifyResults() {
+		
+	}
+	
+	
+	
 //    public function displayProfile() {
 //		$this->checkRole();
 //		$this->checkMessages();
@@ -915,6 +1086,28 @@ class Voditelj implements Controller {
 
 		echo new \view\Download(array(
 			"path" => $osoba->zivotopis
+		));
+	}
+	
+	public function downloadImage() {
+		$this->checkRole();
+		$this->checkMessages();
+
+		if (count($_GET) === 0 || get("id") === false)
+			$this->createMessage("Nepoznata osoba!");
+		
+		$elekPod = new \model\DBElekPodrucje();
+		try {
+			$elekPod->load(get("id"));
+		} catch (app\model\NotFoundException $e) {
+			$this->createMessage("Nepoznati zapis!");
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->createMessage($handler);
+		}
+
+		echo new \view\Download(array(
+			"path" => $elekPod->slikaLink
 		));
 	}
 }

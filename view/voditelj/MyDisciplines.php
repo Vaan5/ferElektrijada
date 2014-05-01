@@ -46,7 +46,15 @@ class MyDisciplines extends AbstractView {
 						\route\Route::get('d3')->generate(array(
 						"controller" => "voditelj",
 						"action" => "assignNewPerson"
-					)) . "?id=" . $val->idPodrucja ."\">Dodaj novog natjecatelja</a></td>";				
+					)) . "?id=" . $val->idPodrucja ."\">Dodaj novog natjecatelja</a>&nbsp;&nbsp;<a href=\"" . 
+						\route\Route::get('d3')->generate(array(
+						"controller" => "voditelj",
+						"action" => "modifyCompetitionData"
+					)) . "?id=" . $val->idPodrucja ."\">Uredi područje</a>&nbsp;&nbsp;<a href=\"" . 
+						\route\Route::get('d3')->generate(array(
+						"controller" => "voditelj",
+						"action" => "modifyResults"
+					)) . "?id=" . $val->idPodrucja ."\">Rezultati</a></td>";				
 				} else {
 					echo "<td>Istekao je rok za promjene</td>";
 				}
