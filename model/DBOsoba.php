@@ -24,8 +24,24 @@ class DBOsoba extends AbstractDBModel {
     public function kriptPass($pass) {
         return sha1($pass);
     }
+	
+	public function getTeamLeaders($idElektrijade) {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT * FROM podrucje LEFT JOIN imaatribut ON imaatribut.idPodrucja = podrucje.idPodrucja
+														LEFT JOIN sudjelovanje ON imaatribut.idSudjelovanja = sudjelovanje.idSudjelovanja
+														LEFT JOIN osoba ON osoba.idOsobe = sudjelovanje.idOsobe
+														LEFT JOIN atribut on imaatribut.idAtributa = atribut.idAtributa
+										WHERE UPPER(atribut.nazivAtributa) = 'VODITELJ' AND sudjelovanje.idElektrijade = :idElektrijade");
+			$q->bindValue(":idElektrijade", $idElektrijade);
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
     
-private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
+	private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
 		try{
 			$elektrijada = new DBElektrijada();
 			$pdo = $this->getPdo();
@@ -38,15 +54,15 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
 			$q->bindValue(":elektrijada", $id);
 			$q->execute();
 			$rez=$q->fetchAll(); //dohvatili smo uloge
-		}catch (\PDOException $e) {
+		} catch (\PDOException $e) {
            return false;
 		}
 		foreach($rez as $x){ //ako je u bar jednom atributu voditelj
-		if(isset($x->nazivAtributa) && strtoupper($x->nazivAtributa)=="VODITELJ"&& $x!=false){
+			if(isset($x->nazivAtributa) && strtoupper($x->nazivAtributa)=="VODITELJ"&& $x!=false){
 				return $uloga.'V'; //ako je korisnik i voditelj dobiva nastavak "V"
 			}
 		}
-			return $uloga;
+		return $uloga;
 	}
 	
 	private function getPodrucja($idOsobe){//vraca sva podrucja u kojima sudjeluje osoba
@@ -73,7 +89,7 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
 		else {
 			return null;
 		}
-	}	
+	}
 	
     /**
      * 
@@ -109,12 +125,12 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
         if ($this->isLoggedIn) {
             $_SESSION["auth"] = $this->getPrimaryKey();
 			$uloga=$this->uloga;
-           $_SESSION["vrsta"] =$this->getUloga($_SESSION["auth"], $uloga);
+			$_SESSION["vrsta"] =$this->getUloga($_SESSION["auth"], $uloga);
             $_SESSION["user"] = $this->ime == NULL ? null:$this->ime;
 			$_SESSION["podrucja"] = $this->getPodrucja ($_SESSION["auth"]);//vraca id podrucja
-        if($_SESSION["vrsta"]===false or $_SESSION["podrucja"]===false){//ako ne uspije dohvatit informacije vrati false
-			return false;
-		}
+			if($_SESSION["vrsta"]===false or $_SESSION["podrucja"]===false){//ako ne uspije dohvatit informacije vrati false
+				return false;
+			}
 		}
         
         return $this->isLoggedIn;
@@ -143,6 +159,17 @@ private function getUloga($idOsobe,$uloga){ //dobivanje uloge korisnika
         return isset($_SESSION['vrsta']) ? $_SESSION['vrsta'] : false;
     }
     
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
     public function addNewPerson($ime, $prezime, $mail, $brojMob, $ferId, $password, $JMBAG,
             $spol, $datRod, $brOsobne, $brPutovnice, $osobnaVrijediDo, $putovnicaVrijediDo, 
             $uloga, $zivotopis, $MBG, $OIB, $idNadredjena, $aktivanDokument = 0) {

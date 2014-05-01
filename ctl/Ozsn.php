@@ -11,84 +11,85 @@ class Ozsn implements Controller {
     
     private function checkRole() {
         // you must be logged in, and an Ozsn member with or without leadership
-	$o = new \model\DBOsoba();
-	if (!(\model\DBOsoba::isLoggedIn() && (\model\DBOsoba::getUserRole() === 'O' ||
-		\model\DBOsoba::getUserRole() === 'OV') && $o->isActiveOzsn(session("auth")))) {
-            preusmjeri(\route\Route::get('d1')->generate() . "?msg=accessDenied");
-        }
+		$o = new \model\DBOsoba();
+		if (!(\model\DBOsoba::isLoggedIn() && (\model\DBOsoba::getUserRole() === 'O' ||
+			\model\DBOsoba::getUserRole() === 'OV') && $o->isActiveOzsn(session("auth")))) {
+				preusmjeri(\route\Route::get('d1')->generate() . "?msg=accessDenied");
+		}
     }
     
     private function generateFile($type, $array) {
-	$reportGen = new \model\reports\ReportModel();
-	$tmp = sys_get_temp_dir();
-	$path = $tmp . "/" . date("Y_m_d_H_i_s") . "_" . session("auth");
-	switch ($type) {
-	    case 'pdf':
-		$pdf = $reportGen->generatePdf($array);
-		$path .= ".pdf";
-		$pdf->Output($path);
-		break;
-	    case 'xls':
-	    case 'xlsx':
-		$path = $reportGen->generateExcel($array, $type);
-		break;
-	    default:
-		preusmjeri(\route\Route::get('d1')->generate() . "?msg=typeconf");
-		break;
-	}
-	return $path;
+		$reportGen = new \model\reports\ReportModel();
+		$tmp = sys_get_temp_dir();
+		$path = $tmp . "/" . date("Y_m_d_H_i_s") . "_" . session("auth");
+		switch ($type) {
+			case 'pdf':
+				$pdf = $reportGen->generatePdf($array);
+				$path .= ".pdf";
+				$pdf->Output($path);
+				break;
+			case 'xls':
+			case 'xlsx':
+				$path = $reportGen->generateExcel($array, $type);
+				break;
+			default:
+				preusmjeri(\route\Route::get('d1')->generate() . "?msg=typeconf");
+				break;
+		}
+		return $path;
     }
     
-    /**
-     * function to check if get("id") is a number
-     */
+	/**
+	 * Checks if get("id") is set and a number
+	 * @param string $akcija
+	 */
     private function idCheck($akcija) {
-	$validator = new \model\formModel\IdValidationModel(array("id" => get("id")));
-	$pov = $validator->validate();
-	if ($pov !== true) {
-	    $message = $validator->decypherErrors($pov);
-            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => $akcija
-            )) . "?msg=excep");
-	}
+		$validator = new \model\formModel\IdValidationModel(array("id" => get("id")));
+		$pov = $validator->validate();
+		if ($pov !== true) {
+			$message = $validator->decypherErrors($pov);
+			$handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+			$_SESSION["exception"] = serialize($handler);
+			preusmjeri(\route\Route::get('d3')->generate(array(
+				"controller" => "ozsn",
+				"action" => $akcija
+			)) . "?msg=excep");
+		}
     }
     
     private function postGetCheck($akcija) {
-	if (false !== post("id")) {
-	    $validator = new \model\formModel\IdValidationModel(array("id" => post("id")));
-	    $pov = $validator->validate();
-	    if ($pov !== true) {
-		$message = $validator->decypherErrors($pov);
-		$handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-		$_SESSION["exception"] = serialize($handler);
-		preusmjeri(\route\Route::get('d3')->generate(array(
-		    "controller" => "ozsn",
-		    "action" => $akcija
-		)) . "?msg=excep");
-	    }
-	} else if (false !== get("id")) {
-	    $validator = new \model\formModel\IdValidationModel(array("id" => get("id")));
-	    $pov = $validator->validate();
-	    if ($pov !== true) {
-		$message = $validator->decypherErrors($pov);
-		$handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-		$_SESSION["exception"] = serialize($handler);
-		preusmjeri(\route\Route::get('d3')->generate(array(
-		    "controller" => "ozsn",
-		    "action" => $akcija
-		)) . "?msg=excep");
-	    }
-	} else {
-	    $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator!");
-		$_SESSION["exception"] = serialize($handler);
-		preusmjeri(\route\Route::get('d3')->generate(array(
-		    "controller" => "ozsn",
-		    "action" => $akcija
-		)) . "?msg=excep");
-	}
+		if (false !== post("id")) {
+			$validator = new \model\formModel\IdValidationModel(array("id" => post("id")));
+			$pov = $validator->validate();
+			if ($pov !== true) {
+				$message = $validator->decypherErrors($pov);
+				$handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => $akcija
+				)) . "?msg=excep");
+			}
+		} else if (false !== get("id")) {
+			$validator = new \model\formModel\IdValidationModel(array("id" => get("id")));
+			$pov = $validator->validate();
+			if ($pov !== true) {
+				$message = $validator->decypherErrors($pov);
+				$handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => $akcija
+				)) . "?msg=excep");
+			}
+		} else {
+			$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator!");
+			$_SESSION["exception"] = serialize($handler);
+			preusmjeri(\route\Route::get('d3')->generate(array(
+				"controller" => "ozsn",
+				"action" => $akcija
+			)) . "?msg=excep");
+		}
     }
     
     private function checkMessages() {
@@ -102,9 +103,9 @@ class Ozsn implements Controller {
             case 'succa':
                 $this->resultMessage = "Uspješno dodan zapis!";
                 break;
-	    case 'succMC':
-		$this->resultMessage = "Uspješno izmijenjeni podaci o kontakt osobi!";
-		break;
+			case 'succMC':
+				$this->resultMessage = "Uspješno izmijenjeni podaci o kontakt osobi!";
+				break;
             case 'excep':
                 if(isset($_SESSION['exception'])) {
                     $e = unserialize($_SESSION['exception']);
@@ -114,6 +115,26 @@ class Ozsn implements Controller {
             default:
                 break;
         }
+    }
+	
+	private function getParamCheck($id, $akcija) {
+		$validator = new \model\formModel\IdValidationModel(array("id" => get($id)));
+		$pov = $validator->validate();
+		if ($pov !== true)
+			$this->createMessage($validator->decypherErrors($pov), "d3", "ozsn", $akcija);
+    }
+	
+	private function createMessage($message, $type = 'd1', $controller = null, $action = null) {
+		$handler = new \model\ExceptionHandlerModel(new \PDOException(), (string)$message);
+		$_SESSION["exception"] = serialize($handler);
+		if ($type === 'd3') {
+			preusmjeri(\route\Route::get('d3')->generate(array(
+				"controller" => $controller,
+				"action" => $action
+				)) . "?msg=excep");
+		} else {
+			 preusmjeri(\route\Route::get('d1')->generate() . "?msg=excep");
+		}
     }
     
     /**
@@ -3672,4 +3693,65 @@ public function addFunkcija() {
         }
     }
 	
+	/*************************************************************************
+	 *					ISPRAVLJENO
+	 *************************************************************************/
+	public function displayTeamLeaders() {
+		$this->checkRole();
+		$this->checkMessages();
+		
+		$osoba = new \model\DBOsoba();
+		$voditelji = null;
+		try {
+			$elektrijada = new \model\DBElektrijada();
+			$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+			
+			$voditelji = $osoba->getTeamLeaders($idElektrijade);
+		} catch (app\model\NotFoundException $e) {
+			$this->createMessage("Nepoznati identifikator!");
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->createMessage($handler);
+		}
+		
+		if (get("type") !== false) {
+			$pomPolje = array("Područje", "Ime", "Prezime", "JMBAG", "Tip");
+			$array = array();
+			$array[] = $pomPolje;
+			
+			if ($voditelji !== null && count($voditelji)) {
+				foreach ($voditelji as $v) {
+					$array[] = array($v->nazivPodrucja, $v->ime, $v->prezime, $v->JMBAG, ($v->tip == "S" ? "Student" : ($v->tip == "D" ? "Djelatnik" : "Ozsn")));
+				}
+			}
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+		
+		echo new \view\Main(array(
+			"title" => "Voditelji",
+			"body" => new \view\ozsn\TeamLeaders(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"voditelji" => $voditelji
+			))
+		));
+	}
+	
+	public function addTeamLeader() {
+		
+	}
+	
+	public function removeTeamLeader() {
+		
+	}
+	
+	public function modifyTeamLeader() {
+		
+	}
 }

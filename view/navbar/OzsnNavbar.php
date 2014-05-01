@@ -5,7 +5,7 @@ use app\view\AbstractView;
 class OzsnNavbar extends AbstractView{
     
     protected function outputHTML() {
-               ?>
+?>
         <ul class="nav navbar-nav">
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">O meni<b class="caret"></b></a>
@@ -95,6 +95,17 @@ class OzsnNavbar extends AbstractView{
 
           </ul>
         </li>
+		
+		<li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Upravljanje Elektrijadom<b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="<?php echo \route\Route::get('d3')->generate(array(
+                    "controller" => 'ozsn',
+                    "action" => 'displayTeamLeaders'
+                ));?>">Voditelji</a></li>
+          </ul>
+        </li>
+		
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tablice elemenata<b class="caret"></b></a>
           <ul class="dropdown-menu">
