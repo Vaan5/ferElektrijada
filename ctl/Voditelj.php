@@ -25,6 +25,13 @@ class Voditelj implements Controller {
 			$this->createMessage($validator->decypherErrors($pov), "d3", "voditelj", $akcija);
     }
 	
+	private function getParamCheck($id, $akcija) {
+		$validator = new \model\formModel\IdValidationModel(array("id" => get($id)));
+		$pov = $validator->validate();
+		if ($pov !== true)
+			$this->createMessage($validator->decypherErrors($pov), "d3", "voditelj", $akcija);
+    }
+	
     private function createMessage($message, $type = 'd1', $controller = null, $action = null) {
 		$handler = new \model\ExceptionHandlerModel(new \PDOException(), (string)$message);
 		$_SESSION["exception"] = serialize($handler);
@@ -92,6 +99,12 @@ class Voditelj implements Controller {
         switch(get("msg")) {
 			case 'succA':
 				$this->resultMessage = "Uspješno zabilježeno sudjelovanje u natjecanju!";
+				break;
+			case 'succD':
+				$this->resultMessage = "Uspješno uklonjen natecatelj iz Vašeg tima!";
+				break;
+			case 'succM':
+				$this->resultMessage = "Uspješno ažurirani podaci o natecatelju!";
 				break;
 			case 'fail':
 				$this->errorMessage = "Dogodila se greška! Pokušajte ponovno!";
@@ -399,6 +412,53 @@ class Voditelj implements Controller {
 	
 	public function modifyContestant() {
 		
+	}
+	
+	public function deleteContestant() {
+		$this->checkRole();
+		$this->checkMessages();
+		$this->changesAllowed();
+		
+		if ($this->changesDisabled)
+			$this->createMessage ("Istekao rok za unos promjena!", 'd3', 'voditelj', 'displayPodrucja');
+		
+		if (get("idP") !== false && get("idS") !== false) {
+			$this->getParamCheck("idP", "displayPodrucja");
+			$this->getParamCheck("idS", "displayPodrucja");
+			
+			// lets remove him
+			try {
+				$podrucjeSudjelovanja = new \model\DBPodrucjeSudjelovanja();
+				$sudjelovanje = new \model\DBSudjelovanje();
+				
+				$podrucjeSudjelovanja->load(get("idP"));
+				$this->checkAuthority($podrucjeSudjelovanja->idPodrucja);
+				
+				$podrucje = $podrucjeSudjelovanja->idPodrucja;
+				
+				// everything's okay let's continue
+				$podrucjeSudjelovanja->delete();
+				
+				if (!$podrucjeSudjelovanja->isParticipating(get("idS"))) {
+					$sudjelovanje->load(get("idS"));
+					$sudjelovanje->delete();
+				}
+				
+				// done
+				preusmjeri(\route\Route::get("d3")->generate(array(
+					"controller" => "voditelj",
+					"action" => "displayTeam"
+				)) . "?msg=succD&id=" . $podrucje);
+				
+			} catch (app\model\NotFoundException $e) {
+				$this->createMessage("Dogodila se greška prilikom brisanja!", "d3", "voditelj", "displayPodrucja");
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler);
+			}			
+		} else {
+			$this->createMessage("Nepoznati parametri brisanja!", "d3", "voditelj", "displayPodrucja");
+		}
 	}
 	
 //    public function displayProfile() {

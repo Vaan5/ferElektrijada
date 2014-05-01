@@ -31,6 +31,7 @@ class TeamMembers extends AbstractView {
 						<th>Ime</th>
 						<th>Prezime</th>
 						<th>JMBAG</th>
+						<th>Vrsta Natjecanja</th>
 						<th>Rezultat</th>
 						<th>Opcije</th>
 					</tr>
@@ -38,17 +39,21 @@ class TeamMembers extends AbstractView {
 
 				<tbody>
 <?php
-
 		if($this->takmicari !== null && count($this->takmicari))
 		{
 			foreach($this->takmicari as $val)
 			{
 				$ispis = "<tr><td>" . $val->ferId . "</td><td>" . $val->ime . "</td><td>" . $val->prezime . 
-						"</td><td>" . $val->JMBAG . "</td><td>" . $val->rezultatPojedinacni . "</td>";
+						"</td><td>" . $val->JMBAG . "</td><td>" . $val->rezultatPojedinacni . "</td><td>" . 
+						($val->vrstaPodrucja == '1' ? 'Timsko' : 'Pojedinačno') . "</td>";
 				$ispis .= "<td><a href=\"" . \route\Route::get('d3')->generate(array(
 					"controller" => "voditelj",
 					"action" => "modifyContestant"
-				)) . "?id=" . $this->idPodrucja ."&idO=". $val->idOsobe ."\">Uredi</a></td></tr>";
+				)) . "?id=" . $this->idPodrucja ."&idO=". $val->idOsobe ."\">Uredi</a>&nbsp;";
+				$ispis .= "&nbsp;<a href=\"" . \route\Route::get('d3')->generate(array(
+					"controller" => "voditelj",
+					"action" => "deleteContestant"
+				)) . "?idP=" . $val->idPodrucjeSudjelovanja ."&idS=". $val->idSudjelovanja ."\">Briši</a></td></tr>";
 				echo $ispis;
 			}
 		}

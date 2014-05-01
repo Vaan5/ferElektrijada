@@ -63,6 +63,7 @@ class MyTeam extends AbstractView {
 					<tr>
 						<th>Ime</th>
 						<th>Prezime</th>
+						<th>Vrsta Natjecanja</th>
 						<th>Rezultat</th>
 					</tr>
 				</thead>
@@ -75,7 +76,8 @@ class MyTeam extends AbstractView {
 			// Foreach atribut, generate row in table
 			foreach($this->takmicari as $val)
 			{
-				$ispis = "<tr><td>" . $val->ime . "</td><td>" . $val->prezime . "</td><td>" . $val->rezultatPojedinacni . "</td></tr>";
+				$ispis = "<tr><td>" . $val->ime . "</td><td>" . $val->prezime . "</td><td>" . 
+						($val->vrstaPodrucja == '1' ? 'Timsko' : 'Pojedinačno') . "</td><td>" . $val->rezultatPojedinacni . "</td></tr>";
 				if ($val->idOsobe == $this->osoba->idOsobe)
 					$ispis = "<b>" . $ispis . "</b>";
 				echo $ispis;

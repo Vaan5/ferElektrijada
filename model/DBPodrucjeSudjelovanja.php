@@ -92,4 +92,18 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
 			return true;
 		}
 	}
+	
+	public function isParticipating($idSudjelovanja) {
+		try {
+			$pov = $this->select()->where(array(
+				"idSudjelovanja" => $idSudjelovanja
+			))->fetchAll();
+			
+			return count($pov) === 0 ? false : true;
+		} catch (app\model\NotFoundException $e) {
+			return true;
+		} catch (\PDOException $e) {
+			return true;
+		}
+	}
 }

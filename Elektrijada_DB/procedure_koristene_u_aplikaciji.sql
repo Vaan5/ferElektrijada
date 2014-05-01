@@ -36,7 +36,7 @@ BEGIN
 	IF EXISTS (SELECT * FROM OSOBA WHERE OSOBA.idOsobe=idOsobe) THEN
 		IF EXISTS (SELECT * FROM ELEKTRIJADA WHERE ELEKTRIJADA.idElektrijade=idElektrijada) THEN
 
-			SELECT podrucje.idPodrucja FROM sudjelovanje 
+			SELECT DISTINCT podrucje.idPodrucja FROM sudjelovanje 
 			LEFT JOIN imaatribut ON sudjelovanje.idSudjelovanja = imaatribut.idSudjelovanja AND sudjelovanje.idElektrijade=idElektrijada
 			 JOIN podrucje ON podrucje.idPodrucja = imaatribut.idPodrucja
 			JOIN atribut ON imaatribut.idAtributa = atribut.idAtributa AND UPPER(nazivAtributa)='VODITELJ'
