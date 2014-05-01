@@ -7,6 +7,7 @@ class TeamLeaders extends AbstractView {
     private $errorMessage;
     private $resultMessage;
 	private $voditelji;
+	private $podrucja;
     
     protected function outputHTML() {
 		echo new \view\components\ErrorMessage(array(
@@ -64,10 +65,27 @@ class TeamLeaders extends AbstractView {
 		}
 ?>
 						<tr>
-							<td class="addAtribut" colspan="7"><a href="<?php echo \route\Route::get('d3')->generate(array(
-								"controller" => "ozsn",
-								"action" => "addTeamLeader"
-							)) ?>"><i>Dodaj!</i></a></td>
+							<td class="addAtribut" colspan="7">
+								<form action="<?php echo \route\Route::get('d3')->generate(array(
+									"controller" => "ozsn",
+									"action" => "addTeamLeader"
+								)) ?>" method="POST">
+									<div class="form-group">	
+                <label for="podrucje" class="col-sm-3 control-label">Područje</label>
+		<div class="col-sm-9">
+                <select name="idDolazak" class="form-control">
+<?php
+if (count($this->podrucja)) {
+		foreach($this->podrucja as $val)
+		{
+			echo '<option value="' . $val->idPodrucja . '"';
+			echo '>' . $val->nazivPodrucja . '</option>';
+		}
+}
+?>					
+</select></div>
+        </div>
+									<input type="submit" value="Dodaj"></form></td>
 						</tr>
 				</tbody>
 			</table>
@@ -85,10 +103,27 @@ class TeamLeaders extends AbstractView {
 
 			<table class="table">
 						<tr>
-							<td class="addAtribut" colspan="7"><a href="<?php echo \route\Route::get('d3')->generate(array(
-								"controller" => "ozsn",
-								"action" => "addTeamLeader"
-							)) ?>"><i>Dodaj!</i></a></td>
+							<td class="addAtribut" colspan="7">
+								<form action="<?php echo \route\Route::get('d3')->generate(array(
+									"controller" => "ozsn",
+									"action" => "addTeamLeader"
+								)) ?>" method="POST">
+									<div class="form-group">	
+                <label for="podrucje" class="col-sm-3 control-label">Područje</label>
+		<div class="col-sm-9">
+                <select name="idDolazak" class="form-control">
+<?php
+if (count($this->podrucja)) {
+		foreach($this->podrucja as $val)
+		{
+			echo '<option value="' . $val->idPodrucja . '"';
+			echo '>' . $val->nazivPodrucja . '</option>';
+		}
+}
+?>					
+</select></div>
+        </div>
+									<input type="submit" value="Dodaj"></form></td>
 						</tr>
 					</table>
 </div>
@@ -108,6 +143,11 @@ class TeamLeaders extends AbstractView {
 	
 	public function setVoditelji($voditelji) {
 		$this->voditelji = $voditelji;
+		return $this;
+	}
+
+	public function setPodrucja($podrucja) {
+		$this->podrucja = $podrucja;
 		return $this;
 	}
 

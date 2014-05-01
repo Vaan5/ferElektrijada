@@ -159,17 +159,19 @@ class DBOsoba extends AbstractDBModel {
         return isset($_SESSION['vrsta']) ? $_SESSION['vrsta'] : false;
     }
     
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public function userExists($ferId) {
+		try {
+			$pov = $this->select()->where(array(
+				"ferId" => $ferId
+			))->fetchAll();
+			return count($pov) == 0 ? false : $pov[0]->getPrimaryKey();
+		} catch (app\model\NotFoundException $e) {
+			return false;
+		} catch (\PDOException $e) {
+			return false;
+		}
+	}
+
     public function addNewPerson($ime, $prezime, $mail, $brojMob, $ferId, $password, $JMBAG,
             $spol, $datRod, $brOsobne, $brPutovnice, $osobnaVrijediDo, $putovnicaVrijediDo, 
             $uloga, $zivotopis, $MBG, $OIB, $idNadredjena, $aktivanDokument = 0) {
