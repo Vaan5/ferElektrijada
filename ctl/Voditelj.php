@@ -1160,7 +1160,6 @@ class Voditelj implements Controller {
 		$this->createMessage("Morate unijeti podatke!", "d3", "voditelj", "displayProfile");
     }
 	
-	
 	public function downloadCV() {
 		$this->checkRole();
 		$this->checkMessages();
