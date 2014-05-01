@@ -935,6 +935,26 @@ class Voditelj implements Controller {
 			}		
 		}
 		
+		if (get("type") !== false && get("id") !== false) {
+			$pomPolje = array("Ime", "Prezime", "JMBAG", "Vrsta natjecanja", "Rezultat", "Broj sudionika");
+			$array = array();
+			$array[] = $pomPolje;
+
+			if ($takmicari !== null && count($takmicari)) {
+				foreach ($takmicari as $v) {
+					$array[] = array($v->ime, $v->prezime, $v->JMBAG,
+						($v->vrstaPodrucja == 1 ? "Timsko" : "Pojedinačno"), $v->rezultatPojedinacni, $v->ukupanBrojSudionika);
+				}
+			}
+
+			$path = $this->generateFile(get("type"), $array);
+
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+		
 		echo new \view\Main(array(
 			"title" => "Rezultati",
 			"body" => new \view\voditelj\ModifyResults(array(

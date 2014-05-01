@@ -69,6 +69,11 @@ class ModifyResults extends AbstractView {
 	<center><input type="submit" class="btn btn-primary" value="Spremi" /></center>
 </form>
 <?php
+		echo new \view\components\DownloadLinks(array("route" => \route\Route::get("d3")->generate(array(
+			"controller" => "voditelj",
+			"action" => "modifyResults"
+		)) . "?id=" . $this->idPodrucja,
+			"onlyParam" => false));
 	}
 	
 	public function setErrorMessage($errorMessage) {
