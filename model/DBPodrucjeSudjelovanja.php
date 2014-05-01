@@ -106,4 +106,27 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
 			return true;
 		}
 	}
+	
+	public function modifyRow($idPodrucjeSudjelovanja, $idPodrucja, $idSudjelovanja, 
+			$rezultatPojedinacni, $vrstaPodrucja, $ukupanBrojSudionika, $iznosUplate, $valuta = "HRK") {
+		try {
+			$this->load($idPodrucjeSudjelovanja);
+			$atributi = $this->getColumns();
+			
+			foreach ($atributi as $a) {
+				if (${$a} !== FALSE)
+					$this->{$a} = ${$a};
+			}
+			
+			$this->save();
+		} catch (\app\model\NotFoundException $e) {
+			$e = new \PDOException();
+			$e->errorInfo[0] = '02000';
+			$e->errorInfo[1] = 1604;
+			$e->errorInfo[2] = "Ne postoji zapis o natjecanju za traženu osobu!";
+			throw $e;
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
 }

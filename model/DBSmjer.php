@@ -28,7 +28,14 @@ class DBSmjer extends AbstractDBModel {
      * @return array
      */
     public function getAllSmjer() {
-        return $this->select()->fetchAll();     
+        try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL dohvatiSmjerove()");
+			$q->execute();
+			return $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+		} catch (\PDOException $e) {
+			return array();
+		}
     }
 	 /**
      * Modifies row in the database

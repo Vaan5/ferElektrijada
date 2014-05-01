@@ -7,9 +7,11 @@ class PersonForm extends AbstractView {
     private $postAction;
     private $submitButtonText;
     private $osoba;
+	private $showPassword = true;
     private $prikazSpola = true;
     private $showDelete = true;
     private $sudjelovanje;
+	private $podrucjeSudjelovanja = null;
     private $showCV = false;
     private $radnaMjesta;
     private $velicine;
@@ -39,7 +41,8 @@ class PersonForm extends AbstractView {
             </div>  
         </div>
 		
-<?php if($this->osoba){ ?>
+<?php if($this->showPassword) {
+if($this->osoba){ ?>
 	<div class="form-group">
             <label for="button" class="col-sm-3 control-label"></label>
             <div class="col-sm-9">
@@ -78,7 +81,7 @@ class PersonForm extends AbstractView {
             </div>
         </div>
 		
-<?php }?>
+<?php }}?>
 		
 		<div class="form-group">
             <label for="ime" class="col-sm-3 control-label">Ime</label>
@@ -328,12 +331,12 @@ class PersonForm extends AbstractView {
 		<div class="form-group">
             <label for="tip" class="col-sm-3 control-label">Tip sudionika</label>
         <div class="col-sm-9">
-			<input type="radio" name="tip" value="S" > Student
+			<input type="radio" name="tip" value="S" <?php if ($this->sudjelovanje !== null && $this->sudjelovanje->tip == "S") echo "checked"?>> Student
 			&nbsp; &nbsp;
-			<input type="radio" name="tip" value="D" > Djelatnik
+			<input type="radio" name="tip" value="D" <?php if ($this->sudjelovanje !== null && $this->sudjelovanje->tip == "D") echo "checked"?>> Djelatnik
 			<?php if (session("vrsta") === "OV") {?>
 			&nbsp; &nbsp;
-			<input type="radio" name="tip" value="O" > Ozsn
+			<input type="radio" name="tip" value="O" <?php if ($this->sudjelovanje !== null && $this->sudjelovanje->tip == "O") echo "checked"?>> Ozsn
 			<?php } ?>
         </div>        
         </div>
@@ -344,16 +347,19 @@ class PersonForm extends AbstractView {
 		<div class="form-group">
             <label for="vrstaPodrucja" class="col-sm-3 control-label">Vrsta discipline</label>
         <div class="col-sm-9">
-			<input type="radio" name="vrstaPodrucja" value="1" > Timsko natjecanje
+			<input type="radio" name="vrstaPodrucja" value="1" <?php if ($this->podrucjeSudjelovanja !== null && $this->podrucjeSudjelovanja->vrstaPodrucja == 1) echo "checked" ?>> Timsko natjecanje
 			&nbsp; &nbsp;
-			<input type="radio" name="vrstaPodrucja" value="0" > Pojedinačno natjecanje
+			<input type="radio" name="vrstaPodrucja" value="0" <?php if ($this->podrucjeSudjelovanja !== null && $this->podrucjeSudjelovanja->vrstaPodrucja == 0) echo "checked" ?>> Pojedinačno natjecanje
         </div>        
         </div>
 <?php
 		}
+		if ($this->podrucjeSudjelovanja !== null) {
 	?>
+		
+		<input type="hidden" name="idPodrucjeSudjelovanja" value="<?php echo $this->podrucjeSudjelovanja->getPrimaryKey();?>" />
 	
-		<?php if($this->sudjelovanje && $this->sudjelovanje->idSudjelovanja){ ?><input type="hidden" name="idSudjelovanja" value="<?php echo $this->sudjelovanje->idSudjelovanja; ?>" /> <?php } ?>
+		<?php } if($this->sudjelovanje && $this->sudjelovanje->idSudjelovanja){ ?><input type="hidden" name="idSudjelovanja" value="<?php echo $this->sudjelovanje->idSudjelovanja; ?>" /> <?php } ?>
         
 		<?php if($this->osoba && $this->osoba->idOsobe){ ?><input type="hidden" name="idOsobe" value="<?php echo $this->osoba->idOsobe; ?>" /> <?php } ?>
         
@@ -484,6 +490,16 @@ class PersonForm extends AbstractView {
 	
 	public function setShowVrstaPodrucja($showVrstaPodrucja) {
 		$this->showVrstaPodrucja = $showVrstaPodrucja;
+		return $this;
+	}
+	
+	public function setPodrucjeSudjelovanja($podrucjeSudjelovanja) {
+		$this->podrucjeSudjelovanja = $podrucjeSudjelovanja;
+		return $this;
+	}
+
+	public function setShowPassword($showPassword) {
+		$this->showPassword = $showPassword;
 		return $this;
 	}
 

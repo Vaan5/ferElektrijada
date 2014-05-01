@@ -50,3 +50,51 @@ BEGIN
 	END IF;
 END $$
 DELIMITER ;
+
+
+--                            DOHVAT PODATAKA
+
+DELIMITER $$
+CREATE  PROCEDURE `dohvatiGodineStudija`()
+BEGIN
+
+	SELECT * FROM GODSTUD ORDER BY studij ASC, godina ASC;
+
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `dohvatiZavode`()
+BEGIN
+
+	SELECT * FROM ZAVOD ORDER BY skraceniNaziv ASC;
+
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `dohvatiVelicine`()
+BEGIN
+
+	SELECT * FROM VELMAJICE ORDER BY velicina ASC;
+
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `dohvatiSmjerove`()
+BEGIN
+
+	SELECT * FROM SMJER ORDER BY nazivSmjera ASC;
+
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `dohvatiRadnaMjesta`()
+BEGIN
+
+	SELECT * FROM RADNOMJESTO ORDER BY naziv ASC;
+
+END $$
+DELIMITER ;

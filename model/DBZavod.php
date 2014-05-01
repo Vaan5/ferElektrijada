@@ -28,7 +28,14 @@ class DBZavod extends AbstractDBModel {
      * @return array
      */
     public function getAllZavod() {
-        return $this->select()->fetchAll();     
+        try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL dohvatiZavode()");
+			$q->execute();
+			return $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+		} catch (\PDOException $e) {
+			return array();
+		}
     }
 	
 	/**

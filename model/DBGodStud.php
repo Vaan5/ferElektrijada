@@ -23,8 +23,15 @@ class DBGodStud extends AbstractDBModel {
      * @return array
      */
     public function getAllGodStud() {
-        return $this->select()->fetchAll();     
-    }
+        try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL dohvatiGodineStudija()");
+			$q->execute();
+			return $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+		} catch (\PDOException $e) {
+			return array();
+		}
+	}
 	/**
      * Modifies row in the database
      * 

@@ -31,8 +31,8 @@ class TeamMembers extends AbstractView {
 						<th>Ime</th>
 						<th>Prezime</th>
 						<th>JMBAG</th>
-						<th>Vrsta Natjecanja</th>
 						<th>Rezultat</th>
+						<th>Vrsta Natjecanja</th>
 						<th>Opcije</th>
 					</tr>
 				</thead>
@@ -49,7 +49,7 @@ class TeamMembers extends AbstractView {
 				$ispis .= "<td><a href=\"" . \route\Route::get('d3')->generate(array(
 					"controller" => "voditelj",
 					"action" => "modifyContestant"
-				)) . "?id=" . $this->idPodrucja ."&idO=". $val->idOsobe ."\">Uredi</a>&nbsp;";
+				)) . "?idP=" . $val->idPodrucjeSudjelovanja ."&idS=". $val->idSudjelovanja . "&idO=". $val->idOsobe ."\">Uredi</a>&nbsp;";
 				$ispis .= "&nbsp;<a href=\"" . \route\Route::get('d3')->generate(array(
 					"controller" => "voditelj",
 					"action" => "deleteContestant"

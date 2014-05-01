@@ -27,7 +27,14 @@ class DBVelMajice extends AbstractDBModel {
      * @return array
      */
     public function getAllVelicina() {
-        return $this->select()->fetchAll();     
+        try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL dohvatiVelicine()");
+			$q->execute();
+			return $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+		} catch (\PDOException $e) {
+			return array();
+		}
     }
 	
  /**

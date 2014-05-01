@@ -1523,14 +1523,14 @@ SELECT * FROM FUNKCIJA ORDER BY nazivFunkcije ASC;
 END $$
 DELIMITER ;
 
-DELIMITER $$
-CREATE  PROCEDURE `dohvatiGodineStudija`()
-BEGIN
-
-SELECT idGodStud, CONCAT(studij, " - ", godina) AS studij FROM GODSTUD ORDER BY studij ASC, godina ASC;
-
-END $$
-DELIMITER ;
+-- DELIMITER $$
+-- CREATE  PROCEDURE `dohvatiGodineStudija`()
+-- BEGIN
+-- 
+-- SELECT * FROM GODSTUD ORDER BY studij ASC, godina ASC;
+-- 
+-- END $$
+-- DELIMITER ;
 
 DELIMITER $$
 CREATE  PROCEDURE `dohvatiKategorijeSponzora`()
@@ -1688,23 +1688,23 @@ ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeci idELEKTR
 END $$
 DELIMITER ;
 
-DELIMITER $$
-CREATE  PROCEDURE `dohvatiRadnaMjesta`()
-BEGIN
+-- DELIMITER $$
+-- CREATE  PROCEDURE `dohvatiRadnaMjesta`()
+-- BEGIN
+-- 
+-- SELECT * FROM RADNOMJESTO ORDER BY naziv ASC;
+-- 
+-- END $$
+-- DELIMITER ;
 
-SELECT * FROM RADNOMJESTO ORDER BY naziv ASC;
-
-END $$
-DELIMITER ;
-
-DELIMITER $$
-CREATE  PROCEDURE `dohvatiSmjerove`()
-BEGIN
-
-SELECT * FROM SMJER ORDER BY nazivSmjera ASC;
-
-END $$
-DELIMITER ;
+-- DELIMITER $$
+-- CREATE  PROCEDURE `dohvatiSmjerove`()
+-- BEGIN
+-- 
+-- SELECT * FROM SMJER ORDER BY nazivSmjera ASC;
+-- 
+-- END $$
+-- DELIMITER ;
 
 DELIMITER $$
 CREATE  PROCEDURE `dohvatiUdruge`()
@@ -1724,23 +1724,23 @@ SELECT * FROM USLUGA ORDER BY nazivUsluge ASC;
 END $$
 DELIMITER ;
 
-DELIMITER $$
-CREATE  PROCEDURE `dohvatiVelicine`()
-BEGIN
+-- DELIMITER $$
+-- CREATE  PROCEDURE `dohvatiVelicine`()
+-- BEGIN
+-- 
+-- SELECT * FROM VELMAJICE ORDER BY velicina ASC;
+-- 
+-- END $$
+-- DELIMITER ;
 
-SELECT * FROM VELMAJICE ORDER BY velicina ASC;
-
-END $$
-DELIMITER ;
-
-DELIMITER $$
-CREATE  PROCEDURE `dohvatiZavode`()
-BEGIN
-
-SELECT * FROM ZAVOD ORDER BY skraceniNaziv ASC;
-
-END $$
-DELIMITER ;
+-- DELIMITER $$
+-- CREATE  PROCEDURE `dohvatiZavode`()
+-- BEGIN
+-- 
+-- SELECT * FROM ZAVOD ORDER BY skraceniNaziv ASC;
+-- 
+-- END $$
+-- DELIMITER ;
 
 DELIMITER $$
 CREATE  PROCEDURE `pridruziFunkciju`(IN idOsobe INT UNSIGNED, IN idFunkcije INT UNSIGNED, IN idElektrijade INT(10))

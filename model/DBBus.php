@@ -17,5 +17,3 @@ class DBBus extends AbstractDBModel {
 		return array ('registracija','brojMjesta','brojBusa');
 	}
 }
-
-?>
