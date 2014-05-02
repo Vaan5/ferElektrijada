@@ -498,7 +498,7 @@ class Voditelj implements Controller {
 				$validacija->setRules($pravila);
 				$pov = $validacija->validate();
 				if($pov !== true) {
-				   $handler = new \model\ExceptionHandlerModel(new \PDOException(), $validacija->decypherErrors($pov));
+					$handler = new \model\ExceptionHandlerModel(new \PDOException(), $validacija->decypherErrors($pov));
 					$_SESSION["exception"] = serialize($handler);
 					preusmjeri(\route\Route::get('d3')->generate(array(
 						"controller" => "voditelj",
@@ -537,10 +537,20 @@ class Voditelj implements Controller {
 				if (files("tmp_name", "datoteka") !== false) {
 					// security check
 					if(files("size", "datoteka") > 1024 * 1024) {
-						$this->createMessage("Datoteka je prevelika! Maksimalna dozvoljena veličina je 1 MB!", "d3", "sudionik", "displayProfile");
+						$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Datoteka je prevelika! Maksimalna dozvoljena veličina je 1 MB!");
+						$_SESSION["exception"] = serialize($handler);
+						preusmjeri(\route\Route::get('d3')->generate(array(
+							"controller" => "voditelj",
+							"action" => "modifyContestant"
+						)) . "?msg=excep&idP=" . post("idPodrucjeSudjelovanja") . "&idO=" . post("idOsobe") . "&idS=" . post("idSudjelovanje"));
 					}
 					if(!is_uploaded_file(files("tmp_name", "datoteka"))) {
-						$this->createMessage("Morate poslati datoteku!", "d3", "sudionik", "displayProfile");
+						$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Morate poslati datoteku!");
+						$_SESSION["exception"] = serialize($handler);
+						preusmjeri(\route\Route::get('d3')->generate(array(
+							"controller" => "voditelj",
+							"action" => "modifyContestant"
+						)) . "?msg=excep&idP=" . post("idPodrucjeSudjelovanja") . "&idO=" . post("idOsobe") . "&idS=" . post("idSudjelovanje"));
 					}
 					// check if it is a pdf
 					if(function_exists('finfo_file')) {
@@ -550,7 +560,12 @@ class Voditelj implements Controller {
 						$mime = \mime_content_type(files("tmp_name", "datoteka"));
 					}
 					if($mime != 'application/pdf') {
-						$this->createMessage("Životopis možete poslati samo u pdf formatu!", "d3", "sudionik", "displayProfile");
+						$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Životopis možete poslati samo u pdf formatu!");
+						$_SESSION["exception"] = serialize($handler);
+						preusmjeri(\route\Route::get('d3')->generate(array(
+							"controller" => "voditelj",
+							"action" => "modifyContestant"
+						)) . "?msg=excep&idP=" . post("idPodrucjeSudjelovanja") . "&idO=" . post("idOsobe") . "&idS=" . post("idSudjelovanje"));
 					}
 
 					// adding the path and the file

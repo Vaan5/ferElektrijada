@@ -82,4 +82,21 @@ class DBImaatribut extends AbstractDBModel {
 			return true;
 		}
 	}
+	
+	public function getAllContestantAttributes($idSudjelovanja) {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT * FROM imaatribut JOIN podrucje ON
+										podrucje.idPodrucja = imaatribut.idPodrucja
+										JOIN atribut ON 
+										imaatribut.idAtributa = atribut.idAtributa
+										WHERE
+										imaatribut.idSudjelovanja = :idSudjelovanja");
+			$q->bindValue(":idSudjelovanja", $idSudjelovanja);
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
 }

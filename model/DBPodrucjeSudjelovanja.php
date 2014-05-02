@@ -129,4 +129,19 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
 			throw $e;
 		}
 	}
+	
+	public function getAllContestantFields($idSudjelovanja) {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT * FROM podrucjesudjelovanja JOIN podrucje ON
+										podrucje.idPodrucja = podrucjeSudjelovanja.idPodrucja
+										WHERE
+										podrucjeSudjelovanja.idSudjelovanja = :idSudjelovanja");
+			$q->bindValue(":idSudjelovanja", $idSudjelovanja);
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
 }

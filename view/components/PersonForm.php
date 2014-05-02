@@ -33,7 +33,7 @@ class PersonForm extends AbstractView {
 	private $atributi = null;
 	private $podrucje;
 	private $atribut;
-	private $showOption;
+	private $showOption = false;
     
     protected function outputHTML() {
 		
