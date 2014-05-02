@@ -672,7 +672,8 @@ class Ozsn implements Controller {
                 "resultMessage" => $this->resultMessage,
                 "mediji" => $mediji
             )),
-            "title" => "Načini Promocije"
+            "title" => "Načini Promocije",
+			"script" => new \view\scripts\ozsn\MedijiListJs()
         ));
     }
     
