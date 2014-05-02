@@ -12,6 +12,8 @@ class AddContestant extends AbstractView {
 	private $velicine;
 	private $godine;
 	private $idPodrucja;
+	private $podrucja;
+	private $atributi;
     
     protected function outputHTML() {
 		echo new \view\components\ErrorMessage(array(
@@ -36,7 +38,11 @@ class AddContestant extends AbstractView {
 			"showCV" => false,
 			"showDropDown" => true,
 			"idPodrucja" => $this->idPodrucja,
-			"showTip" => true
+			"showVrstaPodrucja" => true,
+			"showOption" => true,
+			"showTip" => true,
+			"atributi" => $this->atributi,
+			"podrucja" => $this->podrucja
 		));  
     }
     
@@ -77,6 +83,16 @@ class AddContestant extends AbstractView {
 
 	public function setIdPodrucja($idPodrucja) {
 		$this->idPodrucja = $idPodrucja;
+		return $this;
+	}
+
+	public function setPodrucja($podrucja) {
+		$this->podrucja = $podrucja;
+		return $this;
+	}
+
+	public function setAtributi($atributi) {
+		$this->atributi = $atributi;
 		return $this;
 	}
 

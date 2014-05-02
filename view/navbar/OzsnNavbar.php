@@ -110,6 +110,11 @@ class OzsnNavbar extends AbstractView{
                     "controller" => 'ozsn',
                     "action" => 'searchContestants'
                 ));?>">Pretraga Sudionika</a></li>
+			<li><a href="<?php echo \route\Route::get('d3')->generate(array(
+                    "controller" => 'ozsn',
+                    "action" => 'addContestant'
+                ));?>">Dodavanje Sudionika</a></li>
+			
           </ul>
         </li>
 		

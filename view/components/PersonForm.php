@@ -29,6 +29,11 @@ class PersonForm extends AbstractView {
 	private $idPodrucja = null;
 	private $showTip = false;
 	private $showVrstaPodrucja = false;
+	private $podrucja = null;
+	private $atributi = null;
+	private $podrucje;
+	private $atribut;
+	private $showOption;
     
     protected function outputHTML() {
 		
@@ -342,6 +347,68 @@ if($this->osoba){ ?>
         </div>
 <?php
 		}
+		if ($this->podrucja !== null) {
+?>	
+
+	<div class="form-group">	
+                <label for="podrucja" class="col-sm-3 control-label">Disciplina</label>
+		<div class="col-sm-9">
+                <select name="idPodrucja" class="form-control">
+			<option <?php if(!$this->podrucje) echo 'selected="selected"'; ?> value=""><?php if(!$this->podrucje) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
+
+<?php
+		foreach($this->podrucja as $val)
+		{
+			echo '<option value="' . $val->idPodrucja . '"';
+			if ($this->podrucje && $this->podrucje->idPodrucja == $val->idPodrucja)
+			{
+				echo 'selected="selected"';
+			}
+			echo '>' . $val->nazivPodrucja . '</option>';
+		}
+?>					
+</select></div>
+        </div>
+	
+	<?php }
+			if ($this->atributi !== null) {
+?>	
+
+	<div class="form-group">	
+                <label for="atributi" class="col-sm-3 control-label">Atribut</label>
+		<div class="col-sm-9">
+                <select name="idAtributa[]" class="form-control" multiple>
+			<option <?php if(!$this->atribut) echo 'selected="selected"'; ?> value=""><?php if(!$this->atribut) echo '(prazno)'; else echo '(prazno)'; ?></option>
+
+<?php
+		foreach($this->atributi as $val)
+		{
+			echo '<option value="' . $val->idAtributa . '"';
+			if ($this->atribut && $this->atribut->idAtributa == $val->idAtributa)
+			{
+				echo 'selected="selected"';
+			}
+			echo '>' . $val->nazivAtributa . '</option>';
+		}
+?>					
+</select></div>
+        </div>
+	
+	<?php }
+	if ($this->showOption !== false) {
+		?>
+		<div class="form-group">
+            <label for="opcija" class="col-sm-3 control-label">Natjecatelj ili Koordinator</label>
+        <div class="col-sm-9">
+			<input type="radio" name="option" value="0" > Natjecatelj
+			&nbsp; &nbsp;
+			<input type="radio" name="option" value="1" > Koordinator
+			&nbsp; &nbsp;
+			<input type="radio" name="option" value="2" > Natjecatelj i Koordinator
+        </div>        
+        </div>
+<?php
+		}
 		if ($this->showVrstaPodrucja !== false) {
 ?>
 		<div class="form-group">
@@ -499,6 +566,31 @@ if($this->osoba){ ?>
 
 	public function setShowPassword($showPassword) {
 		$this->showPassword = $showPassword;
+		return $this;
+	}
+	
+	public function setPodrucja($podrucja) {
+		$this->podrucja = $podrucja;
+		return $this;
+	}
+
+	public function setAtributi($atributi) {
+		$this->atributi = $atributi;
+		return $this;
+	}
+	
+	public function setPodrucje($podrucje) {
+		$this->podrucje = $podrucje;
+		return $this;
+	}
+
+	public function setAtribut($atribut) {
+		$this->atribut = $atribut;
+		return $this;
+	}
+
+	public function setShowOption($showOption) {
+		$this->showOption = $showOption;
 		return $this;
 	}
 
