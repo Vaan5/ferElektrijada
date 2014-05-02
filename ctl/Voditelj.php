@@ -1101,12 +1101,12 @@ class Voditelj implements Controller {
 					$sudjelovanje = new \model\DBSudjelovanje();
 					$sudjelovanje->load(post("idSudjelovanja"));
 					
-					if ($sudjelovanje->isStaff()) {
-						$sudjelovanje->modifyRow(post("idSudjelovanja"), FALSE, FALSE, FALSE, post("idVelicine", NULL),
-								post("idGodStud", NULL), NULL, post("idRadnogMjesta", NULL), post("idZavoda", NULL), FALSE);
-					} else {
+					if ($sudjelovanje->isStudent()) {
 						$sudjelovanje->modifyRow(post("idSudjelovanja"), FALSE, FALSE, FALSE, post("idVelicine", NULL),
 								post("idGodStud", NULL), post("idSmjera", NULL), NULL, NULL, FALSE);
+					} else {
+						$sudjelovanje->modifyRow(post("idSudjelovanja"), FALSE, FALSE, FALSE, post("idVelicine", NULL),
+								post("idGodStud", NULL), NULL, post("idRadnogMjesta", NULL), post("idZavoda", NULL), FALSE);
 					}
 					
 					// check CV

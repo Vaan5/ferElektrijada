@@ -3890,17 +3890,7 @@ public function addFunkcija() {
 		
 		$osoba = new \model\DBOsoba();
 		$sudjelovanje = new \model\DBSudjelovanje();
-		$velicina = new \model\DBVelMajice();
-		$smjer = new \model\DBSmjer();
-		$godina = new \model\DBGodStud();
-		$mjesto = new \model\DBRadnoMjesto();
-		$zavod = new \model\DBZavod();
-		
-		$smjerovi = null;
-		$zavodi = null;
-		$velicine = null;
-		$godine = null;
-		$mjesta = null;
+
 		$idPodrucja = null;
 		$osobe = null;
 		
@@ -3910,12 +3900,6 @@ public function addFunkcija() {
 				$idPodrucja = get("id");
 			
 			try {	
-				// get drop down data
-				$godine = $godina->getAllGodStud();
-				$zavodi = $zavod->getAllZavod();
-				$smjerovi = $smjer->getAllSmjer();
-				$velicine = $velicina->getAllVelicina();
-				$mjesta = $mjesto->getAllRadnoMjesto();
 				$osobe = $osoba->getAllPersons();
 			} catch (app\model\NotFoundException $e) {
 				$this->createMessage("Nepostojeći zapis!", "d3", "ozsn", "displayTeamLeaders");
@@ -3929,7 +3913,185 @@ public function addFunkcija() {
 		}
 		
 		if (!postEmpty() && false === post("idDolazak")) {
-			$validacija = new \model\PersonFormModel(array('password' => post('password'),
+			try {
+				
+				$idPodrucja = post("idPodrucja");
+				$imaatribut = new \model\DBImaatribut();
+				$elektrijada = new \model\DBElektrijada();
+				$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+				$sudjelovanje = new \model\DBSudjelovanje();
+				$atribut = new \model\DBAtribut();
+				
+				foreach ($_POST as $k => $v) {
+					if ($k !== 'idPodrucja') {
+						if ($imaatribut->isTeamLeader($k, $idPodrucja, $idElektrijade))
+								continue;
+						// else add him
+						$id = $atribut->getTeamLeaderId();
+						if ($id === false) {
+							$atribut->addRow("Voditelj");
+							$id = $atribut->getPrimaryKey();
+						}
+						if (false !== ($prim = $sudjelovanje->exists($k, $idElektrijade))) {
+							$imaatribut->addRow(post("idPodrucja"), $id, $prim);
+						} else {
+							$sudjelovanje->addRow($osoba->getPrimaryKey(), $idElektrijade, post("tip", "S"), NULL, 
+								NULL, NULL, NULL, NULL, NULL);
+							$imaatribut->addRow(post("idPodrucja"), $id, $sudjelovanje->getPrimaryKey());
+						}
+						
+					}
+				}
+				// everything's okay redirect
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "displayTeamLeaders"
+				)) . "?msg=succa");
+			} catch (app\model\NotFoundException $e) {
+				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator!");
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "addExistingTeamLeader"
+				)) . "?msg=excep&id=" . post("idPodrucja"));
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "addExistingTeamLeader"
+				)) . "?msg=excep&id=" . post("idPodrucja"));
+			}
+		} 
+		
+		echo new \view\Main(array(
+			"title" => "Dodavanje Voditelja",
+			"body" => new \view\ozsn\AddExistingTeamLeader(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"idPodrucja" => $idPodrucja,
+				"osobe" => $osobe
+			))
+		));
+	}
+	
+	public function removeTeamLeader() {
+		$this->checkRole();
+		$this->checkMessages();
+		
+		$this->getParamCheck("idA", "displayTeamLeaders");
+		$this->getParamCheck("idS", "displayTeamLeaders");
+		
+		try {
+			$imaatribut = new \model\DBImaatribut();
+			$sudjelovanje = new \model\DBSudjelovanje();
+			$atribut = new \model\DBAtribut();
+			
+			$imaatribut->load(get("idA"));
+			$sudjelovanje->load(get("idS"));
+			
+			$id = $atribut->getTeamLeaderId();
+			if ($imaatribut->idAtributa != $id)
+				$this->createMessage("Osoba nije voditelj!", "d3", "ozsn", "displayTeamLeaders");
+			
+			if ($imaatribut->idSudjelovanja != $sudjelovanje->getPrimaryKey())
+				$this->createMessage("Osoba nije voditelj!", "d3", "ozsn", "displayTeamLeaders");
+			
+			$imaatribut->delete();
+			$zast = false;
+			if (session("auth") == $sudjelovanje->idOsobe)
+				$zast = true;
+			
+			$podrucjeSudjelovanja = new \model\DBPodrucjeSudjelovanja();
+			if (!$podrucjeSudjelovanja->isParticipating($sudjelovanje->getPrimaryKey()) && !$imaatribut->hasARole($sudjelovanje->getPrimaryKey())) {
+				$sudjelovanje->delete();
+			}
+			
+			if($zast)
+				session_destroy ();
+			
+			// okay lets redirect
+			preusmjeri(\route\Route::get('d3')->generate(array(
+				"controller" => "ozsn",
+				"action" => "displayTeamLeaders"
+			))  . "?msg=succd");
+		} catch (app\model\NotFoundException $e) {
+			$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayTeamLeaders");
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->createMessage($handler, "d3", "ozsn", "displayTeamLeaders");
+		}
+	}
+	
+	public function modifyTeamLeader() {
+		$this->checkRole();
+		$this->checkMessages();
+		
+		$osoba = new \model\DBOsoba();
+		$sudjelovanje = new \model\DBSudjelovanje();
+		$imaatribut = new \model\DBImaatribut();
+		$atribut = new \model\DBAtribut();
+		
+		$velicina = new \model\DBVelMajice();
+		$smjer = new \model\DBSmjer();
+		$godina = new \model\DBGodStud();
+		$mjesto = new \model\DBRadnoMjesto();
+		$zavod = new \model\DBZavod();
+		
+		$smjerovi = null;
+		$zavodi = null;
+		$velicine = null;
+		$godine = null;
+		$mjesta = null;
+		
+		if (postEmpty()) {
+			$this->getParamCheck("idA", "displayTeamLeaders");
+			$this->getParamCheck("idS", "displayTeamLeaders");
+			$idImaAtribut = get("idA");
+			
+			try {
+				$sudjelovanje->load(get("idS"));
+				$imaatribut->load(get("idA"));
+				$id = $atribut->getTeamLeaderId();
+				if ($imaatribut->idAtributa != $id)
+					$this->createMessage("Osoba nije voditelj!", "d3", "ozsn", "displayTeamLeaders");
+
+				if ($imaatribut->idSudjelovanja != $sudjelovanje->getPrimaryKey())
+					$this->createMessage("Osoba nije voditelj!", "d3", "ozsn", "displayTeamLeaders");
+				
+				$osoba->load($sudjelovanje->idOsobe);
+
+				if ($sudjelovanje->isStudent()) {
+					$godine = $godina->getAllGodStud();
+					$smjerovi = $smjer->getAllSmjer();
+					
+					$godina->loadIfExists($sudjelovanje->idGodStud);
+					$smjer->loadIfExists($sudjelovanje->idSmjera);
+					
+				} else {
+					$mjesta = $mjesto->getAllRadnoMjesto();
+					$zavodi = $zavod->getAllZavod();
+					$godine = $godina->getAllGodStud();
+					
+					$zavod->loadIfExists($sudjelovanje->idZavoda);
+					$godina->loadIfExists($sudjelovanje->idGodStud);
+					$mjesto->loadIfExists($sudjelovanje->idRadnogMjesta);
+				}
+				$velicine = $velicina->getAllVelicina();
+				$velicina->loadIfExists($sudjelovanje->idVelicine);
+				
+			} catch (app\model\NotFoundException $e) {
+				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayTeamLeaders");
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler, "d3", "ozsn", "displayTeamLeaders");
+			}
+		} else {
+			// process query
+			$idImaAtribut = post("idPodrucja");
+			
+			try {
+				$validacija = new \model\PersonFormModel(array(
 								'ferId' => post('ferId'),
 								'ime' => post('ime'), 
 								'prezime' => post('prezime'), 
@@ -3944,90 +4106,179 @@ public function addFunkcija() {
 								'putovnicaVrijediDo' => post('putovnicaVrijediDo'),
 								'MBG' => post('MBG'),
 								'OIB' => post('OIB')));
-			$pov = $validacija->validate();
-			if($pov !== true) {
-				$handler = new \model\ExceptionHandlerModel(new \PDOException(), $validacija->decypherErrors($pov));
-				$_SESSION["exception"] = serialize($handler);
-				preusmjeri(\route\Route::get('d3')->generate(array(
-					"controller" => "ozsn",
-					"action" => "addTeamLeader"
-				)) . "?msg=excep&id=" . post("idPodrucja"));
-			}
-			try {
-				if ($osoba->userExists(post("ferId")) === false) {
-					// add new user
-					$elektrijada = new \model\DBElektrijada();
-					$idElektrijade = $elektrijada->getCurrentElektrijadaId();
-					$osoba->addNewPerson(post("ime", NULL), post("prezime", NULL), post("mail", NULL), post("brojMob", NULL), 
-							post("ferId"), post("password"), post("JMBAG"), post("spol", "M"), post("datRod", NULL), 
-							post("brOsobne", NULL), post("brPutovnice", NULL), post("osobnaVrijediDo", NULL), 
-							post("putovnicaVrijediDo", NULL), "S", NULL, post("MBG", NULL), post("OIB", NULL), sesion("auth"), 
-							post("aktivanDokument", "0"));
+				$pov = $validacija->validate();
+				if($pov !== true) {
+					$handler = new \model\ExceptionHandlerModel(new \PDOException(), $validacija->decypherErrors($pov));
+					$_SESSION["exception"] = serialize($handler);
+					preusmjeri(\route\Route::get("d3")->generate(array(
+						"controller" => "ozsn",
+						"action" => "modifyTeamLeader"
+					)) . "?msg=excep&idS=" . post("idSudjelovanja") . "&idA=" . $idImaAtribut);
+				} else {
+					// process query
+					$osoba->modifyPerson(post("idOsobe"), post("ime", NULL), post("prezime", NULL), post("mail", NULL), 
+							post("brojMob", NULL), post("ferId", NULL), NULL, post("JMBAG", NULL),
+							post("spol", NULL), post("datRod", NULL), post("brOsobne", NULL), post("brPutovnice", NULL),
+							post("osobnaVrijediDo", NULL), post("putovnicaVrijediDo", NULL), NULL, post("MBG", NULL), 
+							post("OIB", NULL), post("aktivanDokument", "0"));
 					
-					// okay person added now let's add competition data
-					if (post("tip") === 'S') {
-						$sudjelovanje->addRow($osoba->getPrimaryKey(), $idElektrijade, post("tip", "S"), post("idVelicine", NULL), 
-								post("idGodStud", NULL), post("idSmjera", NULL), NULL, NULL, NULL);
+					$osoba->load(post("idOsobe"));
+					// now add the competition data
+					$sudjelovanje = new \model\DBSudjelovanje();
+					$sudjelovanje->load(post("idSudjelovanja"));
+					$sudjelovanje->tip = post("tip", "S");
+					$sudjelovanje->save();
+					
+					if ($sudjelovanje->isStudent()) {
+						$sudjelovanje->modifyRow(post("idSudjelovanja"), FALSE, FALSE, FALSE, post("idVelicine", NULL),
+								post("idGodStud", NULL), post("idSmjera", NULL), NULL, NULL, FALSE);
 					} else {
-						$sudjelovanje->addRow($osoba->getPrimaryKey(), $idElektrijade, post("tip", "D"), post("idVelicine", NULL), 
-								post("idGodStud", NULL), NULL, post("idRadnogMjesta", NULL), post("idZavoda", NULL), NULL);
+						$sudjelovanje->modifyRow(post("idSudjelovanja"), FALSE, FALSE, FALSE, post("idVelicine", NULL),
+								post("idGodStud", NULL), NULL, post("idRadnogMjesta", NULL), post("idZavoda", NULL), FALSE);
 					}
 					
-					// now lets add him for the team leadership
-					$imaAtribut = new \model\DBImaatribut();
-					$atribut = new \model\DBAtribut();
-					
-					$id = $atribut->getTeamLeaderId();
-					if ($id === false) {
-						$atribut->addRow("Voditelj");
-						$id = $atribut->getPrimaryKey();
+					// check CV
+					if (files("tmp_name", "datoteka") !== false) {
+						// security check
+						if(files("size", "datoteka") > 1024 * 1024) {
+							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Datoteka je prevelika! Maksimalna dozvoljena veličina je 1 MB!");
+							$_SESSION["exception"] = serialize($handler);
+							preusmjeri(\route\Route::get("d3")->generate(array(
+								"controller" => "ozsn",
+								"action" => "modifyTeamLeader"
+							)) . "?msg=excep&idS=" . post("idSudjelovanja") . "&idA=" . $idImaAtribut);
+						}
+						if(!is_uploaded_file(files("tmp_name", "datoteka"))) {
+							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Morate poslati datoteku!");
+							$_SESSION["exception"] = serialize($handler);
+							preusmjeri(\route\Route::get("d3")->generate(array(
+								"controller" => "ozsn",
+								"action" => "modifyTeamLeader"
+							)) . "?msg=excep&idS=" . post("idSudjelovanja") . "&idA=" . $idImaAtribut);
+						}
+						// check if it is a pdf
+						if(function_exists('finfo_file')) {
+							$finfo = \finfo_open(FILEINFO_MIME_TYPE);
+							$mime = finfo_file($finfo, files("tmp_name", "datoteka"));
+						} else {
+							$mime = \mime_content_type(files("tmp_name", "datoteka"));
+						}
+						if($mime != 'application/pdf') {
+							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Životopis možete poslati samo u pdf formatu!");
+							$_SESSION["exception"] = serialize($handler);
+							preusmjeri(\route\Route::get("d3")->generate(array(
+								"controller" => "ozsn",
+								"action" => "modifyTeamLeader"
+							)) . "?msg=excep&idS=" . post("idSudjelovanja") . "&idA=" . $idImaAtribut);
+						}
+
+						// adding the path and the file
+						$putanja = "./zivotopisi/" . date("Y_m_d_H_i_s") . "_" . post("idOsobe") . ".pdf";
+						if (move_uploaded_file(files("tmp_name", "datoteka"), $putanja)) {
+							// if there was already a CV on the server
+							// remove it
+							if ($osoba->zivotopis !== NULL) {
+								$p = unlink($osoba->zivotopis);
+								if ($p === false) {
+									$e = new \PDOException();
+									$e->errorInfo[0] = '02000';
+									$e->errorInfo[1] = 1604;
+									$e->errorInfo[2] = "Greška prilikom brisanja životopisa!";
+									throw $e;
+								}
+							}
+							
+							// add path to db
+							$osoba->addCV(post("idOsobe"), $putanja);		
+						} else {
+							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Dogodio se problem sa spremanjem životopisa! Ostali podaci su ažurirani!");
+							$_SESSION["exception"] = serialize($handler);
+							preusmjeri(\route\Route::get("d3")->generate(array(
+								"controller" => "ozsn",
+								"action" => "modifyTeamLeader"
+							)) . "?msg=excep&idS=" . post("idSudjelovanja") . "&idA=" . $idImaAtribut);
+						}
+					} else {
+						// check if he wants to delete the old CV
+						if (post("delete") !== false && $osoba->zivotopis != NULL) {
+							$p = unlink($osoba->zivotopis);
+							if ($p === false) {
+								$e = new \PDOException();
+								$e->errorInfo[0] = '02000';
+								$e->errorInfo[1] = 1604;
+								$e->errorInfo[2] = "Greška prilikom brisanja životopisa!";
+								$osoba->addCV(post("idOsobe"), NULL);
+								throw $e;
+							}
+							$osoba->addCV(post("idOsobe"), NULL);	// delete path from db
+						}
 					}
-					
-					$imaAtribut->addRow(post("idPodrucja"), $id, $sudjelovanje->getPrimaryKey());
-					
-					// everything's okay redirect
-					preusmjeri(\route\Route::get('d3')->generate(array(
+
+					// success -> redirect
+					preusmjeri(\route\Route::get("d3")->generate(array(
 						"controller" => "ozsn",
 						"action" => "displayTeamLeaders"
-					)) . "?msg=succa");
+					)) . "?msg=succm");
+					
 				}
-			} catch (app\model\NotFoundException $e) {
-				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator!");
+			} catch (\app\model\NotFoundException $e) {
+				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepostojeći identifikator!");
 				$_SESSION["exception"] = serialize($handler);
-				preusmjeri(\route\Route::get('d3')->generate(array(
+				preusmjeri(\route\Route::get("d3")->generate(array(
 					"controller" => "ozsn",
-					"action" => "addTeamLeader"
-				)) . "?msg=excep&id=" . post("idPodrucja"));
+					"action" => "modifyTeamLeader"
+				)) . "?msg=excep&idS=" . post("idSudjelovanja") . "&idA=" . $idImaAtribut);
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
 				$_SESSION["exception"] = serialize($handler);
-				preusmjeri(\route\Route::get('d3')->generate(array(
+				preusmjeri(\route\Route::get("d3")->generate(array(
 					"controller" => "ozsn",
-					"action" => "addTeamLeader"
-				)) . "?msg=excep&id=" . post("idPodrucja"));
-			}
-		} 
+					"action" => "modifyTeamLeader"
+				)) . "?msg=excep&idS=" . post("idSudjelovanja") . "&idA=" . $idImaAtribut);
+			} 
+		}
 		
 		echo new \view\Main(array(
-			"title" => "Dodavanje Voditelja",
-			"body" => new \view\ozsn\AddExistingTeamLeader(array(
+			"title" => "Ažuriranje Podataka",
+			"body" => new \view\ozsn\ModifyTeamLeader(array(
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage,
-				"idPodrucja" => $idPodrucja,
-				"radnaMjesta" => $mjesta,
-				"velicine" => $velicine,
+				"osoba" => $osoba,
+				"sudjelovanje" => $sudjelovanje,
 				"smjerovi" => $smjerovi,
+				"zavodi" => $zavodi,
+				"velicine" => $velicine,
+				"mjesta" => $mjesta,
 				"godine" => $godine,
-				"zavodi" => $zavodi
+				"velicina" => $velicina,
+				"godina" => $godina,
+				"mjesto" => $mjesto,
+				"zavod" => $zavod,
+				"smjer" => $smjer,
+				"idimaatribut" => $idImaAtribut
 			))
 		));
 	}
 	
-	public function removeTeamLeader() {
-		
-	}
-	
-	public function modifyTeamLeader() {
-		
+	public function downloadCV() {
+		$this->checkRole();
+		$this->checkMessages();
+
+		if (count($_GET) === 0 || get("id") === false)
+			$this->createMessage("Nepoznata osoba!");
+
+		$osoba = new \model\DBOsoba();
+		try {
+			$osoba->load(get("id"));
+		} catch (\app\model\NotFoundException $e) {
+			$this->createMessage("Nepoznata osoba!");
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->createMessage($handler);
+		}
+
+		echo new \view\Download(array(
+			"path" => $osoba->zivotopis
+		));
 	}
 }

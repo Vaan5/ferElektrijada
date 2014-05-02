@@ -47,4 +47,39 @@ class DBImaatribut extends AbstractDBModel {
 			throw $e;
 		}
 	}
+	
+	public function isTeamLeader($idOsobe, $idPodrucja, $idElektrijade) {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT * FROM osoba JOIN sudjelovanje
+														ON osoba.idOsobe = sudjelovanje.idOsobe
+														JOIN imaatribut
+														ON imaatribut.idSudjelovanja = sudjelovanje.idSudjelovanja
+														JOIN atribut ON UPPER(nazivAtributa) = 'VODITELJ'
+										WHERE imaatribut.idPodrucja = :idPodrucja AND sudjelovanje.idElektrijade = :idElektrijade
+										AND osoba.idOsobe = :idOsobe");
+			$q->bindValue(":idElektrijade", $idElektrijade);
+			$q->bindValue(":idPodrucja", $idPodrucja);
+			$q->bindValue(":idOsobe", $idOsobe);
+			$q->execute();
+			$pov = $q->fetchAll(\PDO::FETCH_CLASS, get_class(new DBOsoba()));
+			return count($pov) == 0 ? false : true;
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
+	
+	public function hasARole($idSudjelovanja) {
+		try {
+			$pov = $this->select()->where(array(
+				"idSudjelovanja" => $idSudjelovanja
+			))->fetchAll();
+			
+			return count($pov) === 0 ? false : true;
+		} catch (app\model\NotFoundException $e) {
+			return true;
+		} catch (\PDOException $e) {
+			return true;
+		}
+	}
 }
