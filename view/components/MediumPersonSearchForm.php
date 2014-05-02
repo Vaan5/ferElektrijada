@@ -21,6 +21,10 @@ class MediumPersonSearchForm extends AbstractView {
      * @var string show all button text
      */
     private $showAllButtonText;
+	
+	private $allController = "administrator";
+	
+	private $allAction = "displayPersons";
     
     protected function outputHTML() {
         /*
@@ -64,9 +68,9 @@ class MediumPersonSearchForm extends AbstractView {
                         </div>
         </div>
             <center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText;?>" /> <a href="<?php echo \route\Route::get('d3')->generate(array(
-                    "controller" => 'administrator',
-                    "action" => 'displayPersons'
-                ));?>?a=1"><button type="button" class="btn btn-primary">Lista osoba</button></a></center>
+                    "controller" => $this->allController,
+                    "action" => $this->allAction
+                ));?>?a=1"><button type="button" class="btn btn-primary"><?php echo $this->showAllButtonText;?></button></a></center>
     </form>
 
 <?php
@@ -87,5 +91,15 @@ class MediumPersonSearchForm extends AbstractView {
         $this->showAllButtonText = $showAllButtonText;
         return $this;
     }
+	
+	public function setAllController($allController) {
+		$this->allController = $allController;
+		return $this;
+	}
+
+	public function setAllAction($allAction) {
+		$this->allAction = $allAction;
+		return $this;
+	}
     
 }

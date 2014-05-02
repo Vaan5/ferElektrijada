@@ -185,15 +185,76 @@ class DBOsoba extends AbstractDBModel {
         $this->save();
     }
     
-	public function getAllPersons() {
+	public function getAllPersons($except = 'A') {
         $pov = $this->select()->fetchAll();
         if(count($pov)) {
             foreach($pov as $k => $v) {
-                if ($v->uloga === 'A')
-                    unset($pov[$k]);
+				if ($except === 'A') {
+					if ($v->uloga === 'A')
+						unset($pov[$k]);
+				} else {
+					if ($v->uloga === 'A' || $v->uloga ==='O')
+						unset($pov[$k]);
+				} 
             }
         }
         return $pov;
+    }
+	
+	public function find($ime, $prezime, $ferId, $OIB, $JMBAG, $notInvolve = 'A') {
+        $pdo = $this->getPdo();
+        $query = '';
+        $number = 0;
+        if($ime !== '' && $ime !== null && $ime !== false) {
+            $query .= ' UPPER(ime) LIKE :ime';
+            $number++;
+        }
+        if($prezime !== '' && $prezime !== null && $prezime !== false) {
+            if ($number > 0) $query .= ' OR';
+            $query .= ' UPPER(prezime) LIKE :prezime';
+            $number++;
+        }
+        if($ferId !== '' && $ferId !== null && $ferId !== false) {
+            if ($number > 0) $query .= ' OR';
+            $query .= ' UPPER(ferId) LIKE :ferId';
+            $number++;
+        }
+        if($OIB !== '' && $OIB !== null && $OIB !== false) {
+            if ($number > 0) $query .= ' OR';
+            $query .= ' OIB LIKE :OIB';
+            $number++;
+        }
+        if($JMBAG !== '' && $JMBAG !== null && $JMBAG !== false) {
+            if ($number > 0) $query .= ' OR';
+            $query .= ' JMBAG LIKE :JMBAG';
+            $number++;
+        }
+		if ($notInvolve === 'A') 
+			$query = 'SELECT * FROM osoba WHERE (' . $query . ') AND uloga<>\'A\'';
+		else
+			$query = 'SELECT * FROM osoba WHERE (' . $query . ') AND uloga<>\'A\' AND uloga<>\'O\'';
+        $upit = $pdo->prepare($query);
+        if($ime !== '' && $ime !== null && $ime !== false)
+            $upit->bindValue (':ime', "%" . strtoupper ($ime) . "%");
+        if($prezime !== '' && $prezime !== null && $prezime !== false)
+            $upit->bindValue (':prezime', "%" . strtoupper ($prezime) . "%");
+        if($ferId !== '' && $ferId !== null && $ferId !== false)
+            $upit->bindValue (':ferId', "%" . strtoupper ($ferId) . "%");
+        if($OIB !== '' && $OIB !== null && $OIB !== false)
+            $upit->bindValue (':OIB', "%" . $OIB . "%");
+        if($JMBAG !== '' && $JMBAG !== null && $JMBAG !== false)
+            $upit->bindValue (':JMBAG', "%" . $JMBAG . "%");
+        
+        try {
+            $upit->execute();
+        } catch (\PDOException $e) {
+            return false;
+        }
+        $pov = $upit->fetchAll($pdo::FETCH_CLASS, get_class($this));
+        if(count($pov)) {
+            return $pov;
+        }
+        return false;
     }
 	
 	
@@ -404,59 +465,6 @@ class DBOsoba extends AbstractDBModel {
         if ($this->uloga !== 'A' && $this->uloga !== 'O')
             $this->uloga = 'O';
         $this->save();
-    }
-    
-    public function find($ime, $prezime, $ferId, $OIB, $JMBAG) {
-        $pdo = $this->getPdo();
-        $query = '';
-        $number = 0;
-        if($ime !== '' && $ime !== null && $ime !== false) {
-            $query .= ' ime = :ime';
-            $number++;
-        }
-        if($prezime !== '' && $prezime !== null && $prezime !== false) {
-            if ($number > 0) $query .= ' OR';
-            $query .= ' prezime = :prezime';
-            $number++;
-        }
-        if($ferId !== '' && $ferId !== null && $ferId !== false) {
-            if ($number > 0) $query .= ' OR';
-            $query .= ' ferId = :ferId';
-            $number++;
-        }
-        if($OIB !== '' && $OIB !== null && $OIB !== false) {
-            if ($number > 0) $query .= ' OR';
-            $query .= ' OIB = :OIB';
-            $number++;
-        }
-        if($JMBAG !== '' && $JMBAG !== null && $JMBAG !== false) {
-            if ($number > 0) $query .= ' OR';
-            $query .= ' JMBAG = :JMBAG';
-            $number++;
-        }
-        $query = 'SELECT * FROM osoba WHERE (' . $query . ') AND uloga<>\'A\'';
-        $upit = $pdo->prepare($query);
-        if($ime !== '' && $ime !== null && $ime !== false)
-            $upit->bindValue (':ime', $ime);
-        if($prezime !== '' && $prezime !== null && $prezime !== false)
-            $upit->bindValue (':prezime', $prezime);
-        if($ferId !== '' && $ferId !== null && $ferId !== false)
-            $upit->bindValue (':ferId', $ferId);
-        if($OIB !== '' && $OIB !== null && $OIB !== false)
-            $upit->bindValue (':OIB', $OIB);
-        if($JMBAG !== '' && $JMBAG !== null && $JMBAG !== false)
-            $upit->bindValue (':JMBAG', $JMBAG);
-        
-        try {
-            $upit->execute();
-        } catch (\PDOException $e) {
-            return false;
-        }
-        $pov = $upit->fetchAll($pdo::FETCH_CLASS, get_class($this));
-        if(count($pov)) {
-            return $pov;
-        }
-        return false;
     }
     
     public function reportCompetitorList($array, $idElektrijade, $idPodrucja) {

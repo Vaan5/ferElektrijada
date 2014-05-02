@@ -103,6 +103,13 @@ class OzsnNavbar extends AbstractView{
                     "controller" => 'ozsn',
                     "action" => 'displayTeamLeaders'
                 ));?>">Voditelji</a></li>
+			
+			<li class="divider"></li>
+			
+			<li><a href="<?php echo \route\Route::get('d3')->generate(array(
+                    "controller" => 'ozsn',
+                    "action" => 'searchContestants'
+                ));?>">Pretraga Sudionika</a></li>
           </ul>
         </li>
 		

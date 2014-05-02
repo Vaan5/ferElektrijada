@@ -8,11 +8,11 @@ class MediumPersonSearchFormModel extends AbstractFormModel {
     protected function rules() {
         if ($this->rulesArray === null) {
             $this->rulesArray = array(
-                'ferId' => array('username'),
-                'ime' => array('name'), 
-                'prezime' => array('name'),
-                'JMBAG' => array('jmbag'),
-                'OIB' => array('oib')
+                'ferId' => array('safe'),
+                'ime' => array('safe'), 
+                'prezime' => array('safe'),
+                'JMBAG' => array('numbers'),
+                'OIB' => array('numbers')
                 );
         }
         return $this->rulesArray;
