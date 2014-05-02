@@ -86,6 +86,17 @@ class Index extends AbstractView {
 	
 	<br><br>
 	
+	<b>Ozsn NavBar</b>
+	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+	    "controller" => 'ozsn',
+	    "action" => 'displayProfile'
+	)) . "";?>">Profil</a>
+	
+	<br><br>
+	
 	<b>Sudionik NavBar</b>
 	
 	<br>

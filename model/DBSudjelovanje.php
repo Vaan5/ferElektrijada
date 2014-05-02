@@ -93,7 +93,7 @@ class DBSudjelovanje extends AbstractDBModel {
     }
     
     public function isStaff() {
-		return $this->tip === 'D' ? true : false;
+		return $this->tip === 'D' ? true : ($this->tip === 'O' ? true : false);
     }
 	
 	/**

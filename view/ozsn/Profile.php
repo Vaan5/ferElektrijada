@@ -1,6 +1,6 @@
 <?php
 
-namespace view\voditelj;
+namespace view\ozsn;
 use app\view\AbstractView;
 
 class Profile extends AbstractView {
@@ -18,17 +18,12 @@ class Profile extends AbstractView {
     private $radnoMjesto;
     private $zavod;
     private $sudjelovanje;
-    private $disabled;
 
     protected function outputHTML() {
 	
         echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
         ));
-		if ($this->disabled)
-			echo new \view\components\ResultMessage(array(
-			"resultMessage" => "Protekao je rok za unos promjena!"
-			));
 	
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
@@ -36,7 +31,7 @@ class Profile extends AbstractView {
         
         echo new \view\components\PersonForm(array(
             "postAction" => \route\Route::get('d3')->generate(array(
-                "controller" => 'voditelj',
+                "controller" => 'ozsn',
                 "action" => 'modifyProfile'
             )),
             "submitButtonText" => "Spremi promjene",
@@ -54,9 +49,9 @@ class Profile extends AbstractView {
 			"sudjelovanje" => $this->sudjelovanje,
 			"showDelete" => false,
 			"showCV" => true,
-			"showSubmit" => !$this->disabled,
+			"showSubmit" => true,
 			"showDropDown" => true,
-			"controllerCV" => "voditelj"
+			"controllerCV" => "ozsn"
 		));        
     }
     
@@ -127,11 +122,6 @@ class Profile extends AbstractView {
     
     public function setSudjelovanje($sudjelovanje) {
 		$this->sudjelovanje = $sudjelovanje;
-		return $this;
-    }
-    
-    public function setDisabled($disabled) {
-		$this->disabled = $disabled;
 		return $this;
     }
 
