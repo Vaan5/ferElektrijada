@@ -144,4 +144,23 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
 			throw $e;
 		}
 	}
+	
+	public function loadIfExists($idPodrucja, $idSudjelovanja, $vrstaPodrucja) {
+		try {
+			$pov = $this->select()->where(array(
+				"idPodrucja" => $idPodrucja,
+				"idSudjelovanja" => $idSudjelovanja,
+				"vrstaPodrucja" => $vrstaPodrucja
+			))->fetchAll();
+			
+			if(count($pov)) {
+				$this->load($pov[0]->idPodrucjeSudjelovanja);
+			}
+			return $this;
+		} catch (\app\model\NotFoundException $e) {
+			throw $e;
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
 }

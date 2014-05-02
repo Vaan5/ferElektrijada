@@ -24,6 +24,7 @@ class ModifyContestant extends AbstractView {
 	private $osoba;
 	private $podrucja;
 	private $atributi;
+	private $korisnikovaPodrucja;
 
 	protected function outputHTML() {
 		echo new \view\components\ErrorMessage(array(
@@ -65,12 +66,38 @@ class ModifyContestant extends AbstractView {
 		));	
 		
 		// another form for attribute data
+		
 ?>
 <form action="<?php echo \route\Route::get("d3")->generate(array(
 	"controller" => "ozsn",
 	"action" => "changeContestantAttributes"
-));?>">
+));?>" method="GET">
+<?php
+if ($this->korisnikovaPodrucja !== null) {
+?>
 	
+	<div class="form-group">	
+                <label for="podrucja" class="col-sm-3 control-label">Discipline</label>
+		<div class="col-sm-9">
+                <select name="idP" class="form-control">
+			<option value="">Odaberi...</option>
+
+<?php
+		foreach($this->korisnikovaPodrucja as $val)
+		{
+			echo '<option value="' . $val->idPodrucja . '"';
+			echo '>' . $val->nazivPodrucja . '</option>';
+		}
+?>					
+</select></div>
+        </div>
+	
+<?php }
+?>
+	<input type="hidden" name="idS" value="<?php echo $this->sudjelovanje->getPrimaryKey()?>">
+	<input type="radio" name="vrsta" value="0"> Pojedinačno natjecanje
+	<input type="radio" name="vrsta" value="1"> Timsko natjecanje
+	<input type="submit" value="Ažuriranje Atributa" />
 </form>
 <?php
 	}
@@ -172,6 +199,11 @@ class ModifyContestant extends AbstractView {
 
 	public function setAtributi($atributi) {
 		$this->atributi = $atributi;
+		return $this;
+	}
+
+	public function setKorisnikovaPodrucja($korisnikovaPodrucja) {
+		$this->korisnikovaPodrucja = $korisnikovaPodrucja;
 		return $this;
 	}
 

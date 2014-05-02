@@ -4731,6 +4731,7 @@ public function addFunkcija() {
 		$podrucja = null;
 		$podrucjaSudjelovanja = null;
 		$imaAtribute = null;
+		$korisnikovaPodrucja = null;
 		
 		if (postEmpty()) {
 			// display data
@@ -4749,6 +4750,8 @@ public function addFunkcija() {
 				
 				$idElektrijade = $elektrijada->getCurrentElektrijadaId();
 				$sudjelovanje->loadByContestant($osoba->getPrimaryKey(), $idElektrijade);
+				
+				$korisnikovaPodrucja = $podrucja;
 				
 				if ($sudjelovanje->isStaff()) {
 					$mjesto->loadIfExists($sudjelovanje->idRadnogMjesta);
@@ -4943,13 +4946,96 @@ public function addFunkcija() {
 				"zavod" => $zavod,
 				"smjer" => $smjer,
 				"podrucja" => $podrucja,
-				"atributi" => $atributi
+				"atributi" => $atributi,
+				"korisnikovaPodrucja" => $korisnikovaPodrucja
 			))
 		));
 	}
 	
 	public function changeContestantAttributes() {
+		$this->checkRole();
+		$this->checkMessages();
 		
+		$sudjelovanje = new \model\DBSudjelovanje();
+		$podrucjeSudjelovanja = new \model\DBPodrucjeSudjelovanja();
+		$podrucje = new \model\DBPodrucje();
+		$imaatribut = new \model\DBImaatribut();
+		$atribut = new \model\DBAtribut();
+		
+		$atributi = null;
+		$podrucja = null;
+		$korisnikoviAtributi = null;
+		
+		
+		if (postEmpty()) {
+			// get data to show
+			$this->getParamCheck("idS", "searchContestants");
+			$this->getParamCheck("idP", "searchContestants");
+			$this->getParamCheck("vrsta", "searchContestants");
+			$idSudjelovanja = get("idS");
+			$idPodrucja = get("idP");
+			$vrsta = get("vrsta");
+			
+			try {
+				$sudjelovanje->load(get("idS"));
+				$elektrijada = new \model\DBElektrijada();
+				$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+				
+				if ($sudjelovanje->idElektrijade != $idElektrijade)
+					$this->createMessage("Ne možete mijenjati prošlogodišnje zapise!", "d3", "ozsn", "searchContestants");
+				
+				$podrucja = $podrucje->getAll();
+				$atributi = $atribut->getAllAtributes();
+				
+				$podrucjeSudjelovanja = $podrucjeSudjelovanja->loadIfExists(get("idP"), get("idS"), get("vrsta"));
+				
+				$at = $imaatribut->getAllContestantAttributes(get("idS"));
+				
+				$korisnikoviAtributi = array();
+				if (count($at)) {
+					foreach ($at as $a) {
+						if ($a->idPodrucja == get("idP"))
+							$korisnikoviAtributi[] = $a->idAtributa;
+					}
+				}
+				
+			} catch (app\model\NotFoundException $e) {
+				$this->createMessage("Nepoznati identifikator", "d3", "ozsn", "searchContestants");
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler, "d3", "ozsn", "searchContestants");
+			}
+		} else {
+			var_dump($_POST);
+			die();
+			$idSudjelovanja = post("idS");
+			$idPodrucja = post("idP");
+			$vrsta = post("vrsta");
+			
+			try {
+				
+			} catch (app\model\NotFoundException $e) {
+				
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler, "d3", "ozsn", "searchContestants");
+			}
+		}
+		
+		echo new \view\Main(array(
+			"title" => "Ažuriranje Atributa",
+			"body" => new \view\ozsn\ContestantAttributes(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"podrucjeSudjelovanja" => $podrucjeSudjelovanja,
+				"podrucja" => $podrucja,
+				"atributi" => $atributi,
+				"korisnikoviAtributi" => $korisnikoviAtributi,
+				"idSudjelovanja" => $idSudjelovanja,
+				"idPodrucja" => $idPodrucja,
+				"vrsta" => $vrsta
+			))
+		));
 	}
 	
 	public function deleteContestant() {
