@@ -99,6 +99,27 @@ class Index extends AbstractView {
 	    "controller" => 'reportGenerator',
 	    "action" => 'generateDisciplineList'
 	));?>">Popis sudionika po disciplinama</a>
+    
+    <br>
+        
+        <a href="<?php echo \route\Route::get('d3')->generate(array(
+	    "controller" => 'reportGenerator',
+	    "action" => 'generateTshirtsList'
+	));?>">Popis majica po veličini i spolu</a>
+    
+    <br>
+        
+        <a href="<?php echo \route\Route::get('d3')->generate(array(
+	    "controller" => 'reportGenerator',
+	    "action" => 'generateYearModuleStatisticsList'
+	));?>">Statistika po godinama i smjeru studiranja</a>
+    
+    <br>
+        
+        <a href="<?php echo \route\Route::get('d3')->generate(array(
+	    "controller" => 'reportGenerator',
+	    "action" => 'generateYearModuleCompetitorsList'
+	));?>">Popis sudionika po godini i smjeru</a>
 	
 </p>
 

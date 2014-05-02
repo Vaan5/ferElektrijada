@@ -13,7 +13,7 @@ class DisciplineCompetitorForm extends AbstractView {
 ?>
     <form class="form-inline" role="form" method="post" action="<?php echo $this->route;?>">
         <center><div class="form-group">
-        <label class="sr-only" for="podrucje">Podrucje</label>
+        <label class="sr-only" for="podrucja">Podrucje</label>
             <select name="idPodrucja" class="form-control">
 			<option value="">Odaberi područje</option>
 <?php

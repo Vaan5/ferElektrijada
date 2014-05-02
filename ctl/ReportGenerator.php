@@ -55,11 +55,16 @@ class ReportGenerator implements Controller {
 	$this->checkRole();
 	$this->checkMessages();
 	
-	$podrucje = new \model\DBPodrucje();
+	$podrucje = new \model\DBPodrucje(); //padajuci izbornici
 	$e = new \model\DBElektrijada();
+	
 	try {
-	    $podrucja = $podrucje->getAll();
-	    $elektrijade = $e->getAll();
+	    $podrucja = $podrucje->getAll();  //dohvati sve iz tablice podrucja
+		$elektrijade = $e->getAll();   //koristi se pri kraju, treba nam za poglede
+		 
+		
+		
+		
 	} catch (\PDOException $e) {
 	    $handler = new \model\ExceptionHandlerModel($e);
             $_SESSION["exception"] = serialize($handler);
@@ -70,9 +75,12 @@ class ReportGenerator implements Controller {
 	}
 	
 	// if you have picked atributes which will be included in the report
-	if (!postEmpty()) {
+	if (!postEmpty())
+	 {
 	    // check if they have selected the required fields
-	    if (false === post("idPodrucja") || false === post("idElektrijade") || false === post("type")) {
+	    if (false === post("idPodrucja") || false === post("idElektrijade") || false === post("type"))
+		
+		 {
 		$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Izbor područja, Elektrijade i formata je obavezan!");
 		$_SESSION["exception"] = serialize($handler);
 		preusmjeri(\route\Route::get('d3')->generate(array(
@@ -80,7 +88,7 @@ class ReportGenerator implements Controller {
 		    "action" => "generateDisciplineList"
 		)) . "?msg=excep");
 	    }
-	    
+	  
 	    // have they selected atleast one attribute
 	    if (count($_POST) <= 3) {
 		$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Odaberite barem jedan atribut!");
@@ -93,27 +101,41 @@ class ReportGenerator implements Controller {
 	    
 	    // now proccess input data
 	    try {
-		$osoba = new \model\DBOsoba();
-		$pov = $osoba->reportCompetitorList($_POST, post("idElektrijade"), post("idPodrucja"));
+		$osoba = new \model\DBOsoba(); //objekt , treba nam samo radi poziva reportCompetitorList
+		$pov = $osoba->reportCompetitorList($_POST, post("idElektrijade"), post("idPodrucja")); //poziv metode nad objektom
+		//pov je polje objekata
+		
 		
 		$header = $this->decypherHeader();
 		
+		
+		
 		// now make array for generation function
 		$array = array();
-		$array[] = $header;
+		$array[] = $header;  //dodajemo zaglavlje
+		
 		if (count($pov)) {
 		    foreach ($pov as $k => $v) {
+				
+		
+				// $v je objekt
 			$h = array();
-			foreach ($_POST as $kljuc => $vrijednost) {
+			foreach ($_POST as $kljuc => $vrijednost) 
+			{
+				//za sve iz $_POST OSIM za idPodrucja, idElektrijade i type
 			    if((strpos($kljuc, "id") === false || strpos($kljuc, "id") !== 0) && $kljuc !== 'type') {
 				$h[] = $v->{$kljuc};
 			    }
 			}
 			$array[] = $h;
+			
+			
 		    }
+			
 		}
+
 		
-		$reportModel = new \model\reports\ReportModel();
+		$reportModel = new \model\reports\ReportModel();  //novi objekt
 		switch (post("type")) {
 		    case 'xls':
 		    case 'xlsx':
@@ -154,11 +176,422 @@ class ReportGenerator implements Controller {
 	    ))
 	));
     }
+	
+	  /**
+     * Generira popis majica po veličini i spolu
+     */
+    public function generateTshirtsList() {
+	$this->checkRole();
+	$this->checkMessages();
+	
+	//$velmajice = new \model\DBVelMajice(); //padajuci izbornici
+	$e = new \model\DBElektrijada();
+	//$o = new \model\DBOsoba();
+	
+	
+	try {
+	    //$velmajica = $velmajice->getAll();  //dohvati sve iz tablice podrucja
+		$elektrijade = $e->getAll();   //koristi se pri kraju, treba nam za poglede, polje objekata
+		//$osobe = $o->getAllPersons();
+		
+		
+		
+		
+		
+	} catch (\PDOException $e) {
+	    $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "reportGenerator",
+                "action" => "generateTshirtsList"
+            )) . "?msg=excep");
+	}
+	
+	// if you have picked atributes which will be included in the report
+	if (!postEmpty()) {
+	    // check if they have selected the required fields
+	    if (false === post("idOpcija")|| false === post("idElektrijade") || false === post("type")) {
+		$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Izbor opcije, Elektrijade i formata je obavezan!");
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "reportGenerator",
+		    "action" => "generateTshirtsList"
+		)) . "?msg=excep");
+	    }
+	    
+	   
+	    
+	    // now proccess input data
+	    try {
+		$osoba = new \model\DBOsoba(); //objekt jer se tamo nalazi funkcija reportTshirtList
+		$pov = $osoba->reportTshirtList(post("idElektrijade"), post("idOpcija")); //poziv metode nad objektom
+		//pov je polje objekata
+		
+		switch(post("idOpcija")){
+			case '0':
+		    $header = array('Spol osobe', 'Broj majica');
+			$pom = array('spol', 'brojMajica');		
+			break;
+			
+			case '1':
+			$header = array('Veličina majice', 'Broj majica');
+			$pom = array('velicina', 'brojMajica');
+			break;
+			
+			case '2':
+			$header = array('Veličina majice', 'Spol osobe', 'Broj majica');
+			$pom = array('velicina', 'spol', 'brojMajica');
+			break;
+			
+		}
+		
+		// now make array for generation function
+		$array = array();
+		$array[] = $header;  //dodajemo zaglavlje
+		
+		
+		if (count($pov)) {
+		    foreach ($pov as $k => $v) {
+				// $v je objekt
+			$h = array();
+			foreach ($pom as $kljuc => $vrijednost) {
+				//za sve iz $_POST OSIM za idPodrucja, idElektrijade i type
+			    
+				$h[] = $v->{$vrijednost};
+			    
+			}
+			$array[] = $h;
+			
+		    }
+			
+		}
+		
+		$reportModel = new \model\reports\ReportModel();  //novi objekt
+		switch (post("type")) {
+		    case 'xls':
+		    case 'xlsx':
+			$putanja = $reportModel->generateExcel($array, post("type"));
+			echo new \view\ShowXls(array(
+			    "fileName" => './' . $putanja,
+			    "tip" => post("type")
+			));
+			break;
+		    case 'pdf':
+			$objekt = $reportModel->generatePdf($array);
+			echo new \view\ShowPdf(array(
+			    "pdf" => $objekt
+			));
+			break;
+		    default :
+			break;
+		}
+		
+		
+	    } catch (\PDOException $e) {
+		$handler = new \model\ExceptionHandlerModel($e);
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "reportGenerator",
+		    "action" => "generateTshirtsList"
+		)) . "?msg=excep");
+	    }
+	}
+	
+	echo new \view\Main(array(
+	    "title" => "Popis Majica po spolu i veličinama",
+	    "body" => new \view\reports\TshirtsList(array(
+		"errorMessage" => $this->errorMessage,
+		"resultMessage" => $this->resultMessage,
+		"elektrijade" => $elektrijade
+		
+	    ))
+	));
+    }
+	
+		
+	  /**
+     * Generira statistiku za godinu i smjer
+     */
+    public function generateYearModuleStatisticsList() {
+	$this->checkRole();
+	$this->checkMessages();
+	
+	//$velmajice = new \model\DBVelMajice(); //padajuci izbornici
+	$e = new \model\DBElektrijada();
+	//$o = new \model\DBOsoba();
+	
+	
+	try {
+	    //$velmajica = $velmajice->getAll();  //dohvati sve iz tablice podrucja
+		$elektrijade = $e->getAll();   //koristi se pri kraju, treba nam za poglede, polje objekata
+		//$osobe = $o->getAllPersons();
+		
+		
+		
+		
+		
+	} catch (\PDOException $e) {
+	    $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "reportGenerator",
+                "action" => "generateYearModuleStatisticsList"
+            )) . "?msg=excep");
+	}
+	
+	// if you have picked atributes which will be included in the report
+	if (!postEmpty()) {
+	    // check if they have selected the required fields
+	    if (false === post("idOpcija")|| false === post("idElektrijade") || false === post("type")) {
+		$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Izbor opcije, Elektrijade i formata je obavezan!");
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "reportGenerator",
+		    "action" => "generateYearModuleStatisticsList"
+		)) . "?msg=excep");
+	    }
+	    
+	   
+	    
+	    // now proccess input data
+	    try {
+		$osoba = new \model\DBOsoba(); //objekt jer se tamo nalazi funkcija reportTshirtList
+		$pov = $osoba->reportYearModuleStatisticsList(post("idElektrijade"), post("idOpcija")); //poziv metode nad objektom
+		//pov je polje objekata
+		
+		switch(post("idOpcija")){
+			case '0':
+		    $header = array('Godina studija', 'Broj studenata');
+			$pom = array('godina', 'brojStudenata');		
+			break;
+			
+			case '1':
+			$header = array('Smjer studija', 'Broj studenata');
+			$pom = array('nazivSmjera', 'brojStudenata');
+			break;
+			
+			case '2':
+			$header = array('Godina studija', 'Smjer studija', 'Broj studenata');
+			$pom = array('godina', 'nazivSmjera', 'brojStudenata');
+			break;
+			
+		}
+		
+		// now make array for generation function
+		$array = array();
+		$array[] = $header;  //dodajemo zaglavlje
+		
+		
+		if (count($pov)) {
+		    foreach ($pov as $k => $v) {
+				// $v je objekt
+			$h = array();
+			foreach ($pom as $kljuc => $vrijednost) {
+				//za sve iz $_POST OSIM za idPodrucja, idElektrijade i type
+			    
+				$h[] = $v->{$vrijednost};
+			    
+			}
+			$array[] = $h;
+			
+		    }
+			
+		}
+		
+		$reportModel = new \model\reports\ReportModel();  //novi objekt
+		switch (post("type")) {
+		    case 'xls':
+		    case 'xlsx':
+			$putanja = $reportModel->generateExcel($array, post("type"));
+			echo new \view\ShowXls(array(
+			    "fileName" => './' . $putanja,
+			    "tip" => post("type")
+			));
+			break;
+		    case 'pdf':
+			$objekt = $reportModel->generatePdf($array);
+			echo new \view\ShowPdf(array(
+			    "pdf" => $objekt
+			));
+			break;
+		    default :
+			break;
+		}
+		
+		
+	    } catch (\PDOException $e) {
+		$handler = new \model\ExceptionHandlerModel($e);
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "reportGenerator",
+		    "action" => "generateYearModuleStatisticsList"
+		)) . "?msg=excep");
+	    }
+	}
+	
+	echo new \view\Main(array(
+	    "title" => "Statistika po godinama i smjeru",
+	    "body" => new \view\reports\YearModuleStatisticsList(array(
+		"errorMessage" => $this->errorMessage,
+		"resultMessage" => $this->resultMessage,
+		"elektrijade" => $elektrijade
+		
+	    ))
+	));
+    }
+	
+	    /**
+     * Generira popis sudionika po smjeru i godini
+     */
+    public function generateYearModuleCompetitorsList() {
+	$this->checkRole();
+	$this->checkMessages();
+	
+	$e = new \model\DBElektrijada();
+	
+	try {
+	   
+		$elektrijade = $e->getAll();   //koristi se pri kraju, treba nam za poglede
+		 
+		
+		
+		
+	} catch (\PDOException $e) {
+	    $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "reportGenerator",
+                "action" => "generateYearModuleCompetitorsList"
+            )) . "?msg=excep");
+	}
+	
+	// if you have picked atributes which will be included in the report
+	if (!postEmpty())
+	 {
+	    // check if they have selected the required fields
+	    if (false === post("idOpcija") || false === post("idElektrijade") || false === post("type"))
+		
+		 {
+		$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Izbor opcije, Elektrijade i formata je obavezan!");
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "reportGenerator",
+		    "action" => "generateYearModuleCompetitorsList"
+		)) . "?msg=excep");
+	    }
+	  
+	    // have they selected atleast one attribute
+	    if (count($_POST) <= 3) {
+		$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Odaberite barem jedan atribut!");
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "reportGenerator",
+		    "action" => "generateYearModuleCompetitorsList"
+		)) . "?msg=excep");
+	    }
+	    
+	    // now proccess input data
+	    try {
+		$osoba = new \model\DBOsoba(); //objekt , treba nam samo radi poziva reportCompetitorList
+		$pov = $osoba->reportYearModuleCompetitorsList($_POST, post("idElektrijade"), post("idOpcija")); 
+		
+		
+		$header = $this->decypherHeader();
+		
+		if(post('idOpcija') == '0') { $pom = array('Godina');  }
+		else if(post('idOpcija') == '1') { $pom = array('Smjer');  }
+		else if(post('idOpcija') == '2')
+		{
+			  $pom = array('Godina','Smjer');
+
+		}
+		array_splice($header,0,0,$pom); 	
+		
+		
+		// now make array for generation function
+		$array = array();
+		$array[] = $header;  //dodajemo zaglavlje
+		
+		
+		if (count($pov)) {
+		    foreach ($pov as $k => $v) {
+	
+			$h = array();
+			foreach ($_POST as $kljuc => $vrijednost) 
+			{
+				//za sve iz $_POST OSIM za idOpcija, idElektrijade i type
+			    if((strpos($kljuc, "id") === false || strpos($kljuc, "id") !== 0) && $kljuc !== 'type') {
+					
+				$h[] = $v->{$kljuc};
+				
+
+				
+			    }
+			}
+			if( post('idOpcija') == '0') { $buf = array($v->{'godina'}); }
+			
+			else if( post('idOpcija') == '1') { $buf = array($v->{'nazivSmjera'}); }
+			
+			else if( post('idOpcija') == '2') { $buf = array($v->{'godina'}, $v->{'nazivSmjera'}); }
+			
+			array_splice($h,0,0,$buf);
+			
+
+				 $array[] = $h;
+			 }
+			
+		}
+			
+
+		
+		$reportModel = new \model\reports\ReportModel();  //novi objekt
+		switch (post("type")) {
+		    case 'xls':
+		    case 'xlsx':
+			$putanja = $reportModel->generateExcel($array, post("type"));
+			echo new \view\ShowXls(array(
+			    "fileName" => './' . $putanja,
+			    "tip" => post("type")
+			));
+			break;
+		    case 'pdf':
+			$objekt = $reportModel->generatePdf($array);
+			echo new \view\ShowPdf(array(
+			    "pdf" => $objekt
+			));
+			break;
+		    default :
+			break;
+		}
+		
+		
+	    } catch (\PDOException $e) {
+		$handler = new \model\ExceptionHandlerModel($e);
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "reportGenerator",
+		    "action" => "generateYearModuleCompetitorsList"
+		)) . "?msg=excep");
+	    }
+	}
+	
+	echo new \view\Main(array(
+	    "title" => "Popis sudionika po godini i smjeru",
+	    "body" => new \view\reports\YearModuleCompetitorsList(array(
+		"errorMessage" => $this->errorMessage,
+		"resultMessage" => $this->resultMessage,
+		"elektrijade" => $elektrijade
+	    ))
+	));
+    }
+	
+	
     
     private function decypherHeader() {
 	$a = array();
 	foreach($_POST as $k => $v) {
-	    if((strpos($k, "id") === false || strpos($k, "id") !== 0) && $k !== 'type') {
+		//za sve iz $_POST OSIM za idPodrucja, idElektrijade i type
+	    if( (strpos($k, "id") === false || strpos($k, "id") !== 0) && $k !== 'type' ) {
 		switch($k) {
 		    case 'ime':
 			$a[] = "Ime";
