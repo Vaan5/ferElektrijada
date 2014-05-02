@@ -75,7 +75,11 @@ class ContactSearchForm extends AbstractView {
 			</div>
         </div>
 		
-		<center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText; ?>" /></center>
+		<center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText; ?>" />
+                <a href="<?php echo \route\Route::get('d3')->generate(array(
+                        "controller" => 'ozsn',
+                        "action" => 'displayContacts'
+                    )) . "";?>"><button type="button" class="btn btn-primary">Prikaži sve kontakt osobe</button></a></center>
 	</form>
 <?php
     }

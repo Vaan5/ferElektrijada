@@ -92,16 +92,16 @@ class Main extends AbstractView {
                                                                                         "action" => "display"
                                                                                         )) . "\"> Prijava</a>"
 						; elseif ($_SESSION ['vrsta']==='A') echo 
-                                                    $_SESSION ['user']." (Admin) ".
+                                                    $_SESSION ['user']." (admin) ".
                                                     "<span class=\"glyphicon glyphicon-user\"></span> <a href=\"" . \route\Route::get('d3')->generate(array(
                                                                                         "controller" => "administrator",
                                                                                         "action" => "changeProfile"
                                                 )) . "\"> Profil</a>"
-				 ;elseif ($_SESSION ['vrsta']==='O') echo 
-                                                    $_SESSION ['user']." (Član OZSN-a) ".
+				 ;elseif ($_SESSION ['vrsta']==='O' || $_SESSION ['vrsta']==='OV') echo 
+                                                    $_SESSION ['user']." (ozsn) ".
                                                     "<span class=\"glyphicon glyphicon-user\"></span> <a href=\"" . \route\Route::get('d3')->generate(array(
-                                                                                        "controller" => "ozsn",
-                                                                                        "action" => "changeProfile"
+                                                                                       "controller" => 'ozsn',
+                                                                                       "action" => 'displayProfile'
                                                 )) . "\"> Profil</a>"?>
 				<?php if(\model\DBOsoba::isLoggedIn())     echo "<span class=\"glyphicon glyphicon-off\"></span><a href=\"" . \route\Route::get('d3')->generate(array(
                                                                                         "controller" => "login",

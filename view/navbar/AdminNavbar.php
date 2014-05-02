@@ -7,9 +7,6 @@ class AdminNavbar extends AbstractView{
     
     protected function outputHTML() {
                ?>
-<!DOCTYPE html>
-<html>
-    <body>
         <ul class="nav navbar-nav">
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Elektrijade<b class="caret"></b></a>
@@ -55,8 +52,6 @@ class AdminNavbar extends AbstractView{
           </ul>
         </li>
       </ul>
-    </body>
-</html>
 <?php
     }
 }

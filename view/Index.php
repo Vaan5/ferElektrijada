@@ -62,38 +62,8 @@ class Index extends AbstractView {
 	
 	<br><br>
 	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'addContact'
-    )) . "";?>">Dodaj kontakt osobu</a>
-	
-	<br>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'displayContacts'
-    )) . "";?>">Lista kontakt osoba</a>
-	
-	<br>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'searchContacts'
-    )) . "";?>">Pretraži kontakt osobe</a>
-	
 	
 	</p>
-	
-	<br><br>
-	
-	<b>Ozsn NavBar</b>
-	
-	<br>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-	    "controller" => 'ozsn',
-	    "action" => 'displayProfile'
-	)) . "";?>">Profil</a>
 	
 	<br><br>
 	
@@ -106,19 +76,6 @@ class Index extends AbstractView {
 	    "action" => 'displayProfile'
 	)) . "";?>">Profil</a>
 	
-	<br>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-	    "controller" => 'sudionik',
-	    "action" => 'displayMyTeam'
-	)) . "";?>">Moj Tim</a>
-	
-	<br>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-	    "controller" => 'sudionik',
-	    "action" => 'displayOtherTeams'
-	)) . "";?>">Ovogodišnji Timovi</a>
 	
 	<br><br>
 	
@@ -131,12 +88,6 @@ class Index extends AbstractView {
 	    "action" => 'displayProfile'
 	)) . "";?>">Profil</a>
 	
-	<br>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-	    "controller" => 'voditelj',
-	    "action" => 'displayPodrucja'
-	)) . "";?>">Upravljanje Disciplinama</a>
 	
 	<br><br>
 	
