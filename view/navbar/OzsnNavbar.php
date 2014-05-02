@@ -145,6 +145,10 @@ class OzsnNavbar extends AbstractView{
                     "controller" => 'ozsn',
                     "action" => 'displaySmjer'
                 ));?>">Smjerovi</a></li>
+			<li><a href="<?php echo \route\Route::get('d3')->generate(array(
+                    "controller" => 'ozsn',
+                    "action" => 'displayUsluga'
+                ));?>">Usluge</a></li>
             	
 
           </ul>

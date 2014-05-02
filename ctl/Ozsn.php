@@ -3374,7 +3374,7 @@ public function addSmjer() {
         }
         
         try {
-            $usluga->addRow(post("nazivUsluga", null));
+            $usluga->addRow(post("nazivUsluge", null));
             
             preusmjeri(\route\Route::get('d3')->generate(array(
                 "controller" => "ozsn",
