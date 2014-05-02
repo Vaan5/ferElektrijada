@@ -17,7 +17,60 @@ class ObjavaList extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 	
-	// Objave su klasicni objetkni modeli
+		if(count($this->objave))
+		{
+			
+?>
+			<div class="panel panel-default">
+				<div class="panel-heading">Popis objava</div>
+				
+				<table class="table">
+				<thead>
+					<tr>
+						<th>Autor</th>
+						<th>Datum</th>
+						<th>Link</th>
+						<th>Dokument</th>
+						<th>Opcije</th>
+					</tr>
+				</thead>
+				
+				<tbody>
+<?php
+			// Foreach activeObjava, generate row in table
+			foreach($this->objave as $val)
+			{
+?>
+					<tr>
+						<td><?php echo $val->autorIme . ' ' . $val->autorPrezime; ?></td>
+						<td><?php echo $val->datumObjave; ?></td>
+						<td><?php if ($val->link) echo '<a href="'  . $val->link . '" target="_blank">Link</a>'; else echo '/'; ?></td>
+						<td>??</td>
+						<td><a href="					
+<?php
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'modifyObjava'
+				));
+				echo '?id=' . $val->idObjave . '">Uredi</a> &nbsp; <a class="obrisiObjavu" href="';
+				
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'deleteObjava'
+				));
+				echo '?id=' . $val->idObjave . '">Obriši</a></td></tr>';
+			}
+?>				
+				</tbody>
+				</table>
+			</div>
+			
+			<a href="<?php echo \route\Route::get('d3')->generate(array(
+				"controller" => 'ozsn',
+				"action" => 'addObjava'
+			));?>"><span class="glyphicon glyphicon-plus"></span> Dodaj novu objavu</a>
+<?php
+		}
     }
     
     public function setErrorMessage($errorMessage) {

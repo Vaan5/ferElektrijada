@@ -789,7 +789,8 @@ class Ozsn implements Controller {
                 "resultMessage" => $this->resultMessage,
 		"objave" => $objave
             )),
-            "title" => "Aktualne objave"
+            "title" => "Aktualne objave",
+			"script" => new \view\scripts\ozsn\ActiveObjavaListJs()
         ));
     }
     
@@ -810,12 +811,13 @@ class Ozsn implements Controller {
         }
 
         echo new \view\Main(array(
-            "body" => new \view\ozsn\ActiveObjavaList(array(
+            "body" => new \view\ozsn\ObjavaList(array(
                 "errorMessage" => $this->errorMessage,
                 "resultMessage" => $this->resultMessage,
 		"objave" => $objave
             )),
-            "title" => "Objave"
+            "title" => "Objave",
+			"script" => new \view\scripts\ozsn\ObjavaListJs()
         ));
     }
     
