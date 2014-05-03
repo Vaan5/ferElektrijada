@@ -285,7 +285,8 @@ class Ozsn implements Controller {
 		"sveUdruge" => $sveUdruge,
 		"udrugeKorisnika" => $udrugeKorisnika
 	    )),
-	    "title" => "Vaše Udruge"
+	    "title" => "Vaše Udruge",
+		"script" => new \view\scripts\ozsn\UdrugaListJs()
 	));
     }
     
