@@ -55,7 +55,6 @@ CREATE TABLE OSOBA (
     MBG VARCHAR(9),
     OIB VARCHAR(11) ,
     idNadredjena INT UNSIGNED,
-    vrijedi BOOLEAN,
     PRIMARY KEY (idOsobe),
     UNIQUE (ferId),
     UNIQUE (JMBAG),
