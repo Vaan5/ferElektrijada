@@ -72,7 +72,7 @@ class DBObjava extends AbstractDBModel {
 	public function addFile($idObjave, $datoteka) {
 	    try {
 		$this->load($idObjave);
-		$this->datoteka = $datoteka;
+		$this->dokument = $datoteka;
 		$this->save();
 	    } catch (app\model\NotFoundException $e) {
 		$e = new \PDOException();
