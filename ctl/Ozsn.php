@@ -5030,19 +5030,63 @@ public function addFunkcija() {
 				$this->createMessage($handler, "d3", "ozsn", "searchContestants");
 			}
 		} else {
-			var_dump($_POST);
-			die();
 			$idSudjelovanja = post("idS");
 			$idPodrucja = post("idP");
 			$vrsta = post("vrsta");
 			
 			try {
+				$validacija = new \model\formModel\AttributeFormModel(array("rezultatPojedinacni" => post("rezultatPojedinacni"),
+																			"ukupanBrojSudionika" => post("ukupanBrojSudionika"),
+																			"iznosUplate" => post("iznosUplate")));
 				
+				$pov = $validacija->validate();
+				if ($pov !== true) {
+					$handler = new \model\ExceptionHandlerModel(new \PDOException(), $validacija->decypherErrors($pov));
+					$_SESSION["exception"] = serialize($handler);
+					preusmjeri(\route\Route::get('d3')->generate(array(
+						"controller" => "ozsn",
+						"action" => "changeContestantAttributes"
+					)) . "?msg=excep&idP=" . $idPodrucja . "&idS=" . $idSudjelovanja . "&vrsta=" . $vrsta);
+				}
+				
+				if (post("rezultatPojedinacni", 0) > post("ukupanBrojSudionika", "0")) {
+					$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Rezultat mora biti manji ili jednak broju sudionika!");
+					$_SESSION["exception"] = serialize($handler);
+					preusmjeri(\route\Route::get('d3')->generate(array(
+						"controller" => "ozsn",
+						"action" => "changeContestantAttributes"
+					)) . "?msg=excep&idP=" . $idPodrucja . "&idS=" . $idSudjelovanja . "&vrsta=" . $vrsta);
+				}
+				
+				// everythings okay lets add
+				$podrucjeSudjelovanja = $podrucjeSudjelovanja->loadIfExists(post("idP"), post("idS"), post("vrsta"));
+				if ($podrucjeSudjelovanja->getPrimaryKey() !== null) {
+					$podrucjeSudjelovanja->modifyRow($podrucjeSudjelovanja->getPrimaryKey(), FALSE, 
+							FALSE, post("rezultatPojedinacni", NULL), FALSE, post("ukupanBrojSudionika", NULL), 
+							post("iznosUplate", NULL), post("valuta", "HRK"));
+				} else {
+					// add a new one
+					$podrucjeSudjelovanja->addRow(post("idP"), post("idS"), post("rezultatPojedinacni", NULL), post("vrsta"),
+							post("ukupanBrojSudionika", NULL), post("iznosUplate", NULL), post("valuta", "HRK"));
+				}
+				
+				// now lets modify the attributes
+				// first delete the old ones, and after that add new
+				$imaatribut->deleteContestantsAttributes($idSudjelovanja, $idPodrucja);
 			} catch (app\model\NotFoundException $e) {
-				
+				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator");
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "changeContestantAttributes"
+				)) . "?msg=excep&idP=" . $idPodrucja . "&idS=" . $idSudjelovanja . "&vrsta=" . $vrsta);
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
-				$this->createMessage($handler, "d3", "ozsn", "searchContestants");
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "changeContestantAttributes"
+				)) . "?msg=excep&idP=" . $idPodrucja . "&idS=" . $idSudjelovanja . "&vrsta=" . $vrsta);
 			}
 		}
 		

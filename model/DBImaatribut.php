@@ -99,4 +99,23 @@ class DBImaatribut extends AbstractDBModel {
 			throw $e;
 		}
 	}
+	
+	public function deleteContestantsAttributes($idSudjelovanja, $idPodrucja) {
+		try {
+			$pov = $this->select()->where(array(
+				"idSudjelovanja" => $idSudjelovanja,
+				"idPodrucja" => $idPodrucja
+			))->fetchAll();
+			
+			if (count($pov)) {
+				foreach ($pov as $p) {
+					$p->delete();
+				}
+			}
+		} catch (app\model\NotFoundException $e) {
+			throw $e;
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
 }

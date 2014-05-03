@@ -18,6 +18,15 @@ class DBObjava extends AbstractDBModel {
 	}
 	
 	public function getAll() {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT * FROM objava 
+				JOIN medij ON medij.idMedija = objava.idMedija");
+			$q->execute();
+			return $q->fetchAll();
+		}  catch (\PDOException $e) {
+			throw $e;
+	    }
 	    return $this->select()->fetchAll();
 	}
 	

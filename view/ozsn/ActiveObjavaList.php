@@ -77,6 +77,13 @@ class ActiveObjavaList extends AbstractView {
 				"errorMessage" => "Ne postoji niti jedna aktivna objava!"
 			));
 		}
+		
+		echo new \view\components\DownloadLinks(array(
+			"route" => \route\Route::get("d3")->generate(array(
+				"controller" => "ozsn",
+				"action" => "displayActiveObjava"
+			))
+		));
 ?>
 			<a href="<?php echo \route\Route::get('d3')->generate(array(
 				"controller" => 'ozsn',

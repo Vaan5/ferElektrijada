@@ -339,9 +339,6 @@ class Voditelj implements Controller {
 						"action" => "assignExistingPerson"
 					)) . "?id=" . post("idPodrucja") . "&msg=fail");
 			} catch (\PDOException $e) {
-				var_dump($e);
-				var_dump($_POST);
-				die();
 				preusmjeri(\route\Route::get("d3")->generate(array(
 						"controller" => "voditelj",
 						"action" => "assignExistingPerson"
@@ -900,8 +897,6 @@ class Voditelj implements Controller {
 													"num" => array("numbers")));
 						$pov = $validacija->validate();
 						if ($pov !== true) {
-							var_dump($pov);
-							die();
 							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Rezultat i broj sudionika mogu biti samo brojevi!");
 							$_SESSION["exception"] = serialize($handler);
 							preusmjeri(\route\Route::get('d3')->generate(array(
