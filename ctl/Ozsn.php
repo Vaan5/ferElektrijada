@@ -5173,5 +5173,105 @@ public function addFunkcija() {
 	public function disciplineMoney() {
 		$this->checkRole();
 		$this->checkMessages();
+		
+		$podrucje = new \model\DBPodrucje();
+		$podrucjeSudjelovanja = new \model\DBPodrucjeSudjelovanja();
+		$elektrijada = new \model\DBElektrijada();
+		
+		if (postEmpty()) {
+			$this->idCheck("displayCollectedMoney");
+			$idPodrucja = get("id");
+			
+			try {
+				$podrucje->load(get("id"));
+				$naziv = $podrucje->nazivPodrucja;
+				
+				$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+				$osobe = $podrucjeSudjelovanja->getCollectedMoney($idPodrucja, $idElektrijade);
+			} catch (app\model\NotFoundException $e) {
+				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayCollectedMoney");
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler, "d3", "ozsn", "displayCollectedMoney");
+			}
+		} else {
+			// process query
+			$idPodrucja = post("idPodrucja");
+			try {
+				$podrucje->load($idPodrucja);
+				$naziv = $podrucje->nazivPodrucja;
+				foreach($_POST as $k => $r) {
+					if ($k !== "idPodrucja" && $k[0] !== "v" && $r !== '') {
+						$validacija = new \model\formModel\NumberValidationModel(array("decimal" => $r));
+						$validacija->setRules(array("decimal" => array("decimal")));
+						$pov = $validacija->validate();
+						if ($pov !== true) {
+							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Iznos može biti samo brojčana vrijednost!");
+							$_SESSION["exception"] = serialize($handler);
+							preusmjeri(\route\Route::get('d3')->generate(array(
+								"controller" => "ozsn",
+								"action" => "disciplineMoney"
+							)) . "?msg=excep&id=" . $idPodrucja);
+						}
+					}
+				}
+				
+				// everything's okay lets add
+				foreach($_POST as $k => $r) {
+					if ($k !== "idPodrucja" && $k[0] !== "v") {
+						$podrucjeSudjelovanja->modifyRow($k, FALSE, FALSE, FALSE, FALSE, FALSE, post($k, NULL), post("valuta" . $k, "HRK"));
+					}
+				}
+				
+				// success -> redirect
+				preusmjeri(\route\Route::get('d3')->generate(array(
+								"controller" => "ozsn",
+								"action" => "disciplineMoney"
+							)) . "?msg=succm&id=" . post("idPodrucja"));
+			} catch (app\model\NotFoundException $e) {
+				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator");
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "disciplineMoney"
+				)) . "?msg=excep&id=" . $idPodrucja);
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "disciplineMoney"
+				)) . "?msg=excep&id=" . $idPodrucja);
+			}
+		}
+		
+		if (get("type") !== false) {
+			$pomPolje = array("Ime", "Prezime", "JMBAG", "OIB", "Iznos", "Valuta");
+			$array = array();
+			$array[] = $pomPolje;
+			
+			if ($osobe !== null && count($osobe)) {
+				foreach ($osobe as $v) {
+					$array[] = array($v->ime, $v->prezime, $v->JMBAG, $v->OIB, $v->iznosUplate, $v->valuta);
+				}
+			}
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+		
+		echo new \view\Main(array(
+			"title" => $naziv,
+			"body" => new \view\ozsn\DisciplineMoney(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"osobe" => $osobe,
+				"idPodrucja" => $idPodrucja
+			))
+		));
 	}
 }

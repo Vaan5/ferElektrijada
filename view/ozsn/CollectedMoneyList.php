@@ -29,7 +29,7 @@ class CollectedMoneyList extends AbstractView {
 					<div class="form-group">	
 								<label for="podrucja" class="col-sm-3 control-label">Discipline</label>
 						<div class="col-sm-9">
-								<select name="idPodrucja" class="form-control">
+								<select name="id" class="form-control">
 							<option value="">Odaberi...</option>
 
 				<?php

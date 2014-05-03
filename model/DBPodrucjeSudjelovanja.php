@@ -163,4 +163,31 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
 			throw $e;
 		}
 	}
+	
+	public function getCollectedMoney($idPodrucja, $idElektrijade) {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT podrucjeSudjelovanja.idPodrucja,
+												podrucjeSudjelovanja.idSudjelovanja,
+												podrucjeSudjelovanja.rezultatPojedinacni,
+												podrucjeSudjelovanja.iznosUplate,
+												podrucjeSudjelovanja.valuta,
+												podrucjeSudjelovanja.idPodrucjeSudjelovanja,
+												podrucjeSudjelovanja.vrstaPodrucja,
+												osoba.*,
+												sudjelovanje.*										
+										FROM podrucjeSudjelovanja
+											JOIN sudjelovanje ON sudjelovanje.idSudjelovanja = podrucjeSudjelovanja.idSudjelovanja
+											JOIN osoba ON osoba.idOsobe = sudjelovanje.idOsobe
+										GROUP BY podrucjeSudjelovanja.idSudjelovanja
+										HAVING sudjelovanje.idElektrijade = :idElektrijade AND podrucjesudjelovanja.idPodrucja = :idPodrucja
+										ORDER BY podrucjeSudjelovanja.vrstaPodrucja ASC");
+			$q->bindValue(":idElektrijade", $idElektrijade);
+			$q->bindValue(":idPodrucja", $idPodrucja);
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
 }
