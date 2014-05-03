@@ -8,8 +8,8 @@ class AttributeFormModel extends AbstractFormModel {
     protected function rules() {
         if ($this->rulesArray === null) {
             $this->rulesArray = array('rezultatPojedinacni' => array('numbers'),
-				'ukupanBrojSudionika' => 'numbers',
-				'iznosUplate' => 'decimal');
+				'ukupanBrojSudionika' => array('numbers'),
+				'iznosUplate' => array('decimal'));
         }
         return $this->rulesArray;
     }

@@ -5073,6 +5073,20 @@ public function addFunkcija() {
 				// now lets modify the attributes
 				// first delete the old ones, and after that add new
 				$imaatribut->deleteContestantsAttributes($idSudjelovanja, $idPodrucja);
+				
+				// now add the new ones if any
+				foreach (post("idAtributa") as $k => $v) {
+					if ($v !== '') {
+						$imaatribut = new \model\DBImaatribut();
+						$imaatribut->addRow($idPodrucja, $v, $idSudjelovanja);
+					}
+				}
+				
+				// success redirect
+				preusmjeri(\route\Route::get("d3")->generate(array(
+					"controller" => "ozsn",
+					"action" => "searchContestants"
+				)) . "?a=1&msg=succm");
 			} catch (app\model\NotFoundException $e) {
 				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator");
 				$_SESSION["exception"] = serialize($handler);

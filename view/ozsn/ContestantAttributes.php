@@ -88,8 +88,8 @@ if ($this->atributi !== null) {
 			}
 ?>
 			
-			<input type="hidden" name="idSudjelovanja" value="<?php echo $this->idSudjelovanja?>" />
-			<input type="hidden" name="idPodrucja" value="<?php echo $this->idPodrucja?>" />
+			<input type="hidden" name="idS" value="<?php echo $this->idSudjelovanja?>" />
+			<input type="hidden" name="idP" value="<?php echo $this->idPodrucja?>" />
 			<input type="hidden" name="vrsta" value="<?php echo $this->vrsta?>" />
 			<input type="submit" value="Ažuriraj" />
 		</form>
