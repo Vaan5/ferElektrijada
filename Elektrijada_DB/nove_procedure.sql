@@ -65,6 +65,9 @@ CREATE  PROCEDURE `dodajOsobu`(IN ime VARCHAR(50), IN prezime VARCHAR(50), IN ma
  IN ferId VARCHAR(50), IN brojMob VARCHAR(20), IN passwordVAR VARCHAR(255), IN JMBAG VARCHAR(10), IN datRod DATE, IN spol CHAR(1),
 IN brOsobne VARCHAR(20),IN brPutovnice VARCHAR(30),IN osobnaVrijediDo DATE,IN putovnicaVrijediDo DATE,IN uloga CHAR(1), IN zivotopis VARCHAR(200), IN MBG VARCHAR(9), IN OIB VARCHAR(11), IN idNadredjena INT(10), IN vrijedi BOOLEAN )
 BEGIN
+IF NOT EXISTS (SELECT * FROM OSOBA WHERE OSOBA.idOsobe = idNadredjena) THEN
+	SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Ne postoji nadređena osoba. ';
+ELSE
 IF (spol IN ('m','z','M','Z') OR spol IS NULL) THEN
 IF NOT EXISTS (SELECT * FROM OSOBA WHERE OSOBA.brOsobne=brOsobne ) THEN
 IF NOT EXISTS (SELECT * FROM OSOBA WHERE OSOBA.brPutovnice=brPutovnice ) THEN
@@ -105,6 +108,7 @@ ELSE
 	   SIGNAL SQLSTATE '02000'SET MESSAGE_TEXT = 'Greška: Pogrešno unešen spol! !';
 END IF;
 
+END IF;
 END $$
 DELIMITER ;
 
@@ -473,3 +477,4 @@ END IF;
 
 END $$
 DELIMITER ;
+
