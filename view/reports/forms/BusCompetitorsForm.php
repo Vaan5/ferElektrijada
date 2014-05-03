@@ -3,7 +3,7 @@
 namespace view\reports\forms;
 use app\view\AbstractView;
 
-class YearModuleCompetitorsForm extends AbstractView {
+class BusCompetitorsForm extends AbstractView {
     private $route;
     private $submitButtonText;
     private $elektrijade;
@@ -12,19 +12,7 @@ class YearModuleCompetitorsForm extends AbstractView {
 ?>
     <form class="form-inline" role="form" method="post" action="<?php echo $this->route;?>">
         <center><div class="form-group">
-        <label class="sr-only" for="opcija">Opcija</label>
-            <select name="idOpcija" class="form-control">
-			<option value="">Odaberi mogućnost</option>
-<?php
-		$option = array( 'Po godini', 'Po smjeru', 'Po godini i smjeru');
-		foreach($option as $k => $v)
-		{	
-			echo '<option value="' . $k . '"';
-			echo '>' . $v . '</option>';
-		}
-?>					
-        </select>	
-        </div>
+      
 	<div class="form-group">		
         <label class="sr-only" for="elektrijada">Elektrijada</label>
             <select name="idElektrijade" class="form-control">
@@ -107,66 +95,10 @@ class YearModuleCompetitorsForm extends AbstractView {
             <label>
                 <input type="checkbox" name="aktivanDokument"> Aktivan dokument &nbsp;
             </label>
-        </div><br><br>
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" name="nazivAtributa"> Atribut &nbsp;
-            </label>
         </div>
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" name="velicina"> Veličina majice &nbsp;
-            </label>
-        </div>
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" name="studij"> Studij &nbsp;
-            </label>
-        </div>
-       <br><br>
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" name="nazivZavoda"> Naziv zavoda &nbsp;
-            </label>
-        </div>
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" name="skraceniNaziv"> Skraćeni naziv zavoda &nbsp;
-            </label>
-        </div>
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" name="naziv"> Radno mjesto &nbsp;
-            </label>
-        </div><br><br>
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" name="brojBusa"> Redni broj autobusa &nbsp;
-            </label>
-        </div>
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" name="brojSjedala"> Broj sjedala &nbsp;
-            </label>
-        </div>
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" name="napomena"> Napomena uz putovanje &nbsp;
-            </label>
-        </div><br><br>
-        <div class="checkbox">
+     	<div class="checkbox">
             <label>
                 <input type="checkbox" name="tip"> Student / Djelatnik &nbsp;
-            </label>
-        </div>
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" name="rezultatPojedinacni"> Postignuti rezultat &nbsp;
-            </label>
-        </div>
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" name="ukupanBrojSudionika"> Ukupan broj sudionika &nbsp;
             </label>
         </div><br><br>
 

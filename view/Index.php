@@ -120,6 +120,13 @@ class Index extends AbstractView {
 	    "controller" => 'reportGenerator',
 	    "action" => 'generateYearModuleCompetitorsList'
 	));?>">Popis sudionika po godini i smjeru</a>
+    
+    <br>
+        
+        <a href="<?php echo \route\Route::get('d3')->generate(array(
+	    "controller" => 'reportGenerator',
+	    "action" => 'generateBusCompetitorsList'
+	));?>">Popis sudionika po autobusima</a>
 	
 </p>
 
