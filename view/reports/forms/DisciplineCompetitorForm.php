@@ -102,6 +102,11 @@ class DisciplineCompetitorForm extends AbstractView {
             <label>
                 <input type="checkbox" name="OIB"> OIB &nbsp;
             </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="aktivanDokument"> Aktivan dokument &nbsp;
+            </label>
         </div><br><br>
         <div class="checkbox">
             <label>

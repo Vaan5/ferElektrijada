@@ -58,11 +58,11 @@ class ReportGenerator implements Controller {
 	$podrucje = new \model\DBPodrucje(); //padajuci izbornici
 	$e = new \model\DBElektrijada();
 	
+	
 	try {
 	    $podrucja = $podrucje->getAll();  //dohvati sve iz tablice podrucja
 		$elektrijade = $e->getAll();   //koristi se pri kraju, treba nam za poglede
 		 
-		
 		
 		
 	} catch (\PDOException $e) {
@@ -88,6 +88,7 @@ class ReportGenerator implements Controller {
 		    "action" => "generateDisciplineList"
 		)) . "?msg=excep");
 	    }
+		
 	  
 	    // have they selected atleast one attribute
 	    if (count($_POST) <= 3) {
@@ -99,11 +100,46 @@ class ReportGenerator implements Controller {
 		)) . "?msg=excep");
 	    }
 	    
+		
+	
 	    // now proccess input data
 	    try {
 		$osoba = new \model\DBOsoba(); //objekt , treba nam samo radi poziva reportCompetitorList
 		$pov = $osoba->reportCompetitorList($_POST, post("idElektrijade"), post("idPodrucja")); //poziv metode nad objektom
-		//pov je polje objekata
+	
+		
+		//ljepsi nazivi vrijednosti atributa
+		if( post('uloga') ){
+		foreach( $pov as $k => $v)
+		{
+			
+			if ( $v->uloga == 'O' ) $v->uloga = 'OZSN';
+			else if ( $v->uloga == 'S' ) $v->uloga = 'Sudionik';
+			else if ( $v->uloga == 'A' ) $v->uloga = 'Admin';
+		}}
+		
+		if ( post('tip') )
+		{	foreach( $pov as $k => $v)
+		{
+			if ( $v->tip == 'D' ) $v->tip = 'Djelatnik';
+			else if ( $v->tip == 'S' ) $v->tip = 'Student';
+			else if ( $v->tip == 'O' ) $v->tip = 'OZSN';
+		}}
+		
+		if ( post('aktivanDokument') )
+		{	foreach( $pov as $k => $v)
+		{
+			if ( $v->aktivanDokument == '0' ) $v->aktivanDokument = 'putovnica';
+			else if ( $v->aktivanDokument == '1' ) $v->aktivanDokument = 'osobna';
+			
+		}}
+			
+			
+			
+			
+	
+		
+	
 		
 		
 		$header = $this->decypherHeader();
@@ -184,18 +220,11 @@ class ReportGenerator implements Controller {
 	$this->checkRole();
 	$this->checkMessages();
 	
-	//$velmajice = new \model\DBVelMajice(); //padajuci izbornici
 	$e = new \model\DBElektrijada();
-	//$o = new \model\DBOsoba();
-	
 	
 	try {
-	    //$velmajica = $velmajice->getAll();  //dohvati sve iz tablice podrucja
+	    
 		$elektrijade = $e->getAll();   //koristi se pri kraju, treba nam za poglede, polje objekata
-		//$osobe = $o->getAllPersons();
-		
-		
-		
 		
 		
 	} catch (\PDOException $e) {
@@ -225,12 +254,20 @@ class ReportGenerator implements Controller {
 	    try {
 		$osoba = new \model\DBOsoba(); //objekt jer se tamo nalazi funkcija reportTshirtList
 		$pov = $osoba->reportTshirtList(post("idElektrijade"), post("idOpcija")); //poziv metode nad objektom
-		//pov je polje objekata
+		
+		
 		
 		switch(post("idOpcija")){
 			case '0':
 		    $header = array('Spol osobe', 'Broj majica');
-			$pom = array('spol', 'brojMajica');		
+			$pom = array('spol', 'brojMajica');	
+			
+			//ljepsi nazivi vrijednosti atributa
+			foreach( $pov as $key => $value){
+			if( $value->spol == 'M') $value->spol = 'Muški';
+			else if( $value->spol == 'Ž') $value->spol = 'Ženski';
+		}
+			
 			break;
 			
 			case '1':
@@ -241,6 +278,12 @@ class ReportGenerator implements Controller {
 			case '2':
 			$header = array('Veličina majice', 'Spol osobe', 'Broj majica');
 			$pom = array('velicina', 'spol', 'brojMajica');
+			
+			//ljepsi nazivi vrijednosti atributa
+			foreach( $pov as $key => $value){
+			if( $value->spol == 'M') $value->spol = 'Muški';
+			else if( $value->spol == 'Ž') $value->spol = 'Ženski';
+		}
 			break;
 			
 		}
@@ -441,7 +484,7 @@ class ReportGenerator implements Controller {
     }
 	
 	    /**
-     * Generira popis sudionika po smjeru i godini
+     * Generira popis sudionika po godini i smjeru
      */
     public function generateYearModuleCompetitorsList() {
 	$this->checkRole();
@@ -495,6 +538,34 @@ class ReportGenerator implements Controller {
 		$osoba = new \model\DBOsoba(); //objekt , treba nam samo radi poziva reportCompetitorList
 		$pov = $osoba->reportYearModuleCompetitorsList($_POST, post("idElektrijade"), post("idOpcija")); 
 		
+		
+		//ljepsi nazivi vrijednosti atributa
+		if( post('uloga') ){
+		foreach( $pov as $k => $v)
+		{
+			
+			if ( $v->uloga == 'O' ) $v->uloga = 'OZSN';
+			else if ( $v->uloga == 'S' ) $v->uloga = 'Sudionik';
+			else if ( $v->uloga == 'A' ) $v->uloga = 'Admin';
+		}}
+		
+		if ( post('tip') )
+		{	foreach( $pov as $k => $v)
+		{
+			if ( $v->tip == 'D' ) $v->tip = 'Djelatnik';
+			else if ( $v->tip == 'S' ) $v->tip = 'Student';
+			else if ( $v->tip == 'O' ) $v->tip = 'OZSN';
+		}}
+		
+		if ( post('aktivanDokument') )
+		{	foreach( $pov as $k => $v)
+		{
+			if ( $v->aktivanDokument == '0' ) $v->aktivanDokument = 'putovnica';
+			else if ( $v->aktivanDokument == '1' ) $v->aktivanDokument = 'osobna';
+			
+		}}
+			
+			
 		
 		$header = $this->decypherHeader();
 		
@@ -584,7 +655,171 @@ class ReportGenerator implements Controller {
 	    ))
 	));
     }
+
+	    /**
+     * Generira popis sudionika po autobusima
+     */
+    public function generateBusCompetitorsList() {
+	$this->checkRole();
+	$this->checkMessages();
 	
+	$e = new \model\DBElektrijada();
+	
+	try {
+	   
+		$elektrijade = $e->getAll();   //koristi se pri kraju, treba nam za poglede
+		 
+		
+		
+		
+	} catch (\PDOException $e) {
+	    $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "reportGenerator",
+                "action" => "generateBusCompetitorsList"
+            )) . "?msg=excep");
+	}
+	
+	// if you have picked atributes which will be included in the report
+	if (!postEmpty())
+	 {
+	    // check if they have selected the required fields
+	    if (false === post("idElektrijade") || false === post("type"))
+		
+		 {
+		$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Izbor Elektrijade i formata je obavezan!");
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "reportGenerator",
+		    "action" => "generateBusCompetitorsList"
+		)) . "?msg=excep");
+	    }
+	  
+	    // have they selected atleast one attribute
+	    if (count($_POST) <= 2) {
+		$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Odaberite barem jedan atribut!");
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "reportGenerator",
+		    "action" => "generateBusCompetitorsList"
+		)) . "?msg=excep");
+	    }
+		
+	    // now proccess input data
+	    try {
+		$osoba = new \model\DBOsoba(); //objekt , treba nam samo radi poziva reportCompetitorList
+		$pov = $osoba->reportBusCompetitorsList($_POST, post("idElektrijade")); 
+		
+		
+		
+		
+		//ljepsi nazivi vrijednosti atributa
+		if( post('uloga') ){
+		foreach( $pov as $k => $v)
+		{
+			
+			if ( $v->uloga == 'O' ) $v->uloga = 'OZSN';
+			else if ( $v->uloga == 'S' ) $v->uloga = 'Sudionik';
+			else if ( $v->uloga == 'A' ) $v->uloga = 'Admin';
+		}}
+		
+		if ( post('tip') )
+		{	foreach( $pov as $k => $v)
+		{
+			if ( $v->tip == 'D' ) $v->tip = 'Djelatnik';
+			else if ( $v->tip == 'S' ) $v->tip = 'Student';
+			else if ( $v->tip == 'O' ) $v->tip = 'OZSN';
+		}}
+		
+		if ( post('aktivanDokument') )
+		{	foreach( $pov as $k => $v)
+		{
+			if ( $v->aktivanDokument == '0' ) $v->aktivanDokument = 'putovnica';
+			else if ( $v->aktivanDokument == '1' ) $v->aktivanDokument = 'osobna';
+			
+		}}
+			
+			
+		
+		$header = $this->decypherHeader();
+		
+		
+		$pom = array('Redni broj busa', 'Polazak', 'Povratak', 'Napomena', 'Broj sjedala');  
+		array_splice($header,0,0,$pom); 	
+		
+		
+		// now make array for generation function
+		$array = array();
+		$array[] = $header;  //dodajemo zaglavlje
+		
+		
+		if (count($pov)) {
+		    foreach ($pov as $k => $v) {
+	
+			$h = array();
+			foreach ($_POST as $kljuc => $vrijednost) 
+			{
+				//za sve iz $_POST OSIM za idOpcija, idElektrijade i type
+			    if((strpos($kljuc, "id") === false || strpos($kljuc, "id") !== 0) && $kljuc !== 'type') {
+					
+				$h[] = $v->{$kljuc};
+				
+
+				
+			    }
+			}
+			$buf = array($v->{'brojBusa'}, $v->{'polazak'}, $v->{'povratak'}, $v->{'napomena'}, $v->{'brojSjedala'}); 
+			array_splice($h,0,0,$buf);
+			
+
+				 $array[] = $h;
+			 }
+			
+		}
+			
+
+		
+		$reportModel = new \model\reports\ReportModel();  //novi objekt
+		switch (post("type")) {
+		    case 'xls':
+		    case 'xlsx':
+			$putanja = $reportModel->generateExcel($array, post("type"));
+			echo new \view\ShowXls(array(
+			    "fileName" => './' . $putanja,
+			    "tip" => post("type")
+			));
+			break;
+		    case 'pdf':
+			$objekt = $reportModel->generatePdf($array);
+			echo new \view\ShowPdf(array(
+			    "pdf" => $objekt
+			));
+			break;
+		    default :
+			break;
+		}
+		
+		
+	    } catch (\PDOException $e) {
+		$handler = new \model\ExceptionHandlerModel($e);
+		$_SESSION["exception"] = serialize($handler);
+		preusmjeri(\route\Route::get('d3')->generate(array(
+		    "controller" => "reportGenerator",
+		    "action" => "generateBusCompetitorsList"
+		)) . "?msg=excep");
+	    }
+	}
+	
+	echo new \view\Main(array(
+	    "title" => "Popis sudionika po autobusima",
+	    "body" => new \view\reports\BusCompetitorsList(array(
+		"errorMessage" => $this->errorMessage,
+		"resultMessage" => $this->resultMessage,
+		"elektrijade" => $elektrijade
+	    ))
+	));
+    }
 	
     
     private function decypherHeader() {
@@ -631,6 +866,9 @@ class ReportGenerator implements Controller {
 			break;
 		    case 'OIB':
 			$a[] = "OIB";
+			break;
+			case 'aktivanDokument':
+			$a[] = "Aktivan dokument";
 			break;
 		    case 'nazivAtributa':
 			$a[] = "Atribut";

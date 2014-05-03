@@ -14,7 +14,7 @@ class YearModuleStatisticsForm extends AbstractView {
         <center><div class="form-group">
         <label class="sr-only" for="opcija">Opcija</label>
             <select name="idOpcija" class="form-control">
-			<option value="">Odaberi opciju</option>
+			<option value="">Odaberi mogućnost</option>
 <?php
 		$option = array( 'Po godini', 'Po smjeru', 'Po godini i smjeru');
 		foreach($option as $k => $v)

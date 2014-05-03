@@ -723,6 +723,56 @@ public function reportYearModuleStatisticsList($idElektrijade, $idOpcija) {
 	    throw $e;
 	}
     }
+	
+	
+public function reportBusCompetitorsList($array, $idElektrijade) {
+	try {
+		
+		
+	    $statement = 'SELECT bus.brojBusa, putovanje.polazak, putovanje.povratak, putovanje.napomena, putovanje.brojSjedala, ';
+		
+		
+		
+		
+	    // only if there aren't atributes with same name, otherwise do it one by one or
+	    // put in the checkbox form the name of the table, like atribut_nazivAtributa,
+	    // and then with php replace _ with .
+	    foreach ($array as $k => $v) {
+			//sve osim idElektrijade, idPodrucija i tipa
+		if ($k !== 'idElektrijade'  && $k !== 'type') {
+		    $statement .= $k . ', ';  //npr. select ime, prezime, mail, brojMob,....,
+		}
+	    }
+	    // remove last ', ';
+	    $statement = rtrim($statement, ", ");  //makni zadnji zarez
+	    
+		
+	
+		$statement .= " FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
+                                   LEFT JOIN putovanje ON putovanje.idPutovanja = sudjelovanje.idPutovanja
+				                   LEFT JOIN bus ON bus.idBusa = putovanje.idBusa
+                                        WHERE sudjelovanje.idElektrijade = :idE
+				                           GROUP BY bus.brojBusa, putovanje.polazak, putovanje.povratak, putovanje.napomena, putovanje.brojSjedala, ";
+				 foreach ($array as $k => $v) {
+			//sve osim idElektrijade, idPodrucija i tipa
+		if ($k !== 'idElektrijade'  && $k !== 'type') {
+		    $statement .= $k . ', ';  //npr. select ime, prezime, mail, brojMob,....,
+		}
+	    }
+		 $statement = rtrim($statement, ", ");  //makni zadnji zarez
+		 $statement .= " ORDER by bus.brojBusa, putovanje.brojSjedala";
+		
+			
+		
+	    $pdo = $this->getPdo();
+	    $q = $pdo->prepare($statement);
+	    $q->bindValue(":idE", $idElektrijade);    
+	    $q->execute();
+	    return $q->fetchAll();
+	} catch (\PDOException $e) {
+	    throw $e;
+	}
+    }
     
     /**************************************************************************
      *			   CONTESTANT FUNCTIONS
