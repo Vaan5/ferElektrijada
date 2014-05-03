@@ -116,11 +116,11 @@ class ObjavaForm extends AbstractView {
 				<input type="file" name="datoteka" />
 			</div>
 		</div>
+		<?php } ?>
 		
 		<center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText; ?>" /></center>
 	</form>
 <?php
-		}
     }
 	
 	public function setRoute($route) {
