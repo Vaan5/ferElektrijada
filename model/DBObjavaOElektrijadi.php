@@ -18,7 +18,16 @@ class DBObjavaOElektrijadi extends AbstractDBModel {
 	}
 	
 	public function getAll() {
-	    return $this->select()->fetchAll();
+	    try {
+		$pdo = $this->getPdo();
+		$q = $pdo->prepare("SELECT * FROM objavaoelektrijadi 
+		    JOIN objava ON objava.idObjave = objavaoelektrijadi.idObjave 
+			JOIN medij ON medij.idMedija = objava.idMedija");
+		$q->execute();
+		return $q->fetchAll();
+	    }  catch (\PDOException $e) {
+		throw $e;
+	    }
 	}
 	
 	public function getAllActive($idElektrijade) {
@@ -26,6 +35,7 @@ class DBObjavaOElektrijadi extends AbstractDBModel {
 		$pdo = $this->getPdo();
 		$q = $pdo->prepare("SELECT * FROM objavaoelektrijadi 
 		    JOIN objava ON objava.idObjave = objavaoelektrijadi.idObjave 
+			JOIN medij ON medij.idMedija = objava.idMedija
 		    WHERE idElektrijade = :id");
 		$q->bindValue(':id', $idElektrijade);
 		$q->execute();

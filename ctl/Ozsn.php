@@ -794,6 +794,27 @@ class Ozsn implements Controller {
         ));
     }
     
+	public function download() {
+		$this->checkRole();
+		$this->checkMessages();
+
+		$this->idCheck("displayActiveObjava");
+
+		$objava = new \model\DBObjava();
+		try {
+			$objava->load(get("id"));
+		} catch (\app\model\NotFoundException $e) {
+			$this->createMessage("Nepoznata objava!");
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->createMessage($handler);
+		}
+
+		echo new \view\Download(array(
+			"path" => $objava->dokument
+		));
+	}
+	
     /**
      * Displays all newspaper reports
      */
