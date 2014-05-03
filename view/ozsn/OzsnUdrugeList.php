@@ -42,7 +42,7 @@ class OzsnUdrugeList extends AbstractView {
 			// Foreach Udruga, generate row in table
 			foreach($this->udrugeKorisnika as $val)
 			{
-				echo '<form action="modifyUdruga" method="POST">';
+				echo '<form action="modifyUdruga?m=1" method="POST">';
 				echo '<tr><td><span class="modify-' . $val->idUdruge . '">' . $val->nazivUdruge . '</span><input type="text" class="modifyOn-' . $val->idUdruge . '" style="display:none;" name="nazivUdruge" value="' . $val->nazivUdruge . '"><input type="hidden" name="idUdruge" value="' . $val->idUdruge . '"></td>';
 				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idUdruge . '" value="Spremi" /><a href="javascript:;" class="editUdruga modify-' . $val->idUdruge . '" data-id="' . $val->idUdruge . '">Uredi</a> &nbsp; <a class="deleteUdruga modify-' . $val->idUdruge . '" href="';
 				

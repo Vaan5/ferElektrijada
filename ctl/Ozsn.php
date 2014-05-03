@@ -1075,8 +1075,8 @@ class Ozsn implements Controller {
 		    $putanja = "./medij_dokumenti/" . date("Y_m_d_H_i_s") . "_" . $idObjave . "_" . basename(files("name", "datoteka"));
 		    if (move_uploaded_file(files("tmp_name", "datoteka"), $putanja)) {
 			// add path to db
-			if ($objava->datoteka != NULL) {
-			    $p = unlink($objava->datoteka);
+			if ($objava->dokument != NULL) {
+			    $p = unlink($objava->dokument);
 			    if ($p === false) {
 				$e = new \PDOException();
 				$e->errorInfo[0] = '02000';
@@ -1099,7 +1099,7 @@ class Ozsn implements Controller {
 		} else {
 		    // check if he wants to delete the old one
 		    if (post("delete") !== false) {
-			$p = unlink($objava->datoteka);
+			$p = unlink($objava->dokument);
 			if ($p === false) {
 			    $e = new \PDOException();
 			    $e->errorInfo[0] = '02000';
