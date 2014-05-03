@@ -27,22 +27,18 @@ class ObjavaAdding extends AbstractView {
 	// 
 	// http://stackoverflow.com/questions/944158/php-multiple-dropdown-box-form-submit-to-mysql
 	// Ovo ispod je samo nesh sto sam testirao izbrisi to
+		
+        echo new \view\components\ObjavaForm(array(
+			"postAction" => \route\Route::get('d3')->generate(array(
+				"controller" => 'ozsn',
+				"action" => 'addObjava'
+			)),
+			"submitButtonText" => "Dodaj objavu",
+			"elektrijade" => $this->elektrijade,
+			"mediji" => $this->mediji
+		));
 	
-	?>
-<form action="<?php echo \route\Route::get('d3')->generate(array(
-    "controller" => "ozsn",
-    "action" => "addObjava")); ?>" method="post">
-  <select name="idElektrijade[]" multiple="multiple">
-    <option value="1" >Option 1</option>
-    <option value="2">naziv</option>
-    <option value="Option 3">Option 3</option>
-    <option value="Option 4">Option 4</option>
-    <option value="Option 5">Option 5</option>
-  </select>
-  <input type="submit">
-</form>
-<?php
-    }
+	}
     
     public function setErrorMessage($errorMessage) {
         $this->errorMessage = $errorMessage;

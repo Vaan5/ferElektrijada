@@ -20,7 +20,7 @@ class AddContact extends AbstractView {
 	    "resultMessage" => $this->resultMessage
 	));
 	
-	// mediji na isti nacin kao i sponzori i tvrtke (drop down list)
+		// mediji na isti nacin kao i sponzori i tvrtke (drop down list)
         echo new \view\components\KontaktOsobeForm(array(
 			"postAction" => \route\Route::get('d3')->generate(array(
 				"controller" => 'ozsn',
