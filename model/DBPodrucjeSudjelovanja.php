@@ -190,4 +190,41 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
 			throw $e;
 		}
 	}
+	
+	public function getMoneyStatistics($idElektrijade) {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT SUM(podrucjesudjelovanja.iznosUplate) suma,
+										podrucjeSudjelovanja.idPodrucja,
+										podrucje.nazivPodrucja,
+										sudjelovanje.idElektrijade
+										FROM podrucjesudjelovanja
+											JOIN sudjelovanje ON sudjelovanje.idSudjelovanja = podrucjesudjelovanja.idSudjelovanja
+											JOIN podrucje ON podrucje.idPodrucja = podrucjesudjelovanja.idPodrucja
+										GROUP BY podrucjesudjelovanja.idPodrucja
+										HAVING sudjelovanje.idElektrijade = :idElektrijade
+										ORDER BY podrucjesudjelovanja.vrstaPodrucja ASC");
+			$q->bindValue(":idElektrijade", $idElektrijade);
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
+	
+	public function getAllMoney($idElektrijade) {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT SUM(podrucjesudjelovanja.iznosUplate) as suma
+										FROM podrucjesudjelovanja
+										JOIN sudjelovanje ON sudjelovanje.idSudjelovanja = podrucjesudjelovanja.idSudjelovanja
+										WHERE sudjelovanje.idElektrijade = :idElektrijade
+										ORDER BY podrucjesudjelovanja.vrstaPodrucja ASC");
+			$q->bindValue(":idElektrijade", $idElektrijade);
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
 }

@@ -42,7 +42,7 @@ class CollectedMoneyList extends AbstractView {
 				</select></div>
 						</div>
 				
-				<input type="submit" value="Pregled prikupljenog novca!" />
+				<input type="submit" value="Prikupljeni novac za disciplinu!" />
 				
 <?php 
 
@@ -53,6 +53,14 @@ class CollectedMoneyList extends AbstractView {
 						}
 ?>
 			</form>
+
+<form action="<?php echo \route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "displayMoneySum"
+				))?>" method="GET">
+					<input type="hidden" name="x" value="sss" />
+	<input type="submit" value="Pregled prikupljenog novca!" />
+					</form
 <?php
     }
     

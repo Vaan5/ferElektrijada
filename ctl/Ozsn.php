@@ -5283,4 +5283,56 @@ public function addFunkcija() {
 			))
 		));
 	}
+	
+	public function displayMoneySum() {
+		$this->checkRole();
+		$this->checkMessages();
+		
+		if (get("x") !== false) {
+			try {
+				$podrucjeSudjelovanja = new \model\DBPodrucjeSudjelovanja();
+				$e = new \model\DBElektrijada();
+				$idElektrijade = $e->getCurrentElektrijadaId();
+				$novci = $podrucjeSudjelovanja->getMoneyStatistics($idElektrijade);
+				
+				$ukupno = $podrucjeSudjelovanja->getAllMoney($idElektrijade);
+				$ukupno = $ukupno[0]->suma;
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler, "d3", "ozsn", "displayCollectedMoney");
+			}
+		} else {
+			$this->createMessage("Greska autorizacije!", "d3", "ozsn", "displayCollectedMoney");
+		}
+		
+		if (get("type") !== false) {
+			$pomPolje = array("Podruje", "Ukupno");
+			$array = array();
+			$array[] = $pomPolje;
+			
+			if ($novci !== null && count($novci)) {
+				foreach ($novci as $v) {
+					$array[] = array($v->nazivPodrucja, $v->suma === null ? 0 :  $v->suma);
+				}
+			}
+			$array[] = array("Ukupno", $ukupno === null ? 0 : $ukupno);
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+		
+		echo new \view\Main(array(
+			"title" => "Prikupljena Sredstva",
+			"body" => new \view\ozsn\CollectedMoney(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"ukupno" => $ukupno,
+				"podrucja" => $novci
+			))
+		));
+	}
 }
