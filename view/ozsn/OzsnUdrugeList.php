@@ -10,11 +10,6 @@ class OzsnUdrugeList extends AbstractView {
     private $udrugeKorisnika;
     
     protected function outputHTML() {	
-	// Nesto slicno DBM-u 
-	// prikazuju se udruge u kojima je trenutni korisnik registriran
-	// moze obrisati, i dodati novu (tad nek mu se pokaze drop down lista postojecih udruga)
-	// u udrugeKorisnika su one udruge u kojima je vec.
-		
 		// print messages if any
         echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
@@ -42,7 +37,12 @@ class OzsnUdrugeList extends AbstractView {
 			// Foreach Udruga, generate row in table
 			foreach($this->udrugeKorisnika as $val)
 			{
-				echo '<form action="modifyUdruga?m=1" method="POST">';
+				echo '<form action="';
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'modifyUdruga'
+				));			
+				echo '?m=1" method="POST">';
 				echo '<tr><td><span class="modify-' . $val->idUdruge . '">' . $val->nazivUdruge . '</span><input type="text" class="modifyOn-' . $val->idUdruge . '" style="display:none;" name="nazivUdruge" value="' . $val->nazivUdruge . '"><input type="hidden" name="idUdruge" value="' . $val->idUdruge . '"></td>';
 				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idUdruge . '" value="Spremi" /><a href="javascript:;" class="editUdruga modify-' . $val->idUdruge . '" data-id="' . $val->idUdruge . '">Uredi</a> &nbsp; <a class="deleteUdruga modify-' . $val->idUdruge . '" href="';
 				
@@ -70,7 +70,13 @@ class OzsnUdrugeList extends AbstractView {
 						</td>
 					</tr>
 					<tr style="display: none;" class="addUdrugaOn">
-						<form action="addUserUdruga" method="post">
+						<form action="
+							  <?php echo \route\Route::get('d3')->generate(array(
+									"controller" => 'ozsn',
+									"action" => 'addUserUdruga'
+								));
+							  ?>
+							  " method="post">
 							<td>
 								<select name="idUdruge" class="form-control">
 <?php
