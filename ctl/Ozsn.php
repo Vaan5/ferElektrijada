@@ -184,13 +184,14 @@ class Ozsn implements Controller {
 	}
 	
 	echo new \view\Main(array(
-	    "body" => new \view\ozsn\OzsnUdrugeList(array(
+	    "body" => new \view\ozsn\OzsnFunctionsList(array(
 		"errorMessage" => $this->errorMessage,
 		"resultMessage" => $this->resultMessage,
 		"sveFunkcije" => $sveFunkcije,
 		"funkcijeKorisnika" => $funkcijeKorisnika
 	    )),
-	    "title" => "Vaše Funkcije"
+	    "title" => "Vaše Funkcije",
+		"script" => new \view\scripts\ozsn\FunkcijaListJs()
 	));
     }
     
