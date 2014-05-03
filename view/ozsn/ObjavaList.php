@@ -16,6 +16,8 @@ class ObjavaList extends AbstractView {
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
+		
+		var_dump($this->objave);
 	
 		if(count($this->objave))
 		{
@@ -43,9 +45,16 @@ class ObjavaList extends AbstractView {
 ?>
 					<tr>
 						<td><?php echo $val->autorIme . ' ' . $val->autorPrezime; ?></td>
-						<td><?php echo $val->datumObjave; ?></td>
-						<td><?php if ($val->link) echo '<a href="'  . $val->link . '" target="_blank">Link</a>'; else echo '/'; ?></td>
-						<td>??</td>
+						<td><?php echo date('d.m.Y', strtotime($val->datumObjave)); ?></td>
+						<td><?php if ($val->link) echo '<a href="'  . $val->link . '" target="_blank">Link</a>'; else echo '<i>Ne postoji</i>'; ?></td>
+						<td>
+							<?php if ($val->dokument) { ?>
+							<a href="<?php echo \route\Route::get('d3')->generate(array(
+								"controller" => 'ozsn',
+								"action" => 'download'
+							));?>?id=<?php echo $val->idObjave; ?>">Preuzmi</a>
+							<?php } else echo '<i>Ne postoji</i>'; ?>
+						</td>
 						<td><a href="					
 <?php
 				echo \route\Route::get('d3')->generate(array(
@@ -60,17 +69,21 @@ class ObjavaList extends AbstractView {
 				));
 				echo '?id=' . $val->idObjave . '">Obriši</a></td></tr>';
 			}
-?>				
-				</tbody>
-				</table>
-			</div>
-			
+			echo '</tbody></table></div>';
+		}
+		
+		else
+		{
+			echo new \view\components\ErrorMessage(array(
+				"errorMessage" => "Ne postoji niti jedna aktivna objava!"
+			));
+		}
+?>
 			<a href="<?php echo \route\Route::get('d3')->generate(array(
 				"controller" => 'ozsn',
 				"action" => 'addObjava'
 			));?>"><span class="glyphicon glyphicon-plus"></span> Dodaj novu objavu</a>
 <?php
-		}
     }
     
     public function setErrorMessage($errorMessage) {
