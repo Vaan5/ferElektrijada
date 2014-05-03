@@ -5335,4 +5335,59 @@ public function addFunkcija() {
 			))
 		));
 	}
+	
+	public function modifyElektrijada() {
+		$this->checkRole();
+		$this->checkMessages();
+		
+		$elektrijada = new \model\DBElektrijada();
+		try {
+			$idElektrijada = $elektrijada->getCurrentElektrijadaId();
+			$elektrijada->load($idElektrijada);
+		} catch (app\model\NotFoundException $e) {
+			$this->createMessage("Nepoznata Elektrijada!");
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->createMessage($handler);
+		}
+		
+		if (!postEmpty()) {
+			// modify Data
+			$validacija = new \model\ElektrijadaFormModel(array(
+                                                'mjestoOdrzavanja' => post('mjestoOdrzavanja'),
+												'ukupniRezultat' => post('ukupniRezultat'),
+												'drzava' => post('drzava'),
+												'ukupanBrojSudionika' => post('ukupanBrojSudionika')
+                                            ));
+            $pov = $validacija->validate();
+            if($pov !== true) {
+				$this->createMessage($validacija->decypherErrors($pov), "d3", "ozsn", "modifyElektrijada");
+			}
+			
+			if (post("ukupniRezultat", 0) > post("ukupanBrojSudionika", 0)) {
+				$this->createMessage("Rezultat mora biti manji ili jednak ukupnom broju sudionika!", "d3", "ozsn", "modifyElektrijada");
+			}
+			
+			try {
+				$elektrijada->modifyRow($elektrijada->getPrimaryKey(), post('mjestoOdrzavanja', NULL), $elektrijada->datumPocetka, 
+						$elektrijada->datumKraja, post('ukupniRezultat', NULL), post('drzava', NULL), $elektrijada->rokZaZnanje,
+						$elektrijada->rokZaSport, post('ukupanBrojSudionika', NULL));
+				
+				// redirect with according message
+				preusmjeri(\route\Route::get('d1')->generate() . "?msg=succel");
+			} catch(\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler, "d3", "ozsn", "modifyElektrijada");
+			}
+		}
+		
+		echo new \view\Main(array(
+			"title" => "Elektrijada",
+			"body" => new \view\ozsn\ElektrijadaData(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"elektrijada" => $elektrijada
+			))
+		));
+	}
 }
