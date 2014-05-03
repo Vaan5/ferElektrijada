@@ -3681,6 +3681,12 @@ public function addFunkcija() {
         try {
             $udruga->modifyRow(post($udruga->getPrimaryKeyColumn(), null), post('nazivUdruge', null));
             
+			if (get("m") !== false) {
+				preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUserUdruge"
+				 )) . '?msg=succm');
+			}
             preusmjeri(\route\Route::get('d3')->generate(array(
                 "controller" => "ozsn",
                 "action" => "displayUdruga"
