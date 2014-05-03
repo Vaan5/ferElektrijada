@@ -978,7 +978,8 @@ class Ozsn implements Controller {
 		"mediji" => $mediji,
 		"elektrijade" => $elektrijade
 	    )),
-	    "title" => "Dodavanje Objave"
+	    "title" => "Dodavanje Objave",
+		"script" => new \view\scripts\ObjavaFormJs()
 	));
     }
     
@@ -1133,7 +1134,8 @@ class Ozsn implements Controller {
 		"objaveOElektrijadi" => $objaveOElektrijadi,
 		"objava" => $objava
 	    )),
-	    "title" => "Mijenjanje Objave"
+	    "title" => "Mijenjanje Objave",
+		"script" => new \view\scripts\ObjavaFormJs()
 	));
     }
     

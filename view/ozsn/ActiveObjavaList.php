@@ -28,6 +28,7 @@ class ActiveObjavaList extends AbstractView {
 				<thead>
 					<tr>
 						<th>Autor</th>
+						<th>Medij</th>
 						<th>Datum</th>
 						<th>Link</th>
 						<th>Dokument</th>
@@ -43,6 +44,7 @@ class ActiveObjavaList extends AbstractView {
 ?>
 					<tr>
 						<td><?php echo $val->autorIme . ' ' . $val->autorPrezime; ?></td>
+						<td><?php echo $val->nazivMedija; ?></td>
 						<td><?php echo date('d.m.Y', strtotime($val->datumObjave)); ?></td>
 						<td><?php if ($val->link) echo '<a href="'  . $val->link . '" target="_blank">Link</a>'; else echo '<i>Ne postoji</i>'; ?></td>
 						<td>

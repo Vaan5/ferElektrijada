@@ -103,24 +103,6 @@ class SponzorForm extends AbstractView {
 <?php
 		}
 ?>	
-		<!--<div class="form-group">
-		<label for="iznosDonacije" class="col-sm-3 control-label">Iznos donacije</label>
-		<div class="col-sm-9">
-                <input type="text" name="iznosDonacije" class="form-control" placeholder="Upišite iznos donacije" <?php if($this->imasponzora && $this->imasponzora->iznosDonacije) echo 'value="' . $this->imasponzora->iznosDonacije . '"' ?> />
-                </div>
-                </div>
-		
-                <div class="form-group">
-		<label for="valutaDonacije" class="col-sm-3 control-label">Valuta donacije</label>
-		<div class="col-sm-9">
-                <select name="valutaDonacije" class="form-control">
-			<option <?php if(!$this->imasponzora || ($this->imasponzora && $this->imasponzora->valutaDonacije == 'HRK')) echo 'selected="selected"' ?> value="HRK">HRK</option>
-			<option <?php if($this->imasponzora && $this->imasponzora->valutaDonacije == 'USD') echo 'selected="selected"' ?> value="USD">USD</option>
-			<option <?php if($this->imasponzora && $this->imasponzora->valutaDonacije == 'EUR') echo 'selected="selected"' ?> value="EUR">EUR</option>
-		</select>
-                </div>
-                </div>-->
-		
 		<div class="form-group">
 			<label for="iznosDonacije" class="col-sm-3 control-label">Iznos donacije</label>
 			<div class="col-sm-9">
