@@ -5145,4 +5145,33 @@ public function addFunkcija() {
 			$this->createMessage($handler, "d3", "ozsn", "searchContestants");
 		}
 	}
+	
+	public function displayCollectedMoney() {
+		$this->checkRole();
+		$this->checkMessages();
+		
+		try {
+			$podrucje = new \model\DBPodrucje();
+			$podrucja = $podrucje->getAll();
+		} catch (app\model\NotFoundException $e) {
+			$this->createMessage("Nepoznati identifikator");
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->createMessage($handler);
+		}
+		
+		echo new \view\Main(array(
+			"title" => "Uplate Po Disciplinama",
+			"body" => new \view\ozsn\CollectedMoneyList(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"podrucja" => $podrucja
+			))
+		));
+	}
+	
+	public function disciplineMoney() {
+		$this->checkRole();
+		$this->checkMessages();
+	}
 }
