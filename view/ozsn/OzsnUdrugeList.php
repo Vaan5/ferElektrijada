@@ -40,7 +40,7 @@ class OzsnUdrugeList extends AbstractView {
 				echo '<form action="';
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
-					"action" => 'editUdruga'
+					"action" => 'modifyUdruga'
 				));			
 				echo '?m=1" method="POST">';
 				echo '<tr><td><span class="modify-' . $val->idUdruge . '">' . $val->nazivUdruge . '</span><input type="text" class="modifyOn-' . $val->idUdruge . '" style="display:none;" name="nazivUdruge" value="' . $val->nazivUdruge . '"><input type="hidden" name="idUdruge" value="' . $val->idUdruge . '"></td>';
