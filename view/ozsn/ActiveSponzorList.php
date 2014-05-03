@@ -29,8 +29,17 @@ class ActiveSponzorList extends AbstractView {
 		{
 			
 ?>
+			<?php echo new \view\components\DownloadLinks(array(
+				"route" => \route\Route::get("d3")->generate(array(
+					"controller" => "ozsn",
+					"action" => "displayActiveSponzor"
+				))
+			)); ?>
+
+			<br><br>
+
 			<div class="panel panel-default">
-				<div class="panel-heading">Aktivni sponzori</div>
+				<div class="panel-heading">Ovogodišnji sponzori</div>
 				
 				<table class="table">
 				<thead>

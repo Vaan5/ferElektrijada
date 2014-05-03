@@ -21,6 +21,15 @@ class ActiveTvrtkeList extends AbstractView {
 		{
 			
 ?>
+			<?php echo new \view\components\DownloadLinks(array(
+				"route" => \route\Route::get("d3")->generate(array(
+					"controller" => "ozsn",
+					"action" => "displayActiveTvrtke"
+				))
+			)); ?>
+
+			<br><br>
+
 			<div class="panel panel-default">
 				<div class="panel-heading">Popis aktivnih tvrtki</div>
 				
@@ -60,6 +69,13 @@ class ActiveTvrtkeList extends AbstractView {
 			}
 			
 			echo '</tbody></table></div>';
+		}
+		
+		else
+		{
+			echo new \view\components\ErrorMessage(array(
+				"errorMessage" => "Ne postoji niti jedna aktivna objava!"
+			));
 		}
     }
 	
