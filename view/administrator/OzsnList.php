@@ -42,7 +42,16 @@ class OzsnList extends AbstractView {
 		else
 		{
 			
-?>
+?>		
+		<?php echo new \view\components\DownloadLinks(array(
+			"route" => \route\Route::get("d3")->generate(array(
+				"controller" => "administrator",
+				"action" => "displayOzsn"
+			))
+		)); ?>
+
+		<br><br>
+	
 			<div class="panel panel-default">
 				<div class="panel-heading">Članovi odbora</div>
 				

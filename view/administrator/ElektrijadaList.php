@@ -34,7 +34,16 @@ class ElektrijadaList extends AbstractView {
 		if(count($this->elektrijade))
 		{
 			
-?>
+?>		
+		<?php echo new \view\components\DownloadLinks(array(
+			"route" => \route\Route::get("d3")->generate(array(
+				"controller" => "administrator",
+				"action" => "displayElektrijada"
+			))
+		)); ?>
+
+		<br><br>
+
 			<div class="panel panel-default">
 				<div class="panel-heading">Popis elektrijada</div>
 				
