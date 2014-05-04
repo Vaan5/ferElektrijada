@@ -442,10 +442,7 @@ IF EXISTS (SELECT * FROM SUDJELOVANJE WHERE SUDJELOVANJE.idSudjelovanja=idSudjel
 				END IF;
 			END IF;
 		ELSE
-			IF idGodStud IS NOT NULL || idSmjera IS NOT NULL THEN
-				 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Djelatnik ne može imati godinu studija / smjer!';
-			ELSE
-                IF EXISTS (SELECT* FROM OSOBA WHERE OSOBA.idOsobe = idOsobe) THEN
+			    IF EXISTS (SELECT* FROM OSOBA WHERE OSOBA.idOsobe = idOsobe) THEN
 				IF EXISTS (SELECT* FROM ELEKTRIJADA WHERE SUDJELOVANJE.idElektrijade = idElektrijade) THEN
 				IF EXISTS (SELECT * FROM RADNOMJESTO WHERE RADNOMJESTO.idRadnogMjesta = idRadnogMjesta) THEN
 					IF EXISTS (SELECT * FROM ZAVOD WHERE ZAVOD.idZavoda = idZavoda) THEN
@@ -475,7 +472,7 @@ IF EXISTS (SELECT * FROM SUDJELOVANJE WHERE SUDJELOVANJE.idSudjelovanja=idSudjel
 				ELSE
 					 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nije odabrano radno mjesto!';
 				END IF;
-			END IF;
+			
 		END IF;
 	END IF;
 ELSE
@@ -1394,9 +1391,6 @@ ELSE
 						END IF;
 					END IF;
 				ELSE
-					IF idGodStud IS NOT NULL || idSmjera IS NOT NULL THEN
-						 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Djelatnik ne može imati godinu studija / smjer!';
-					ELSE
 						IF EXISTS (SELECT * FROM RADNOMJESTO WHERE RADNOMJESTO.idRadnogMjesta = idRadnogMjesta) THEN
 							IF EXISTS (SELECT * FROM ZAVOD WHERE ZAVOD.idZavoda = idZavoda) THEN
 								IF EXISTS (SELECT * FROM VELMAJICE WHERE VELMAJICE.idVelicine = idVelicine) THEN
@@ -1409,12 +1403,12 @@ ELSE
 									 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nije odabrana veličina majice!';
 								END IF;
 							ELSE
-								 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nije odabran smjer!';
+								 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nije odabran ispravan zavod!';
 							END IF;
 						ELSE
-							 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nije odabrana godina studija!';
+							 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nije odabrano radno mjrdto!';
 						END IF;	
-					END IF;
+					
 				END IF;
 			ELSE
 				 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Unesena Elektrijada nije evidentirana!';
