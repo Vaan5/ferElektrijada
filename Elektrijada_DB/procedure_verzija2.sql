@@ -59,27 +59,27 @@ END IF;
 END $$
 DELIMITER ;
 
-DELIMITER $$
-
-CREATE  PROCEDURE `azurirajFunkcijuOdbora`(IN idFunkcije INT UNSIGNED, IN nazivFunkcije VARCHAR (100))
-BEGIN
-IF EXISTS (SELECT * FROM FUNKCIJA WHERE FUNKCIJA.idFunkcije = idFunkcije) THEN
-	IF NOT EXISTS (SELECT * FROM FUNKCIJA WHERE FUNKCIJA.nazivFunkcije = nazivFunkcije) THEN
-		IF (nazivFunkcije IS NOT NULL) THEN
-			UPDATE FUNKCIJA SET
-				FUNKCIJA.nazivFunkcije = nazivFunkcije
-			WHERE FUNKCIJA.idFunkcije = idFunkcije;
-		ELSE 
-			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Naziv funkcije mora biti poznat!';
-		END IF;
-	ELSE
-		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: naziv funkcije već postoji!';
-	END IF;
-ELSE 
-	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: id funkcije nije pronađen!';
-END IF;
-END $$
-DELIMITER ;
+-- DELIMITER $$
+-- 
+-- CREATE  PROCEDURE `azurirajFunkcijuOdbora`(IN idFunkcije INT UNSIGNED, IN nazivFunkcije VARCHAR (100))
+-- BEGIN
+-- IF EXISTS (SELECT * FROM FUNKCIJA WHERE FUNKCIJA.idFunkcije = idFunkcije) THEN
+-- 	IF NOT EXISTS (SELECT * FROM FUNKCIJA WHERE FUNKCIJA.nazivFunkcije = nazivFunkcije) THEN
+-- 		IF (nazivFunkcije IS NOT NULL) THEN
+-- 			UPDATE FUNKCIJA SET
+-- 				FUNKCIJA.nazivFunkcije = nazivFunkcije
+-- 			WHERE FUNKCIJA.idFunkcije = idFunkcije;
+-- 		ELSE 
+-- 			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Naziv funkcije mora biti poznat!';
+-- 		END IF;
+-- 	ELSE
+-- 		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: naziv funkcije već postoji!';
+-- 	END IF;
+-- ELSE 
+-- 	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: id funkcije nije pronađen!';
+-- END IF;
+-- END $$
+-- DELIMITER ;
 
 
 DELIMITER $$
@@ -637,28 +637,28 @@ END IF;
 END $$
 DELIMITER ;
 
-DELIMITER $$
-CREATE  PROCEDURE `brisiFunkciju`(IN idObavljaFunkciju  INT(10))
-BEGIN
-IF EXISTS ( SELECT * FROM ObavljaFunkciju WHERE ObavljaFunkciju.idObavljaFunkciju = idObavljaFunkciju) THEN
-	DELETE FROM ObavljaFunkciju
-    WHERE ObavljaFunkciju.idObavljaFunkciju = idObavljaFunkciju;
-ELSE
-	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Traženi unos nije pronađen!';
-END IF;
-END $$
-DELIMITER ;
+-- DELIMITER $$
+-- CREATE  PROCEDURE `brisiFunkciju`(IN idObavljaFunkciju  INT(10))
+-- BEGIN
+-- IF EXISTS ( SELECT * FROM ObavljaFunkciju WHERE ObavljaFunkciju.idObavljaFunkciju = idObavljaFunkciju) THEN
+-- 	DELETE FROM ObavljaFunkciju
+--     WHERE ObavljaFunkciju.idObavljaFunkciju = idObavljaFunkciju;
+-- ELSE
+-- 	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Traženi unos nije pronađen!';
+-- END IF;
+-- END $$
+-- DELIMITER ;
 
-DELIMITER $$
-CREATE  PROCEDURE `brisiFunkcijuOdbora`(IN idFunkcije INT UNSIGNED)
-BEGIN
-IF EXISTS (SELECT * FROM FUNKCIJA WHERE FUNKCIJA.idFunkcije = idFunkcije) THEN
-	DELETE FROM FUNKCIJA WHERE FUNKCIJA.idFunkcije = idFunkcije;
-	ELSE
-		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: traženi zapis ne postoji!';
-END IF;
-END $$
-DELIMITER ;
+-- DELIMITER $$
+-- CREATE  PROCEDURE `brisiFunkcijuOdbora`(IN idFunkcije INT UNSIGNED)
+-- BEGIN
+-- IF EXISTS (SELECT * FROM FUNKCIJA WHERE FUNKCIJA.idFunkcije = idFunkcije) THEN
+-- 	DELETE FROM FUNKCIJA WHERE FUNKCIJA.idFunkcije = idFunkcije;
+-- 	ELSE
+-- 		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: traženi zapis ne postoji!';
+-- END IF;
+-- END $$
+-- DELIMITER ;
 
 DELIMITER $$
 CREATE  PROCEDURE `brisiGodStud`( IN id INT UNSIGNED )
@@ -985,20 +985,20 @@ END $$
 DELIMITER ;
 
 
-DELIMITER $$
-CREATE  PROCEDURE `dodajFunkcijuOdbora`(IN nazivFunkcije VARCHAR (100))
-BEGIN
-IF EXISTS ( SELECT * FROM FUNKCIJA WHERE FUNKCIJA.nazivFunkcije = nazivFunkcije) THEN
-	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Naziv funkcije već postoji!';
-	ELSE
-		IF (nazivFunkcije IS NULL) THEN
-			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: naziv funkcije mora biti poznat!';
-		ELSE 
-			INSERT INTO FUNKCIJA(nazivFunkcije) VALUES (nazivFunkcije);
-		END IF;
-END IF;
-END $$
-DELIMITER ;
+-- DELIMITER $$
+-- CREATE  PROCEDURE `dodajFunkcijuOdbora`(IN nazivFunkcije VARCHAR (100))
+-- BEGIN
+-- IF EXISTS ( SELECT * FROM FUNKCIJA WHERE FUNKCIJA.nazivFunkcije = nazivFunkcije) THEN
+-- 	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Naziv funkcije već postoji!';
+-- 	ELSE
+-- 		IF (nazivFunkcije IS NULL) THEN
+-- 			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: naziv funkcije mora biti poznat!';
+-- 		ELSE 
+-- 			INSERT INTO FUNKCIJA(nazivFunkcije) VALUES (nazivFunkcije);
+-- 		END IF;
+-- END IF;
+-- END $$
+-- DELIMITER ;
 
 DELIMITER $$
 CREATE  PROCEDURE `dodajGodStud`( IN stud VARCHAR(50), IN god VARCHAR(50) )
@@ -1514,14 +1514,14 @@ SELECT * FROM BROJEVIMOBITELA WHERE idKontakta = id_kontakta;
 END $$
 DELIMITER ;
 
-DELIMITER $$
-CREATE  PROCEDURE `dohvatiFunkcijeOdbora`()
-BEGIN
-
-SELECT * FROM FUNKCIJA ORDER BY nazivFunkcije ASC;
-
-END $$
-DELIMITER ;
+-- DELIMITER $$
+-- CREATE  PROCEDURE `dohvatiFunkcijeOdbora`()
+-- BEGIN
+-- 
+-- SELECT * FROM FUNKCIJA ORDER BY nazivFunkcije ASC;
+-- 
+-- END $$
+-- DELIMITER ;
 
 -- DELIMITER $$
 -- CREATE  PROCEDURE `dohvatiGodineStudija`()

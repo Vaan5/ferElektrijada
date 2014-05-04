@@ -16,8 +16,40 @@ class DBObavljaFunkciju extends AbstractDBModel {
     public function getColumns() {
 	    return array ('idOsobe','idFunkcije','idElektrijade');
     }
-
-    public function addNewRow($idOsobe, $idFunkcije, $idElektrijade) {
+    
+    public function deleteRow($id) {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL brisiFunkciju(:id)");
+			$q->bindValue(":id", $id);
+            $q->execute();
+        } catch (\PDOException $e) {
+            throw $e;
+        }
+    }
+    
+    public function checkOzsnFunction($primaryKey, $idOsobe) {
+		try {
+			$this->load($primaryKey);
+			return $this->idOsobe == $idOsobe ? true : false;
+		} catch (\app\model\NotFoundException $e) {
+			$e = new \PDOException();
+			$e->errorInfo[0] = '02000';
+			$e->errorInfo[1] = 1604;
+			$e->errorInfo[2] = "Zapis ne postoji!";
+			throw $e;
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+    }
+	
+	
+	
+	
+	
+	
+	
+	public function addNewRow($idOsobe, $idFunkcije, $idElektrijade) {
 	try {
 	    $pov = $this->select()->where(array(
 		"idOsobe" => $idOsobe,
@@ -36,36 +68,6 @@ class DBObavljaFunkciju extends AbstractDBModel {
 		    $this->save();
 		}
 	    }
-	} catch (\app\model\NotFoundException $e) {
-	    $e = new \PDOException();
-	    $e->errorInfo[0] = '02000';
-	    $e->errorInfo[1] = 1604;
-	    $e->errorInfo[2] = "Zapis ne postoji!";
-	    throw $e;
-	} catch (\PDOException $e) {
-	    throw $e;
-	}
-    }
-    
-    public function deleteRow($id) {
-	try {
-	    $this->load($id);
-	    $this->delete();
-	} catch (\app\model\NotFoundException $e) {
-	    $e = new \PDOException();
-	    $e->errorInfo[0] = '02000';
-	    $e->errorInfo[1] = 1604;
-	    $e->errorInfo[2] = "Zapis ne postoji!";
-	    throw $e;
-	} catch (\PDOException $e) {
-	    throw $e;
-	}
-    }
-    
-    public function checkOzsnFunction($primaryKey, $idOsobe) {
-	try {
-	    $this->load($primaryKey);
-	    return $this->idOsobe == $idOsobe ? true : false;
 	} catch (\app\model\NotFoundException $e) {
 	    $e = new \PDOException();
 	    $e->errorInfo[0] = '02000';
@@ -110,4 +112,32 @@ class DBObavljaFunkciju extends AbstractDBModel {
 	    throw $e;
 	}
     }
+	
+	public function addOrOverwrite($idOsobe, $idFunkcije, $idElektrijade) {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT idObavljaFunkciju FROM obavljafunkciju WHERE
+									idOsobe = :idOsobe AND idElektrijade = :idELektrijade AND idFunkcije IS NULL");
+			$q->bindValue(":idElektrijade", $idElektrijade);
+			$q->bindValue(":idOsobe", $idOsobe);
+			$q->execute();
+			$pov = $q->fetchAll();
+			
+			if (count($pov)) {
+				$this->load($pov[0]->idObavljaFunkciju);
+				$this->idFunkcije = $idFunkcije;
+				$this->save();
+			} else {
+				$this->idObavljaFunkciju = null;
+				$this->idElektrijade = $idElektrijade;
+				$this->idFunkcije = $idFunkcije;
+				$this->idOsobe = $idOsobe;
+				$this->save();
+			}
+		} catch (app\model\NotFoundException $e) {
+			throw $e;
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
 }

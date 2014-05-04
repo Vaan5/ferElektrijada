@@ -165,101 +165,6 @@ class Ozsn implements Controller {
 	));
     }
     
-    public function displayUserFunctions() {
-	$this->checkRole();
-	$this->checkMessages();
-	
-	$funkcija = new \model\DBFunkcija();
-	$obavljaFunkciju = new \model\DBObavljaFunkciju();
-	$sveFunkcije = array();
-	$funkcijeKorisnika = array();
-	try {
-	    $elektrijada = new \model\DBElektrijada();
-	    $idElektrijade = $elektrijada->getCurrentElektrijadaId();
-	    $sveFunkcije = $funkcija->getAllFunkcija();
-	    $funkcijeKorisnika = $obavljaFunkciju->loadOzsnFunctions(session("auth"), $idElektrijade);
-	} catch (\PDOException $e) {
-	    $handler = new \model\ExceptionHandlerModel($e);
-            $this->errorMessage = $handler;
-	}
-	
-	echo new \view\Main(array(
-	    "body" => new \view\ozsn\OzsnFunctionsList(array(
-		"errorMessage" => $this->errorMessage,
-		"resultMessage" => $this->resultMessage,
-		"sveFunkcije" => $sveFunkcije,
-		"funkcijeKorisnika" => $funkcijeKorisnika
-	    )),
-	    "title" => "Vaše Funkcije",
-		"script" => new \view\scripts\ozsn\FunkcijaListJs()
-	));
-    }
-    
-    public function deleteUserFunction() {
-	$this->checkRole();
-        
-        $this->idCheck("displayUserFunctions");
-	
-        $obavljaFunkciju = new \model\DBObavljaFunkciju();
-        try {
-	    if ($obavljaFunkciju->checkOzsnFunction(get("id"), session("auth"))) {
-		$obavljaFunkciju->deleteRow(get("id"));
-	    } else {
-		$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Ne možete brisati tuđe funkcije!");
-		$_SESSION["exception"] = serialize($handler);
-		preusmjeri(\route\Route::get('d3')->generate(array(
-		    "controller" => "ozsn",
-		    "action" => "displayUserFunctions"
-		)) . "?msg=excep");
-	    }
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayUserFunctions"
-            )) . '?msg=succd');
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayUserFunctions"
-            )) . "?msg=excep");
-        }
-    }
-    
-    public function addUserFunction() {
-	$this->checkRole();
-
-        $obavljaFunkciju = new \model\DBObavljaFunkciju();
-        
-	if (!postEmpty()) {
-	    try {
-		$elektrijada = new \model\DBElektrijada();
-		$idElektrijade = $elektrijada->getCurrentElektrijadaId();
-		$obavljaFunkciju->addNewRow(post("idFunkcije", null), session("auth"), $idElektrijade);
-
-		preusmjeri(\route\Route::get('d3')->generate(array(
-		    "controller" => "ozsn",
-		    "action" => "displayUserFunctions"
-		)) . '?msg=succa');
-	    } catch (\PDOException $e){
-		$handler = new \model\ExceptionHandlerModel($e);
-		$_SESSION["exception"] = serialize($handler);
-		preusmjeri(\route\Route::get('d3')->generate(array(
-		    "controller" => "ozsn",
-		    "action" => "displayUserFunctions"
-		)) . "?msg=excep");
-	    }
-	} else {
-	    $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznata funkcija!");
-	    $_SESSION["exception"] = serialize($handler);
-	    preusmjeri(\route\Route::get('d3')->generate(array(
-		"controller" => "ozsn",
-		"action" => "displayUserFunctions"
-	    )) . "?msg=excep");
-	}
-    }
-    
     /**
      * Displays associations in which the logged in user is registered
      */
@@ -3478,128 +3383,7 @@ public function addSmjer() {
             )) . "?msg=excep");
         }
     }
-			/**
-         *Displays all "funkcija" from database
-         */
-    public function displayFunkcija(){
-        $this->checkRole();
-        $this->checkMessages();
-	
-	$funkcija = new \model\DBFunkcija();
-	$funkcije = null;
-	try {
-            $funkcije = $funkcija->getAllFunkcija();
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $this->errorMessage = $handler;
-        }
-		
-	echo new \view\Main(array(
-            "body" => new \view\ozsn\FunkcijaList(array(
-                "errorMessage" => $this->errorMessage,
-                "resultMessage" => $this->resultMessage,
-                "funkcije" => $funkcije
-            )),
-            "title" => "Lista funkcija",
-            "script" => new \view\scripts\ozsn\FunkcijaListJs()
-        ));
-	}
-	
-	/**
-* Inserts new data into database via post request
-*/
-public function addFunkcija() {
-        $this->checkRole();
 
-        $funkcija = new \model\DBFunkcija();
-        $validacija = new \model\formModel\FunkcijaFormModel(array('nazivFunkcije' => post("nazivFunkcije")));
-        $pov = $validacija->validate();
-        if($pov !== true) {
-            $message = $validacija->decypherErrors($pov);
-            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayFunkcija"
-            )) . "?msg=excep");
-        }
-        
-        try {
-            $funkcija->addRow(post("nazivFunkcije", null));
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayFunkcija"
-            )) . '?msg=succa');
-        } catch (\PDOException $e){
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayFunkcija"
-            )) . "?msg=excep");
-        }
-    }
-/**
-     * Modifies funkcija data via post request
-     */
-    public function modifyFunkcija() {
-        $this->checkRole();
-        
-        $funkcija = new \model\DBFunkcija();
-        $validacija = new \model\formModel\RadnoMjestoFormModel(array('nazivFunkcije' => post("nazivFunkcije")));
-        $pov = $validacija->validate();
-        if($pov !== true) {
-            $message = $validacija->decypherErrors($pov);
-            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayFunkcija"
-            )) . "?msg=excep");
-        }
-        try {
-            $funkcija->modifyRow(post($funkcija->getPrimaryKeyColumn(), null), post('nazivFunkcije', null));
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayFunkcija"
-            )) . '?msg=succm');
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayFunkcija"
-            )) . "?msg=excep");
-        }
-    }
-	/**
-     * Deletes funkcija via get request
-     */
-    public function deleteFunkcija() {
-        $this->checkRole();
-        
-		$this->idCheck("displayFunkcija");
-        
-        $funkcija = new \model\DBFunkcija();
-        try {
-            $funkcija->deleteRow(get("id"));
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayFunkcija"
-            )) . '?msg=succd');
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayFunkcija"
-            )) . "?msg=excep");
-        }
-    }
-	
 		/**
          *Displays all "udruga" from database
          */
@@ -3674,6 +3458,12 @@ public function addFunkcija() {
             $message = $validacija->decypherErrors($pov);
             $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
             $_SESSION["exception"] = serialize($handler);
+			if (get("m") !== false) {
+				preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUserUdruge"
+				 )) . '?msg=excep');
+			}
             preusmjeri(\route\Route::get('d3')->generate(array(
                 "controller" => "ozsn",
                 "action" => "displayUdruga"
@@ -3695,6 +3485,12 @@ public function addFunkcija() {
         } catch (\PDOException $e) {
             $handler = new \model\ExceptionHandlerModel($e);
             $_SESSION["exception"] = serialize($handler);
+			if (get("m") !== false) {
+				preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUserUdruge"
+				 )) . '?msg=excep');
+			}
             preusmjeri(\route\Route::get('d3')->generate(array(
                 "controller" => "ozsn",
                 "action" => "displayUdruga"
@@ -5391,4 +5187,268 @@ public function addFunkcija() {
 			))
 		));
 	}
+	
+	/******************************************************************
+	 *					O Meni -> MOJE FUNKCIJE + DBM FUNKCIJE
+	 ******************************************************************/
+	public function displayFunkcija(){
+        $this->checkRole();
+        $this->checkMessages();
+	
+		$funkcija = new \model\DBFunkcija();
+		$funkcije = null;
+		try {
+			$funkcije = $funkcija->getAllFunkcija();
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->errorMessage = $handler;
+		}
+		
+		if (get("type") !== false) {
+			$pomPolje = array("Funkcija");
+			$array = array();
+			$array[] = $pomPolje;
+			
+			if ($funkcije !== null && count($funkcije)) {
+				foreach ($funkcije as $v) {
+					$array[] = array($v->nazivFunkcije);
+				}
+			}
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+
+		echo new \view\Main(array(
+			"body" => new \view\ozsn\FunkcijaList(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"funkcije" => $funkcije
+			)),
+			"title" => "Lista funkcija",
+			"script" => new \view\scripts\ozsn\FunkcijaListJs()
+		));
+	}
+	
+	public function displayUserFunctions() {
+		$this->checkRole();
+		$this->checkMessages();
+
+		$funkcija = new \model\DBFunkcija();
+		$obavljaFunkciju = new \model\DBObavljaFunkciju();
+		$sveFunkcije = array();
+		$funkcijeKorisnika = array();
+		try {
+			$elektrijada = new \model\DBElektrijada();
+			$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+			$sveFunkcije = $funkcija->getAllFunkcija();
+			$funkcijeKorisnika = $obavljaFunkciju->loadOzsnFunctions(session("auth"), $idElektrijade);
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->errorMessage = $handler;
+		}
+
+		if (get("type") !== false) {
+			$pomPolje = array("Funkcija");
+			$array = array();
+			$array[] = $pomPolje;
+			
+			if ($funkcijeKorisnika !== null && count($funkcijeKorisnika)) {
+				foreach ($funkcijeKorisnika as $v) {
+					$array[] = array($v->nazivFunkcije);
+				}
+			}
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+		
+		echo new \view\Main(array(
+			"body" => new \view\ozsn\OzsnFunctionsList(array(
+			"errorMessage" => $this->errorMessage,
+			"resultMessage" => $this->resultMessage,
+			"sveFunkcije" => $sveFunkcije,
+			"funkcijeKorisnika" => $funkcijeKorisnika
+			)),
+			"title" => "Vaše Funkcije",
+			"script" => new \view\scripts\ozsn\FunkcijaListJs()
+		));
+    }	
+	
+	public function addFunkcija() {
+		$this->checkRole();
+
+        $funkcija = new \model\DBFunkcija();
+        $validacija = new \model\formModel\FunkcijaFormModel(array('nazivFunkcije' => post("nazivFunkcije")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayFunkcija"
+            )) . "?msg=excep");
+        }
+        
+        try {
+            $funkcija->addRow(post("nazivFunkcije", null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayFunkcija"
+            )) . '?msg=succa');
+        } catch (\PDOException $e){
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayFunkcija"
+            )) . "?msg=excep");
+        }
+    }
+	
+	public function addUserFunction() {
+		$this->checkRole();
+
+        $obavljaFunkciju = new \model\DBObavljaFunkciju();
+        
+		if (!postEmpty()) {
+			try {
+				$elektrijada = new \model\DBElektrijada();
+				$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+				$obavljaFunkciju->addNewRow(session("auth"), post("idFunkcije", null), $idElektrijade);
+
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "displayUserFunctions"
+				)) . '?msg=succa');
+			} catch (\PDOException $e){
+			$handler = new \model\ExceptionHandlerModel($e);
+			$_SESSION["exception"] = serialize($handler);
+			preusmjeri(\route\Route::get('d3')->generate(array(
+				"controller" => "ozsn",
+				"action" => "displayUserFunctions"
+			)) . "?msg=excep");
+			}
+		} else {
+			$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznata funkcija!");
+			$_SESSION["exception"] = serialize($handler);
+			preusmjeri(\route\Route::get('d3')->generate(array(
+			"controller" => "ozsn",
+			"action" => "displayUserFunctions"
+			)) . "?msg=excep");
+		}
+    }
+	
+	public function modifyFunkcija() {
+        $this->checkRole();
+        
+        $funkcija = new \model\DBFunkcija();
+        $validacija = new \model\formModel\FunkcijaFormModel(array('nazivFunkcije' => post("nazivFunkcije")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+            $_SESSION["exception"] = serialize($handler);
+			if (get("m") !== false) {
+				preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUserFunctions"
+				 )) . '?msg=excep');
+			}
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayFunkcija"
+            )) . "?msg=excep");
+        }
+        try {
+            $funkcija->modifyRow(post($funkcija->getPrimaryKeyColumn(), null), post('nazivFunkcije', null));
+            
+			if (get("m") !== false) {
+				preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUserFunctions"
+				 )) . '?msg=succm');
+			}
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayFunkcija"
+            )) . '?msg=succm');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+			if (get("m") !== false) {
+				preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUserFunctions"
+				 )) . '?msg=excep');
+			}
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayFunkcija"
+            )) . "?msg=excep");
+        }
+    }	
+	
+	public function deleteUserFunction() {
+		$this->checkRole();
+        $this->idCheck("displayUserFunctions");
+	
+        $obavljaFunkciju = new \model\DBObavljaFunkciju();
+        try {
+			if ($obavljaFunkciju->checkOzsnFunction(get("id"), session("auth"))) {
+				$obavljaFunkciju->deleteRow(get("id"));
+			} else {
+				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Ne možete brisati tuđe funkcije!");
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "displayUserFunctions"
+				)) . "?msg=excep");
+			}
+
+			preusmjeri(\route\Route::get('d3')->generate(array(
+				"controller" => "ozsn",
+				"action" => "displayUserFunctions"
+			)) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUserFunctions"
+            )) . "?msg=excep");
+        }
+    }
+	
+	public function deleteFunkcija() {
+        $this->checkRole();
+		$this->idCheck("displayFunkcija");
+        
+        $funkcija = new \model\DBFunkcija();
+        try {
+            $funkcija->deleteRow(get("id"));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayFunkcija"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $_SESSION["exception"] = serialize($handler);
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayFunkcija"
+            )) . "?msg=excep");
+        }
+    }
 }

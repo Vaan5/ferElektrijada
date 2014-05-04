@@ -51,8 +51,16 @@ BEGIN
 END $$
 DELIMITER ;
 
-
 --                            DOHVAT PODATAKA
+
+DELIMITER $$
+CREATE  PROCEDURE `dohvatiFunkcijeOdbora`()
+BEGIN
+
+SELECT * FROM FUNKCIJA ORDER BY nazivFunkcije ASC;
+
+END $$
+DELIMITER ;
 
 DELIMITER $$
 CREATE  PROCEDURE `dohvatiGodineStudija`()
@@ -96,5 +104,67 @@ BEGIN
 
 	SELECT * FROM RADNOMJESTO ORDER BY naziv ASC;
 
+END $$
+DELIMITER ;
+
+--			AŽURIRANJE PODATAKA
+
+DELIMITER $$
+CREATE  PROCEDURE `azurirajFunkcijuOdbora`(IN idFunkcije INT UNSIGNED, IN nazivFunkcije VARCHAR (100))
+BEGIN
+IF EXISTS (SELECT * FROM FUNKCIJA WHERE FUNKCIJA.idFunkcije = idFunkcije) THEN
+	IF NOT EXISTS (SELECT * FROM FUNKCIJA WHERE FUNKCIJA.nazivFunkcije = nazivFunkcije) THEN
+		IF (nazivFunkcije IS NOT NULL) THEN
+			UPDATE FUNKCIJA SET
+				FUNKCIJA.nazivFunkcije = nazivFunkcije
+			WHERE FUNKCIJA.idFunkcije = idFunkcije;
+		ELSE 
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Naziv funkcije je obavezan!';
+		END IF;
+	ELSE
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Uneseni naziv funkcije već postoji!';
+	END IF;
+ELSE 
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Nepoznati identifikator funkcije!';
+END IF;
+END $$
+DELIMITER ;
+
+--			BRISANJE PODATAKA
+DELIMITER $$
+CREATE  PROCEDURE `brisiFunkciju`(IN idObavljaFunkciju  INT(10))
+BEGIN
+IF EXISTS ( SELECT * FROM ObavljaFunkciju WHERE ObavljaFunkciju.idObavljaFunkciju = idObavljaFunkciju) THEN
+	DELETE FROM ObavljaFunkciju
+    WHERE ObavljaFunkciju.idObavljaFunkciju = idObavljaFunkciju;
+ELSE
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Traženi zapis nije pronađen!';
+END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `brisiFunkcijuOdbora`(IN idFunkcije INT UNSIGNED)
+BEGIN
+	IF EXISTS (SELECT * FROM FUNKCIJA WHERE FUNKCIJA.idFunkcije = idFunkcije) THEN
+		DELETE FROM FUNKCIJA WHERE FUNKCIJA.idFunkcije = idFunkcije;
+	ELSE
+		SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Traženi zapis ne postoji!';
+	END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `dodajFunkcijuOdbora`(IN nazivFunkcije VARCHAR (100))
+BEGIN
+IF EXISTS ( SELECT * FROM FUNKCIJA WHERE FUNKCIJA.nazivFunkcije = nazivFunkcije) THEN
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Naziv funkcije već postoji!';
+	ELSE
+		IF (nazivFunkcije IS NULL) THEN
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Naziv funkcije je obavezan!';
+		ELSE 
+			INSERT INTO FUNKCIJA(nazivFunkcije) VALUES (nazivFunkcije);
+		END IF;
+END IF;
 END $$
 DELIMITER ;
