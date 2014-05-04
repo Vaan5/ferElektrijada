@@ -25,10 +25,10 @@ class DBSponzor extends AbstractDBModel {
 	try {
 	    $pdo = $this->getPdo();
 	    $q = $pdo->prepare("SELECT * FROM sponzor LEFT JOIN imasponzora ON sponzor.idSponzora = imasponzora.idSponzora
-						    JOIN kategorija ON kategorija.idKategorijeSponzora = imasponzora.idKategorijeSponzora
-						    JOIN nacinpromocije ON nacinpromocije.idPromocije = imasponzora.idPromocije
-						    JOIN sponelekpod ON sponelekpod.idSponzora = sponzor.idSponzora
-						    JOIN podrucje ON podrucje.idPodrucja = sponelekpod.idPodrucja
+						    LEFT JOIN kategorija ON kategorija.idKategorijeSponzora = imasponzora.idKategorijeSponzora
+						    LEFT JOIN nacinpromocije ON nacinpromocije.idPromocije = imasponzora.idPromocije
+						    LEFT JOIN sponelekpod ON sponelekpod.idSponzora = sponzor.idSponzora
+						    LEFT JOIN podrucje ON podrucje.idPodrucja = sponelekpod.idPodrucja
 						    WHERE imasponzora.idElektrijade = :id OR sponelekpod.idElektrijade = :id");
 	    $q->bindValue(":id", $idElektrijade);
 	    $q->execute();
