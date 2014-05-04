@@ -59,7 +59,10 @@ CREATE TABLE OSOBA (
     UNIQUE (ferId),
     UNIQUE (JMBAG),
     UNIQUE (OIB),
-    UNIQUE (MBG)
+    UNIQUE (MBG),
+    FOREIGN KEY (idNadredjena)
+	REFERENCES OSOBA (idOsobe)
+	ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 
@@ -90,7 +93,7 @@ CREATE TABLE ElekPodrucje (
     idElektrijade INT UNSIGNED NOT NULL,    
     ukupanBrojEkipa INT,
     PRIMARY KEY (idElekPodrucje),
-    UNIQUE (idElekPodrucje , idPodrucja),
+    UNIQUE (idElektrijade , idPodrucja),
     FOREIGN KEY (idElektrijade)
         REFERENCES ELEKTRIJADA (idElektrijade)
         ON UPDATE CASCADE ON DELETE CASCADE,
@@ -245,25 +248,26 @@ CREATE TABLE RADNOMJESTO (
 
 CREATE TABLE BUS (
     idBusa INT UNSIGNED AUTO_INCREMENT,
-    registracija VARCHAR(10) NOT NULL,
-    brojMjesta INT,
-    brojBusa INT,    
+    registracija VARCHAR(100),
+    brojMjesta INT UNSIGNED,
+	brojBusa INT UNSIGNED,
+    nazivBusa VARCHAR(200),
     PRIMARY KEY (idBusa),
     UNIQUE (registracija)
 );
 
-CREATE TABLE PUTOVANJE (
-    idPutovanja INT UNSIGNED AUTO_INCREMENT,
+CREATE TABLE BUSGRUPA (
+    idGrupe INT UNSIGNED AUTO_INCREMENT,
+    nazivGrupe VARCHAR(200),
     idBusa INT UNSIGNED,
-    polazak BOOLEAN,
-    povratak BOOLEAN, 
-    napomena VARCHAR(200),
-    brojSjedala INT NOT NULL,
-    PRIMARY KEY (idPutovanja),
+    PRIMARY KEY (idGrupe),
+    UNIQUE (nazivGrupe),
     FOREIGN KEY (idBusa)
         REFERENCES BUS (idBusa)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+
 
 
 CREATE TABLE SUDJELOVANJE (
@@ -291,10 +295,7 @@ CREATE TABLE SUDJELOVANJE (
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idVelicine)
         REFERENCES VELMAJICE (idVelicine)
-        ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (idPutovanja)
-        REFERENCES PUTOVANJE (idPutovanja)
-        ON UPDATE CASCADE ON DELETE CASCADE,
+        ON UPDATE CASCADE ON DELETE CASCADE,    
     PRIMARY KEY (idSudjelovanja),
     UNIQUE (idOsobe , idElektrijade),
     FOREIGN KEY (idOsobe)
@@ -302,6 +303,23 @@ CREATE TABLE SUDJELOVANJE (
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idElektrijade)
         REFERENCES ELEKTRIJADA (idElektrijade)
+);
+
+CREATE TABLE PUTOVANJE (
+    idPutovanja INT UNSIGNED AUTO_INCREMENT,
+    idSudjelovanja INT UNSIGNED,
+    idGrupe INT UNSIGNED,
+    polazak BOOLEAN,
+    povratak BOOLEAN,
+    napomena VARCHAR(200),
+    brojSjedala INT NOT NULL,
+    PRIMARY KEY (idPutovanja),
+    FOREIGN KEY (idGrupe)
+        REFERENCES BUSGRUPA (idGrupe)
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (idSudjelovanja)
+        REFERENCES SUDJELOVANJE (idSudjelovanja)
+        ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE ObavljaFunkciju (
