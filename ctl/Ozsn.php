@@ -184,13 +184,14 @@ class Ozsn implements Controller {
 	}
 	
 	echo new \view\Main(array(
-	    "body" => new \view\ozsn\OzsnUdrugeList(array(
+	    "body" => new \view\ozsn\OzsnFunctionsList(array(
 		"errorMessage" => $this->errorMessage,
 		"resultMessage" => $this->resultMessage,
 		"sveFunkcije" => $sveFunkcije,
 		"funkcijeKorisnika" => $funkcijeKorisnika
 	    )),
-	    "title" => "Vaše Funkcije"
+	    "title" => "Vaše Funkcije",
+		"script" => new \view\scripts\ozsn\FunkcijaListJs()
 	));
     }
     
@@ -285,7 +286,8 @@ class Ozsn implements Controller {
 		"sveUdruge" => $sveUdruge,
 		"udrugeKorisnika" => $udrugeKorisnika
 	    )),
-	    "title" => "Vaše Udruge"
+	    "title" => "Vaše Udruge",
+		"script" => new \view\scripts\ozsn\UdrugaListJs()
 	));
     }
     
@@ -672,7 +674,7 @@ class Ozsn implements Controller {
                 "resultMessage" => $this->resultMessage,
                 "mediji" => $mediji
             )),
-            "title" => "Načini Promocije",
+            "title" => "Mediji",
 			"script" => new \view\scripts\ozsn\MedijiListJs()
         ));
     }
@@ -978,7 +980,8 @@ class Ozsn implements Controller {
 		"mediji" => $mediji,
 		"elektrijade" => $elektrijade
 	    )),
-	    "title" => "Dodavanje Objave"
+	    "title" => "Dodavanje Objave",
+		"script" => new \view\scripts\ObjavaFormJs()
 	));
     }
     
@@ -1073,8 +1076,8 @@ class Ozsn implements Controller {
 		    $putanja = "./medij_dokumenti/" . date("Y_m_d_H_i_s") . "_" . $idObjave . "_" . basename(files("name", "datoteka"));
 		    if (move_uploaded_file(files("tmp_name", "datoteka"), $putanja)) {
 			// add path to db
-			if ($objava->datoteka != NULL) {
-			    $p = unlink($objava->datoteka);
+			if ($objava->dokument != NULL) {
+			    $p = unlink($objava->dokument);
 			    if ($p === false) {
 				$e = new \PDOException();
 				$e->errorInfo[0] = '02000';
@@ -1097,7 +1100,7 @@ class Ozsn implements Controller {
 		} else {
 		    // check if he wants to delete the old one
 		    if (post("delete") !== false) {
-			$p = unlink($objava->datoteka);
+			$p = unlink($objava->dokument);
 			if ($p === false) {
 			    $e = new \PDOException();
 			    $e->errorInfo[0] = '02000';
@@ -1133,7 +1136,8 @@ class Ozsn implements Controller {
 		"objaveOElektrijadi" => $objaveOElektrijadi,
 		"objava" => $objava
 	    )),
-	    "title" => "Mijenjanje Objave"
+	    "title" => "Mijenjanje Objave",
+		"script" => new \view\scripts\ObjavaFormJs()
 	));
     }
     
@@ -3678,6 +3682,12 @@ public function addFunkcija() {
         try {
             $udruga->modifyRow(post($udruga->getPrimaryKeyColumn(), null), post('nazivUdruge', null));
             
+			if (get("m") !== false) {
+				preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUserUdruge"
+				 )) . '?msg=succm');
+			}
             preusmjeri(\route\Route::get('d3')->generate(array(
                 "controller" => "ozsn",
                 "action" => "displayUdruga"
@@ -5173,5 +5183,212 @@ public function addFunkcija() {
 	public function disciplineMoney() {
 		$this->checkRole();
 		$this->checkMessages();
+		
+		$podrucje = new \model\DBPodrucje();
+		$podrucjeSudjelovanja = new \model\DBPodrucjeSudjelovanja();
+		$elektrijada = new \model\DBElektrijada();
+		
+		if (postEmpty()) {
+			$this->idCheck("displayCollectedMoney");
+			$idPodrucja = get("id");
+			
+			try {
+				$podrucje->load(get("id"));
+				$naziv = $podrucje->nazivPodrucja;
+				
+				$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+				$osobe = $podrucjeSudjelovanja->getCollectedMoney($idPodrucja, $idElektrijade);
+			} catch (app\model\NotFoundException $e) {
+				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayCollectedMoney");
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler, "d3", "ozsn", "displayCollectedMoney");
+			}
+		} else {
+			// process query
+			$idPodrucja = post("idPodrucja");
+			try {
+				$podrucje->load($idPodrucja);
+				$naziv = $podrucje->nazivPodrucja;
+				foreach($_POST as $k => $r) {
+					if ($k !== "idPodrucja" && $k[0] !== "v" && $r !== '') {
+						$validacija = new \model\formModel\NumberValidationModel(array("decimal" => $r));
+						$validacija->setRules(array("decimal" => array("decimal")));
+						$pov = $validacija->validate();
+						if ($pov !== true) {
+							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Iznos može biti samo brojčana vrijednost!");
+							$_SESSION["exception"] = serialize($handler);
+							preusmjeri(\route\Route::get('d3')->generate(array(
+								"controller" => "ozsn",
+								"action" => "disciplineMoney"
+							)) . "?msg=excep&id=" . $idPodrucja);
+						}
+					}
+				}
+				
+				// everything's okay lets add
+				foreach($_POST as $k => $r) {
+					if ($k !== "idPodrucja" && $k[0] !== "v") {
+						$podrucjeSudjelovanja->modifyRow($k, FALSE, FALSE, FALSE, FALSE, FALSE, post($k, NULL), post("valuta" . $k, "HRK"));
+					}
+				}
+				
+				// success -> redirect
+				preusmjeri(\route\Route::get('d3')->generate(array(
+								"controller" => "ozsn",
+								"action" => "disciplineMoney"
+							)) . "?msg=succm&id=" . post("idPodrucja"));
+			} catch (app\model\NotFoundException $e) {
+				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator");
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "disciplineMoney"
+				)) . "?msg=excep&id=" . $idPodrucja);
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "disciplineMoney"
+				)) . "?msg=excep&id=" . $idPodrucja);
+			}
+		}
+		
+		if (get("type") !== false) {
+			$pomPolje = array("Ime", "Prezime", "JMBAG", "OIB", "Iznos", "Valuta");
+			$array = array();
+			$array[] = $pomPolje;
+			
+			if ($osobe !== null && count($osobe)) {
+				foreach ($osobe as $v) {
+					$array[] = array($v->ime, $v->prezime, $v->JMBAG, $v->OIB, $v->iznosUplate, $v->valuta);
+				}
+			}
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+		
+		echo new \view\Main(array(
+			"title" => $naziv,
+			"body" => new \view\ozsn\DisciplineMoney(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"osobe" => $osobe,
+				"idPodrucja" => $idPodrucja
+			))
+		));
+	}
+	
+	public function displayMoneySum() {
+		$this->checkRole();
+		$this->checkMessages();
+		
+		if (get("x") !== false) {
+			try {
+				$podrucjeSudjelovanja = new \model\DBPodrucjeSudjelovanja();
+				$e = new \model\DBElektrijada();
+				$idElektrijade = $e->getCurrentElektrijadaId();
+				$novci = $podrucjeSudjelovanja->getMoneyStatistics($idElektrijade);
+				
+				$ukupno = $podrucjeSudjelovanja->getAllMoney($idElektrijade);
+				$ukupno = $ukupno[0]->suma;
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler, "d3", "ozsn", "displayCollectedMoney");
+			}
+		} else {
+			$this->createMessage("Greska autorizacije!", "d3", "ozsn", "displayCollectedMoney");
+		}
+		
+		if (get("type") !== false) {
+			$pomPolje = array("Podruje", "Ukupno");
+			$array = array();
+			$array[] = $pomPolje;
+			
+			if ($novci !== null && count($novci)) {
+				foreach ($novci as $v) {
+					$array[] = array($v->nazivPodrucja, $v->suma === null ? 0 :  $v->suma);
+				}
+			}
+			$array[] = array("Ukupno", $ukupno === null ? 0 : $ukupno);
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+		
+		echo new \view\Main(array(
+			"title" => "Prikupljena Sredstva",
+			"body" => new \view\ozsn\CollectedMoney(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"ukupno" => $ukupno,
+				"podrucja" => $novci
+			))
+		));
+	}
+	
+	public function modifyElektrijada() {
+		$this->checkRole();
+		$this->checkMessages();
+		
+		$elektrijada = new \model\DBElektrijada();
+		try {
+			$idElektrijada = $elektrijada->getCurrentElektrijadaId();
+			$elektrijada->load($idElektrijada);
+		} catch (app\model\NotFoundException $e) {
+			$this->createMessage("Nepoznata Elektrijada!");
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->createMessage($handler);
+		}
+		
+		if (!postEmpty()) {
+			// modify Data
+			$validacija = new \model\ElektrijadaFormModel(array(
+                                                'mjestoOdrzavanja' => post('mjestoOdrzavanja'),
+												'ukupniRezultat' => post('ukupniRezultat'),
+												'drzava' => post('drzava'),
+												'ukupanBrojSudionika' => post('ukupanBrojSudionika')
+                                            ));
+            $pov = $validacija->validate();
+            if($pov !== true) {
+				$this->createMessage($validacija->decypherErrors($pov), "d3", "ozsn", "modifyElektrijada");
+			}
+			
+			if (post("ukupniRezultat", 0) > post("ukupanBrojSudionika", 0)) {
+				$this->createMessage("Rezultat mora biti manji ili jednak ukupnom broju sudionika!", "d3", "ozsn", "modifyElektrijada");
+			}
+			
+			try {
+				$elektrijada->modifyRow($elektrijada->getPrimaryKey(), post('mjestoOdrzavanja', NULL), $elektrijada->datumPocetka, 
+						$elektrijada->datumKraja, post('ukupniRezultat', NULL), post('drzava', NULL), $elektrijada->rokZaZnanje,
+						$elektrijada->rokZaSport, post('ukupanBrojSudionika', NULL));
+				
+				// redirect with according message
+				preusmjeri(\route\Route::get('d1')->generate() . "?msg=succel");
+			} catch(\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler, "d3", "ozsn", "modifyElektrijada");
+			}
+		}
+		
+		echo new \view\Main(array(
+			"title" => "Elektrijada",
+			"body" => new \view\ozsn\ElektrijadaData(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"elektrijada" => $elektrijada
+			))
+		));
 	}
 }

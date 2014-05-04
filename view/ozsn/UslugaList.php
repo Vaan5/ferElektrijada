@@ -17,6 +17,15 @@ class UslugaList extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 ?>
+		<?php echo new \view\components\DownloadLinks(array(
+			"route" => \route\Route::get("d3")->generate(array(
+				"controller" => "ozsn",
+				"action" => "displayUsluga"
+			))
+		)); ?>
+
+		<br><br>
+		
 		<div class="panel panel-default">
 			<div class="panel-heading">Popis usluga</div>
 
@@ -36,7 +45,12 @@ class UslugaList extends AbstractView {
 			// Foreach usluga, generate row in table
 			foreach($this->usluge as $val)
 			{
-				echo '<form action="modifyUsluga" method="POST">';
+				echo '<form action="';
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'modifyUsluga'
+				));
+				echo '" method="POST">';
 				echo '<tr><td><span class="modify-' . $val->idUsluge . '">' . $val->nazivUsluge . '</span><input type="text" class="modifyOn-' . $val->idUsluge . '" style="display:none;" name="nazivUsluge" value="' . $val->nazivUsluge . '"><input type="hidden" name="idUsluge" value="' . $val->idUsluge . '"></td>';
 				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idUsluge . '" value="Spremi" /><a href="javascript:;" class="editUsluga modify-' . $val->idUsluge . '" data-id="' . $val->idUsluge . '">Uredi</a> &nbsp; <a class="deleteUsluga modify-' . $val->idUsluge . '" href="';
 				
@@ -64,7 +78,12 @@ class UslugaList extends AbstractView {
 						</td>
 					</tr>
 					<tr style="display: none;" class="addUslugaOn">
-						<form action="addUsluga" method="post">
+						<form action="
+							  <?php echo \route\Route::get('d3')->generate(array(
+								"controller" => 'ozsn',
+								"action" => 'addUsluga'
+							)); ?>							  
+							  " method="post">
 							<td><input type="text" name="nazivUsluge" placeholder="Upišite naziv usluge"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
 						</form>

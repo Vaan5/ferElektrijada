@@ -21,6 +21,8 @@ class ElektrijadaForm extends AbstractView {
      * @var object 
      */
     private $elektrijada;
+	
+	private $modifyDates = true;
     
     protected function outputHTML() {
         /*
@@ -42,6 +44,9 @@ class ElektrijadaForm extends AbstractView {
 			<input type="text" name="drzava" class="form-control" placeholder="Upišite državu" <?php if($this->elektrijada && $this->elektrijada->drzava){ echo 'value="' . $this->elektrijada->drzava . '"'; } ?> />
                         </div>
         </div>
+<?php
+		if($this->modifyDates === true) {
+?>
         <div class="form-group">
             <label for="datumpocetka" class="col-sm-3 control-label">Datum početka</label>
                         <div class="col-sm-8">
@@ -54,12 +59,18 @@ class ElektrijadaForm extends AbstractView {
                         <input type="text" name="datumKraja" placeholder="Upišite datum kraja" class="datePicker form-control" <?php if($this->elektrijada && $this->elektrijada->datumKraja){ echo 'value="' . $this->elektrijada->datumKraja . '"'; } ?> />
                         </div>
         </div>
+<?php
+		}
+?>
         <div class="form-group">
             <label for="ukupnirez" class="col-sm-3 control-label">Ukupni rezultat</label>
                         <div class="col-sm-8">
                         <input type="text" name="ukupniRezultat" class="form-control" placeholder="Upišite ukupni rezultat" <?php if($this->elektrijada && $this->elektrijada->ukupniRezultat){ echo 'value="' . $this->elektrijada->ukupniRezultat . '"'; } ?> />
                         </div>
         </div>
+<?php
+		if($this->modifyDates === true) {
+?>
         <div class="form-group">
             <label for="rokzaznanje" class="col-sm-6 control-label">Rok za unos podataka za područje znanja</label>
                         <div class="col-sm-5">
@@ -72,6 +83,9 @@ class ElektrijadaForm extends AbstractView {
                         <input type="text" name="rokZaSport" placeholder="Upišite rok za sport" class="datePicker form-control" <?php if($this->elektrijada && $this->elektrijada->rokZaSport){ echo 'value="' . $this->elektrijada->rokZaSport . '"'; } ?> />
                         </div>
         </div>
+<?php
+		}
+?>
         <div class="form-group">
             <label for="ukupnibrsud" class="col-sm-4 control-label">Ukupni broj sudionika</label>
                         <div class="col-sm-7">           
@@ -100,4 +114,9 @@ class ElektrijadaForm extends AbstractView {
         return $this;
     }
     
+	public function setModifyDates($modifyDates) {
+		$this->modifyDates = $modifyDates;
+		return $this;
+	}
+
 }

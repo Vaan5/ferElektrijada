@@ -9,20 +9,35 @@ class ObjavaList extends AbstractView {
     private $objave;
     
     protected function outputHTML() {
-	// print messages if any
+		// print messages if any
         echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
         ));
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
-		
-		var_dump($this->objave);
 	
 		if(count($this->objave))
 		{
 			
-?>
+?>		
+			<?php echo new \view\components\AddNewLink(array(
+				"link" => \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'addObjava'
+				)),
+				"buttonText" => 'Dodaj novu objavu'
+			)); ?>
+			
+			<?php echo new \view\components\DownloadLinks(array(
+				"route" => \route\Route::get("d3")->generate(array(
+					"controller" => "ozsn",
+					"action" => "displayObjava"
+				))
+			)); ?>
+
+			<br><br>
+
 			<div class="panel panel-default">
 				<div class="panel-heading">Popis objava</div>
 				
@@ -30,6 +45,7 @@ class ObjavaList extends AbstractView {
 				<thead>
 					<tr>
 						<th>Autor</th>
+						<th>Medij</th>
 						<th>Datum</th>
 						<th>Link</th>
 						<th>Dokument</th>
@@ -45,6 +61,7 @@ class ObjavaList extends AbstractView {
 ?>
 					<tr>
 						<td><?php echo $val->autorIme . ' ' . $val->autorPrezime; ?></td>
+						<td><?php echo $val->nazivMedija; ?></td>
 						<td><?php echo date('d.m.Y', strtotime($val->datumObjave)); ?></td>
 						<td><?php if ($val->link) echo '<a href="'  . $val->link . '" target="_blank">Link</a>'; else echo '<i>Ne postoji</i>'; ?></td>
 						<td>
@@ -77,13 +94,15 @@ class ObjavaList extends AbstractView {
 			echo new \view\components\ErrorMessage(array(
 				"errorMessage" => "Ne postoji niti jedna aktivna objava!"
 			));
+			
+			echo new \view\components\AddNewLink(array(
+				"link" => \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'addObjava'
+				)),
+				"buttonText" => 'Dodaj novu objavu'
+			));
 		}
-?>
-			<a href="<?php echo \route\Route::get('d3')->generate(array(
-				"controller" => 'ozsn',
-				"action" => 'addObjava'
-			));?>"><span class="glyphicon glyphicon-plus"></span> Dodaj novu objavu</a>
-<?php
     }
     
     public function setErrorMessage($errorMessage) {

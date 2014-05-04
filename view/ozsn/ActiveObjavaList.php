@@ -20,7 +20,24 @@ class ActiveObjavaList extends AbstractView {
 		if(count($this->objave))
 		{
 			
-?>
+?>			
+			<?php echo new \view\components\AddNewLink(array(
+				"link" => \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'addObjava'
+				)),
+				"buttonText" => 'Dodaj novu objavu'
+			)); ?>
+			
+			<?php echo new \view\components\DownloadLinks(array(
+				"route" => \route\Route::get("d3")->generate(array(
+					"controller" => "ozsn",
+					"action" => "displayActiveObjava"
+				))
+			)); ?>
+
+			<br><br>
+
 			<div class="panel panel-default">
 				<div class="panel-heading">Popis aktivnih objava</div>
 				
@@ -28,6 +45,7 @@ class ActiveObjavaList extends AbstractView {
 				<thead>
 					<tr>
 						<th>Autor</th>
+						<th>Medij</th>
 						<th>Datum</th>
 						<th>Link</th>
 						<th>Dokument</th>
@@ -43,6 +61,7 @@ class ActiveObjavaList extends AbstractView {
 ?>
 					<tr>
 						<td><?php echo $val->autorIme . ' ' . $val->autorPrezime; ?></td>
+						<td><?php echo $val->nazivMedija; ?></td>
 						<td><?php echo date('d.m.Y', strtotime($val->datumObjave)); ?></td>
 						<td><?php if ($val->link) echo '<a href="'  . $val->link . '" target="_blank">Link</a>'; else echo '<i>Ne postoji</i>'; ?></td>
 						<td>
@@ -75,21 +94,16 @@ class ActiveObjavaList extends AbstractView {
 		{
 			echo new \view\components\ErrorMessage(array(
 				"errorMessage" => "Ne postoji niti jedna aktivna objava!"
-			));
+			));			
+			
+			echo new \view\components\AddNewLink(array(
+				"link" => \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'addObjava'
+				)),
+				"buttonText" => 'Dodaj novu objavu'
+			));			
 		}
-		
-		echo new \view\components\DownloadLinks(array(
-			"route" => \route\Route::get("d3")->generate(array(
-				"controller" => "ozsn",
-				"action" => "displayActiveObjava"
-			))
-		));
-?>
-			<a href="<?php echo \route\Route::get('d3')->generate(array(
-				"controller" => 'ozsn',
-				"action" => 'addObjava'
-			));?>"><span class="glyphicon glyphicon-plus"></span> Dodaj novu objavu</a>
-<?php
     }
 	
     public function setErrorMessage($errorMessage) {

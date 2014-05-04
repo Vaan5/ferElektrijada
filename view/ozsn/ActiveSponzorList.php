@@ -24,13 +24,22 @@ class ActiveSponzorList extends AbstractView {
 			));
 		}
 		
-		// Else list sponzori in table
-		else
+		// list sponzori in table
+		if(count($this->sponzori))
 		{
 			
 ?>
+			<?php echo new \view\components\DownloadLinks(array(
+				"route" => \route\Route::get("d3")->generate(array(
+					"controller" => "ozsn",
+					"action" => "displayActiveSponzor"
+				))
+			)); ?>
+
+			<br><br>
+
 			<div class="panel panel-default">
-				<div class="panel-heading">Aktivni sponzori</div>
+				<div class="panel-heading">Ovogodišnji sponzori</div>
 				
 				<table class="table">
 				<thead>
@@ -65,8 +74,14 @@ class ActiveSponzorList extends AbstractView {
 			</table>
 		</div>
 <?php
-		}		
+		}
 		
+		else
+		{
+			echo new \view\components\ErrorMessage(array(
+            "errorMessage" => "Ne postoji niti jedan ovogodišnji sponzor!"
+			));
+		}		
     }
     
     public function setErrorMessage($errorMessage) {

@@ -29,7 +29,7 @@ class CollectedMoneyList extends AbstractView {
 					<div class="form-group">	
 								<label for="podrucja" class="col-sm-3 control-label">Discipline</label>
 						<div class="col-sm-9">
-								<select name="idPodrucja" class="form-control">
+								<select name="id" class="form-control">
 							<option value="">Odaberi...</option>
 
 				<?php
@@ -42,7 +42,7 @@ class CollectedMoneyList extends AbstractView {
 				</select></div>
 						</div>
 				
-				<input type="submit" value="Pregled prikupljenog novca!" />
+				<input type="submit" value="Prikupljeni novac za disciplinu!" />
 				
 <?php 
 
@@ -53,6 +53,14 @@ class CollectedMoneyList extends AbstractView {
 						}
 ?>
 			</form>
+
+<form action="<?php echo \route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "displayMoneySum"
+				))?>" method="GET">
+					<input type="hidden" name="x" value="sss" />
+	<input type="submit" value="Pregled prikupljenog novca!" />
+					</form
 <?php
     }
     

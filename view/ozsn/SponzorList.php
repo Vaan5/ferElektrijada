@@ -21,15 +21,32 @@ class SponzorList extends AbstractView {
 		if($this->errorMessage)
 		{
 			echo new \view\components\ErrorMessage(array(
-            "errorMessage" => $this->errorMessage
+				"errorMessage" => $this->errorMessage
 			));
 		}
 		
-		// Else list sponzori in table
-		else
+		// list sponzori in table
+		if(count($this->sponzori))
 		{
 			
 ?>
+			<?php echo new \view\components\AddNewLink(array(
+				"link" => \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'addSponzor'
+				)),
+				"buttonText" => 'Dodaj novog sponzora'
+			)); ?>
+
+			<?php echo new \view\components\DownloadLinks(array(
+				"route" => \route\Route::get("d3")->generate(array(
+					"controller" => "ozsn",
+					"action" => "displaySponzor"
+				))
+			)); ?>
+
+			<br><br>
+		
 			<div class="panel panel-default">
 				<div class="panel-heading">Sponzori</div>
 				
@@ -65,13 +82,23 @@ class SponzorList extends AbstractView {
 				</tbody>
 			</table>
 		</div>
-
-		<a href="<?php echo \route\Route::get('d3')->generate(array(
-			"controller" => 'ozsn',
-			"action" => 'addSponzor'
-		));?>"><span class="glyphicon glyphicon-plus"></span> Dodaj novog sponzora</a>
 <?php
-		}		
+		}
+		
+		else
+		{
+			echo new \view\components\ErrorMessage(array(
+				"errorMessage" => "Nema niti jednog sponzora!"
+			));
+			
+			echo new \view\components\AddNewLink(array(
+				"link" => \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'addSponzor'
+				)),
+				"buttonText" => 'Dodaj novog sponzora'
+			));
+		}
     }
     
     public function setErrorMessage($errorMessage) {
@@ -85,7 +112,7 @@ class SponzorList extends AbstractView {
     }
     
     public function setSponzori($sponzori) {
-	$this->sponzori = $sponzori;
-	return $this;
+		$this->sponzori = $sponzori;
+		return $this;
     }
 }

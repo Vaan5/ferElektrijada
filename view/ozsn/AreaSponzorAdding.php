@@ -28,10 +28,6 @@ class AreaSponzorAdding extends AbstractView {
 			"podrucja" => $this->podrucja,
 			"sponzori" => $this->sponzori
 		));		
-	
-	// ispis forme za dodavanje
-	// sponzore i podrucja kao drop down liste value im je id, a name je idSponzora odnosno idPodrucja
-		
     }
     
     public function setErrorMessage($errorMessage) {

@@ -9,10 +9,6 @@ class TvrtkaList extends AbstractView {
     private $tvrtke;
     
     protected function outputHTML() {
-        // dodaj settere
-        // + ispis errorMessage i resultMessage
-	// KLASICNI DBM + dodaj opciju pored Pridruzi Elektrijadi (akcija assignTvrtka) -> get parametar id
-		
 		// print messages if any
         echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
@@ -21,6 +17,15 @@ class TvrtkaList extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 ?>
+		<?php echo new \view\components\DownloadLinks(array(
+			"route" => \route\Route::get("d3")->generate(array(
+				"controller" => "ozsn",
+				"action" => "displayTvrtke"
+			))
+		)); ?>
+
+		<br><br>
+		
 		<div class="panel panel-default">
 			<div class="panel-heading">Popis tvrtki</div>
 
@@ -41,7 +46,12 @@ class TvrtkaList extends AbstractView {
 			// Foreach Tvrtka, generate row in table
 			foreach($this->tvrtke as $val)
 			{
-				echo '<form action="modifyTvrtka" method="POST">';
+				echo '<form action="';
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'modifyTvrtka'
+				));
+				echo '" method="POST">';
 				echo '<tr><td><span class="modify-' . $val->idTvrtke . '">' . $val->imeTvrtke . '</span><input type="text" class="modifyOn-' . $val->idTvrtke . '" style="display:none;" name="imeTvrtke" value="' . $val->imeTvrtke . '"><input type="hidden" name="idTvrtke" value="' . $val->idTvrtke . '"></td>';
 				echo '<td><span class="modify-' . $val->idTvrtke . '">' . $val->adresaTvrtke . '</span><input type="text" class="modifyOn-' . $val->idTvrtke . '" style="display:none;" name="adresaTvrtke" value="' . $val->adresaTvrtke . '">';
 				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idTvrtke . '" value="Spremi" />';
@@ -77,7 +87,12 @@ class TvrtkaList extends AbstractView {
 						</td>
 					</tr>
 					<tr style="display: none;" class="addTvrtkaOn">
-						<form action="addTvrtka" method="post">
+						<form action="
+							  <?php echo \route\Route::get('d3')->generate(array(
+								"controller" => 'ozsn',
+								"action" => 'addTvrtka'
+							)); ?>							  
+							  " method="post">
 							<td><input type="text" name="imeTvrtke" placeholder="Upišite ime tvrtke"></td>
 							<td><input type="text" name="adresaTvrtke" placeholder="Upišite adresu tvrtke"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>

@@ -23,6 +23,9 @@ class Index implements Controller {
             case 'elekAddSucc':
                 $this->resultMessage = "Uspješno dodana nova Elektrijada!";
                 break;
+			case 'succel':
+                $this->resultMessage = "Uspješno izmijenjeni podaci o Elektrijadi!";
+                break;
             case 'dunno':
                 $this->errorMessage = "Tražena osoba ne postoji!";
                 break;

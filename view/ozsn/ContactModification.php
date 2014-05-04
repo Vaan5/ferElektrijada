@@ -34,20 +34,7 @@ class ContactModification extends AbstractView {
 			"mediji" => $this->mediji,
 			"mobiteli" => $this->mobiteli,
 			"mailovi" => $this->mailovi
-		));
-	
-	// VAŽNO NA AKCIJU FORME NAKALEMI idKONTAKTA OBAVEZNO !!!! get("id")
-	// OBAVEZNO dodaj ga i u formu kao hidden polje id (parametriziraj -> zbog dodavanja kontakata)
-	
-	// mailovi i mobiteli, na isti nacin kao i kod dodavanja, ispisi tablicu nek su name-ovi oblika mob1,2,3,.. i mail1,2,3,....
-	// s desne strane omoguci i opciju brisi (u tom slucaju BITNO s javascriptom moraš izbrisati taj input field - da mi se ne posalje na
-	// server + BITNO !!!!!!!!!!!!! preuredi sve ostale id-eve tako da idu po redu 1,2,3.... inace nece radit ispravno), 
-	// te ispod svega dodajnovi
-	// 
-	// svaki zapis u tablici nek je mali post obrazac, u kojem kao hidden atribut zapisi idBroja ili idAdrese
-	// tvrtke i sponzori i mediji nek je drop down meni - po defaultu nek je oznacen onaj koji ti pise u $kontakt (ako ga ima),
-	// name im je idSponzora i slicno, a value stavljas kljuceve + dodaj jedan posebni value "" - kako smo i prije radili
-		
+		));		
     }
     
     public function setErrorMessage($errorMessage) {

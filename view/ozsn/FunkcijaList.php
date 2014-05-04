@@ -17,6 +17,15 @@ class FunkcijaList extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 ?>
+		<?php echo new \view\components\DownloadLinks(array(
+			"route" => \route\Route::get("d3")->generate(array(
+				"controller" => "ozsn",
+				"action" => "displayFunkcija"
+			))
+		)); ?>
+
+		<br><br>
+		
 		<div class="panel panel-default">
 			<div class="panel-heading">Popis funkcija</div>
 
@@ -36,7 +45,12 @@ class FunkcijaList extends AbstractView {
 			// Foreach Funkcija, generate row in table
 			foreach($this->funkcije as $val)
 			{
-				echo '<form action="modifyFunkcija" method="POST">';
+				echo '<form action="';
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'modifyFunkcija'
+				));
+				echo '" method="POST">';
 				echo '<tr><td><span class="modify-' . $val->idFunkcije . '">' . $val->nazivFunkcije . '</span><input type="text" class="modifyOn-' . $val->idFunkcije . '" style="display:none;" name="nazivFunkcije" value="' . $val->nazivFunkcije . '"><input type="hidden" name="idFunkcije" value="' . $val->idFunkcije . '"></td>';
 				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idFunkcije . '" value="Spremi" /><a href="javascript:;" class="editFunkcija modify-' . $val->idFunkcije . '" data-id="' . $val->idFunkcije . '">Uredi</a> &nbsp; <a class="deleteFunkcija modify-' . $val->idFunkcije . '" href="';
 				
@@ -53,7 +67,7 @@ class FunkcijaList extends AbstractView {
 		{
 ?>
 						<tr>
-							<td class="addFunkcija" colspan="3"><i>Ne postoji ni jedna funkcija</i></td>
+							<td class="addFunkcija" colspan="3"><i>Ne postoji niti jedna funkcija</i></td>
 						</tr>
 <?php
 		}
@@ -64,7 +78,12 @@ class FunkcijaList extends AbstractView {
 						</td>
 					</tr>
 					<tr style="display: none;" class="addFunkcijaOn">
-						<form action="addFunkcija" method="post">
+						<form action="
+							  <?php echo \route\Route::get('d3')->generate(array(
+								"controller" => 'ozsn',
+								"action" => 'addFunkcija'
+							)); ?>							  
+							  " method="post">
 							<td><input type="text" name="nazivFunkcije" placeholder="Upišite naziv funkcije"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
 						</form>

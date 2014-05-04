@@ -163,4 +163,68 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
 			throw $e;
 		}
 	}
+	
+	public function getCollectedMoney($idPodrucja, $idElektrijade) {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT podrucjeSudjelovanja.idPodrucja,
+												podrucjeSudjelovanja.idSudjelovanja,
+												podrucjeSudjelovanja.rezultatPojedinacni,
+												podrucjeSudjelovanja.iznosUplate,
+												podrucjeSudjelovanja.valuta,
+												podrucjeSudjelovanja.idPodrucjeSudjelovanja,
+												podrucjeSudjelovanja.vrstaPodrucja,
+												osoba.*,
+												sudjelovanje.*										
+										FROM podrucjeSudjelovanja
+											JOIN sudjelovanje ON sudjelovanje.idSudjelovanja = podrucjeSudjelovanja.idSudjelovanja
+											JOIN osoba ON osoba.idOsobe = sudjelovanje.idOsobe
+										GROUP BY podrucjeSudjelovanja.idSudjelovanja
+										HAVING sudjelovanje.idElektrijade = :idElektrijade AND podrucjesudjelovanja.idPodrucja = :idPodrucja
+										ORDER BY podrucjeSudjelovanja.vrstaPodrucja ASC");
+			$q->bindValue(":idElektrijade", $idElektrijade);
+			$q->bindValue(":idPodrucja", $idPodrucja);
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
+	
+	public function getMoneyStatistics($idElektrijade) {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT SUM(podrucjesudjelovanja.iznosUplate) suma,
+										podrucjeSudjelovanja.idPodrucja,
+										podrucje.nazivPodrucja,
+										sudjelovanje.idElektrijade
+										FROM podrucjesudjelovanja
+											JOIN sudjelovanje ON sudjelovanje.idSudjelovanja = podrucjesudjelovanja.idSudjelovanja
+											JOIN podrucje ON podrucje.idPodrucja = podrucjesudjelovanja.idPodrucja
+										GROUP BY podrucjesudjelovanja.idPodrucja
+										HAVING sudjelovanje.idElektrijade = :idElektrijade
+										ORDER BY podrucjesudjelovanja.vrstaPodrucja ASC");
+			$q->bindValue(":idElektrijade", $idElektrijade);
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
+	
+	public function getAllMoney($idElektrijade) {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT SUM(podrucjesudjelovanja.iznosUplate) as suma
+										FROM podrucjesudjelovanja
+										JOIN sudjelovanje ON sudjelovanje.idSudjelovanja = podrucjesudjelovanja.idSudjelovanja
+										WHERE sudjelovanje.idElektrijade = :idElektrijade
+										ORDER BY podrucjesudjelovanja.vrstaPodrucja ASC");
+			$q->bindValue(":idElektrijade", $idElektrijade);
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
 }

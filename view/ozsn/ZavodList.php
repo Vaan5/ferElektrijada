@@ -17,6 +17,15 @@ class ZavodList extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 ?>
+		<?php echo new \view\components\DownloadLinks(array(
+			"route" => \route\Route::get("d3")->generate(array(
+				"controller" => "ozsn",
+				"action" => "displayZavod"
+			))
+		)); ?>
+
+		<br><br>
+		
 		<div class="panel panel-default">
 			<div class="panel-heading">Popis zavoda</div>
 
@@ -37,7 +46,12 @@ class ZavodList extends AbstractView {
 			// Foreach zavod, generate row in table
 			foreach($this->zavodi as $val)
 			{
-				echo '<form action="modifyZavod" method="POST">';
+				echo '<form action="';
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'modifyZavod'
+				));
+				echo '" method="POST">';
 				echo '<tr><td><span class="modify-' . $val->idZavoda . '">' . $val->nazivZavoda . '</span><input type="text" class="modifyOn-' . $val->idZavoda . '" style="display:none;" name="nazivZavoda" value="' . $val->nazivZavoda . '"><input type="hidden" name="idZavoda" value="' . $val->idZavoda . '"></td>';
 				echo '<td><span class="modify-' . $val->idZavoda . '">' . $val->skraceniNaziv . '</span><input type="text" class="modifyOn-' . $val->idZavoda . '" style="display:none;" name="skraceniNaziv" value="' . $val->skraceniNaziv . '">';
 				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idZavoda . '" value="Spremi" /><a href="javascript:;" class="editZavod modify-' . $val->idZavoda . '" data-id="' . $val->idZavoda . '">Uredi</a> &nbsp; <a class="deleteZavod modify-' . $val->idZavoda . '" href="';
@@ -66,7 +80,12 @@ class ZavodList extends AbstractView {
 						</td>
 					</tr>
 					<tr style="display: none;" class="addZavodOn">
-						<form action="addZavod" method="post">
+						<form action="
+							  <?php echo \route\Route::get('d3')->generate(array(
+								"controller" => 'ozsn',
+								"action" => 'addZavod'
+							)); ?>							  
+							  " method="post">
 							<td><input type="text" name="nazivZavoda" placeholder="Upišite naziv zavoda"></td>
 							<td><input type="text" name="skraceniNaziv" placeholder="Upišite skraćeni naziv"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>

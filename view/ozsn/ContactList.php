@@ -23,10 +23,19 @@ class ContactList extends AbstractView {
 			));
 		}
 		
-		// Else listContacts in table
-		else
+		// listContacts in table
+		if(count($this->kontakti))
 		{
 ?>
+			<?php echo new \view\components\DownloadLinks(array(
+				"route" => \route\Route::get("d3")->generate(array(
+					"controller" => "ozsn",
+					"action" => "displayContacts"
+				))
+			)); ?>
+
+			<br><br>
+
 			<div class="panel panel-default">
 				<div class="panel-heading">Kontakti</div>
 				
@@ -65,6 +74,13 @@ class ContactList extends AbstractView {
 			</table>
 		</div>
 <?php
+		}
+		
+		else
+		{
+			echo new \view\components\ErrorMessage(array(
+				"errorMessage" => "Ne postoji niti jedna kontakt osoba!"
+			));
 		}
     }
 	
