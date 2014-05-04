@@ -17,6 +17,15 @@ class GodStudList extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 ?>
+		<?php echo new \view\components\DownloadLinks(array(
+			"route" => \route\Route::get("d3")->generate(array(
+				"controller" => "ozsn",
+				"action" => "displayGodStud"
+			))
+		)); ?>
+
+		<br><br>
+		
 		<div class="panel panel-default">
 			<div class="panel-heading">Popis godina studija</div>
 
@@ -37,7 +46,12 @@ class GodStudList extends AbstractView {
 			// Foreach GodStud, generate row in table
 			foreach($this->godine as $val)
 			{
-				echo '<form action="modifyGodStud" method="POST">';
+				echo '<form action="';
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'modifyGodStud'
+				));
+				echo '" method="POST">';
 				echo '<tr><td><span class="modify-' . $val->idGodStud . '">' . $val->studij . '</span><input type="text" class="modifyOn-' . $val->idGodStud . '" style="display:none;" name="studij" value="' . $val->studij . '"><input type="hidden" name="idGodStud" value="' . $val->idGodStud . '"></td>';
 				echo '<td><span class="modify-' . $val->idGodStud . '">' . $val->godina . '</span><input type="text" class="modifyOn-' . $val->idGodStud . '" style="display:none;" name="godina" value="' . $val->godina . '">';
 				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idGodStud . '" value="Spremi" /><a href="javascript:;" class="editGodStud modify-' . $val->idGodStud . '" data-id="' . $val->idGodStud . '">Uredi</a> &nbsp; <a class="deleteGodStud modify-' . $val->idGodStud . '" href="';
@@ -55,7 +69,7 @@ class GodStudList extends AbstractView {
 		{
 ?>
 						<tr>
-							<td class="addGodStud" colspan="3"><i>Ne postoji ni jedan zapis o godini studija</i></td>
+							<td class="addGodStud" colspan="3"><i>Ne postoji niti jedan zapis o godini studija</i></td>
 						</tr>
 <?php
 		}
@@ -66,7 +80,12 @@ class GodStudList extends AbstractView {
 						</td>
 					</tr>
 					<tr style="display: none;" class="addGodStudOn">
-						<form action="addGodStud" method="post">
+						<form action="
+							  <?php echo \route\Route::get('d3')->generate(array(
+								"controller" => 'ozsn',
+								"action" => 'addGodStud'
+							)); ?>							  
+							  " method="post">
 							<td><input type="text" name="studij" placeholder="Upišite naziv studija"></td>
 							<td><input type="text" name="godina" placeholder="Upišite godinu studija"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>

@@ -94,13 +94,15 @@ class ActiveObjavaList extends AbstractView {
 		{
 			echo new \view\components\ErrorMessage(array(
 				"errorMessage" => "Ne postoji niti jedna aktivna objava!"
-			));
-?>
-			<a href="<?php echo \route\Route::get('d3')->generate(array(
-				"controller" => 'ozsn',
-				"action" => 'addObjava'
-			));?>"><span class="glyphicon glyphicon-plus"></span> Dodaj novu objavu</a>			
-<?php
+			));			
+			
+			echo new \view\components\AddNewLink(array(
+				"link" => \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'addObjava'
+				)),
+				"buttonText" => 'Dodaj novu objavu'
+			));			
 		}
     }
 	

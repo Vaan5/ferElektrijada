@@ -16,8 +16,8 @@ class DownloadLinks extends AbstractView {
 			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Izvoz <span class="caret"></span></button>
 			<ul class="dropdown-menu" role="menu">
 				<li><a href="<?php echo $this->route . $param . "pdf";?>">PDF</a></li>
-				<li><a href="<?php echo $this->route . $param . "xls";?>">XSL</a></li>
-				<li><a href="<?php echo $this->route . $param . "xlsx";?>">XSLX</a></li>
+				<li><a href="<?php echo $this->route . $param . "xls";?>">XLS</a></li>
+				<li><a href="<?php echo $this->route . $param . "xlsx";?>">XLSX</a></li>
 			</ul>
 		</div>		
 	</div>

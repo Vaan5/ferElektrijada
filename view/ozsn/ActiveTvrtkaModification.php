@@ -13,19 +13,13 @@ class ActiveTvrtkaModification extends AbstractView {
 
     
     protected function outputHTML() {
-	// print messages if any
+		// print messages if any
         echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
         ));
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
-	
-	// FORMA IMA HIDDEN Atribut id koji je jednak id od koristiPruza -> pazi to je razlicito od onog sto mi treba kod assignActiveTvrtka
-	// DODAJ SETTERE
-	// NE MOGU SE MIJENJATI PODACI O TVRTCI (NJIH SAMO ISPISI IZVAN FORME)
-	// ispisi formu za mijenjanje aktivnih tvrtki (nek ima opciju za brisanje - saljes get(id));
-	// mijenjati se mogu samo podaci iz koristipruza + idUsluge
 		
 		// print messages if any
         echo new \view\components\ErrorMessage(array(

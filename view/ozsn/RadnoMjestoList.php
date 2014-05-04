@@ -17,6 +17,15 @@ class RadnoMjestoList extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 ?>
+		<?php echo new \view\components\DownloadLinks(array(
+			"route" => \route\Route::get("d3")->generate(array(
+				"controller" => "ozsn",
+				"action" => "displayRadnoMjesto"
+			))
+		)); ?>
+
+		<br><br>
+		
 		<div class="panel panel-default">
 			<div class="panel-heading">Popis radnih mjesta</div>
 
@@ -36,7 +45,12 @@ class RadnoMjestoList extends AbstractView {
 			// Foreach naziv, generate row in table
 			foreach($this->naziv as $val)
 			{
-				echo '<form action="modifyRadnoMjesto" method="POST">';
+				echo '<form action="';
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'modifyRadnoMjesto'
+				));
+				echo '" method="POST">';
 				echo '<tr><td><span class="modify-' . $val->idRadnogMjesta . '">' . $val->naziv . '</span><input type="text" class="modifyOn-' . $val->idRadnogMjesta . '" style="display:none;" name="naziv" value="' . $val->naziv . '"><input type="hidden" name="idRadnogMjesta" value="' . $val->idRadnogMjesta . '"></td>';
 				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idRadnogMjesta . '" value="Spremi" /><a href="javascript:;" class="editRadnoMjesto modify-' . $val->idRadnogMjesta . '" data-id="' . $val->idRadnogMjesta . '">Uredi</a> &nbsp; <a class="deleteRadnoMjesto modify-' . $val->idRadnogMjesta . '" href="';
 				
@@ -64,7 +78,12 @@ class RadnoMjestoList extends AbstractView {
 						</td>
 					</tr>
 					<tr style="display: none;" class="addRadnoMjestoOn">
-						<form action="addRadnoMjesto" method="post">
+						<form action="
+							  <?php echo \route\Route::get('d3')->generate(array(
+								"controller" => 'ozsn',
+								"action" => 'addRadnoMjesto'
+							)); ?>							  
+							  " method="post">
 							<td><input type="text" name="naziv" placeholder="Upišite naziv radnog mjesta"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
 						</form>

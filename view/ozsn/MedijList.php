@@ -17,6 +17,15 @@ class MedijList extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 ?>
+		<?php echo new \view\components\DownloadLinks(array(
+			"route" => \route\Route::get("d3")->generate(array(
+				"controller" => "ozsn",
+				"action" => "displayMediji"
+			))
+		)); ?>
+
+		<br><br>
+		
 		<div class="panel panel-default">
 			<div class="panel-heading">Popis medija</div>
 
@@ -36,7 +45,12 @@ class MedijList extends AbstractView {
 			// Foreach medij, generate row in table
 			foreach($this->mediji as $val)
 			{
-				echo '<form action="modifyMedij" method="POST">';
+				echo '<form action="';
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'modifyMedij'
+				));
+				echo '" method="POST">';
 				echo '<tr><td><span class="modify-' . $val->idMedija . '">' . $val->nazivMedija . '</span><input type="text" class="modifyOn-' . $val->idMedija . '" style="display:none;" name="nazivMedija" value="' . $val->nazivMedija . '"><input type="hidden" name="idMedija" value="' . $val->idMedija . '"></td>';
 				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idMedija . '" value="Spremi" /><a href="javascript:;" class="editMedij modify-' . $val->idMedija . '" data-id="' . $val->idMedija . '">Uredi</a> &nbsp; <a class="deleteMedij modify-' . $val->idMedija . '" href="';
 				
@@ -64,7 +78,12 @@ class MedijList extends AbstractView {
 						</td>
 					</tr>
 					<tr style="display: none;" class="addMedijOn">
-						<form action="addMedij" method="post">
+						<form action="
+							  <?php echo \route\Route::get('d3')->generate(array(
+								"controller" => 'ozsn',
+								"action" => 'addMedij'
+							)); ?>							  
+							  " method="post">
 							<td><input type="text" name="nazivMedija" placeholder="Upišite naziv medija"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
 						</form>

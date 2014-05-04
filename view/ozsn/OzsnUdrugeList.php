@@ -18,6 +18,15 @@ class OzsnUdrugeList extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 ?>
+		<?php echo new \view\components\DownloadLinks(array(
+			"route" => \route\Route::get("d3")->generate(array(
+				"controller" => "ozsn",
+				"action" => "displayUserUdruge"
+			))
+		)); ?>
+
+		<br><br>
+		
 		<div class="panel panel-default">
 			<div class="panel-heading">Popis vaših udruga</div>
 

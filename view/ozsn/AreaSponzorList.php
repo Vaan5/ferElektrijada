@@ -24,13 +24,30 @@ class AreaSponzorList extends AbstractView {
 			));
 		}
 		
-		// Else list sponzori in table
-		else
+		// list sponzori in table
+		if(count($this->sponzori))
 		{
 			
 ?>
+			<?php echo new \view\components\AddNewLink(array(
+				"link" => \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'addAreaSponzor'
+				)),
+				"buttonText" => 'Dodaj novog područnog sponzora'
+			)); ?>
+			
+			<?php echo new \view\components\DownloadLinks(array(
+				"route" => \route\Route::get("d3")->generate(array(
+					"controller" => "ozsn",
+					"action" => "displayAreaSponzor"
+				))
+			)); ?>
+
+			<br><br>
+
 			<div class="panel panel-default">
-				<div class="panel-heading">Sponzori područja</div>
+				<div class="panel-heading">Područni sponzori</div>
 				
 				<table class="table">
 				<thead>
@@ -64,12 +81,22 @@ class AreaSponzorList extends AbstractView {
 				</tbody>
 			</table>
 		</div>
-
-		<a href="<?php echo \route\Route::get('d3')->generate(array(
-			"controller" => 'ozsn',
-			"action" => 'addAreaSponzor'
-		));?>"><span class="glyphicon glyphicon-plus"></span> Dodaj novog sponzora područja</a>
 <?php
+		}
+		
+		else
+		{
+			echo new \view\components\ErrorMessage(array(
+            "errorMessage" => "Nema ni jednog područnog sponzora!"
+			));
+			
+			echo new \view\components\AddNewLink(array(
+				"link" => \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'addAreaSponzor'
+				)),
+				"buttonText" => 'Dodaj novog područnog sponzora'
+			));
 		}
     }
     

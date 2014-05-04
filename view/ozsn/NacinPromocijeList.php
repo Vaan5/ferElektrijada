@@ -17,6 +17,15 @@ class NacinPromocijeList extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 ?>
+		<?php echo new \view\components\DownloadLinks(array(
+			"route" => \route\Route::get("d3")->generate(array(
+				"controller" => "ozsn",
+				"action" => "displayNacinPromocije"
+			))
+		)); ?>
+
+		<br><br>
+		
 		<div class="panel panel-default">
 			<div class="panel-heading">Popis načina promocije</div>
 
@@ -36,7 +45,12 @@ class NacinPromocijeList extends AbstractView {
 			// Foreach način promocije, generate row in table
 			foreach($this->nacini as $val)
 			{
-				echo '<form action="modifyNacinPromocije" method="POST">';
+				echo '<form action="';
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'modifyNacinPromocije'
+				));
+				echo '" method="POST">';
 				echo '<tr><td><span class="modify-' . $val->idPromocije . '">' . $val->tipPromocije . '</span><input type="text" class="modifyOn-' . $val->idPromocije . '" style="display:none;" name="tipPromocije" value="' . $val->tipPromocije . '"><input type="hidden" name="idPromocije" value="' . $val->idPromocije . '"></td>';
 				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idPromocije . '" value="Spremi" /><a href="javascript:;" class="editNacinPromocije modify-' . $val->idPromocije . '" data-id="' . $val->idPromocije . '">Uredi</a> &nbsp; <a class="deleteNacinPromocije modify-' . $val->idPromocije . '" href="';
 				
@@ -64,7 +78,12 @@ class NacinPromocijeList extends AbstractView {
 						</td>
 					</tr>
 					<tr style="display: none;" class="addNacinPromocijeOn">
-						<form action="addNacinPromocije" method="post">
+						<form action="
+							  <?php echo \route\Route::get('d3')->generate(array(
+								"controller" => 'ozsn',
+								"action" => 'addNacinPromocije'
+							)); ?>							  
+							  " method="post">
 							<td><input type="text" name="tipPromocije" placeholder="Upišite tip promocije"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
 						</form>

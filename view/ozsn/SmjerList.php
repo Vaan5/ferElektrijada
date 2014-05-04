@@ -17,6 +17,15 @@ class SmjerList extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 ?>
+		<?php echo new \view\components\DownloadLinks(array(
+			"route" => \route\Route::get("d3")->generate(array(
+				"controller" => "ozsn",
+				"action" => "displaySmjer"
+			))
+		)); ?>
+
+		<br><br>
+		
 		<div class="panel panel-default">
 			<div class="panel-heading">Popis smjerova</div>
 
@@ -36,7 +45,12 @@ class SmjerList extends AbstractView {
 			// Foreach smjer, generate row in table
 			foreach($this->smjerovi as $val)
 			{
-				echo '<form action="modifySmjer" method="POST">';
+				echo '<form action="';
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'modifySmjer'
+				));
+				echo '" method="POST">';
 				echo '<tr><td><span class="modify-' . $val->idSmjera . '">' . $val->nazivSmjera . '</span><input type="text" class="modifyOn-' . $val->idSmjera . '" style="display:none;" name="nazivSmjera" value="' . $val->nazivSmjera . '"><input type="hidden" name="idSmjera" value="' . $val->idSmjera . '"></td>';
 				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idSmjera . '" value="Spremi" /><a href="javascript:;" class="editSmjer modify-' . $val->idSmjera . '" data-id="' . $val->idSmjera . '">Uredi</a> &nbsp; <a class="deleteSmjer modify-' . $val->idSmjera . '" href="';
 				
@@ -64,7 +78,12 @@ class SmjerList extends AbstractView {
 						</td>
 					</tr>
 					<tr style="display: none;" class="addSmjerOn">
-						<form action="addSmjer" method="post">
+						<form action="
+							  <?php echo \route\Route::get('d3')->generate(array(
+								"controller" => 'ozsn',
+								"action" => 'addSmjer'
+							)); ?>							  
+							  " method="post">
 							<td><input type="text" name="nazivSmjera" placeholder="Upišite naziv smjera"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
 						</form>

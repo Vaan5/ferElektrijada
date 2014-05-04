@@ -24,8 +24,8 @@ class ActiveSponzorList extends AbstractView {
 			));
 		}
 		
-		// Else list sponzori in table
-		else
+		// list sponzori in table
+		if(count($this->sponzori))
 		{
 			
 ?>
@@ -74,8 +74,14 @@ class ActiveSponzorList extends AbstractView {
 			</table>
 		</div>
 <?php
-		}		
+		}
 		
+		else
+		{
+			echo new \view\components\ErrorMessage(array(
+            "errorMessage" => "Ne postoji niti jedan ovogodišnji sponzor!"
+			));
+		}		
     }
     
     public function setErrorMessage($errorMessage) {

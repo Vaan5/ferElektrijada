@@ -17,6 +17,15 @@ class VelMajiceList extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 ?>
+		<?php echo new \view\components\DownloadLinks(array(
+			"route" => \route\Route::get("d3")->generate(array(
+				"controller" => "ozsn",
+				"action" => "displayVelMajice"
+			))
+		)); ?>
+
+		<br><br>
+		
 		<div class="panel panel-default">
 			<div class="panel-heading">Popis veličina majica</div>
 
@@ -36,7 +45,12 @@ class VelMajiceList extends AbstractView {
 			// Foreach velicina, generate row in table
 			foreach($this->velicine as $val)
 			{
-				echo '<form action="modifyVelMajice" method="POST">';
+				echo '<form action="';
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'modifyVelMajice'
+				));
+				echo '" method="POST">';
 				echo '<tr><td><span class="modify-' . $val->idVelicine . '">' . $val->velicina . '</span><input type="text" class="modifyOn-' . $val->idVelicine . '" style="display:none;" name="velicina" value="' . $val->velicina . '"><input type="hidden" name="idVelicine" value="' . $val->idVelicine . '"></td>';
 				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idVelicine . '" value="Spremi" /><a href="javascript:;" class="editVelMajice modify-' . $val->idVelicine . '" data-id="' . $val->idVelicine . '">Uredi</a> &nbsp; <a class="deleteVelMajice modify-' . $val->idVelicine . '" href="';
 				
@@ -64,7 +78,12 @@ class VelMajiceList extends AbstractView {
 						</td>
 					</tr>
 					<tr style="display: none;" class="addVelMajiceOn">
-						<form action="addVelMajice" method="post">
+						<form action="
+							  <?php echo \route\Route::get('d3')->generate(array(
+								"controller" => 'ozsn',
+								"action" => 'addVelMajice'
+							)); ?>							  
+							  " method="post">
 							<td><input type="text" name="velicina" placeholder="Upišite veličinu majice"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
 						</form>

@@ -20,7 +20,24 @@ class ObjavaList extends AbstractView {
 		if(count($this->objave))
 		{
 			
-?>
+?>		
+			<?php echo new \view\components\AddNewLink(array(
+				"link" => \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'addObjava'
+				)),
+				"buttonText" => 'Dodaj novu objavu'
+			)); ?>
+			
+			<?php echo new \view\components\DownloadLinks(array(
+				"route" => \route\Route::get("d3")->generate(array(
+					"controller" => "ozsn",
+					"action" => "displayObjava"
+				))
+			)); ?>
+
+			<br><br>
+
 			<div class="panel panel-default">
 				<div class="panel-heading">Popis objava</div>
 				
@@ -77,13 +94,15 @@ class ObjavaList extends AbstractView {
 			echo new \view\components\ErrorMessage(array(
 				"errorMessage" => "Ne postoji niti jedna aktivna objava!"
 			));
+			
+			echo new \view\components\AddNewLink(array(
+				"link" => \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'addObjava'
+				)),
+				"buttonText" => 'Dodaj novu objavu'
+			));
 		}
-?>
-			<a href="<?php echo \route\Route::get('d3')->generate(array(
-				"controller" => 'ozsn',
-				"action" => 'addObjava'
-			));?>"><span class="glyphicon glyphicon-plus"></span> Dodaj novu objavu</a>
-<?php
     }
     
     public function setErrorMessage($errorMessage) {
