@@ -1,0 +1,27 @@
+@mixin tlbr($top, $left, $bottom, $right) {
+	top: $top;
+	left: $left;
+	bottom: $bottom;
+	right: $right;
+}
+
+@mixin transition($value, $duration) {
+	-webkit-transition: $value $duration;
+	-moz-transition: $value $duration;
+	-ms-transition: $value $duration;
+	-o-transition: $value $duration;
+	transition: $value $duration;
+}
+
+@mixin user_select_none() {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+@mixin border-radius($value) {
+	border-radius: $value;
+}

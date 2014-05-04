@@ -1,0 +1,369 @@
+@import 'include/mixins';
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.red {
+    color: #990000;
+}
+
+.green {
+    color: #006600;
+}
+
+.blue {
+    color: #3333CC;
+}
+
+.orange {
+    color: #CC6600;
+}
+
+.offset-top {
+    //padding-top: 220px;
+}
+
+.right-content {
+    margin: 10px 20px 20px 130px;
+}
+
+.disabled {
+    background-color: #fff;
+}
+
+.hide-students {
+    .student {
+        display: none;
+    }
+}
+
+/****-------*****/
+ /*<div class="tooltip top">
+   <div class="tooltip-inner">
+     Some tooltip text!
+   </div>
+   <div class="tooltip-arrow"></div>
+</div>*/
+/*******----******/
+.tooltip {
+    .tooltip-inner {
+        width: 200px;
+        padding: 10px;
+    }
+}
+
+.button-navbar {
+    /*left: 0;
+    right: 0; */
+    top: 0;
+    bottom: 0;
+    width: 110px;
+    padding: 4px; 
+    position: fixed; 
+    background-color: #ddd; 
+    z-index: 9999;
+    border-bottom: 1px solid #000;
+    box-shadow: 4px 4px 8px 0px #bbb;
+    border-right: 1px solid #aaa;
+    .button-menu {
+        //max-width: 1080px;
+        clear: both;
+        margin-left: auto;
+        margin-right: auto;
+        .button-group {
+            margin-bottom: 10px;
+            background-color: #fff;
+            clear: both;
+            height: auto;
+            float: left;
+            width: 100%;
+            overflow: visible;
+            &.fullWidth {
+                clear: both;
+                height: auto;
+                //width: 946px;
+                overflow: visible;
+            }
+            &.offset-20 {
+                margin-top: 20px;
+            }
+            .name {
+                color: #fff;
+                padding: 2px;
+                font-size: 10px;
+                text-align: center;
+                background-color: #aaa;
+                margin-bottom: 4px;
+            }
+            margin: 2px 0;
+            padding: 4px;
+            border: 1px solid #ccc;
+            @include border-radius(4px);
+            .button-row {
+                //clear: both;
+                button, a {
+                    margin-right: 4px;
+                    margin-bottom: 2px;
+                    border: none;
+                }
+            }
+        }
+    }
+}
+
+#activeGroupName {
+    display: none;
+}
+
+.student {
+    cursor: pointer;
+    padding: 4px 10px;
+    input[type='checkbox'] {
+    }
+    input[type='text'] {
+        display: block;
+        clear: right;
+        float: right;
+        border: none;
+        width: 200px;
+        padding: 2px;
+    }
+}
+
+.group-active {
+    background-color: yellow;
+}
+
+.student-active {
+    background-color: #aaaddd;
+}
+
+.bus-active {
+    background-color: #dff0d8;
+}
+
+.group-nav {
+    padding: 4px;
+    button {
+        margin: 4px;
+    }
+}
+
+.bus-nav {
+    padding: 4px;
+    button {
+        margin: 4px;
+    }
+}
+
+.top-options {
+        background-color: #A7C177;
+        height: 40px;
+        line-height: 40px;
+        vertical-align: middle;
+        text-align: center;
+}
+
+.busevi {
+    height: auto;
+    .top {
+        background-color: #666699;
+        height: 40px;
+        line-height: 40px;
+        vertical-align: middle;
+        color: #fff;
+        text-align: center;
+
+        @include border-radius(4px);
+        font-weight: bold;
+    }
+    .group {
+        padding: 10px;
+    }
+    .bus {
+        border: 1px solid #ccc;
+        margin: 10px 0;
+        line-height: 30px;
+        overflow: hidden;
+        @include border-radius(4px);
+        .bus-percentage {
+            background-color: #bbb;
+            width: 100%;
+            clear: both;
+            text-align: center;
+            color: #fff;
+            font-weight: bold;
+            @include border-radius(4px);
+            .bus-used-capacity {
+                width: 0;
+                background-color: #006600;
+                height: 20px;
+                line-height: 20px;
+                text-align: center;
+                color: #fff;
+                @include border-radius(4px);
+            }
+        }
+        .bus-name {
+            padding: 4px;
+            margin: 8px 0;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #B2E0F0;
+            @include border-radius(4px);
+        }
+        .bus-nav {
+            background-color: #ddd;
+        }
+        button {
+            margin: 4px;
+        }
+        .bus-capacity {
+            padding: 4px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .bus-used {
+            padding: 4px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .bus-plates {
+            padding: 4px;
+            font-style: italic;
+        }
+        .bus-group.locked {
+            background-color: #fdf;
+        }
+        .bus-group {
+            border-top: 1px dashed #bbb;
+            padding: 0 6px;
+            background-color: #fff;
+            margin: 2px;
+            //@include border-radius(4px);
+
+            button.btn.btn-default.btn-sm.removeFromBus,
+            button.btn.btn-default.btn-sm.lockBusGroup {
+                margin: 2px;
+            }
+        }
+    }
+}
+
+.sudionici {
+    height: auto;
+    .top {
+        background-color: #336699;
+        height: 40px;
+        line-height: 40px;
+        vertical-align: middle;
+        text-align: center;
+        font-weight: bold;
+
+        color: #fff;
+
+        @include border-radius(4px);
+        margin-bottom: 7px;
+    }
+    .top-options {
+        background-color: #A7C177;
+        height: 40px;
+        line-height: 40px;
+        vertical-align: middle;
+        text-align: center;
+    }
+    .group {
+        position: relative;
+        padding: 5px;
+        cursor: pointer;
+
+        &.disabled {
+            color: #fff;
+        }
+
+        .group-show-hide {
+            float: left;
+            padding: 10px;
+            background-color: #aaa;
+            color: #fff;
+            font-weight: bold;
+        }
+        .group-name {
+            padding: 10px 28px 10px 10px;
+            background-color: #ccc;
+            //text-indent: 10px;
+
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+
+            border-radius: 0px 4px 4px 0px;
+        }
+
+        .group-size {
+            position: absolute;
+            right: 20px;
+            top: 11px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .student {
+                color: #333;
+                &:hover {
+                    background-color: #bbb;
+                }
+                input[type='text'] {
+                    display: none;
+                }
+        }
+    }
+    .group-ignore {
+        padding: 10px;
+        margin-top: 3px;
+        margin-bottom: 10px;
+        background-color: #eee;
+        @include border-radius(4px);
+        .student {
+            border-bottom: 1px solid #ddd;
+
+            &:hover {
+                background-color: #bbb;
+            }
+        }
+        .group-name {
+            padding: 10px;
+            margin-bottom: 7px;
+            background-color: #ddd;
+            text-align: left;
+            font-weight: bold;
+            border: 1px solid #ccc;
+            height: 40px;
+            @include border-radius(4px);
+
+            button {
+                display: block;
+                float: right;
+                clear: right;
+                margin-top: -6px;
+            }
+        }
+    }
+}
+
+#loader {
+    background-color: #fff;
+    position: fixed;
+    @include tlbr(0, 0, 0, 0);
+    z-index: 167771;
+
+    #loader_img {
+        background: url(/ferElektrijada/view/busevi/gif/loader.gif) no-repeat center center;
+        position: fixed;
+        @include tlbr(0, 0, 0, 0);
+        z-index: 167772;
+    }
+}
