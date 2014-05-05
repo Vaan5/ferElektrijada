@@ -13,12 +13,12 @@ class OzsnNavbar extends AbstractView{
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'displayUserUdruge'
-                ));?>">Moje udruge</a></li>
+                ));?>">Moje Udruge</a></li>
             <li class="divider"></li>
             <li>        <a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'displayUserFunctions'
-                ));?>">Moje funkcije</a></li>
+                ));?>">Moje Funkcije</a></li>
           </ul>
         </li>
                 <li class="dropdown">
@@ -138,19 +138,19 @@ class OzsnNavbar extends AbstractView{
               <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'displayAtribut'
-                ));?>">Atribut sudjelovanja</a></li>
+                ));?>">Atribut Sudionika</a></li>
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'displayVelMajice'
-                ));?>">Veličine majica</a></li>
+                ));?>">Veličine Majica</a></li>
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'displayGodStud'
-                ));?>">Godine studija</a></li>
+                ));?>">Godine Studija</a></li>
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'displayRadnoMjesto'
-                ));?>">Radna mjesta</a></li>
+                ));?>">Radna Mjesta</a></li>
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'displayZavod'

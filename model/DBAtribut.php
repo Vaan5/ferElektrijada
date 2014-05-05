@@ -18,51 +18,34 @@ class DBAtribut extends AbstractDBModel {
     }
 
     public function getAllAtributes() {
-        return $this->select()->fetchAll();
+        try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL dohvatiAtribute()");
+			$q->execute();
+			return $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+		} catch (\PDOException $e) {
+			return array();
+		}
     }
 
     public function modifyRow($idAtributa, $nazivAtributa) {
         try {
-            $this->load($idAtributa);
-            if (strtolower($this->nazivAtributa) === 'voditelj') {
-                $e = new \PDOException();
-                $e->errorInfo[0] = '02000';
-                $e->errorInfo[1] = 1604;
-                $e->errorInfo[2] = "Nije dozvoljeno mijenjanje atributa voditelja!";
-                throw $e;
-            } else {
-                $this->nazivAtributa = $nazivAtributa;
-                $this->save();
-            }
-        } catch (\app\model\NotFoundException $e) {     // whenever you use $this->load();
-            $e = new \PDOException();
-            $e->errorInfo[0] = '02000';
-            $e->errorInfo[1] = 1604;
-            $e->errorInfo[2] = "Zapis ne postoji!";
-            throw $e;
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL azurirajAtribut(:id, :naziv)");
+			$q->bindValue(":id", $idAtributa);
+			$q->bindValue(":naziv", $nazivAtributa);
+            $q->execute();
         } catch (\PDOException $e) {
             throw $e;
         }
     }
 
-    public function deleteRow($idAtributa) {
+    public function deleteRow($id) {
         try {
-            $this->load($idAtributa);
-            if ($this->nazivAtributa === 'voditelj') {
-                $e = new \PDOException();
-                $e->errorInfo[0] = '02000';
-                $e->errorInfo[1] = 1604;
-                $e->errorInfo[2] = "Nije dozvoljeno brisanje atributa voditelja!";
-                throw $e;
-            } else {
-                $this->delete();
-            }
-        } catch (\app\model\NotFoundException $e) {
-            $e = new \PDOException();
-            $e->errorInfo[0] = '02000';
-            $e->errorInfo[1] = 1604;
-            $e->errorInfo[2] = "Zapis ne postoji!";
-            throw $e;
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL brisiAtribut(:id)");
+			$q->bindValue(":id", $id);
+            $q->execute();
         } catch (\PDOException $e) {
             throw $e;
         }
@@ -70,8 +53,10 @@ class DBAtribut extends AbstractDBModel {
 
     public function addRow($nazivAtributa) {
         try {
-            $this->nazivAtributa = $nazivAtributa;
-            $this->save();
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL dodajAtribut(:naziv)");
+			$q->bindValue(":naziv", $nazivAtributa);
+            $q->execute();
         } catch (\PDOException $e) {
             throw $e;
         }

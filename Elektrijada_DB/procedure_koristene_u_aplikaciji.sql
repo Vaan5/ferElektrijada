@@ -163,6 +163,15 @@ SELECT * FROM USLUGA ORDER BY nazivUsluge ASC;
 END $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE  PROCEDURE `dohvatiAtribute`()
+BEGIN
+
+SELECT * FROM ATRIBUT ORDER BY nazivAtributa;
+
+END $$
+DELIMITER ;
+
 --			AŽURIRANJE PODATAKA
 
 DELIMITER $$
@@ -320,6 +329,21 @@ END IF;
 END $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE  PROCEDURE `azurirajAtribut`(IN idAtributa INT(10),IN nazivAtributa VARCHAR(100))
+BEGIN
+IF NOT EXISTS (SELECT * 
+		FROM ATRIBUT WHERE ATRIBUT.idAtributa = idAtributa) THEN
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Ne postoji traženi atribut!';
+ELSE
+	UPDATE ATRIBUT
+	SET ATRIBUT.nazivAtributa=nazivAtributa
+	WHERE ATRIBUT.idAtributa = idAtributa;
+END IF;
+
+END $$
+DELIMITER ;
+
 --			BRISANJE PODATAKA
 DELIMITER $$
 CREATE  PROCEDURE `brisiFunkciju`(IN idObavljaFunkciju  INT(10))
@@ -458,6 +482,20 @@ END IF;
 END $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE  PROCEDURE `brisiAtribut`(IN idAtributa INT(10))
+BEGIN
+IF NOT EXISTS (SELECT * 
+		FROM ATRIBUT WHERE ATRIBUT.idAtributa = idAtributa) THEN
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Ne postoji traženi atribut!';
+ELSE
+	DELETE FROM ATRIBUT
+	WHERE ATRIBUT.idAtributa = idAtributa ;
+
+END IF;
+END $$
+DELIMITER ;
+
 --				DODAVANJE PODATAKA
 DELIMITER $$
 CREATE  PROCEDURE `dodajUdrugu`( IN nazivUdruge VARCHAR (50))
@@ -561,5 +599,12 @@ IF EXISTS (SELECT* FROM ZAVOD WHERE nazivZavoda=naziv AND skraceniNaziv=skraceni
 ELSE
  	INSERT INTO ZAVOD VALUES(NULL, naziv, skraceni );
 END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `dodajAtribut`(IN nazivAtributa VARCHAR(100))
+BEGIN
+INSERT INTO ATRIBUT VALUES (NULL,nazivAtributa);
 END $$
 DELIMITER ;

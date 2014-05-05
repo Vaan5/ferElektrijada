@@ -1,20 +1,3 @@
--- ﻿ZAKOMENTIRANE PROCEDURE SU PREBACENE U procedure_koristene_u_aplikaciji
-
-
-DELIMITER $$
-CREATE  PROCEDURE `azurirajAtribut`(IN idAtributa INT(10),IN nazivAtributa VARCHAR(100))
-BEGIN
-IF NOT EXISTS (SELECT* 
-		FROM ATRIBUT WHERE ATRIBUT.idAtributa = idAtributa) THEN
-		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji traženi atribut';
-ELSE
-	UPDATE ATRIBUT
-	SET ATRIBUT.nazivAtributa=nazivAtributa
-	WHERE ATRIBUT.idAtributa = idAtributa;
-END IF;
-
-END $$
-DELIMITER ;
 
 DELIMITER $$
 CREATE  PROCEDURE `azurirajElekPodrucje`(IN idElekPodrucje INT(10), IN idPodrucja INT(10),IN datumPocetka DATE, IN rezultatGrupni SMALLINT(6),IN slikaLink VARCHAR(255), IN idSponzora INT(10))
@@ -438,20 +421,6 @@ BEGIN
 END $$
 DELIMITER ;
 
-DELIMITER $$
-CREATE  PROCEDURE `brisiAtribut`(IN idAtributa INT(10))
-BEGIN
-IF NOT EXISTS (SELECT* 
-		FROM ATRIBUT WHERE ATRIBUT.idAtributa = idAtributa) THEN
-		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji traženi atribut';
-ELSE
-	DELETE FROM ATRIBUT
-	WHERE ATRIBUT.idAtributa = idAtributa ;
-
-END IF;
-END $$
-DELIMITER ;
-
 
 DELIMITER $$
 CREATE  PROCEDURE `brisiAtributOsobi`(IN idImaAtribut INT(10))
@@ -463,18 +432,6 @@ BEGIN
   	END IF;
 END $$
 DELIMITER ;
-
-
--- DELIMITER $$
--- CREATE  PROCEDURE `brisiClanaUdruge`(IN idUdruge INT UNSIGNED, IN idOsobe INT UNSIGNED)
--- BEGIN
--- 	IF EXISTS (SELECT * FROM JeUUdruzi WHERE JeUUdruzi.idUdruge = idUdruge && JeUUdruzi.idOsobe = idOsobe) THEN
--- 		DELETE FROM JeUUdruzi WHERE JeUUdruzi.idUdruge = idUdruge && JeUUdruzi.idOsobe = idOsobe;
--- 	ELSE
--- 		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Tražena osoba ne postoji!';
--- 	END IF;
--- END $$
--- DELIMITER ;
 
 DELIMITER $$
 CREATE  PROCEDURE `brisiElekPodrucje`(IN idElekPodrucje INT(10))
@@ -683,31 +640,6 @@ END IF;
 END $$
 DELIMITER ;
 
-DELIMITER $$
-CREATE  PROCEDURE `dodajAtribut`(IN nazivAtributa VARCHAR(100))
-BEGIN
-INSERT INTO ATRIBUT VALUES (NULL,nazivAtributa);
-END $$
-DELIMITER ;
-
--- DELIMITER $$
--- CREATE  PROCEDURE `dodajClanaUdruge`(IN idUdruge INT UNSIGNED, IN idOsobe INT UNSIGNED)
--- BEGIN
--- 	IF EXISTS (SELECT * FROM OSOBA WHERE OSOBA.idOsobe = idOsobe && OSOBA.uloga = "O") THEN
--- 		IF NOT EXISTS (SELECT * FROM JeUUdruzi WHERE JeUUdruzi.idUdruge = idUdruge && JeUUdruzi.idOsobe = idOsobe) THEN
--- 			IF EXISTS (SELECT * FROM UDRUGA WHERE UDRUGA.idUdruge = idUdruge) THEN
--- 				INSERT INTO JeUUdruzi VALUES (NULL,idUdruge, idOsobe);
--- 			ELSE 
--- 				 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Navedeni identifikator udruge nije pronađen!';
--- 			END IF;
--- 		ELSE 
--- 			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Uneseni član već postoji!';
--- 		END IF;
--- 	ELSE 
--- 		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Uneseni identifikator osobe ne postoji ili osoba nije član Ozsn-a!';
--- 	END IF;
--- END $$
--- DELIMITER ;
 
 DELIMITER $$
 CREATE  PROCEDURE `dodajElekPodrucje`(IN idPodrucja INT(10), IN rezultatGrupni SMALLINT(6),IN slikaLink VARCHAR(255),  IN idElektrijade INT(10), IN idSponzora INT(10))
@@ -1157,15 +1089,6 @@ BEGIN
 	ELSE 
 		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ime tvrtke mora biti poznato!';
 	END IF;
-END $$
-DELIMITER ;
-
-DELIMITER $$
-CREATE  PROCEDURE `dohvatiAtribute`()
-BEGIN
-
-SELECT * FROM ATRIBUT ORDER BY nazivAtributa;
-
 END $$
 DELIMITER ;
 
