@@ -277,14 +277,14 @@
 
 #loader {
   background-color: #fff;
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
   z-index: 167771; }
   #loader #loader_img {
-    background: url(/ferElektrijada/view/busevi/gif/loader.gif) no-repeat center center;
+    background: url(/ferElektrijada/assets/busevi/gif/loader.gif) no-repeat center center;
     position: fixed;
     top: 0;
     left: 0;

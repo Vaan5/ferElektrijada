@@ -365,12 +365,12 @@
 
 #loader {
     background-color: #fff;
-    position: fixed;
+    position: absolute;
     @include tlbr(0, 0, 0, 0);
     z-index: 167771;
 
     #loader_img {
-        background: url(/ferElektrijada/view/busevi/gif/loader.gif) no-repeat center center;
+        background: url(/ferElektrijada/assets/busevi/gif/loader.gif) no-repeat center center;
         position: fixed;
         @include tlbr(0, 0, 0, 0);
         z-index: 167772;
