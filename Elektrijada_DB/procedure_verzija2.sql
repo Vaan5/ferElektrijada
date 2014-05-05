@@ -69,34 +69,6 @@ DELIMITER ;
 
 
 DELIMITER $$
-CREATE  PROCEDURE `azurirajKoristenjeUsluga`(IN idKoristiPruza INT(10), IN Usluga INT UNSIGNED,  IN Tvrtka INT UNSIGNED, IN iznos DECIMAL(13,2),  IN valuta VARCHAR(3), IN idElektrijade INT(10), IN nacin VARCHAR(100), IN napomene VARCHAR(300) )
-BEGIN
-IF EXISTS (SELECT * FROM USLUGA  WHERE idUsluge=Usluga) THEN
-IF EXISTS (SELECT * FROM TVRTKA  WHERE idTvrtke = Tvrtka) THEN
-			IF EXISTS (SELECT * FROM ELEKTRIJADA  WHERE ELEKTRIJADA.idElektrijade = idElektrijade) THEN
-				IF UPPER(valuta) NOT IN( 'HRK','USD','EUR') THEN
- SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = ' Greška: Valuta donacije mora biti HRK, USD ili EUR!';
-				ELSE	IF iznos <= 0 THEN
- SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = ' Greška: Iznos donacije je nula ili manji!';
-
-				ELSE	    	UPDATE KoristiPruza					SET idUsluge=Usluga,ELEKTRIJADA.idElektrijade=idElektrijade, idTvrtke=Tvrtka, iznosRacuna=iznos, valutaRacuna=valuta, nacinPlacanja=nacin, napomena=napomene
-WHERE KoristiPruza.idKoristiPruza=idKoristiPruza;
-				END IF;
-				END IF;
-					ELSE
-					 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrani datum nije početak Elektrijade!';
-				END IF;
-		ELSE
-			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrana tvrtka ne postoji! ';
-		END IF;
-ELSE
-	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Usluga nije evidentirana u bazi  podataka!';
-END IF;
-END $$
-DELIMITER ;
-
-
-DELIMITER $$
 CREATE  PROCEDURE `azurirajMail`(IN idAdrese INT(10), IN idKontakta INT(10), IN email VARCHAR(100))
 BEGIN
 	IF NOT EXISTS (SELECT * FROM EMAILADRESE WHERE EMAILADRESE.email=email) THEN
@@ -326,25 +298,6 @@ DELIMITER ;
 
 
 DELIMITER $$
-CREATE  PROCEDURE `azurirajTvrtku`(IN idTvrtke INT UNSIGNED, IN imeTvrtke VARCHAR (100), IN adresaTvrtke VARCHAR (100))
-BEGIN
-	IF EXISTS (SELECT * FROM TVRTKA WHERE TVRTKA.idTvrtke = idTvrtke) THEN
-		IF ((imeTvrtke IS NOT NULL) && (adresaTvrtke IS NOT NULL)) THEN
-				UPDATE TVRTKA SET
-				TVRTKA.imeTvrtke = imeTvrtke,
-				TVRTKA.adresaTvrtke = adresaTvrtke
-				WHERE TVRTKA.idTvrtke = idTvrtke;
-		ELSE 
-				 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ime i naziv tvrtke moraju biti poznati!';
-			END IF;
-	ELSE
-		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Tražena tvrtka ne postoji!';
-	END IF;
-END $$
-DELIMITER ;
-
-
-DELIMITER $$
 CREATE  PROCEDURE `brisiAtributOsobi`(IN idImaAtribut INT(10))
 BEGIN
 	IF EXISTS (SELECT * FROM ImaAtribut WHERE ImaAtribut.idImaAtribut=idImaAtribut ) THEN
@@ -393,19 +346,6 @@ BEGIN
 		WHERE KONTAKTOSOBE.idKontakta=idKontakta;
 	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne posotoji kontakt sa upisanim identifikatorom!';
 	END IF;
-END $$
-DELIMITER ;
-
-
-DELIMITER $$
-CREATE  PROCEDURE `brisiKoristenjeUsluga`(IN idKoristiPruza INT(10))
-BEGIN
-			IF EXISTS (SELECT * FROM KoristiPruza WHERE KoristiPruza.idKoristiPruza = idKoristiPruza) THEN
-					    	DELETE FROM KoristiPruza WHERE KoristiPruza.idKoristiPruza = idKoristiPruza;
-				
-ELSE
-	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Usluga nije evidentirana u bazi  podataka!';
-END IF;
 END $$
 DELIMITER ;
 
@@ -481,17 +421,6 @@ IF EXISTS (SELECT * FROM SUDJELOVANJE WHERE SUDJELOVANJE.idSudjelovanja = idSudj
 ELSE
 	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Traženi zapis ne postoji!';
 END IF;
-END $$
-DELIMITER ;
-
-DELIMITER $$
-CREATE  PROCEDURE `brisiTvrtku`(IN idtvrtke INT UNSIGNED)
-BEGIN
-	IF EXISTS (SELECT * FROM TVRTKA WHERE TVRTKA.idTvrtke = idTvrtke) THEN
-		DELETE FROM TVRTKA WHERE TVRTKA.idTvrtke = idTvrtke;
-	ELSE 
-		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Tražena tvrtka ne postoji!';
-	END IF;
 END $$
 DELIMITER ;
 
@@ -608,42 +537,6 @@ ELSE
 	END IF;
     ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji medij sa unesenim identifikatorom';
 	END IF;
-END IF;
-END $$
-DELIMITER ;
-
-
-DELIMITER $$
-CREATE  PROCEDURE `dodajKoristenjeUsluga`(IN Usluga INT UNSIGNED,  IN Tvrtka INT UNSIGNED, IN iznos DECIMAL(13,2),  IN valuta VARCHAR(3), IN elektrijada INT(10), IN nacin VARCHAR(100), IN napomene VARCHAR(300) )
-BEGIN
-IF EXISTS (SELECT* FROM KoristiPruza WHERE idUsluge=Usluga AND idTvrtke=Tvrtka AND datumPocetka =pocetak) THEN 
- SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Zapis već postoji!';
-ELSE
-IF EXISTS (SELECT * FROM USLUGA
- WHERE idUsluge=Usluga) THEN
-IF EXISTS (SELECT * FROM TVRTKA
- 	     WHERE idTvrtke = Tvrtka) THEN
-			IF EXISTS (SELECT * FROM ELEKTRIJADA 
-		     		    WHERE idElektrijade = elektrijada) THEN
-					    	IF UPPER(valuta) NOT IN( 'HRK','USD','EUR') THEN
- SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = ' Greška: Valuta donacije mora biti HRK, USD ili EUR!';
-						ELSE	
-IF iznos <= 0 THEN
- SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = ' Greška: Iznos donacije je nula ili manji!';
-						ELSE
-INSERT INTO KoristiPruza 
-VALUES(NULL,Usluga, Tvrtka, elektrijada, iznos, valuta, nacin, napomene);
-							END IF;
-						END IF;
-				ELSE
-					 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrani datum nije početak Elektrijade!';
-				END IF;
-		ELSE
-			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Odabrana tvrtka ne postoji! ';
-		END IF;
-ELSE
-	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Usluga nije evidentirana u bazi  podataka!';
-END IF;
 END IF;
 END $$
 DELIMITER ;
@@ -919,22 +812,6 @@ END IF;
 END $$
 DELIMITER ;
 
-
-DELIMITER $$
-CREATE  PROCEDURE `dodajTvrtku`(IN imeTvrtke VARCHAR (100), IN adresaTvrtke VARCHAR (100))
-BEGIN
-	IF (imeTvrtke IS NOT NULL) THEN
-		IF (adresaTvrtke IS NOT NULL) THEN
-			INSERT INTO TVRTKA VALUES (NULL,imeTvrtke, adresaTvrtke);
-		ELSE 
-			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Adresa tvrtke mora biti poznata!';
-		END IF;
-	ELSE 
-		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ime tvrtke mora biti poznato!';
-	END IF;
-END $$
-DELIMITER ;
-
 DELIMITER $$
 CREATE  PROCEDURE `dohvatiBrojeve`(IN `id_kontakta` INT UNSIGNED)
 BEGIN
@@ -1043,36 +920,6 @@ BEGIN
         AND (sudjelovanje.tip = 's' OR osudjelovanje.tip = 'S');
 ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeci idELEKTRIJADE';
 END IF;
-END $$
-DELIMITER ;
-
--- DELIMITER $$
--- CREATE  PROCEDURE `dohvatiPopisSvihSudionikaIzPodrucja`(IN idElektrijade INT(10), IN idPodrucja INT)
--- BEGIN
--- 	IF EXISTS (SELECT * FROM Elektrijada WHERE Elektrijada.idElektrijade = idElektrijade) THEN
--- 		IF EXISTS (SELECT * FROM podrucje WHERE podrucje.idPodrucja = idPodrucja) THEN
--- 			SELECT DISTINCT osoba.*, podrucjeSudjelovanja.*, sudjelovanje.*
--- 			FROM osoba
--- 			JOIN sudjelovanje ON sudjelovanje.idOsobe = osoba.idOsobe
--- 			JOIN podrucjeSudjelovanja ON sudjelovanje.idSudjelovanja = podrucjeSudjelovanja.idSudjelovanja
--- 			WHERE sudjelovanje.idElektrijade = idElektrijade AND podrucjeSudjelovanja.idPodrucja = idPodrucja;
--- 		ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeći identifikator područja';
--- 		END IF;
--- 	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeći identifikator Elektrijade!';
--- 	END IF;
--- END $$
--- DELIMITER ;
-
-DELIMITER $$
-CREATE  PROCEDURE `dohvatiPopisSvihTvrtki`(IN idElektrijade INT(10))
-BEGIN
-	IF EXISTS (SELECT * FROM Elektrijada WHERE Elektrijada.idElektrijade = idElektrijade) THEN
-		SELECT DISTINCT tvrtka.idTvrtke, tvrtka.imeTvrtke, tvrtka.adresaTvrtke, koristiPruza.iznosRacuna, koristiPruza.valutaRacuna, koristiPruza.nacinPlacanja, koristiPruza.napomena
-		FROM tvrtka
-		JOIN koristiPruza ON tvrtka.idTvrtke = koristiPruza.idTvrtke
-		WHERE koristiPruza.idElektrijade = idElektrijade;
-ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeci idELEKTRIJADE';
-	END IF;
 END $$
 DELIMITER ;
 

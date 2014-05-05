@@ -32,15 +32,17 @@ class OzsnNavbar extends AbstractView{
                     "controller" => 'ozsn',
                     "action" => 'searchContacts'
                 ));?>">Pretraživanje Kontakt Osoba</a></li>
+			
             <li class="divider"></li>
+			
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'displayTvrtke'
-                ));?>">Popis tvrtki</a></li>
+                ));?>">Tvrtke</a></li>
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'displayActiveTvrtke'
-                ));?>">Korištene usluge tvrtki</a></li>
+                ));?>">Korištene Usluge Tvrtki</a></li>
 			
             <li class="divider"></li>
 			
@@ -66,7 +68,7 @@ class OzsnNavbar extends AbstractView{
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'displayAreaSponzor'
-                ));?>">Područni sponzori ovogodišnje elektrijade</a></li>
+                ));?>">Ovogodišnji Sponzori Disciplina</a></li>
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'displaySponzorsByElektrijada'

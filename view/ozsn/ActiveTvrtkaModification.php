@@ -21,19 +21,11 @@ class ActiveTvrtkaModification extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 		
-		// print messages if any
-        echo new \view\components\ErrorMessage(array(
-            "errorMessage" => $this->errorMessage
-        ));
-        echo new \view\components\ResultMessage(array(
-            "resultMessage" => $this->resultMessage
-        ));
-		
 		echo new \view\components\TvrtkaAssignForm(array(
 			"route" => \route\Route::get('d3')->generate(array(
 				"controller" => 'ozsn',
 				"action" => 'modifyActiveTvrtka'
-			)),
+			)) . "?id=" . $this->koristiPruza->idTvrtke,
 			"submitButtonText" => "Spremi promjene",
 			"tvrtka" => $this->tvrtka,
 			"koristiPruza" => $this->koristiPruza,

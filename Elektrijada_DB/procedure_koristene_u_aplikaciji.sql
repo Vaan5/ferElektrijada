@@ -434,6 +434,24 @@ END IF;
 END $$
 DELIMITER ; 
 
+DELIMITER $$
+CREATE  PROCEDURE `azurirajTvrtku`(IN idTvrtke INT UNSIGNED, IN imeTvrtke VARCHAR (100), IN adresaTvrtke VARCHAR (100))
+BEGIN
+	IF EXISTS (SELECT * FROM TVRTKA WHERE TVRTKA.idTvrtke = idTvrtke) THEN
+		IF ((imeTvrtke IS NOT NULL) && (adresaTvrtke IS NOT NULL)) THEN
+				UPDATE TVRTKA SET
+				TVRTKA.imeTvrtke = imeTvrtke,
+				TVRTKA.adresaTvrtke = adresaTvrtke
+				WHERE TVRTKA.idTvrtke = idTvrtke;
+		ELSE 
+				 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Naziv i adresa tvrtke su obavezni!';
+			END IF;
+	ELSE
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Tražena tvrtka ne postoji!';
+	END IF;
+END $$
+DELIMITER ;
+
 --			BRISANJE PODATAKA
 DELIMITER $$
 CREATE  PROCEDURE `brisiFunkciju`(IN idObavljaFunkciju  INT(10))
@@ -634,6 +652,29 @@ END IF;
 END $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE  PROCEDURE `brisiTvrtku`(IN idtvrtke INT UNSIGNED)
+BEGIN
+	IF EXISTS (SELECT * FROM TVRTKA WHERE TVRTKA.idTvrtke = idTvrtke) THEN
+		DELETE FROM TVRTKA WHERE TVRTKA.idTvrtke = idTvrtke;
+	ELSE 
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Tražena tvrtka ne postoji!';
+	END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `brisiKoristenjeUsluga`(IN idKoristiPruza INT(10))
+BEGIN
+	IF EXISTS (SELECT * FROM KoristiPruza WHERE KoristiPruza.idKoristiPruza = idKoristiPruza) THEN
+					DELETE FROM KoristiPruza WHERE KoristiPruza.idKoristiPruza = idKoristiPruza;
+				
+ELSE
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Traženi zapis ne postoji!';
+END IF;
+END $$
+DELIMITER ;
+
 --				DODAVANJE PODATAKA
 DELIMITER $$
 CREATE  PROCEDURE `dodajUdrugu`( IN nazivUdruge VARCHAR (50))
@@ -797,5 +838,20 @@ BEGIN
 			SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Tražena disciplina ne postoji!';
 	END IF;
 
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `dodajTvrtku`(IN imeTvrtke VARCHAR (100), IN adresaTvrtke VARCHAR (100))
+BEGIN
+	IF (imeTvrtke IS NOT NULL) THEN
+		IF (adresaTvrtke IS NOT NULL) THEN
+			INSERT INTO TVRTKA VALUES (NULL,imeTvrtke, adresaTvrtke);
+		ELSE 
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Adresa tvrtke je obavezna!';
+		END IF;
+	ELSE 
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Ime tvrtke je obavezno!';
+	END IF;
 END $$
 DELIMITER ;

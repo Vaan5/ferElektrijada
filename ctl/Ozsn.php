@@ -120,339 +120,7 @@ class Ozsn implements Controller {
     
 	
 	
-	
-    /**
-     * Displays all companies
-     */
-    public function displayTvrtke() {
-	$this->checkRole();
-	$this->checkMessages();
-	
-	$tvrtka = new \model\DBTvrtka();
-	$tvrtke = null;
-	
-	try {
-	    $tvrtke = $tvrtka->getAll();
-	} catch (\PDOException $e) {
-	    $handler = new \model\ExceptionHandlerModel($e);
-            $this->errorMessage = $handler;
-	}
-	
-	echo new \view\Main(array(
-	    "body" => new \view\ozsn\TvrtkaList(array(
-		"errorMessage" => $this->errorMessage,
-		"resultMessage" => $this->resultMessage,
-		"tvrtke" => $tvrtke
-	    )),
-	    "title" => "Tvrtke",
-		"script" => new \view\scripts\ozsn\TvrtkaListJs()
-	));
-    }
 
-    
-    /**
-     * Adds a new company which stil isn't related to any Elektrijada competition
-     */
-    public function addTvrtka() {
-	$this->checkRole();
-	
-	$tvrtka = new \model\DBTvrtka();
-        $validacija = new \model\formModel\TvrtkaFormModel(array('imeTvrtke' => post("imeTvrtke"),
-								    'adresaTvrtke' => post("adresaTvrtke")));
-        $pov = $validacija->validate();
-        if($pov !== true) {
-            $message = $validacija->decypherErrors($pov);
-            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayTvrtke"
-            )) . "?msg=excep");
-        }
-        
-        try {
-            $tvrtka->addRow(post("imeTvrtke", null), post("adresaTvrtke", null));
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayTvrtke"
-            )) . '?msg=succa');
-        } catch (\PDOException $e){
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayTvrtke"
-            )) . "?msg=excep");
-        }
-    }
-    
-    public function modifyTvrtka() {
-	$this->checkRole();
-        
-        $tvrtka = new \model\DBTvrtka();
-	$validacija = new \model\formModel\TvrtkaFormModel(array('imeTvrtke' => post("imeTvrtke"),
-								    'adresaTvrtke' => post("adresaTvrtke")));
-        $pov = $validacija->validate();
-        if($pov !== true) {
-            $message = $validacija->decypherErrors($pov);
-            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayTvrtke"
-            )) . "?msg=excep");
-        }
-        try {
-            $tvrtka->modifyRow(post($tvrtka->getPrimaryKeyColumn(), null), post('imeTvrtke', null), post('adresaTvrtke', null));
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayTvrtke"
-            )) . '?msg=succm');
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayTvrtke"
-            )) . "?msg=excep");
-        }
-    }
-    
-    public function deleteTvrtka() {
-	$this->checkRole();
-        
-        $this->idCheck("displayTvrtke");
-	
-        $tvrtka = new \model\DBTvrtka();
-        try {
-            $tvrtka->deleteRow(get("id"));
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayTvrtke"
-            )) . '?msg=succd');
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayTvrtke"
-            )) . "?msg=excep");
-        }
-    }
-    
-    public function assignTvrtka() {
-	$this->checkRole();
-	$this->checkMessages();
-	
-	$this->postGetCheck("displayTvrtke");
-	$tvrtka = new \model\DBTvrtka();
-	$usluga = new \model\DBUsluga();
-	$usluge = $usluga->getAll();
-	
-	if (get("id") !== false) {
-	    try {
-		$tvrtka->load(get("id"));
-	    } catch (\app\model\NotFoundException $e) {
-		$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznata tvrtka!");
-		$_SESSION["exception"] = serialize($handler);
-		preusmjeri(\route\Route::get('d3')->generate(array(
-		    "controller" => "ozsn",
-		    "action" => "displayTvrtke"
-		)) . "?msg=excep");
-	    } catch (\PDOException $e) {
-		$handler = new \model\ExceptionHandlerModel($e);
-		$_SESSION["exception"] = serialize($handler);
-		preusmjeri(\route\Route::get('d3')->generate(array(
-		    "controller" => "ozsn",
-		    "action" => "displayTvrtke"
-		)) . "?msg=excep");
-	    }
-	}
-	
-	if (!postEmpty()) {
-	    $validacija = new \model\formModel\TvrtkaAssignFormModel(array('iznosRacuna' => post('iznosRacuna'),
-					'nacinPlacanja' => post('nacinPlacanja'),
-					'napomena' => post('napomena'),
-					'idUsluge' => post('idUsluge')));
-	    $pov = $validacija->validate();
-	    if($pov !== true) {
-		$message = $validacija->decypherErrors($pov);
-		$handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-		$_SESSION["exception"] = serialize($handler);
-		preusmjeri(\route\Route::get('d3')->generate(array(
-		    "controller" => "ozsn",
-		    "action" => "assignTvrtka"
-		)) . "?msg=excep&id=" . post("id"));
-	    }
-	    
-	    try {
-		$elektrijada = new \model\DBElektrijada();
-		$idElektrijade = $elektrijada->getCurrentElektrijadaId();
-		
-		$koristiPruza = new \model\DBKoristiPruza();
-		$koristiPruza->addRow(post("idUsluge"), post("id"), $idElektrijade, post("iznosRacuna", null),
-			post("valutaRacuna", null), post("nacinPlacanja", null), post("napomena", null));
-		
-		preusmjeri(\route\Route::get('d1')->generate() . "?msg=assignS");
-		
-	    } catch (\PDOException $e) {
-		$handler = new \model\ExceptionHandlerModel($e);
-		$_SESSION["exception"] = serialize($handler);
-		preusmjeri(\route\Route::get('d3')->generate(array(
-		    "controller" => "ozsn",
-		    "action" => "assignTvrtka"
-		)) . "?msg=excep&id=" . post("id"));
-	    }
-	}
-	
-	echo new \view\Main(array(
-	    "body" => new \view\ozsn\TvrtkaAssign(array(
-		"errorMessage" => $this->errorMessage,
-		"resultMessage" => $this->resultMessage,
-		"tvrtka" => $tvrtka,
-		"usluge" => $usluge
-	    )),
-	    "title" => "Usluge Tvrtke"
-	));
-    }
-    
-    public function displayActiveTvrtke() {
-	$this->checkRole();
-	$this->checkMessages();
-	
-	$tvrtka = new \model\DBTvrtka();
-	$tvrtke = array();
-	try {
-	    $elektrijada = new \model\DBElektrijada();
-	    $idElektrijade = $elektrijada->getCurrentElektrijadaId();
-	    $tvrtke = $tvrtka->getAllActive($idElektrijade);
-	} catch (\PDOException $e) {
-	    $handler = new \model\ExceptionHandlerModel($e);
-	    $_SESSION["exception"] = serialize($handler);
-	    preusmjeri(\route\Route::get('d1')->generate() . "?msg=excep");
-	}
-	
-	echo new \view\Main(array(
-	    "title" => "Tvrtke",
-	    "body" => new \view\ozsn\ActiveTvrtkeList(array(
-		"errorMessage" => $this->errorMessage,
-		"resultMessage" => $this->resultMessage,
-		"tvrtke" => $tvrtke
-	    )),
-		"script" => new \view\scripts\ozsn\ActiveTvrtkeListJs()
-	));
-    }
-    
-    /**
-     * modifies row in koristipruza via get request (parameter is id)
-     */
-    public function modifyActiveTvrtka() {
-	$this->checkRole();
-	$this->checkMessages();
-	
-	$this->postGetCheck("displayActiveTvrtke");
-	
-	$koristiPruza = new \model\DBKoristiPruza();
-	$usluga = new \model\DBUsluga();
-	$usluge = $usluga->getAll();
-	$tvrtka = new \model\DBTvrtka();
-	
-	if(false !== get("id")) {
-	    try {
-		$koristiPruza->load(get("id"));
-		$usluga->load($koristiPruza->idUsluge);
-		$tvrtka->load($koristiPruza->idTvrtke);		
-	    } catch (\app\model\NotFoundException $e) {
-		$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Pogreška prilikom dohvata podataka!");
-		$_SESSION["exception"] = serialize($handler);
-		preusmjeri(\route\Route::get('d3')->generate(array(
-		    "controller" => "ozsn",
-		    "action" => "displayActiveTvrtke"
-		)) . "?msg=excep");
-	    } catch (\PDOException $e) {
-		$handler = new \model\ExceptionHandlerModel($e);
-		$_SESSION["exception"] = serialize($handler);
-		preusmjeri(\route\Route::get('d3')->generate(array(
-		    "controller" => "ozsn",
-		    "action" => "displayActiveTvrtke"
-		)) . "?msg=excep");
-	    }
-	}
-	
-	if (!postEmpty()) {
-	    $validacija = new \model\formModel\TvrtkaAssignFormModel(array('iznosRacuna' => post('iznosRacuna'),
-					'nacinPlacanja' => post('nacinPlacanja'),
-					'napomena' => post('napomena'),
-					'idUsluge' => post('idUsluge')));
-	    $pov = $validacija->validate();
-	    if($pov !== true) {
-		$message = $validacija->decypherErrors($pov);
-		$handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-		$_SESSION["exception"] = serialize($handler);
-		preusmjeri(\route\Route::get('d3')->generate(array(
-		    "controller" => "ozsn",
-		    "action" => "modifyActiveTvrtka"
-		)) . "?msg=excep&id=" . post("id"));
-	    }
-	    
-	    try {
-		$koristiPruza->modifyRow(post("id"), post("idUsluge", null), $koristiPruza->idTvrtke, $koristiPruza->idElektrijade,
-			post("iznosRacuna", null), post("valutaRacuna", null), post("nacinPlacanja", null), post("napomena", null));
-		
-		preusmjeri(\route\Route::get('d3')->generate(array(
-		    "controller" => "ozsn",
-		    "action" => "displayActiveTvrtke"
-		)) . "?msg=succm");
-		
-	    } catch (\PDOException $e) {
-		$handler = new \model\ExceptionHandlerModel($e);
-		$_SESSION["exception"] = serialize($handler);
-		preusmjeri(\route\Route::get('d3')->generate(array(
-		    "controller" => "ozsn",
-		    "action" => "modifyActiveTvrtka"
-		)) . "?msg=excep&id=" . post("id"));
-	    }
-	    
-	}
-	
-	echo new \view\Main(array(
-	    "title" => "Ažuriranje Korištene Usluge",
-	    "body" => new \view\ozsn\ActiveTvrtkaModification(array(
-		"errorMessage" => $this->errorMessage,
-		"resultMessage" => $this->resultMessage,
-		"koristiPruza" => $koristiPruza,
-		"tvrtka" => $tvrtka,
-		"usluga" => $usluga,
-		"usluge" => $usluge
-	    ))
-	));
-    }
-    
-    public function deleteActiveTvrtka() {
-	$this->checkRole();
-        
-        $this->idCheck("displayActiveTvrtke");
-	
-        $koristiPruza = new \model\DBKoristiPruza();
-        try {
-            $koristiPruza->deleteRow(get("id"));
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayActiveTvrtke"
-            )) . '?msg=succd');
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayActiveTvrtke"
-            )) . "?msg=excep");
-        }
-    }
     
     /**
      * Shows posts about faculty competitors success on current Elektrijada
@@ -852,39 +520,6 @@ class Ozsn implements Controller {
                 "action" => "displayObjava"
             )) . "?msg=excep");
         }
-    }
-    
-    public function displaySponzorsByElektrijada() {
-	$this->checkRole();
-	$this->checkMessages();
-	
-	$e = new \model\DBElektrijada();
-	$elektrijade = array();
-	$sponzori = null;
-	
-	try {
-	    if (postEmpty()) {
-		$elektrijade = $e->getAll();
-	    } else {
-		$sponzor = new \model\DBSponzor();
-		$sponzori = $sponzor->getAllByElektrijada(post("idElektrijade"));
-	    }
-	} catch (\PDOException $e) {
-	    $sponzori = null;
-	    $handler = new \model\ExceptionHandlerModel($e);
-            $this->errorMessage = $handler;
-	}
-	
-	echo new \view\Main(array(
-	    "title" => "Pregled Sponzora",
-	    "body" => new \view\ozsn\SponsorsByElektrijadaList(array(
-		"resultMessage" => $this->resultMessage,
-		"errorMessage" => $this->errorMessage,
-		"sponzori" => $sponzori,
-		"elektrijade" => $elektrijade
-	    ))
-	));
-	
     }
     
     public function addContact() {
@@ -4797,8 +4432,6 @@ class Ozsn implements Controller {
                 "action" => "displayKategorija"
             )) . '?msg=succm');
         } catch (\PDOException $e) {
-			var_dump($e);
-			die();
             $handler = new \model\ExceptionHandlerModel($e);
 			$this->createMessage($handler, "d3", "ozsn", "displayKategorija");
         }
@@ -5179,6 +4812,394 @@ class Ozsn implements Controller {
         } catch (\PDOException $e) {
             $handler = new \model\ExceptionHandlerModel($e);
             $this->createMessage($handler, "d3", "ozsn", "displayAreaSponzor");
+        }
+    }
+	
+	/******************************************************************
+	 *					SVI SPONZORI
+	 ******************************************************************/
+	public function displaySponzorsByElektrijada() {
+		$this->checkRole();
+		$this->checkMessages();
+
+		$e = new \model\DBElektrijada();
+		$elektrijade = array();
+		$sponzori = null;
+
+		try {
+			if (postEmpty()) {
+				$elektrijade = $e->getAll();
+			} else {
+				$sponzor = new \model\DBSponzor();
+				$sponzori = $sponzor->getAllByElektrijada(post("idElektrijade"));
+				$_SESSION['search'] = post("idElektrijade");
+			}
+		} catch (\PDOException $e) {
+			$sponzori = null;
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->errorMessage = $handler;
+		}
+		
+		if (get("type") !== false) {
+			try {
+				$sponzor = new \model\DBSponzor();
+				$sponzori = $sponzor->getAllByElektrijada(session("search"));
+			} catch (\PDOException $e) {
+				$sponzori = array();
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->errorMessage = $handler;
+			}
+			
+			$pomPolje = array("Naziv tvrke", "Adresa", "Kategorija", "Način promocije", "Sponzorira", "Donacija", "Valuta", "Napomena");
+			$array = array();
+			$array[] = $pomPolje;
+			if ($sponzori !== null && count($sponzori)) {
+				foreach ($sponzori as $v) {
+					$array[] = array($v->imeTvrtke, $v->adresaTvrtke, $v->tipKategorijeSponzora,
+						$v->tipPromocije, ($v->nazivPodrucja === NULL ? "Elektrijada" : $v->nazivPodrucja), $v->iznosDonacije, 
+						$v->valutaDonacije, $v->napomena);
+				}
+			}
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+
+		echo new \view\Main(array(
+			"title" => "Pregled Sponzora",
+			"body" => new \view\ozsn\SponsorsByElektrijadaList(array(
+				"resultMessage" => $this->resultMessage,
+				"errorMessage" => $this->errorMessage,
+				"sponzori" => $sponzori,
+				"elektrijade" => $elektrijade
+				))
+		));
+    }
+	
+	/******************************************************************
+	 *					SVI SPONZORI
+	 ******************************************************************/	
+	public function displayTvrtke() {
+		$this->checkRole();
+		$this->checkMessages();
+
+		$tvrtka = new \model\DBTvrtka();
+		$tvrtke = null;
+
+		try {
+			$tvrtke = $tvrtka->getAll();
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->errorMessage = $handler;
+		}
+		
+		if (get("type") !== false) {
+			$pomPolje = array("Naziv tvrtke", "Adresa");
+			$array = array();
+			$array[] = $pomPolje;
+			
+			if ($tvrtke !== null && count($tvrtke)) {
+				foreach ($tvrtke as $v) {
+					$array[] = array($v->imeTvrtke, $v->adresaTvrtke);
+				}
+			}
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+
+		echo new \view\Main(array(
+			"body" => new \view\ozsn\TvrtkaList(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"tvrtke" => $tvrtke
+				)),
+			"title" => "Tvrtke",
+			"script" => new \view\scripts\ozsn\TvrtkaListJs()
+		));
+    }
+
+    public function addTvrtka() {
+		$this->checkRole();
+	
+		$tvrtka = new \model\DBTvrtka();
+        $validacija = new \model\formModel\TvrtkaFormModel(array('imeTvrtke' => post("imeTvrtke"),
+								    'adresaTvrtke' => post("adresaTvrtke")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $this->createMessage($message, "d3", "ozsn", "displayTvrtke");
+        }
+        
+        try {
+            $tvrtka->addRow(post("imeTvrtke", null), post("adresaTvrtke", null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayTvrtke"
+            )) . '?msg=succa');
+        } catch (\PDOException $e){
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->createMessage($handler, "d3", "ozsn", "displayTvrtke");
+        }
+    }
+    
+    public function modifyTvrtka() {
+		$this->checkRole();
+        
+        $tvrtka = new \model\DBTvrtka();
+		$validacija = new \model\formModel\TvrtkaFormModel(array('imeTvrtke' => post("imeTvrtke"),
+								    'adresaTvrtke' => post("adresaTvrtke")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $this->createMessage($message, "d3", "ozsn", "displayTvrtke");
+        }
+        try {
+            $tvrtka->modifyRow(post($tvrtka->getPrimaryKeyColumn(), null), post('imeTvrtke', null), post('adresaTvrtke', null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayTvrtke"
+            )) . '?msg=succm');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->createMessage($handler, "d3", "ozsn", "displayTvrtke");
+        }
+    }
+    
+    public function deleteTvrtka() {
+		$this->checkRole();
+        
+        $this->idCheck("displayTvrtke");
+	
+        $tvrtka = new \model\DBTvrtka();
+        try {
+            $tvrtka->deleteRow(get("id"));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayTvrtke"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->createMessage($handler, "d3", "ozsn", "displayTvrtke");
+        }
+    }
+	
+	public function assignTvrtka() {
+		$this->checkRole();
+		$this->checkMessages();
+
+		$this->postGetCheck("displayTvrtke");
+		$tvrtka = new \model\DBTvrtka();
+		$usluga = new \model\DBUsluga();
+		$usluge = $usluga->getAll();
+
+		if (get("id") !== false) {
+			try {
+				$tvrtka->load(get("id"));
+			} catch (\app\model\NotFoundException $e) {
+				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznata tvrtka!");
+				$this->createMessage($handler, "d3", "ozsn", "displayTvrtke");
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler, "d3", "ozsn", "displayTvrtke");
+			}
+		}
+
+		if (!postEmpty()) {
+			$validacija = new \model\formModel\TvrtkaAssignFormModel(array('iznosRacuna' => post('iznosRacuna'),
+						'nacinPlacanja' => post('nacinPlacanja'),
+						'napomena' => post('napomena'),
+						'idUsluge' => post('idUsluge')));
+			$pov = $validacija->validate();
+			if($pov !== true) {
+				$message = $validacija->decypherErrors($pov);
+				$handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+						"controller" => "ozsn",
+						"action" => "assignTvrtka"
+					)) . "?msg=excep&id=" . post("id"));
+			}
+
+			try {
+				$elektrijada = new \model\DBElektrijada();
+				$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+
+				$koristiPruza = new \model\DBKoristiPruza();
+				$koristiPruza->addRow(post("idUsluge"), post("id"), $idElektrijade, post("iznosRacuna", null),
+					post("valutaRacuna", null), post("nacinPlacanja", null), post("napomena", null));
+
+				preusmjeri(\route\Route::get('d1')->generate() . "?msg=assignS");
+
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+						"controller" => "ozsn",
+						"action" => "assignTvrtka"
+					)) . "?msg=excep&id=" . post("id"));
+			}
+		}
+
+		echo new \view\Main(array(
+			"body" => new \view\ozsn\TvrtkaAssign(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"tvrtka" => $tvrtka,
+				"usluge" => $usluge
+				)),
+			"title" => "Usluge Tvrtke"
+		));
+    }
+    
+    public function displayActiveTvrtke() {
+		$this->checkRole();
+		$this->checkMessages();
+
+		$tvrtka = new \model\DBTvrtka();
+		$tvrtke = array();
+		try {
+			$elektrijada = new \model\DBElektrijada();
+			$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+			$tvrtke = $tvrtka->getAllActive($idElektrijade);
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->createMessage($handler);
+		}
+		
+		if (get("type") !== false) {
+			$pomPolje = array("Naziv tvrtke", "Adresa", "Korištena usluga", "Iznos računa", 
+				"Valuta", "Način plaćanja", "Napomena");
+			$array = array();
+			$array[] = $pomPolje;
+			
+			if ($tvrtke !== null && count($tvrtke)) {
+				foreach ($tvrtke as $v) {
+					$array[] = array($v->imeTvrtke, $v->adresaTvrtke, $v->nazivUsluge, 
+						$v->iznosRacuna, $v->valutaRacuna, $v->nacinPlacanja, $v->napomena);
+				}
+			}
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+
+		echo new \view\Main(array(
+			"title" => "Tvrtke",
+			"body" => new \view\ozsn\ActiveTvrtkeList(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"tvrtke" => $tvrtke
+				)),
+			"script" => new \view\scripts\ozsn\ActiveTvrtkeListJs()
+		));
+    }
+    
+    public function modifyActiveTvrtka() {
+		$this->checkRole();
+		$this->checkMessages();
+
+		$this->postGetCheck("displayActiveTvrtke");
+
+		$koristiPruza = new \model\DBKoristiPruza();
+		$usluga = new \model\DBUsluga();
+		$usluge = $usluga->getAll();
+		$tvrtka = new \model\DBTvrtka();
+
+		if(false !== get("id")) {
+			try {
+				$koristiPruza->load(get("id"));
+				$usluga->load($koristiPruza->idUsluge);
+				$tvrtka->load($koristiPruza->idTvrtke);		
+			} catch (\app\model\NotFoundException $e) {
+				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Pogreška prilikom dohvata podataka!");
+				$this->createMessage($handler, "d3", "ozsn", "displayActiveTvrtke");
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler, "d3", "ozsn", "displayActiveTvrtke");
+			}
+		}
+
+		if (!postEmpty()) {
+			$validacija = new \model\formModel\TvrtkaAssignFormModel(array('iznosRacuna' => post('iznosRacuna'),
+						'nacinPlacanja' => post('nacinPlacanja'),
+						'napomena' => post('napomena'),
+						'idUsluge' => post('idUsluge')));
+			$pov = $validacija->validate();
+			if($pov !== true) {
+				$message = $validacija->decypherErrors($pov);
+				$handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "modifyActiveTvrtka"
+				)) . "?msg=excep&id=" . post("id"));
+			}
+
+			try {
+				$koristiPruza->modifyRow(post("id"), post("idUsluge", null), $koristiPruza->idTvrtke, $koristiPruza->idElektrijade,
+					post("iznosRacuna", null), post("valutaRacuna", null), post("nacinPlacanja", null), post("napomena", null));
+
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "displayActiveTvrtke"
+				)) . "?msg=succm");
+
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "modifyActiveTvrtka"
+				)) . "?msg=excep&id=" . post("id"));
+			}
+
+		}
+
+		echo new \view\Main(array(
+			"title" => "Ažuriranje Korištene Usluge",
+			"body" => new \view\ozsn\ActiveTvrtkaModification(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"koristiPruza" => $koristiPruza,
+				"tvrtka" => $tvrtka,
+				"usluga" => $usluga,
+				"usluge" => $usluge
+				))
+		));
+    }
+    
+    public function deleteActiveTvrtka() {
+		$this->checkRole();
+        
+        $this->idCheck("displayActiveTvrtke");
+	
+        $koristiPruza = new \model\DBKoristiPruza();
+        try {
+            $koristiPruza->deleteRow(get("id"));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayActiveTvrtke"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->createMessage($handler, "d3", "ozsn", "displayActiveTvrtke");
         }
     }
 }
