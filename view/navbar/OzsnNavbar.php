@@ -175,8 +175,39 @@ class OzsnNavbar extends AbstractView{
                     "controller" => 'ozsn',
                     "action" => 'displayUdruga'
                 ));?>">Udruge</a></li>
+			<li><a href="<?php echo \route\Route::get('d3')->generate(array(
+                    "controller" => 'ozsn',
+                    "action" => 'displayPodrucje'
+                ));?>">Discipline</a></li>
             	
 
+          </ul>
+        </li>
+		
+		<li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Izvještaji<b class="caret"></b></a>
+          <ul class="dropdown-menu">
+			<li><a href="<?php echo \route\Route::get('d3')->generate(array(
+					"controller" => 'reportGenerator',
+					"action" => 'generateDisciplineList'
+				));?>">Popis Sudionika po Disciplinama</a></li>
+            <li><a href="<?php echo \route\Route::get('d3')->generate(array(
+					"controller" => 'reportGenerator',
+					"action" => 'generateTshirtsList'
+				));?>">Popis Majica</a></li>
+			<li><a href="<?php echo \route\Route::get('d3')->generate(array(
+					"controller" => 'reportGenerator',
+					"action" => 'generateYearModuleStatisticsList'
+				));?>">Statistika po Godinama i Smjeru Studiranja</a></li>
+			<li><a href="<?php echo \route\Route::get('d3')->generate(array(
+					"controller" => 'reportGenerator',
+					"action" => 'generateYearModuleCompetitorsList'
+				));?>">Popis Sudionika po Godini i Smjeru</a></li>
+			<li><a href="<?php echo \route\Route::get('d3')->generate(array(
+					"controller" => 'reportGenerator',
+					"action" => 'generateBusCompetitorsList'
+				));?>">Popis Sudionika po Autobusima</a></li>
+			
           </ul>
         </li>
       </ul>
