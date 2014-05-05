@@ -25,7 +25,7 @@ class DBFunkcija extends AbstractDBModel {
 			return $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));
 		} catch (\PDOException $e) {
             throw $e;
-        }   
+        } 
     }
 
     public function modifyRow($idFunkcije, $nazivFunkcije) {

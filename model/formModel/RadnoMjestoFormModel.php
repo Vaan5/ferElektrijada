@@ -16,7 +16,7 @@ class RadnoMjestoFormModel extends AbstractFormModel {
         if(count($pov)) {
             foreach ($pov as $k => $v) {
                 switch ($k) {
-                    case 'Naziv':
+                    case 'naziv':
                         return "Naziv može sadržavati samo znamenke i slova!";
                     default:
                         break;

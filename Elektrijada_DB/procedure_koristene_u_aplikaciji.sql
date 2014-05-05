@@ -116,6 +116,15 @@ SELECT * FROM UDRUGA ORDER BY nazivUdruge ASC;
 END $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE  PROCEDURE `dohvatiUsluge`()
+BEGIN
+
+SELECT * FROM USLUGA ORDER BY nazivUsluge ASC;
+
+END $$
+DELIMITER ;
+
 --			AŽURIRANJE PODATAKA
 
 DELIMITER $$
@@ -156,6 +165,74 @@ BEGIN
 		END IF;
 	ELSE 
 		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Tražena udruga ne postoji!';
+	END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `azurirajMedij`(IN idMedija INT(10), IN nazivMedija VARCHAR(10))
+BEGIN
+	IF NOT EXISTS (SELECT * FROM MEDIJ WHERE MEDIJ.nazivMedija=nazivMedija) THEN
+		
+				UPDATE MEDIJ
+				SET MEDIJ.nazivMedija=nazivMedija
+				WHERE MEDIJ.idMedija=idMedija;
+			
+	ELSE 
+       SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Naziv medija već postoji!';
+	END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `azurirajUslugu`(IN idUsluge INT UNSIGNED, IN nazivUsluge VARCHAR (100))
+BEGIN
+	IF EXISTS (SELECT * FROM USLUGA WHERE USLUGA.idUsluge = idUsluge) THEN
+		IF NOT EXISTS (SELECT * FROM USLUGA WHERE USLUGA.nazivUsluge = nazivUsluge) THEN
+			IF (nazivUsluge IS NOT NULL) THEN
+				UPDATE USLUGA SET
+				USLUGA.nazivUsluge = nazivUsluge
+				WHERE USLUGA.idUsluge = idUsluge;
+			ELSE 
+				 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Naziv usluge je obavezan!';
+			END IF;
+		ELSE
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Naziv usluge već postoji!';
+		END IF;
+	ELSE
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Nepoznata usluga!';
+	END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `azurirajRadnoMjesto`( IN id INT UNSIGNED,  IN ime VARCHAR(100)  )
+BEGIN
+	IF NOT EXISTS (SELECT * FROM RADNOMJESTO WHERE naziv = ime) THEN
+		IF EXISTS (SELECT * FROM RADNOMJESTO WHERE idRadnogMjesta = id) THEN
+			UPDATE RADNOMJESTO 
+			SET idRadnogMjesta=id, naziv=ime WHERE idRadnogMjesta = id;
+		ELSE 
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Nepoznato radno mjesto!';
+		END IF;
+	ELSE
+		SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Radno mjesto već postoji!';
+	END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `azurirajSmjer`( IN id INT UNSIGNED,  IN naziv VARCHAR(100)  )
+BEGIN
+	IF NOT EXISTS (SELECT * FROM SMJER WHERE nazivSmjera = naziv) THEN
+		IF EXISTS (SELECT * FROM SMJER WHERE idSmjera = id) THEN
+			UPDATE SMJER
+			SET idSmjera=id, nazivSmjera=naziv WHERE idSmjera = id;
+		ELSE 
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Nepoznati identifikator smjera!';
+		END IF;
+	ELSE
+		SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Naziv smjera već postoji!';
 	END IF;
 END $$
 DELIMITER ;
@@ -221,6 +298,50 @@ BEGIN
 END $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE  PROCEDURE `brisiMedij`(IN idMedija INT(10))
+BEGIN
+	IF EXISTS (SELECT * FROM MEDIJ WHERE MEDIJ.idMedija=idMedija) THEN
+		DELETE FROM MEDIJ
+		WHERE MEDIJ.idMedija=idMedija;
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Ne postoji traženi medij!';
+	END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `brisiUslugu`(IN idUsluge INT UNSIGNED)
+BEGIN
+	IF EXISTS ( SELECT * FROM USLUGA WHERE USLUGA.idUsluge = idUsluge) THEN
+		DELETE FROM USLUGA WHERE USLUGA.idUsluge = idUsluge;
+	ELSE 
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Tražena usluga ne postoji!';
+	END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `brisiSmjer`( IN id INT UNSIGNED )
+BEGIN
+IF EXISTS (SELECT * FROM SMJER WHERE idSmjera = id) THEN
+DELETE FROM SMJER WHERE idSmjera = id;
+ELSE 
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Traženi smjer ne postoji!';
+END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `brisiRadnoMjesto`( IN id INT UNSIGNED )
+BEGIN
+IF EXISTS (SELECT * FROM RADNOMJESTO  WHERE idRadnogMjesta = id) THEN
+DELETE FROM RADNOMJESTO WHERE idRadnogMjesta = id;
+ELSE 
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Traženo radno mjesto ne postoji!';
+END IF;
+END $$
+DELIMITER ;
+
 --				DODAVANJE PODATAKA
 DELIMITER $$
 CREATE  PROCEDURE `dodajUdrugu`( IN nazivUdruge VARCHAR (50))
@@ -253,5 +374,42 @@ BEGIN
 	ELSE 
 		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Uneseni identifikator osobe ne postoji ili osoba nije član Ozsn-a!';
 	END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `dodajUslugu`(IN nazivUsluge VARCHAR (100))
+BEGIN
+	IF NOT EXISTS (SELECT * FROM USLUGA WHERE USLUGA.nazivUsluge = nazivUsluge) THEN
+		IF (nazivUsluge IS NOT NULL) THEN
+			INSERT INTO USLUGA(nazivUsluge) VALUES (nazivUsluge);
+		ELSE
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Naziv usluge je obavezan!';
+		END IF;
+	ELSE
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Naziv usluge već postoji!';
+	END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `dodajSmjer`(  IN naziv VARCHAR(100) )
+BEGIN
+IF EXISTS (SELECT* FROM SMJER WHERE nazivSmjera=naziv) THEN 
+      	  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Naziv smjera već postoji!';
+ELSE
+INSERT INTO SMJER VALUES(NULL, naziv );
+END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `dodajRadnoMjesto`(  IN naziv VARCHAR(100) )
+BEGIN
+IF EXISTS (SELECT* FROM RADNOMJESTO WHERE RADNOMJESTO.naziv=naziv) THEN 
+ 	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Radno mjesto već postoji!';
+ELSE
+INSERT INTO RADNOMJESTO VALUES(NULL, naziv );
+END IF;
 END $$
 DELIMITER ;

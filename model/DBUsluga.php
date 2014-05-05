@@ -18,66 +18,49 @@ class DBUsluga extends AbstractDBModel {
     }
     
     public function getAllUsluga() {
-	return $this->select()->fetchAll();
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL dohvatiUsluge()");
+            $q->execute();
+			return $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+		} catch (\PDOException $e) {
+            throw $e;
+        }
     }
     
     public function getAll() {
-	return $this->getAllUsluga();
+		return $this->getAllUsluga();
     }
-	
-	/**
-     * Modifies row in the database
-     * 
-     * @param mixed $idUsluge
-     * @param mixed $nazivUsluge
-     */
+
     public function modifyRow($idUsluge, $nazivUsluge) {
-        try {
-            $this->load($idUsluge);
-            $this->nazivUsluge = $nazivUsluge;
-            $this->save();
-        } catch (\app\model\NotFoundException $e) {
-            $e = new \PDOException();
-            $e->errorInfo[0] = '02000';
-            $e->errorInfo[1] = 1604;
-            $e->errorInfo[2] = "Zapis ne postoji!";
-            throw $e;
+       try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL azurirajUslugu(:idUsluge, :naziv)");
+			$q->bindValue(":idUsluge", $idUsluge);
+			$q->bindValue(":naziv", $nazivUsluge);
+            $q->execute();
         } catch (\PDOException $e) {
             throw $e;
         }
     }
 	
-	/**
-     * Deletes a row from the table 
-     * 
-     * @param mixed $idUsluge
-     * @throws \model\NotFoundException
-     */
-    public function deleteRow($idUsluge) {
+    public function deleteRow($id) {
         try {
-            $this->load($idUsluge);
-            $this->delete();
-        } catch (\app\model\NotFoundException $e) {
-            $e = new \PDOException();
-            $e->errorInfo[0] = '02000';
-            $e->errorInfo[1] = 1604;
-            $e->errorInfo[2] = "Zapis ne postoji!";
-            throw $e;
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL brisiUslugu(:id)");
+			$q->bindValue(":id", $id);
+            $q->execute();
         } catch (\PDOException $e) {
             throw $e;
         }
     }
 	
-	 /**
-     * Adds row to the database
-     * 
-     * @param mixed $nazivUsluge
-     * @throws \model\PDOException
-     */
     public function addRow($nazivUsluge) {
         try {
-            $this->nazivUsluge = $nazivUsluge;
-            $this->save();
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL dodajUslugu(:nazivUsluge)");
+			$q->bindValue(":nazivUsluge", $nazivUsluge);
+            $q->execute();
         } catch (\PDOException $e) {
             throw $e;
         }
