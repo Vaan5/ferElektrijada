@@ -32,78 +32,78 @@ class DBObjava extends AbstractDBModel {
 	
 	public function deleteRow($id) {
 	    try {
-		$this->load($id);
-		if ($this->dokument !== NULL) {
-		    // delete the document first
-		    $p = unlink($this->dokument);
-		    if ($p === false) {
+			$this->load($id);
+			if ($this->dokument !== NULL) {
+				// delete the document first
+				$p = unlink($this->dokument);
+				if ($p === false) {
+					$e = new \PDOException();
+					$e->errorInfo[0] = '02000';
+					$e->errorInfo[1] = 1604;
+					$e->errorInfo[2] = "Greška prilikom brisanja dokumenta!";
+					$this->delete();
+					throw $e;
+				}
+			}
+			$this->delete();
+	    } catch (\app\model\NotFoundException $e) {
 			$e = new \PDOException();
 			$e->errorInfo[0] = '02000';
 			$e->errorInfo[1] = 1604;
-			$e->errorInfo[2] = "Greška prilikom brisanja dokumenta!";
-			$this->delete();
+			$e->errorInfo[2] = "Zapis ne postoji!";
 			throw $e;
-		    }
-		}
-		$this->delete();
-	    } catch (\app\model\NotFoundException $e) {
-		$e = new \PDOException();
-		$e->errorInfo[0] = '02000';
-		$e->errorInfo[1] = 1604;
-		$e->errorInfo[2] = "Zapis ne postoji!";
-		throw $e;
 	    } catch (\PDOException $e) {
-		throw $e;
+			throw $e;
 	    }
 	}
 	
 	public function addRow($datumObjave, $link, $autorIme, $autorPrezime, $idMedija, $dokument) {
 	    try {
-		$atributi = $this->getColumns();
-		foreach($atributi as $a) {
-		    $this->{$a} = ${$a};
-		}
-		$this->save();
+			$atributi = $this->getColumns();
+			foreach($atributi as $a) {
+				$this->{$a} = ${$a};
+			}
+			$this->save();
 	    } catch (\PDOException $e) {
-		throw $e;
+			throw $e;
 	    }
 	}
 	
 	public function addFile($idObjave, $datoteka) {
 	    try {
-		$this->load($idObjave);
-		$this->dokument = $datoteka;
-		$this->save();
+			$this->load($idObjave);
+			$this->dokument = $datoteka;
+			$this->save();
 	    } catch (app\model\NotFoundException $e) {
-		$e = new \PDOException();
-		$e->errorInfo[0] = '02000';
-		$e->errorInfo[1] = 1604;
-		$e->errorInfo[2] = "Zapis ne postoji!";
-		throw $e;
+			$e = new \PDOException();
+			$e->errorInfo[0] = '02000';
+			$e->errorInfo[1] = 1604;
+			$e->errorInfo[2] = "Zapis ne postoji!";
+			throw $e;
 	    } catch (\PDOException $e) {
-		throw $e;
+			throw $e;
 	    }
 	}
 	
 	public function modifyRow($idObjave, $datumObjave, $link, $autorIme, $autorPrezime, $idMedija, $dokument) {
 	    try {
-		$this->load($idObjave);
-		$this->datumObjave = $datumObjave;
-		$this->link = $link;
-		$this->autorIme = $autorIme;
-		$this->autorPrezime = $autorPrezime;
-		$this->idMedija = $idMedija;
-		if ($dokument !== NULL && $dokument !== '' && $dokument !== false)
-		    $this->dokument = $dokument;
-		$this->save();
+			$this->load($idObjave);
+			$this->datumObjave = $datumObjave;
+			$this->link = $link;
+			$this->autorIme = $autorIme;
+			$this->autorPrezime = $autorPrezime;
+			$this->idMedija = $idMedija;
+			if ($dokument !== NULL && $dokument !== '' && $dokument !== false)
+				$this->dokument = $dokument;
+			$this->save();
 	    } catch (\app\model\NotFoundException $e) {
-		$e = new \PDOException();
-		$e->errorInfo[0] = '02000';
-		$e->errorInfo[1] = 1604;
-		$e->errorInfo[2] = "Zapis ne postoji!";
-		throw $e;
+			$e = new \PDOException();
+			$e->errorInfo[0] = '02000';
+			$e->errorInfo[1] = 1604;
+			$e->errorInfo[2] = "Zapis ne postoji!";
+			throw $e;
 	    } catch (\PDOException $e) {
-		throw $e;
+			throw $e;
 	    }
 	}
 }

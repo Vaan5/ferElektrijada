@@ -80,16 +80,18 @@ class OzsnNavbar extends AbstractView{
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'displayMediji'
-                ));?>">Popis medija</a></li>
+                ));?>">Mediji</a></li>
+			
             <li class="divider"></li>
+			
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'displayActiveObjava'
-                ));?>">Aktualne objave u medijima</a></li>
+                ));?>">Aktualne Objave u Medijima</a></li>
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'displayObjava'
-                ));?>">Popis objava</a></li>
+                ));?>">Objave</a></li>
 
           </ul>
         </li>
