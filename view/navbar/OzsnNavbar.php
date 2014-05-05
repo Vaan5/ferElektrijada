@@ -24,14 +24,10 @@ class OzsnNavbar extends AbstractView{
                 <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tvrtke i sponzori<b class="caret"></b></a>
           <ul class="dropdown-menu">
-           <li><a href="<?php echo \route\Route::get('d3')->generate(array(
-                    "controller" => 'ozsn',
-                    "action" => 'addContact'
-                ));?>">Dodavanje Kontakt Osobe</a></li>
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'searchContacts'
-                ));?>">Pretraživanje Kontakt Osoba</a></li>
+                ));?>">Kontakt Osobe</a></li>
 			
             <li class="divider"></li>
 			
