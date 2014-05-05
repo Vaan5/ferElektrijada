@@ -19,47 +19,47 @@ class DBObjavaOElektrijadi extends AbstractDBModel {
 	
 	public function getAll() {
 	    try {
-		$pdo = $this->getPdo();
-		$q = $pdo->prepare("SELECT * FROM objavaoelektrijadi 
-		    JOIN objava ON objava.idObjave = objavaoelektrijadi.idObjave 
-			JOIN medij ON medij.idMedija = objava.idMedija");
-		$q->execute();
-		return $q->fetchAll();
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT * FROM objavaoelektrijadi 
+				JOIN objava ON objava.idObjave = objavaoelektrijadi.idObjave 
+				JOIN medij ON medij.idMedija = objava.idMedija");
+			$q->execute();
+			return $q->fetchAll();
 	    }  catch (\PDOException $e) {
-		throw $e;
+			throw $e;
 	    }
 	}
 	
 	public function getAllActive($idElektrijade) {
 	    try {
-		$pdo = $this->getPdo();
-		$q = $pdo->prepare("SELECT * FROM objavaoelektrijadi 
-		    JOIN objava ON objava.idObjave = objavaoelektrijadi.idObjave 
-			JOIN medij ON medij.idMedija = objava.idMedija
-		    WHERE idElektrijade = :id");
-		$q->bindValue(':id', $idElektrijade);
-		$q->execute();
-		return $q->fetchAll();
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT * FROM objavaoelektrijadi 
+				JOIN objava ON objava.idObjave = objavaoelektrijadi.idObjave 
+				JOIN medij ON medij.idMedija = objava.idMedija
+				WHERE idElektrijade = :id");
+			$q->bindValue(':id', $idElektrijade);
+			$q->execute();
+			return $q->fetchAll();
 	    }  catch (\PDOException $e) {
-		throw $e;
+			throw $e;
 	    }
 	}
 	
 	public function addRow($idObjave, $idElektrijade) {
 	    try {
-		$this->{$this->getPrimaryKeyColumn()} = null;
-		$this->idObjave = $idObjave;
-		$this->idElektrijade = $idElektrijade;
-		$this->save();
+			$this->{$this->getPrimaryKeyColumn()} = null;
+			$this->idObjave = $idObjave;
+			$this->idElektrijade = $idElektrijade;
+			$this->save();
 	    } catch (\PDOException $e) {
-		throw $e;
+			throw $e;
 	    }
 	}
 	
 	public function getAllByObjava($idObjave) {
 	    return $this->select()->where(array(
-		"idObjave" => $idObjave
-	    ))->fetchAll();
+			"idObjave" => $idObjave
+			))->fetchAll();
 	}
 	
 	/**
@@ -70,44 +70,44 @@ class DBObjavaOElektrijadi extends AbstractDBModel {
 	 */
 	public function deleteRow($id) {
 	    try {
-		$this->load($id);
-		$idObjave = $this->idObjave;
-		$this->delete();
-		
-		$pov = $this->select()->where(array(
-		    "idObjave" => $idObjave
-		    ))->fetchAll();
-		return count($pov) === 0 ? $idObjave : false;
+			$this->load($id);
+			$idObjave = $this->idObjave;
+			$this->delete();
+
+			$pov = $this->select()->where(array(
+				"idObjave" => $idObjave
+				))->fetchAll();
+			return count($pov) === 0 ? $idObjave : false;
 	    } catch (\app\model\NotFoundException $e) {
-		$e = new \PDOException();
-		$e->errorInfo[0] = '02000';
-		$e->errorInfo[1] = 1604;
-		$e->errorInfo[2] = "Zapis ne postoji!";
-		throw $e;
+			$e = new \PDOException();
+			$e->errorInfo[0] = '02000';
+			$e->errorInfo[1] = 1604;
+			$e->errorInfo[2] = "Zapis ne postoji!";
+			throw $e;
 	    } catch (\PDOException $e) {
-		throw $e;
+			throw $e;
 	    }
 	}
 	
 	public function deleteRowsByObjava($idObjave) {
 	    try {
-		$pov = $this->select()->where(array(
-		    "idObjave" => $idObjave
-		    ))->fetchAll();
-		
-		if (count($pov)) {
-		    foreach($pov as $v) {
-			$v->delete();
-		    }
-		}
+			$pov = $this->select()->where(array(
+				"idObjave" => $idObjave
+				))->fetchAll();
+
+			if (count($pov)) {
+				foreach($pov as $v) {
+					$v->delete();
+				}
+			}
 	    } catch (\app\model\NotFoundException $e) {
-		$e = new \PDOException();
-		$e->errorInfo[0] = '02000';
-		$e->errorInfo[1] = 1604;
-		$e->errorInfo[2] = "Zapis ne postoji!";
-		throw $e;
+			$e = new \PDOException();
+			$e->errorInfo[0] = '02000';
+			$e->errorInfo[1] = 1604;
+			$e->errorInfo[2] = "Zapis ne postoji!";
+			throw $e;
 	    } catch (\PDOException $e) {
-		throw $e;
+			throw $e;
 	    }
 	}
 }

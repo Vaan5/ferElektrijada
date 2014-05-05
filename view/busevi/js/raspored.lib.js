@@ -236,6 +236,10 @@ raspored.removeGroup = function() {
     }
     else
     {
+        var name = raspored.activeGroup.children("div.group-name").html();
+
+        delete raspored.groupDictionary[name];
+
         students = raspored.activeGroup.children("div.student");
         for(var i=0; i<students.length; i++)
         {
@@ -305,6 +309,18 @@ raspored.setGroupName = function() {
         var pl_Naziv = raspored.pl
         var newName = prompt("Unesite naziv grupe", name);
         if(newName !== null && newName.length > 0) {
+            if(newName !== name) {
+                if(raspored.groupDictionary[newName] === undefined)
+                {
+                    raspored.groupDictionary[newName] = raspored.groupDictionary[name];
+                    delete raspored.groupDictionary[name];
+                }
+                else
+                {
+                    alert("Grupa sa ovim nazivom već postoji!");
+                    return;
+                }
+            }
             raspored.activeGroupName = newName;
             raspored.activeGroup.children("div.group-name").html(newName);
         }
@@ -638,6 +654,10 @@ raspored.generateGroups = function() {
         }
         //console.log(raspored.groupDictionary[groupName]);
         var group = $("#" + raspored.groupDictionary[groupName]);
+
+        if(group.data("status") === "disabled") {
+            continue;
+        }
 
         student.removeClass("student-active");
 

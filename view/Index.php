@@ -38,32 +38,6 @@ class Index extends AbstractView {
 <p><center><img src="./assets/img/naslovna.jpg" alt="FER logo" align="middle"></center></p>
 <p>
 	
-	<br><br>
-	<b>OZSN</b>
-	<p>
-	<b>Generator Pdfova</b>
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'reportGenerator',
-        "action" => 'pdfTest'
-    ));?>">pdf-ovi</a>
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'ozsn',
-        "action" => 'downloadLogo'
-    ));?>">download</a>
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'reportGenerator',
-        "action" => 'xlsTest'
-    )) . "?type=xls";?>">excel_xls</a>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-        "controller" => 'reportGenerator',
-        "action" => 'xlsTest'
-    )) . "?type=xlsx";?>">excel_xlsx</a>
-	
-	<br><br>
-	
-	
-	</p>
 	
 	<br><br>
 	
@@ -87,46 +61,6 @@ class Index extends AbstractView {
 	    "controller" => 'voditelj',
 	    "action" => 'displayProfile'
 	)) . "";?>">Profil</a>
-	
-	
-	<br><br>
-	
-	<b>Izvještaji</b>
-	
-	<br>
-        
-        <a href="<?php echo \route\Route::get('d3')->generate(array(
-	    "controller" => 'reportGenerator',
-	    "action" => 'generateDisciplineList'
-	));?>">Popis sudionika po disciplinama</a>
-    
-    <br>
-        
-        <a href="<?php echo \route\Route::get('d3')->generate(array(
-	    "controller" => 'reportGenerator',
-	    "action" => 'generateTshirtsList'
-	));?>">Popis majica po veličini i spolu</a>
-    
-    <br>
-        
-        <a href="<?php echo \route\Route::get('d3')->generate(array(
-	    "controller" => 'reportGenerator',
-	    "action" => 'generateYearModuleStatisticsList'
-	));?>">Statistika po godinama i smjeru studiranja</a>
-    
-    <br>
-        
-        <a href="<?php echo \route\Route::get('d3')->generate(array(
-	    "controller" => 'reportGenerator',
-	    "action" => 'generateYearModuleCompetitorsList'
-	));?>">Popis sudionika po godini i smjeru</a>
-    
-    <br>
-        
-        <a href="<?php echo \route\Route::get('d3')->generate(array(
-	    "controller" => 'reportGenerator',
-	    "action" => 'generateBusCompetitorsList'
-	));?>">Popis sudionika po autobusima</a>
 	
 </p>
 

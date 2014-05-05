@@ -10,25 +10,26 @@ class ActiveSponzorList extends AbstractView {
     
     protected function outputHTML() {
 		// Show messages if any
-		if($this->resultMessage)
-		{
-			echo new \view\components\ResultMessage(array(
-				"resultMessage" => $this->resultMessage
-			));
-		}
-		
-		if($this->errorMessage)
-		{
-			echo new \view\components\ErrorMessage(array(
-            "errorMessage" => $this->errorMessage
-			));
-		}
+		echo new \view\components\ResultMessage(array(
+			"resultMessage" => $this->resultMessage
+		));
+
+		echo new \view\components\ErrorMessage(array(
+			"errorMessage" => $this->errorMessage
+		));
 		
 		// list sponzori in table
 		if(count($this->sponzori))
 		{
 			
 ?>
+		<?php echo new \view\components\AddNewLink(array(
+				"link" => \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'addSponzor'
+				)) . "?m=1",
+				"buttonText" => 'Dodaj novog sponzora'
+			)); ?>
 			<?php echo new \view\components\DownloadLinks(array(
 				"route" => \route\Route::get("d3")->generate(array(
 					"controller" => "ozsn",

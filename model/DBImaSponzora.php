@@ -4,12 +4,7 @@ namespace model;
 use app\model\AbstractDBModel;
 	
 class DBImaSponzora extends AbstractDBModel {
-	    
-	/**
-	*
-	* @var boolean 
-	*/
-            
+      
     public function getTable(){
         return 'imasponzora';
     }
@@ -24,13 +19,13 @@ class DBImaSponzora extends AbstractDBModel {
     
     public function addRow($idSponzora, $idKategorijeSponzora, $idPromocije, $idElektrijade, $iznosDonacije,
 	    $valutaDonacije, $napomena) {
-	try {
-	    $atributi = $this->getColumns();
-	    foreach($atributi as $a) {
-		$this->{$a} = ${$a};
-	    }
-	    if ($this->napomena === '' || $this->napomena === ' ')
-		$this->napomena = NULL;
+		try {
+			$atributi = $this->getColumns();
+			foreach($atributi as $a) {
+				$this->{$a} = ${$a};
+			}
+			if ($this->napomena === '' || $this->napomena === ' ')
+				$this->napomena = NULL;
             $this->save();
         } catch (\PDOException $e) {
             throw $e;
@@ -38,28 +33,28 @@ class DBImaSponzora extends AbstractDBModel {
     }
     
     public function deleteActiveRow($idSponzora, $idElektrijade) {
-	try {
+		try {
             $pdo = $this->getPdo();
-	    $q = $pdo->prepare("DELETE FROM imasponzora WHERE idSponzora = :ids AND idElektrijade = :ide");
-	    $q->bindValue(":ids", $idSponzora);
-	    $q->bindValue(":ide", $idElektrijade);
-	    $q->execute();
+			$q = $pdo->prepare("CALL brisiSponzorstvo(:ids, :ide)");
+			$q->bindValue(":ids", $idSponzora);
+			$q->bindValue(":ide", $idElektrijade);
+			$q->execute();
         } catch (\PDOException $e) {
             throw $e;
         }
     }
     
     public function loadRow($idSponzora, $idElektrijade) {
-	try {
+		try {
             $pov = $this->select()->where(array(
-		"idSponzora" => $idSponzora,
-		"idElektrijade" => $idElektrijade
-	    ))->fetchAll();
-	    if (count($pov)) {
-		$this->load($pov[0]->getPrimaryKey());
-	    } else {
-		$this->{$this->getPrimaryKeyColumn()} = null;
-	    }
+				"idSponzora" => $idSponzora,
+				"idElektrijade" => $idElektrijade
+				))->fetchAll();
+			if (count($pov)) {
+				$this->load($pov[0]->getPrimaryKey());
+			} else {
+				$this->{$this->getPrimaryKeyColumn()} = null;
+			}
         } catch (\app\model\NotFoundException $e) {
             $e = new \PDOException();
             $e->errorInfo[0] = '02000';
@@ -73,15 +68,15 @@ class DBImaSponzora extends AbstractDBModel {
     
     public function modifyRow($primaryKey, $idSponzora, $idKategorijeSponzora, $idPromocije, $idElektrijade, $iznosDonacije,
 	    $valutaDonacije, $napomena) {
-	try {
+		try {
             $this->load($primaryKey);
-	    $atributi = $this->getColumns();
-	    foreach($atributi as $a) {
-		$this->{$a} = ${$a};
-	    }
-	    if ($this->napomena === '' || $this->napomena === ' ')
-		$this->napomena = NULL;
-            $this->save();
+			$atributi = $this->getColumns();
+			foreach($atributi as $a) {
+				$this->{$a} = ${$a};
+			}
+			if ($this->napomena === '' || $this->napomena === ' ')
+				$this->napomena = NULL;
+			$this->save();
         } catch (\app\model\NotFoundException $e) {
             $e = new \PDOException();
             $e->errorInfo[0] = '02000';
@@ -93,5 +88,3 @@ class DBImaSponzora extends AbstractDBModel {
         }
     }
 }
-
-
