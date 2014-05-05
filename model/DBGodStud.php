@@ -17,11 +17,6 @@ class DBGodStud extends AbstractDBModel {
         return array ('studij', 'godina');
     }
 	
-	/**
-     * Returns all rows from the table
-     * 
-     * @return array
-     */
     public function getAllGodStud() {
         try {
 			$pdo = $this->getPdo();
@@ -32,76 +27,50 @@ class DBGodStud extends AbstractDBModel {
 			return array();
 		}
 	}
-	/**
-     * Modifies row in the database
-     * 
-     * 
-     * @param mixed $idGodStud
-     * @param mixed $studij
-	 * @param mixed $godina
-     */
+
     public function modifyRow($idGodStud, $studij, $godina) {
         try {
-            $this->load($idGodStud);
-            $this->studij = $studij;
-			$this->godina = $godina;
-            $this->save();
-        } catch (\app\model\NotFoundException $e) {
-            $e = new \PDOException();
-            $e->errorInfo[0] = '02000';
-            $e->errorInfo[1] = 1604;
-            $e->errorInfo[2] = "Zapis ne postoji!";
-            throw $e;
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL azurirajGodStud(:id, :studij, :godina)");
+			$q->bindValue(":id", $idGodStud);
+			$q->bindValue(":studij", $studij);
+			$q->bindValue(":godina", $godina);
+            $q->execute();
         } catch (\PDOException $e) {
             throw $e;
         }
     }
 	
-	/**
-     * Deletes a row from the table 
-     * 
-     * @param mixed $idGodStud
-     * @throws \model\NotFoundException
-     */
-    public function deleteRow($idGodStud) {
+    public function deleteRow($id) {
         try {
-            $this->load($idGodStud);
-            $this->delete();
-        } catch (\app\model\NotFoundException $e) {
-            $e = new \PDOException();
-            $e->errorInfo[0] = '02000';
-            $e->errorInfo[1] = 1604;
-            $e->errorInfo[2] = "Zapis ne postoji!";
-            throw $e;
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL brisiGodStud(:id)");
+			$q->bindValue(":id", $id);
+            $q->execute();
         } catch (\PDOException $e) {
             throw $e;
         }
     }
 	
-	 /**
-     * Adds row to the database
-     * 
-     * @param mixed $studij
-	 * @param mixed $godina
-     * @throws \model\PDOException
-     */
     public function addRow($studij, $godina) {
         try {
-            $this->studij = $studij;
-			$this->godina = $godina;
-            $this->save();
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL dodajGodStud(:studij, :godina)");
+			$q->bindValue(":studij", $studij);
+			$q->bindValue(":godina", $godina);
+            $q->execute();
         } catch (\PDOException $e) {
             throw $e;
         }
     }
     
     public function loadIfExists($primaryKey) {
-	try {
-	    $this->load($primaryKey);
-	} catch (\app\model\NotFoundException $e) {
-	    return;
-	} catch (\PDOException $e) {
-	    return;
-	}
+		try {
+			$this->load($primaryKey);
+		} catch (\app\model\NotFoundException $e) {
+			return;
+		} catch (\PDOException $e) {
+			return;
+		}
     }
 }

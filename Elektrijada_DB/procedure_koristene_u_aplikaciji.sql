@@ -275,6 +275,51 @@ BEGIN
 END $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE  PROCEDURE `azurirajVelicinu`( IN id INT UNSIGNED, IN vel VARCHAR(5) )
+BEGIN
+	IF NOT EXISTS (SELECT * FROM VELMAJICE WHERE velicina = vel) THEN
+		IF EXISTS (SELECT * FROM VELMAJICE WHERE idVelicine = id) THEN
+			UPDATE VELMAJICE
+			SET idVelicine=id,velicina=vel  WHERE idVelicine = id;
+		ELSE 
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Tražena veličina ne postoji!';
+		END IF;
+	ELSE
+		SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Veličina majice već postoji!';
+	END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `azurirajZavod`( IN id INT UNSIGNED, IN naziv VARCHAR(100), IN skraceni VARCHAR(10)  )
+BEGIN
+	IF NOT EXISTS (SELECT * FROM ZAVOD WHERE nazivZavoda = naziv AND skraceniNaziv = skraceni) THEN
+		IF EXISTS (SELECT * FROM ZAVOD WHERE idZavoda = id) THEN
+			UPDATE  ZAVOD
+			SET idZavoda=id, nazivZavoda=naziv, skraceniNaziv=skraceni WHERE idZavoda = id;
+		ELSE 
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Traženi zavod ne postoji!';
+		END IF;
+	ELSE
+		SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Naziv zavoda već postoji!';
+	END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE  PROCEDURE `azurirajGodStud`( IN id INT UNSIGNED, IN stud VARCHAR(50), IN god VARCHAR(50) )
+BEGIN
+IF EXISTS (SELECT * FROM GODSTUD WHERE idGodStud = id) THEN
+	UPDATE  GODSTUD
+	SET idGodStud=id, studij=stud,godina=god  WHERE idGodStud = id;
+ELSE 
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Tražena godina studija ne postoji!';
+END IF;
+END $$
+DELIMITER ;
+
 --			BRISANJE PODATAKA
 DELIMITER $$
 CREATE  PROCEDURE `brisiFunkciju`(IN idObavljaFunkciju  INT(10))
@@ -380,6 +425,39 @@ END IF;
 END $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE  PROCEDURE `brisiVelicinu`( IN id INT UNSIGNED )
+BEGIN
+IF EXISTS (SELECT * FROM VELMAJICE WHERE idVelicine = id) THEN
+DELETE FROM  VELMAJICE WHERE idVelicine = id;
+ELSE 
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Tražena veličina majice ne postoji!';
+END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `brisiZavod`( IN id INT UNSIGNED )
+BEGIN
+IF EXISTS (SELECT * FROM  ZAVOD WHERE idZavoda = id) THEN
+DELETE FROM ZAVOD WHERE idZavoda = id;
+ELSE 
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Traženi zavod ne postoji!';
+END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `brisiGodStud`( IN id INT UNSIGNED )
+BEGIN
+IF EXISTS (SELECT * FROM GODSTUD WHERE idGodStud = id) THEN
+DELETE FROM GODSTUD WHERE idGodStud = id;
+ELSE 
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Tražena godina studija ne postoji!';
+END IF;
+END $$
+DELIMITER ;
+
 --				DODAVANJE PODATAKA
 DELIMITER $$
 CREATE  PROCEDURE `dodajUdrugu`( IN nazivUdruge VARCHAR (50))
@@ -448,6 +526,40 @@ IF EXISTS (SELECT* FROM RADNOMJESTO WHERE RADNOMJESTO.naziv=naziv) THEN
  	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Radno mjesto već postoji!';
 ELSE
 INSERT INTO RADNOMJESTO VALUES(NULL, naziv );
+END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `dodajGodStud`( IN stud VARCHAR(50), IN god VARCHAR(50) )
+BEGIN
+IF EXISTS (SELECT* FROM GODSTUD  WHERE studij=stud AND godina=god) THEN  
+               SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Godina studija već postoji!';
+ELSE
+INSERT INTO GODSTUD VALUES(NULL, stud, god );
+END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `dodajVelicinu`( IN velicina VARCHAR(5) )
+BEGIN
+ IF EXISTS (SELECT* FROM VELMAJICE WHERE  VELMAJICE.velicina=velicina) THEN 
+ SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Veličina majice već postoji!';
+ELSE
+
+INSERT INTO VELMAJICE VALUES(NULL, velicina );
+END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `dodajZavod`(  IN naziv VARCHAR(100), IN skraceni VARCHAR(10) )
+BEGIN
+IF EXISTS (SELECT* FROM ZAVOD WHERE nazivZavoda=naziv AND skraceniNaziv=skraceni) THEN 
+ 	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Zavod već postoji!';
+ELSE
+ 	INSERT INTO ZAVOD VALUES(NULL, naziv, skraceni );
 END IF;
 END $$
 DELIMITER ;

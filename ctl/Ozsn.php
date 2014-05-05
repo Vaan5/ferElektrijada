@@ -2418,398 +2418,6 @@ class Ozsn implements Controller {
             )) . "?msg=excep");
         }
     }
-    
-    /**
-         *Displays all "velicina" from database
-         */
-    public function displayVelMajice(){
-        $this->checkRole();
-        $this->checkMessages();
-	
-	$velicina = new \model\DBVelMajice();
-	$velicine = null;
-	try {
-            $velicine = $velicina->getAllVelicina();
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $this->errorMessage = $handler;
-        }
-	
-	// put in try catch block
-	if (get("type")) {
-	    // generate file
-	    $pomPolje = array("Veličina majice");
-	    $array = array();
-	    $array[] = $pomPolje;
-	    foreach ($velicine as $v) {
-		$pom = array();
-		$pom[] = $v->velicina;
-		$array[] = $pom;
-	    }
-	    $path = $this->generateFile(get("type"), $array);
-	    
-	    echo new \view\ShowFile(array(
-		"path" => $path,
-		"type" => get("type")
-	    ));
-	}
-	    echo new \view\Main(array(
-		"body" => new \view\ozsn\VelMajiceList(array(
-		    "errorMessage" => $this->errorMessage,
-		    "resultMessage" => $this->resultMessage,
-		    "velicine" => $velicine
-		)),
-		"title" => "Lista velicina",
-		"script" => new \view\scripts\ozsn\VelMajiceListJs()
-	    ));
-	}
-	
-    /**
-     * Inserts new data into database via post request
-     */
-    public function addVelMajice() {
-        $this->checkRole();
-
-        $velicina = new \model\DBVelMajice();
-        $validacija = new \model\formModel\VelMajiceFormModel(array('velicina' => post("velicina")));
-        $pov = $validacija->validate();
-        if($pov !== true) {
-            $message = $validacija->decypherErrors($pov);
-            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayVelMajice"
-            )) . "?msg=excep");
-        }
-        
-        try {
-            $velicina->addRow(post("velicina", null));
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayVelMajice"
-            )) . '?msg=succa');
-        } catch (\PDOException $e){
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayVelMajice"
-            )) . "?msg=excep");
-        }
-        
-    }
-	
-    /**
-     * Modifies velicina data via post request
-     */
-    public function modifyVelMajice() {
-        $this->checkRole();
-        
-        $velicina = new \model\DBVelMajice();
-        $validacija = new \model\formModel\VelMajiceFormModel(array('velicina' => post("velicina")));
-        $pov = $validacija->validate();
-        if($pov !== true) {
-            $message = $validacija->decypherErrors($pov);
-            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayVelMajice"
-            )) . "?msg=excep");
-        }
-        try {
-            $velicina->modifyRow(post($velicina->getPrimaryKeyColumn(), null), post('velicina', null));
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayVelMajice"
-            )) . '?msg=succm');
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayVelMajice"
-            )) . "?msg=excep");
-        }
-    }
-    
-    /**
-     * Deletes velicina via get request
-     */
-    public function deleteVelMajice() {
-        $this->checkRole();
-        
-        $this->idCheck("displayVelMajice");
-        
-        $velicina = new \model\DBVelMajice();
-        try {
-            $velicina->deleteRow(get("id"));
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayVelMajice"
-            )) . '?msg=succd');
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayVelMajice"
-            )) . "?msg=excep");
-        }
-    }
-	
-    /**
-     * Displays all "GodStud" in database
-     */
-    public function displayGodStud() {
-        $this->checkRole();
-        $this->checkMessages();
-        
-        $godina = new \model\DBGodStud();
-	$godine = null;
-        try {
-            $godine = $godina->getAllGodStud();
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $this->errorMessage = $handler;
-        }
-
-        echo new \view\Main(array(
-            "body" => new \view\ozsn\GodStudList(array(
-                "errorMessage" => $this->errorMessage,
-                "resultMessage" => $this->resultMessage,
-                "godine" => $godine
-            )),
-            "title" => "Lista godina studija",
-            "script" => new \view\scripts\ozsn\GodStudListJs()
-        ));
-    }
-    
-    /**
-     * Inserts new data into database via post request
-     */
-    public function addGodStud() {
-        $this->checkRole();
-
-        $godStud = new \model\DBGodStud();
-        $validacija = new \model\formModel\GodStudFormModel(array('studij' => post("studij"),'godina'=>post("godina")));
-        $pov = $validacija->validate();
-        if($pov !== true) {
-            $message = $validacija->decypherErrors($pov);
-            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayGodStud"
-            )) . "?msg=excep");
-        }
-        
-        try {
-            $godStud->addRow(post("studij", null),post("godina",null));
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayGodStud"
-            )) . '?msg=succa');
-        } catch (\PDOException $e){
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayGodStud"
-            )) . "?msg=excep");
-        }
-        
-    }
-	
-    /**
-     * Modifies godina studiranja data via post request
-     */
-    public function modifyGodStud() {
-        $this->checkRole();
-        
-        $godStud = new \model\DBGodStud();
-        $validacija = new \model\formModel\VelMajiceFormModel(array('studij' => post("studij")),array('godina'=>post("godina")));
-        $pov = $validacija->validate();
-        if($pov !== true) {
-            $message = $validacija->decypherErrors($pov);
-            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayGodStud"
-            )) . "?msg=excep");
-        }
-        try {
-            $godStud->modifyRow(post($godStud->getPrimaryKeyColumn(), null), post('studij', null), post('godina', null));
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayGodStud"
-            )) . '?msg=succm');
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayGodStud"
-            )) . "?msg=excep");
-        }
-    }
-    
-    /**
-     * Deletes Godstud via get request
-     */
-    public function deleteGodStud() {
-        $this->checkRole();
-        
-        $this->idCheck("displayGodStud");
-        
-        $godStud = new \model\DBGodStud();
-        try {
-            $godStud->deleteRow(get("id"));
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayGodStud"
-            )) . '?msg=succd');
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayGodStud"
-            )) . "?msg=excep");
-        }
-    }
-		/**
-     * Displays all "Zavodi" in database
-     */
-    public function displayZavod() {
-        $this->checkRole();
-        $this->checkMessages();
-        
-        $zavod = new \model\DBZAvod();
-		$zavodi = null;
-        try {
-            $zavodi = $zavod->getAllZavod();
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $this->errorMessage = $handler;
-        }
-
-        echo new \view\Main(array(
-            "body" => new \view\ozsn\ZavodList(array(
-                "errorMessage" => $this->errorMessage,
-                "resultMessage" => $this->resultMessage,
-                "zavodi" => $zavodi
-            )),
-            "title" => "Lista zavoda",
-            "script" => new \view\scripts\ozsn\ZavodListJs()
-        ));
-    }
-	
-/**
-     * Inserts new data into database via post request
-     */
-    public function addZavod() {
-        $this->checkRole();
-
-        $zavod = new \model\DBZavod();
-        $validacija = new \model\formModel\ZavodFormModel(array('nazivZavoda' => post("nazivZavoda"),'skraceniNaziv'=>post("skraceniNaziv")));
-        $pov = $validacija->validate();
-        if($pov !== true) {
-            $message = $validacija->decypherErrors($pov);
-            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayZavod"
-            )) . "?msg=excep");
-        }
-        
-        try {
-            $zavod->addRow(post("nazivZavoda", null),post("skraceniNaziv",null));
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayZavod"
-            )) . '?msg=succa');
-        } catch (\PDOException $e){
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayZavod"
-            )) . "?msg=excep");
-        }
-        
-    }
-	
-	/**
-     * Modifies zavod data via post request
-     */
-    public function modifyZavod() {
-        $this->checkRole();
-        
-        $zavod = new \model\DBZavod();
-        $validacija = new \model\formModel\ZavodFormModel(array('nazivZavoda' => post("nazivZavoda"),'skraceniNaziv'=>post("skraceniNaziv")));
-        $pov = $validacija->validate();
-        if($pov !== true) {
-            $message = $validacija->decypherErrors($pov);
-            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayZavod"
-            )) . "?msg=excep");
-        }
-        try {
-            $zavod->modifyRow(post($zavod->getPrimaryKeyColumn(), null), post('nazivZavoda', null), post('skraceniNaziv', null));
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayZavod"
-            )) . '?msg=succm');
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayZavod"
-            )) . "?msg=excep");
-        }
-    }
-	
-	/**
-     * Deletes Zavod via get request
-     */
-    public function deleteZavod() {
-        $this->checkRole();
-        
-		$this->idCheck("displayZavod");
-        
-        $zavod = new \model\DBZavod();
-        try {
-            $zavod->deleteRow(get("id"));
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayZavod"
-            )) . '?msg=succd');
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayZavod"
-            )) . "?msg=excep");
-        }
-    }
 	
 	/*************************************************************************
 	 *					ISPRAVLJENO
@@ -5346,6 +4954,332 @@ class Ozsn implements Controller {
         } catch (\PDOException $e) {
             $handler = new \model\ExceptionHandlerModel($e);
             $this->createMessage($handler, "d3", "ozsn", "displayRadnoMjesto");
+        }
+    }
+	
+	public function displayVelMajice(){
+        $this->checkRole();
+        $this->checkMessages();
+	
+		$velicina = new \model\DBVelMajice();
+		$velicine = null;
+		try {
+			$velicine = $velicina->getAllVelicina();
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->errorMessage = $handler;
+		}
+
+		// put in try catch block
+		if (get("type")) {
+			// generate file
+			$pomPolje = array("Veličina majice");
+			$array = array();
+			$array[] = $pomPolje;
+			foreach ($velicine as $v) {
+				$pom = array();
+				$pom[] = $v->velicina;
+				$array[] = $pom;
+			}
+			$path = $this->generateFile(get("type"), $array);
+
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+				));
+		}
+	    echo new \view\Main(array(
+			"body" => new \view\ozsn\VelMajiceList(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"velicine" => $velicine
+			)),
+			"title" => "Lista velicina",
+			"script" => new \view\scripts\ozsn\VelMajiceListJs()
+	    ));
+	}
+
+    public function addVelMajice() {
+        $this->checkRole();
+
+        $velicina = new \model\DBVelMajice();
+        $validacija = new \model\formModel\VelMajiceFormModel(array('velicina' => post("velicina")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $this->createMessage($message, "d3", "ozsn", "displayVelMajice");
+        }
+        
+        try {
+            $velicina->addRow(post("velicina", null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayVelMajice"
+            )) . '?msg=succa');
+        } catch (\PDOException $e){
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->createMessage($handler, "d3", "ozsn", "displayVelMajice");
+        }
+    }
+	
+    public function modifyVelMajice() {
+        $this->checkRole();
+        
+        $velicina = new \model\DBVelMajice();
+        $validacija = new \model\formModel\VelMajiceFormModel(array('velicina' => post("velicina")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $this->createMessage($message, "d3", "ozsn", "displayVelMajice");
+        }
+        try {
+            $velicina->modifyRow(post($velicina->getPrimaryKeyColumn(), null), post('velicina', null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayVelMajice"
+            )) . '?msg=succm');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->createMessage($handler, "d3", "ozsn", "displayVelMajice");
+        }
+    }
+    
+    public function deleteVelMajice() {
+        $this->checkRole();
+        
+        $this->idCheck("displayVelMajice");
+        
+        $velicina = new \model\DBVelMajice();
+        try {
+            $velicina->deleteRow(get("id"));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayVelMajice"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->createMessage($handler, "d3", "ozsn", "displayVelMajice");
+        }
+    }
+	
+    public function displayGodStud() {
+        $this->checkRole();
+        $this->checkMessages();
+        
+        $godina = new \model\DBGodStud();
+		$godine = null;
+        try {
+            $godine = $godina->getAllGodStud();
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->errorMessage = $handler;
+        }
+		
+		if (get("type") !== false) {
+			$pomPolje = array("Godina", "Studij");
+			$array = array();
+			$array[] = $pomPolje;
+			
+			if ($godine !== null && count($godine)) {
+				foreach ($godine as $v) {
+					$array[] = array($v->studij, $v->godina);
+				}
+			}
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+
+        echo new \view\Main(array(
+            "body" => new \view\ozsn\GodStudList(array(
+                "errorMessage" => $this->errorMessage,
+                "resultMessage" => $this->resultMessage,
+                "godine" => $godine
+            )),
+            "title" => "Lista godina studija",
+            "script" => new \view\scripts\ozsn\GodStudListJs()
+        ));
+    }
+	
+    public function addGodStud() {
+        $this->checkRole();
+
+        $godStud = new \model\DBGodStud();
+        $validacija = new \model\formModel\GodStudFormModel(array('studij' => post("studij"),'godina'=>post("godina")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $this->createMessage($message, "d3", "ozsn", "displayGodStud");
+        }
+        
+        try {
+            $godStud->addRow(post("studij", null),post("godina",null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayGodStud"
+            )) . '?msg=succa');
+        } catch (\PDOException $e){
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->createMessage($handler, "d3", "ozsn", "displayGodStud");
+        }
+    }
+	
+    public function modifyGodStud() {
+        $this->checkRole();
+        
+        $godStud = new \model\DBGodStud();
+        $validacija = new \model\formModel\VelMajiceFormModel(array('studij' => post("studij")),array('godina'=>post("godina")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $this->createMessage($message, "d3", "ozsn", "displayGodStud");
+        }
+        try {
+            $godStud->modifyRow(post($godStud->getPrimaryKeyColumn(), null), post('studij', null), post('godina', null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayGodStud"
+            )) . '?msg=succm');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+			$this->createMessage($handler, "d3", "ozsn", "displayGodStud");
+        }
+    }
+
+    public function deleteGodStud() {
+        $this->checkRole();
+        
+        $this->idCheck("displayGodStud");
+        
+        $godStud = new \model\DBGodStud();
+        try {
+            $godStud->deleteRow(get("id"));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayGodStud"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->createMessage($handler, "d3", "ozsn", "displayGodStud");
+        }
+    }
+
+    public function displayZavod() {
+        $this->checkRole();
+        $this->checkMessages();
+        
+        $zavod = new \model\DBZAvod();
+		$zavodi = null;
+        try {
+            $zavodi = $zavod->getAllZavod();
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->errorMessage = $handler;
+        }
+		
+		if (get("type") !== false) {
+			$pomPolje = array("Zavod", "Skraćeni naziv");
+			$array = array();
+			$array[] = $pomPolje;
+			
+			if ($zavodi !== null && count($zavodi)) {
+				foreach ($zavodi as $v) {
+					$array[] = array($v->nazivZavoda, $v->skraceniNaziv);
+				}
+			}
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+
+        echo new \view\Main(array(
+            "body" => new \view\ozsn\ZavodList(array(
+                "errorMessage" => $this->errorMessage,
+                "resultMessage" => $this->resultMessage,
+                "zavodi" => $zavodi
+            )),
+            "title" => "Lista zavoda",
+            "script" => new \view\scripts\ozsn\ZavodListJs()
+        ));
+    }
+
+    public function addZavod() {
+        $this->checkRole();
+
+        $zavod = new \model\DBZavod();
+        $validacija = new \model\formModel\ZavodFormModel(array('nazivZavoda' => post("nazivZavoda"),'skraceniNaziv'=>post("skraceniNaziv")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $this->createMessage($message, "d3", "ozsn", "displayZavod");
+        }
+        
+        try {
+            $zavod->addRow(post("nazivZavoda", null),post("skraceniNaziv",null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayZavod"
+            )) . '?msg=succa');
+        } catch (\PDOException $e){
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->createMessage($handler, "d3", "ozsn", "displayZavod");
+        }
+    }
+	
+    public function modifyZavod() {
+        $this->checkRole();
+        
+        $zavod = new \model\DBZavod();
+        $validacija = new \model\formModel\ZavodFormModel(array('nazivZavoda' => post("nazivZavoda"),'skraceniNaziv'=>post("skraceniNaziv")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $this->createMessage($message, "d3", "ozsn", "displayZavod");
+        }
+        try {
+            $zavod->modifyRow(post($zavod->getPrimaryKeyColumn(), null), post('nazivZavoda', null), post('skraceniNaziv', null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayZavod"
+            )) . '?msg=succm');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+			$this->createMessage($handler, "d3", "ozsn", "displayZavod");
+        }
+    }
+	
+    public function deleteZavod() {
+        $this->checkRole();
+        
+		$this->idCheck("displayZavod");
+        
+        $zavod = new \model\DBZavod();
+        try {
+            $zavod->deleteRow(get("id"));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayZavod"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->createMessage($handler, "d3", "ozsn", "displayZavod");
         }
     }
 }
