@@ -255,3 +255,41 @@ BEGIN
 	END IF;
 END $$
 DELIMITER ;
+
+DELIMITER $$
+
+CREATE  PROCEDURE `provjeriActiveOzsn`(IN idOsobe INT(10), IN idElektrijada INT(10))
+BEGIN
+IF EXISTS (SELECT * FROM OSOBA WHERE OSOBA.idOsobe=idOsobe) THEN
+IF EXISTS (SELECT * FROM ELEKTRIJADA WHERE ELEKTRIJADA.idElektrijade=idElektrijada) THEN
+
+SELECT * FROM obavljafunkciju
+WHERE obavljafunkciju.idOsobe = idOsobe AND obavljafunkciju.idElektrijade=idElektrijada;
+
+ELSE
+   SIGNAL SQLSTATE '23000'SET MESSAGE_TEXT = 'Greška: Unesena je nepostojeća elektrijada.';
+END IF;
+ELSE
+   SIGNAL SQLSTATE '23000'SET MESSAGE_TEXT = 'Greška: Unesena je nepostojeća osoba.';
+END IF;
+END $$
+DELIMITER ;
+DELIMITER $$
+
+CREATE  PROCEDURE `provjeriActiveSudionik`(IN idOsobe INT(10), IN idElektrijada INT(10))
+BEGIN
+IF EXISTS (SELECT * FROM OSOBA WHERE OSOBA.idOsobe=idOsobe) THEN
+IF EXISTS (SELECT * FROM ELEKTRIJADA WHERE ELEKTRIJADA.idElektrijade=idElektrijada) THEN
+
+SELECT * FROM sudjelovanje 
+JOIN podrucjesudjelovanja ON sudjelovanje.idSudjelovanja = podrucjesudjelovanja.idSudjelovanja 
+WHERE sudjelovanje.idOsobe = idOsobe AND sudjelovanje.idElektrijade=idElektrijada;
+
+ELSE
+   SIGNAL SQLSTATE '23000'SET MESSAGE_TEXT = 'Greška: Unesena je nepostojeća elektrijada.';
+END IF;
+ELSE
+   SIGNAL SQLSTATE '23000'SET MESSAGE_TEXT = 'Greška: Unesena je nepostojeća osoba.';
+END IF;
+END $$
+DELIMITER ;
