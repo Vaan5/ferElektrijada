@@ -128,6 +128,7 @@ class DBOsoba extends AbstractDBModel {
 			$_SESSION["vrsta"] =$this->getUloga($_SESSION["auth"], $uloga);
             $_SESSION["user"] = $this->ime == NULL ? null:$this->ime;
 			$_SESSION["podrucja"] = $this->getPodrucja ($_SESSION["auth"]);//vraca id podrucja
+			$_SESSION["active"]= $this->isActive($uloga,$_SESSION["auth"]);//true ako je aktivan, false ako nije
 			if($_SESSION["vrsta"]===false or $_SESSION["podrucja"]===false){//ako ne uspije dohvatit informacije vrati false
 				return false;
 			}
@@ -135,6 +136,49 @@ class DBOsoba extends AbstractDBModel {
         
         return $this->isLoggedIn;
     }
+	
+	/**
+     * 
+     * @param string $uloga korisnikova uloga
+     * @param string $id idOsobe
+     * @return boolean
+     */
+	public function isActive($uloga, $id){
+		$final=null;
+		try{
+			$elektrijada = new DBElektrijada();
+			$pdo = $this->getPdo();
+			$idelektr = $elektrijada->getCurrentElektrijadaId();
+			if($idelektr === false){
+				return null;
+			}
+			if($uloga ==='O'){
+				$q = $pdo->prepare("CALL provjeriActiveOzsn(:id,:Elektrijada)");
+				$q->bindValue(":id", $id);
+				$q->bindValue(":Elektrijada", $idelektr);
+				$q->execute();
+				$final  = $q->fetchAll();
+			}
+			elseif ($uloga === 'S'){
+				$q = $pdo->prepare("CALL provjeriActiveSudionik(:id,:Elektrijada)");
+				$q->bindValue(":id", $id);
+				$q->bindValue(":Elektrijada", $idelektr);
+				$q->execute();
+				$final  = $q->fetchAll();
+			}
+		}catch (\PDOException $e) {
+           return null;
+		}
+		
+		$vel=count($final);
+		if($vel>0){//ako postoji vrati true, ako ne vrati false
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
     
     /**
      * 
