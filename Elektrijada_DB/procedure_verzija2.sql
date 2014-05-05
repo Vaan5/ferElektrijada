@@ -43,21 +43,6 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `azurirajKategorijuSponzora`(IN idKategorijeSponzora INT(10), IN tipKategorijeSponzora VARCHAR(100))
-BEGIN
-	IF NOT EXISTS (SELECT * FROM KATEGORIJA WHERE KATEGORIJA.tipKategorijeSponzora=tipKategorijeSponzora) THEN
-		IF EXISTS (SELECT * FROM KATEGORIJA WHERE KATEGORIJA.idKategorijaSponzora=idKategorijaSponzora) THEN
-			UPDATE KATEGORIJA
-			SET KATEGORIJA.tipKategorijaSponzora=tipKategorijeSponzora
-			WHERE KATEGORIJA.idKategorijaSponzora=idKategorijaSponzora;
-		ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji kategorija sponzora sa zadanim identifikatorom!';
-		END IF;
-	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ovaj tip kategorije sponzora je vec unesen u bazu!';
-	END IF;
-END $$
-DELIMITER ;
-
-DELIMITER $$
 CREATE  PROCEDURE `azurirajKontakt`(IN idKontakta INT(10), IN imeKontakt VARCHAR(100), IN prezimeKontakt VARCHAR(100), IN telefon VARCHAR(20), IN radnoMjesto VARCHAR(100), IN idTvrtke INT(10), IN idSponzora INT(10),IN idMedija INT(10))
 BEGIN
 	IF EXISTS (SELECT * FROM KONTAKTOSOBE WHERE KONTAKTOSOBE.idKontakta=idKontakta) && (telefon REGEXP '[0-9]') THEN
@@ -144,27 +129,6 @@ BEGIN
 		END IF;
 	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Navedeni broj mobitela se vec nalazi u bazi!';
 	END IF;
-END $$
-DELIMITER ;
-
-DELIMITER $$
-CREATE  PROCEDURE `azurirajNacinPromocije`(IN idPromocije INT UNSIGNED, IN tipPromocije VARCHAR(100))
-BEGIN
-IF EXISTS ( SELECT * FROM NACINPROMOCIJE WHERE NACINPROMOCIJE.idPromocije = idPromocije) THEN
-	IF NOT EXISTS (SELECT * FROM NACINPROMOCIJE WHERE NACINPROMOCIJE.tipPromocije = tipPromocije) THEN
-		IF (tipPromocije IS NOT NULL) THEN		
-			UPDATE NACINPROMOCIJE SET
-			NACINPROMOCIJE.tipPromocije = tipPromocije
-			WHERE NACINPROMOCIJE.idPromocije = idPromocije;
-		ELSE 
-			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Tip promocije mora biti poznat!';
-		END IF;
-	ELSE 
-		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Tip promocije već postoji!';
-	END IF;
-ELSE
-	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: id promocije nije pronađen!';
-END IF;
 END $$
 DELIMITER ;
 
@@ -464,17 +428,6 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `brisiKategorijuSponzora`(IN idKategorijeSponzora INT(10))
-BEGIN
-	IF EXISTS (SELECT * FROM KATEGORIJA WHERE KATEGORIJA.idKategorijeSponzora=idKategorijeSponzora) THEN
-		DELETE FROM KATEGORIJA
-		WHERE KATEGORIJA.idKategorijeSponzora=idKategorijeSponzora;
-	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji kategorija sa zadanim identifikatorom!';
-	END IF;
-END $$
-DELIMITER ;
-
-DELIMITER $$
 CREATE  PROCEDURE `brisiKontakt`(IN idKontakta INT(10))
 BEGIN
 	IF EXISTS (SELECT * FROM KONTAKTOSOBE.idKontakta=idKontakta) THEN
@@ -517,17 +470,6 @@ BEGIN
 		WHERE BROJEVIMOBITELA.idBroja=idBroja;
 	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji mobitel sa unesenim identifikatorom!';
     END IF;
-END $$
-DELIMITER ;
-
-DELIMITER $$
-CREATE  PROCEDURE `brisiNacinPromocije`(IN idPromocije INT UNSIGNED)
-BEGIN
-IF EXISTS ( SELECT * FROM NACINPROMOCIJE WHERE NACINPROMOCIJE.idPromocije = idPromocije) THEN
-	DELETE FROM NACINPROMOCIJE WHERE NACINPROMOCIJE.idPromocije = idPromocije;
-ELSE 
-	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Traženi zapis ne postoji!';
-END IF;
 END $$
 DELIMITER ;
 
@@ -713,16 +655,6 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `dodajKategorijuSponzora`(IN tipKategorijeSponzora VARCHAR(100))
-BEGIN
-IF NOT EXISTS (SELECT * FROM KATEGORIJA WHERE KATEGORIJA.tipKategorijeSponzora=tipKategorijeSponzora) THEN
-	INSERT INTO KATEGORIJA values (NULL, tipKategorijeSponzora);
-ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Zadani tip kategorije sponzora se vec nalazi u bazi';
-END IF;
-END $$
-DELIMITER ;
-
-DELIMITER $$
 CREATE  PROCEDURE `dodajKontakt`(IN imeKontakt VARCHAR(100), IN prezimeKontakt VARCHAR(100), IN telefon VARCHAR(20), IN radnoMjesto VARCHAR(100), IN idTvrtke INT(10), IN idSponzora INT(10), IN idMedija INT(10))
 BEGIN
 IF EXISTS (SELECT * FROM KONTAKTOSOBE WHERE KONTAKTOSOBE.imeKontakt=imeKontakt && KONTAKTOSOBE.prezimeKontakt=prezimeKontakt && KONTAKTOSOBE.telefon=telefon && KONTAKTOSOBE.radnoMjesto=radnoMjesto && KONTAKTOSOBE.idTvrtke=idTvrtke &&KONTAKTOSOBE.idSponzora=idSponzora) THEN
@@ -810,20 +742,6 @@ BEGIN
 		END IF;
 	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Navedeni broj je vec u bazi!';
 	END IF;
-END $$
-DELIMITER ;
-
-DELIMITER $$
-CREATE  PROCEDURE `dodajNacinPromocije`(IN tipPromocije VARCHAR(100))
-BEGIN
-IF EXISTS ( SELECT * FROM NACINPROMOCIJE WHERE NACINPROMOCIJE.tipPromocije = tipPromocije) THEN 
-	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Tip promocije već postoji!';
-ELSE IF (tipPromocije IS NULL) THEN
-	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Tip promocije mora biti poznat!';
-ELSE
-	INSERT INTO NACINPROMOCIJE(tipPromocije) VALUES (tipPromocije);
-END IF;
-END IF;
 END $$
 DELIMITER ;
 
@@ -1097,15 +1015,6 @@ CREATE  PROCEDURE `dohvatiBrojeve`(IN `id_kontakta` INT UNSIGNED)
 BEGIN
 
 SELECT * FROM BROJEVIMOBITELA WHERE idKontakta = id_kontakta;
-
-END $$
-DELIMITER ;
-
-DELIMITER $$
-CREATE  PROCEDURE `dohvatiKategorijeSponzora`()
-BEGIN
-
-SELECT * FROM KATEGORIJA ORDER BY tipKategorijeSponzora ASC;
 
 END $$
 DELIMITER ;

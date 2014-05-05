@@ -172,6 +172,15 @@ SELECT * FROM ATRIBUT ORDER BY nazivAtributa;
 END $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE  PROCEDURE `dohvatiKategorijeSponzora`()
+BEGIN
+
+SELECT * FROM KATEGORIJA ORDER BY tipKategorijeSponzora ASC;
+
+END $$
+DELIMITER ;
+
 --			AŽURIRANJE PODATAKA
 
 DELIMITER $$
@@ -344,6 +353,42 @@ END IF;
 END $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE  PROCEDURE `azurirajNacinPromocije`(IN idPromocije INT UNSIGNED, IN tipPromocije VARCHAR(100))
+BEGIN
+IF EXISTS ( SELECT * FROM NACINPROMOCIJE WHERE NACINPROMOCIJE.idPromocije = idPromocije) THEN
+	IF NOT EXISTS (SELECT * FROM NACINPROMOCIJE WHERE NACINPROMOCIJE.tipPromocije = tipPromocije) THEN
+		IF (tipPromocije IS NOT NULL) THEN		
+			UPDATE NACINPROMOCIJE SET
+			NACINPROMOCIJE.tipPromocije = tipPromocije
+			WHERE NACINPROMOCIJE.idPromocije = idPromocije;
+		ELSE 
+			 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Tip promocije je obavezan!';
+		END IF;
+	ELSE 
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Tip promocije već postoji!';
+	END IF;
+ELSE
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Traženi tip promocije nije pronađen!';
+END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `azurirajKategorijuSponzora`(IN idKategorijeSponzora INT(10), IN tipKategorijeSponzora VARCHAR(100))
+BEGIN
+	IF NOT EXISTS (SELECT * FROM KATEGORIJA WHERE KATEGORIJA.tipKategorijeSponzora=tipKategorijeSponzora) THEN
+		IF EXISTS (SELECT * FROM KATEGORIJA WHERE KATEGORIJA.idKategorijeSponzora=idKategorijeSponzora) THEN
+			UPDATE KATEGORIJA
+			SET KATEGORIJA.tipKategorijeSponzora=tipKategorijeSponzora
+			WHERE KATEGORIJA.idKategorijeSponzora=idKategorijeSponzora;
+		ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Ne postoji kategorija sponzora sa zadanim identifikatorom!';
+		END IF;
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Tip kategorije već postoji!';
+	END IF;
+END $$
+DELIMITER ;
+
 --			BRISANJE PODATAKA
 DELIMITER $$
 CREATE  PROCEDURE `brisiFunkciju`(IN idObavljaFunkciju  INT(10))
@@ -496,6 +541,28 @@ END IF;
 END $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE  PROCEDURE `brisiNacinPromocije`(IN idPromocije INT UNSIGNED)
+BEGIN
+IF EXISTS ( SELECT * FROM NACINPROMOCIJE WHERE NACINPROMOCIJE.idPromocije = idPromocije) THEN
+	DELETE FROM NACINPROMOCIJE WHERE NACINPROMOCIJE.idPromocije = idPromocije;
+ELSE 
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Traženi tip promocije ne postoji!';
+END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `brisiKategorijuSponzora`(IN idKategorijeSponzora INT(10))
+BEGIN
+	IF EXISTS (SELECT * FROM KATEGORIJA WHERE KATEGORIJA.idKategorijeSponzora=idKategorijeSponzora) THEN
+		DELETE FROM KATEGORIJA
+		WHERE KATEGORIJA.idKategorijeSponzora=idKategorijeSponzora;
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Ne postoji kategorija sa zadanim identifikatorom!';
+	END IF;
+END $$
+DELIMITER ;
+
 --				DODAVANJE PODATAKA
 DELIMITER $$
 CREATE  PROCEDURE `dodajUdrugu`( IN nazivUdruge VARCHAR (50))
@@ -606,5 +673,29 @@ DELIMITER $$
 CREATE  PROCEDURE `dodajAtribut`(IN nazivAtributa VARCHAR(100))
 BEGIN
 INSERT INTO ATRIBUT VALUES (NULL,nazivAtributa);
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `dodajNacinPromocije`(IN tipPromocije VARCHAR(100))
+BEGIN
+IF EXISTS ( SELECT * FROM NACINPROMOCIJE WHERE NACINPROMOCIJE.tipPromocije = tipPromocije) THEN 
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Tip promocije već postoji!';
+ELSE IF (tipPromocije IS NULL) THEN
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Tip promocije je obavezan!';
+ELSE
+	INSERT INTO NACINPROMOCIJE(tipPromocije) VALUES (tipPromocije);
+END IF;
+END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `dodajKategorijuSponzora`(IN tipKategorijeSponzora VARCHAR(100))
+BEGIN
+IF NOT EXISTS (SELECT * FROM KATEGORIJA WHERE KATEGORIJA.tipKategorijeSponzora=tipKategorijeSponzora) THEN
+	INSERT INTO KATEGORIJA values (NULL, tipKategorijeSponzora);
+ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Zadani tip kategorije sponzora već postoji!';
+END IF;
 END $$
 DELIMITER ;

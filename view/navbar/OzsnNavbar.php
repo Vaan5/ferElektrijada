@@ -41,36 +41,36 @@ class OzsnNavbar extends AbstractView{
                     "controller" => 'ozsn',
                     "action" => 'displayActiveTvrtke'
                 ));?>">Korištene usluge tvrtki</a></li>
+			
             <li class="divider"></li>
-            <li><a href="<?php echo \route\Route::get('d3')->generate(array(
+			
+			<li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
-                    "action" => 'addSponzor'
-                ));?>">Dodaj sponzora</a></li>
+                    "action" => 'displaySponzor'
+                ));?>">Sponzori</a></li>
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'displayKategorija'
-                ));?>">Kategorije sponzora</a></li>
+                ));?>">Kategorije Sponzora</a></li>
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'displayNacinPromocije'
-                ));?>">Načini promocije</a></li>
+                ));?>">Načini Promocije</a></li>
+			
             <li class="divider"></li>
+			
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'displayActiveSponzor'
-                ));?>">Ovogodišnji sponzori</a></li>
+                ));?>">Ovogodišnji Sponzori</a></li>
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'displayAreaSponzor'
                 ));?>">Područni sponzori ovogodišnje elektrijade</a></li>
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
-                    "action" => 'displaySponzor'
-                ));?>">Sponzori</a></li>
-            <li><a href="<?php echo \route\Route::get('d3')->generate(array(
-                    "controller" => 'ozsn',
                     "action" => 'displaySponzorsByElektrijada'
-                ));?>">Sponzori po elektrijadama</a></li>
+                ));?>">Sponzori po Elektrijadama</a></li>
 
 
             	

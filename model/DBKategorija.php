@@ -18,59 +18,58 @@ class DBKategorija extends AbstractDBModel {
     }
     
     public function getAll() {
-	return $this->select()->fetchAll();
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL dohvatiKategorijeSponzora()");
+			$q->execute();
+			return $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+		} catch (\PDOException $e) {
+			return array();
+		}
     }
     
     public function loadIfExists($id) {
-	try {
-	    $this->load($id);
-	    return $this;
-	} catch (\app\model\NotFoundException $e) {
-	    return null;
-	} catch (\PDOException $e) {
-	    return null;
-	}
+		try {
+			$this->load($id);
+			return $this;
+		} catch (\app\model\NotFoundException $e) {
+			return null;
+		} catch (\PDOException $e) {
+			return null;
+		}
     }
     
     public function addRow($tipKategorijeSponzora) {
-	try {
-            $this->tipKategorijeSponzora = $tipKategorijeSponzora;
-            $this->save();
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL dodajKategorijuSponzora(:naziv)");
+			$q->bindValue(":naziv", $tipKategorijeSponzora);
+            $q->execute();
         } catch (\PDOException $e) {
             throw $e;
         }
     }
     
     public function modifyRow($idKategorijeSponzora, $tipKategorijeSponzora) {
-	try {
-            $this->load($idKategorijeSponzora);
-	    $this->tipKategorijeSponzora = $tipKategorijeSponzora;
-	    $this->save();
-        } catch (\app\model\NotFoundException $e) {
-            $e = new \PDOException();
-            $e->errorInfo[0] = '02000';
-            $e->errorInfo[1] = 1604;
-            $e->errorInfo[2] = "Zapis ne postoji!";
-            throw $e;
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL azurirajKategorijuSponzora(:id, :naziv)");
+			$q->bindValue(":id", $idKategorijeSponzora);
+			$q->bindValue(":naziv", $tipKategorijeSponzora);
+            $q->execute();
         } catch (\PDOException $e) {
             throw $e;
         }
     }
     
-    public function deleteRow($idKategorijeSponzora) {
-	try {
-            $this->load($idKategorijeSponzora);
-	    $this->delete();
-        } catch (\app\model\NotFoundException $e) {
-            $e = new \PDOException();
-            $e->errorInfo[0] = '02000';
-            $e->errorInfo[1] = 1604;
-            $e->errorInfo[2] = "Zapis ne postoji!";
-            throw $e;
+    public function deleteRow($id) {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL brisiKategorijuSponzora(:id)");
+			$q->bindValue(":id", $id);
+            $q->execute();
         } catch (\PDOException $e) {
             throw $e;
         }
     }
 }
-
-
