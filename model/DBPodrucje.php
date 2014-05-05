@@ -20,6 +20,31 @@ class DBPodrucje extends AbstractDBModel {
     public function getAll() {
 		return $this->select()->fetchAll();
     }
+	
+	public function getAllForReport() {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT podrucje.idPodrucja, podrucje.nazivPodrucja, k.nazivPodrucja kategorija 
+									FROM podrucje JOIN podrucje k ON podrucje.idNadredjenog = k.idPodrucja
+									ORDER BY k.nazivPodrucja ASC");
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
+	
+	public function getRoot() {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT * FROM podrucje WHERE idNadredjenog IS NULL
+								ORDER BY nazivPodrucja ASC");
+			$q->execute();
+			return $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
     
     public function getKnowledgeId() {
 		try {
@@ -47,6 +72,42 @@ class DBPodrucje extends AbstractDBModel {
 		} catch (\PDOException $e) {
 			throw $e;
 		}
+    }
+	
+	public function modifyRow($id, $naziv, $nad) {
+        try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL azurirajPodrucje(:id, :naziv, :n)");
+			$q->bindValue(":id", $id);
+			$q->bindValue(":naziv", $naziv);
+			$q->bindValue(":n", $nad);
+            $q->execute();
+        } catch (\PDOException $e) {
+            throw $e;
+        }
+    }
+
+    public function deleteRow($id) {
+        try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL brisiPodrucje(:id)");
+			$q->bindValue(":id", $id);
+            $q->execute();
+        } catch (\PDOException $e) {
+            throw $e;
+        }
+    }
+	
+    public function addRow($naziv, $nad) {
+        try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL dodajPodrucje(:naziv, :n)");
+			$q->bindValue(":naziv", $naziv);
+			$q->bindValue(":n", $nad);
+            $q->execute();
+        } catch (\PDOException $e) {
+            throw $e;
+        }
     }
 	
 	/**************************************************************

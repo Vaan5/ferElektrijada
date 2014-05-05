@@ -167,26 +167,6 @@ DELIMITER ;
 
 
 DELIMITER $$
-CREATE  PROCEDURE `azurirajPodrucje`(IN idPodrucja INT(10),IN nazivPodrucja VARCHAR(100),IN idNadredjenog INT(10))
-BEGIN
-IF NOT EXISTS (SELECT* FROM PODRUCJE WHERE PODRUCJE.nazivPodrucja = nazivPodrucja) THEN
-IF NOT EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idPodrucja) THEN
-	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Područje je pogrešno zadano';
-ELSE
-UPDATE PODRUCJE
-SET  PODRUCJE.nazivPodrucja=nazivPodrucja,PODRUCJE.idNadredjenog=idNadredjenog
-WHERE PODRUCJE.idPodrucja = idPodrucja ;
-
-END IF;
-ELSE
- SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ovo područje je već unešeno!';
-END IF;
-
-END $$
-DELIMITER ;
-
-
-DELIMITER $$
 CREATE  PROCEDURE `azurirajPodrucjeSudjelovanja`(IN idPodrucjeSudjelovanja INT UNSIGNED, IN idPodrucja INT UNSIGNED, IN idSudjelovanja INT UNSIGNED, IN rezultatPojedinacni SMALLINT, IN vrstaPodrucja TINYINT(1),IN iznosUplate INT, IN valuta VARCHAR(3))
 BEGIN
 
@@ -379,23 +359,6 @@ IF NOT EXISTS (SELECT * FROM OSOBA WHERE OSOBA.idOsobe=idOsobe) THEN
 ELSE
 DELETE FROM OSOBA
 WHERE OSOBA.idOsobe=idOsobe ;
-
-END IF;
-END $$
-DELIMITER ;
-
-DELIMITER $$
-CREATE  PROCEDURE `brisiPodrucje`(IN idPodrucja INT(10))
-BEGIN
-IF NOT EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idPodrucja) THEN
-	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji odabrano područje!';
-ELSE
-IF NOT EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idNadredjenog = idPodrucja) THEN
-DELETE FROM PODRUCJE
-WHERE PODRUCJE.idPodrucja = idPodrucja ;
-ELSE
-     SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Najprije morate obrisati sva područja kojima je ovo područje nadređeno!';
-   END IF;
 
 END IF;
 END $$
@@ -625,23 +588,6 @@ END IF;
 END IF;
 ELSE 
 	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Pogrešno unešen spol! !';
-END IF;
-
-END $$
-DELIMITER ;
-
-DELIMITER $$
-CREATE  PROCEDURE `dodajPodrucje`(IN nazivPodrucja VARCHAR(100),IN idNadredjenog INT(10))
-BEGIN
-IF NOT EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.nazivPodrucja = nazivPodrucja) THEN
-IF NOT EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idNadredjenog) THEN
-	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Nadređeno područje je pogrešno zadano';
-ELSE
-INSERT INTO PODRUCJE VALUES (NULL,nazivPodrucja,idNadredjenog);
-
-END IF;
-ELSE
- SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ovo područje je već unešeno!';
 END IF;
 
 END $$

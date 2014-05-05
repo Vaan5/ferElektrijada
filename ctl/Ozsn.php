@@ -5193,4 +5193,126 @@ class Ozsn implements Controller {
             $this->createMessage($handler, "d3", "ozsn", "displayActiveObjava");
         }
     }
+	
+	/******************************************************************
+	 *					Discipline
+	 ******************************************************************/
+	public function displayPodrucje(){
+        $this->checkRole();
+        $this->checkMessages();
+	
+		$podrucje = new \model\DBPodrucje();
+		$podrucja = null;
+		$korijenski = array();
+		try {
+			$podrucja = $podrucje->getAll();
+			$korijenski = $podrucje->getRoot();
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->errorMessage = $handler;
+		}
+
+		if (get("type") !== false) {
+			$pomPolje = array("Disciplina", "Kategorija");
+			$array = array();
+			$array[] = $pomPolje;
+			
+			try {
+				$podrucja = $podrucje->getAllForReport();
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->errorMessage = $handler;
+			}
+			
+			if ($podrucja !== null && count($podrucja)) {
+				foreach ($podrucja as $v) {
+					$array[] = array($v->nazivPodrucja, $v->tip);
+				}
+			}
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+		
+		echo new \view\Main(array(
+			"body" => new \view\ozsn\PodrucjaList(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"podrucja" => $podrucja,
+				"korijenski" => $korijenski
+			)),
+			"title" => "Lista Disciplina",
+		));
+	}
+	
+	public function addPodrucje() {
+        $this->checkRole();
+
+        $podrucje = new \model\DBPodrucje();
+        $validacija = new \model\formModel\PodrucjeFormModel(array('nazivPodrucja' => post("nazivPodrucja")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $this->createMessage($message, "d3", "ozsn", "displayPodrucje");
+        }
+        
+        try {
+            $podrucje->addRow(post("nazivPodrucja", null), post("idNadredjenog", NULL));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayPodrucje"
+            )) . '?msg=succa');
+        } catch (\PDOException $e){
+            $handler = new \model\ExceptionHandlerModel($e);
+			$this->createMessage($handler, "d3", "ozsn", "displayPodrucje");
+        }
+        
+    }
+
+    public function modifyPodrucje() {
+        $this->checkRole();
+        
+        $podrucje = new \model\DBPodrucje();
+        $validacija = new \model\formModel\PodrucjeFormModel(array('nazivPodrucja' => post("nazivPodrucja")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+            $this->createMessage($message, "d3", "ozsn", "displayPodrucje");
+        }
+        try {
+            $podrucje->modifyRow(post($podrucje->getPrimaryKeyColumn(), null), post('nazivPodrucja', null), post("idNadredjenog", NULL));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayPodrucje"
+            )) . '?msg=succm');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->createMessage($handler, "d3", "ozsn", "displayPodrucje");
+        }
+    }
+	
+    public function deletePodrucje() {
+        $this->checkRole();
+        
+		$this->idCheck("displayPodrucje");
+        
+        $podrucje = new \model\DBPodrucje();
+        try {
+            $podrucje->deleteRow(get("id"));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayPodrucje"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->createMessage($handler, "d3", "ozsn", "displayPodrucje");
+        }
+    }
 }

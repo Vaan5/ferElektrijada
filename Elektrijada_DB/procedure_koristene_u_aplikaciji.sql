@@ -452,6 +452,25 @@ BEGIN
 END $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE  PROCEDURE `azurirajPodrucje`(IN idPodrucja INT(10),IN nazivPodrucja VARCHAR(100),IN idNadredjenog INT(10))
+BEGIN
+IF NOT EXISTS (SELECT* FROM PODRUCJE WHERE PODRUCJE.nazivPodrucja = nazivPodrucja) THEN
+IF NOT EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idPodrucja) THEN
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Nepoznata disciplina!';
+ELSE
+UPDATE PODRUCJE
+SET  PODRUCJE.nazivPodrucja=nazivPodrucja,PODRUCJE.idNadredjenog=idNadredjenog
+WHERE PODRUCJE.idPodrucja = idPodrucja ;
+
+END IF;
+ELSE
+ SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Disciplina već postoji!';
+END IF;
+
+END $$
+DELIMITER ;
+
 --			BRISANJE PODATAKA
 DELIMITER $$
 CREATE  PROCEDURE `brisiFunkciju`(IN idObavljaFunkciju  INT(10))
@@ -675,6 +694,23 @@ END IF;
 END $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE  PROCEDURE `brisiPodrucje`(IN idPodrucja INT(10))
+BEGIN
+IF NOT EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idPodrucja) THEN
+	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Nepoznata disciplina!';
+ELSE
+IF NOT EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idNadredjenog = idPodrucja) THEN
+DELETE FROM PODRUCJE
+WHERE PODRUCJE.idPodrucja = idPodrucja ;
+ELSE
+     SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Najprije morate obrisati sve discipline kojima je ova disciplina nadređena!';
+   END IF;
+
+END IF;
+END $$
+DELIMITER ;
+
 --				DODAVANJE PODATAKA
 DELIMITER $$
 CREATE  PROCEDURE `dodajUdrugu`( IN nazivUdruge VARCHAR (50))
@@ -853,5 +889,22 @@ BEGIN
 	ELSE 
 		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Ime tvrtke je obavezno!';
 	END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `dodajPodrucje`(IN nazivPodrucja VARCHAR(100),IN idNadredjenog INT(10))
+BEGIN
+IF NOT EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.nazivPodrucja = nazivPodrucja) THEN
+	IF NOT EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idNadredjenog) THEN
+		SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Nadređena disciplina je pogrešno zadana!';
+	ELSE
+		INSERT INTO PODRUCJE VALUES (NULL,nazivPodrucja,idNadredjenog);
+
+	END IF;
+	ELSE
+		SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Disciplina je već unesena!';
+	END IF;
+
 END $$
 DELIMITER ;
