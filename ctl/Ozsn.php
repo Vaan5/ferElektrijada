@@ -5344,5 +5344,80 @@ class Ozsn implements Controller {
 	/******************************************************************
 	 *					PREGLED OBJAVA
 	 ******************************************************************/
+	public function displayObjavaReport() {
+		$this->checkRole();
+		$this->checkMessages();
+		
+		$elektrijada = new \model\DBElektrijada();
+		$elektrijade = array();
+		$rezultati = null;
+		if (postEmpty()) {
+			// get data to show
+			try {
+				$elektrijade = $elektrijada->getAll();
+			} catch (app\model\NotFoundException $e) {
+				$this->createMessage("Nepoznata elektrijada!");
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler);
+			}
+		} else {
+			try {
+				$o = new \model\DBObjavaOElektrijadi();
+				$rezultati = $o->getAllActive(post("idElektrijade"));
+				$_SESSION['search'] = post("idElektrijade");
+			} catch (app\model\NotFoundException $e) {
+				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayObjavaReport");
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler, "d3", "ozsn", "displayObjavaReport");
+			}
+		}
+		
+		if (get("type") !== false) {
+			try {
+				$o = new \model\DBObjavaOElektrijadi();
+				$id = unserialize(session("search"));
+				$rezultati = $o->getAllActive($id);
+			} catch (app\model\NotFoundException $e) {
+				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayObjavaReport");
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler, "d3", "ozsn", "displayObjavaReport");
+			}
+			
+			$pomPolje = array("Medij", "Datum objave", "Ime autora", "Prezime autora", 
+				"Poveznica");
+			$array = array();
+			$array[] = $pomPolje;
+			
+			if ($rezultati !== null && count($rezultati)) {
+				foreach ($rezultati as $v) {
+					$array[] = array($v->nazivMedija, $v->datumObjave, $v->autorIme, 
+						$v->autorPrezime, $v->link);
+				}
+			}
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+		
+		echo new Main(array(
+			"title" => "Arhiva Objava",
+			"body" => new \view\ozsn\ObjavaArchive(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"elektrijade" => $elektrijade,
+				"rezultati" => $rezultati
+			))
+		));
+	}
 	
+	/******************************************************************
+	 *					KONTAKT OSOBE - INFORMACIJE
+	 ******************************************************************/
 }
