@@ -41,10 +41,10 @@ class DBSponzor extends AbstractDBModel {
     public function getAllActive($idElektrijade) {
 		try {
 			$pdo = $this->getPdo();
-			$q = $pdo->prepare("SELECT sponzor.* FROM sponzor JOIN imasponzora ON sponzor.idSponzora = imasponzora.idSponzora WHERE imasponzora.idElektrijade = :id");
+			$q = $pdo->prepare("CALL dohvatiPopisSvihSponzora(:id)");
 			$q->bindValue(":id", $idElektrijade);
 			$q->execute();
-			return $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+			return $q->fetchAll();
 		} catch (\PDOException $e) {
 			throw $e;
 		}
@@ -54,7 +54,8 @@ class DBSponzor extends AbstractDBModel {
 		try {
 			$pdo = $this->getPdo();
 			$q = $pdo->prepare("SELECT * FROM sponzor JOIN sponelekpod ON sponzor.idSponzora = sponelekpod.idSponzora
-						JOIN podrucje ON sponelekpod.idPodrucja = podrucje.idPodrucja WHERE sponelekpod.idElektrijade = :id");
+						JOIN podrucje ON sponelekpod.idPodrucja = podrucje.idPodrucja WHERE sponelekpod.idElektrijade = :id
+						ORDER BY sponzor.imeTvrtke ASC");
 			$q->bindValue(":id", $idElektrijade);
 			$q->execute();
 			return $q->fetchAll();

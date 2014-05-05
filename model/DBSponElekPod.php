@@ -18,46 +18,45 @@ class DBSponElekPod extends AbstractDBModel {
     }
     
     public function getAll() {
-	return $this->select()->fetchAll();
+		return $this->select()->fetchAll();
     }
-    
-    
-    public function deleteRow($primaryKey) {
-	try {
-            $this->load($primaryKey);
-	    $this->delete();
-        } catch (\app\model\NotFoundException $e) {
-            $e = new \PDOException();
-            $e->errorInfo[0] = '02000';
-            $e->errorInfo[1] = 1604;
-            $e->errorInfo[2] = "Zapis ne postoji!";
-            throw $e;
+
+    public function deleteRow($id) {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL brisiSponElekPod(:id)");
+			$q->bindValue(":id", $id);
+            $q->execute();
         } catch (\PDOException $e) {
             throw $e;
         }
     }
     
     public function deleteAreaRow($idSponzora, $idElektrijade) {
-	try {
+		try {
             $pdo = $this->getPdo();
-	    $q = $pdo->prepare("DELETE FROM sponelekpod WHERE idSponzora = :ids AND idElektrijade = :ide");
-	    $q->bindValue(":ids", $idSponzora);
-	    $q->bindValue(":ide", $idElektrijade);
-	    $q->execute();
+			$q = $pdo->prepare("DELETE FROM sponelekpod WHERE idSponzora = :ids AND idElektrijade = :ide");
+			$q->bindValue(":ids", $idSponzora);
+			$q->bindValue(":ide", $idElektrijade);
+			$q->execute();
         } catch (\PDOException $e) {
             throw $e;
         }
     }
     
     public function addRow($idSponzora, $idPodrucja, $idElektrijade, $iznosDonacije, $valutaDonacije, $napomena) {
-	try {
-	    $atributi = $this->getColumns();
-	    foreach($atributi as $a) {
-		$this->{$a} = ${$a};
-	    }
-	    if ($this->napomena === '' || $this->napomena === ' ')
-		$this->napomena = NULL;
-            $this->save();
+		try {
+			if ($napomena === '' || $napomena === ' ')
+				$napomena = NULL;
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL dodajSponElekPod(:ids, :idp, :ide, :d, :v, :n)");
+			$q->bindValue(":ids", $idSponzora);
+			$q->bindValue(":idp", $idPodrucja);
+			$q->bindValue(":ide", $idElektrijade);
+			$q->bindValue(":d", $iznosDonacije);
+			$q->bindValue(":v", $valutaDonacije);
+			$q->bindValue(":n", $napomena);
+			$q->execute();
         } catch (\PDOException $e) {
             throw $e;
         }
@@ -65,38 +64,36 @@ class DBSponElekPod extends AbstractDBModel {
     
     public function modifyRow($primaryKey, $idSponzora, $idPodrucja, $idElektrijade, $iznosDonacije,
 	    $valutaDonacije, $napomena) {
-	try {
-            $this->load($primaryKey);
-	    $atributi = $this->getColumns();
-	    foreach($atributi as $a) {
-		$this->{$a} = ${$a};
-	    }
-	    if ($this->napomena === '' || $this->napomena === ' ')
-		$this->napomena = NULL;
-            $this->save();
-        } catch (\app\model\NotFoundException $e) {
-            $e = new \PDOException();
-            $e->errorInfo[0] = '02000';
-            $e->errorInfo[1] = 1604;
-            $e->errorInfo[2] = "Zapis ne postoji!";
-            throw $e;
+		try {
+			if ($napomena === '' || $napomena === ' ')
+				$napomena = NULL;
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("CALL azurirajSponElekPod(:id, :ids, :idp, :ide, :d, :v, :n)");
+			$q->bindValue(":id", $primaryKey);
+			$q->bindValue(":ids", $idSponzora);
+			$q->bindValue(":idp", $idPodrucja);
+			$q->bindValue(":ide", $idElektrijade);
+			$q->bindValue(":d", $iznosDonacije);
+			$q->bindValue(":v", $valutaDonacije);
+			$q->bindValue(":n", $napomena);
+			$q->execute();
         } catch (\PDOException $e) {
             throw $e;
         }
     }
     
     public function loadRow($idSponzora, $idElektrijade, $idPodrucja) {
-	try {
+		try {
             $pov = $this->select()->where(array(
-		"idSponzora" => $idSponzora,
-		"idElektrijade" => $idElektrijade,
-		"idPodrucja" => $idPodrucja
-	    ));
-	    if (count($pov)) {
-		$this->load($pov[0]->getPrimaryKey());
-	    } else {
-		$this->{$this->getPrimaryKeyColumn()} = null;
-	    }
+				"idSponzora" => $idSponzora,
+				"idElektrijade" => $idElektrijade,
+				"idPodrucja" => $idPodrucja
+				));
+			if (count($pov)) {
+				$this->load($pov[0]->getPrimaryKey());
+			} else {
+				$this->{$this->getPrimaryKeyColumn()} = null;
+			}
         } catch (\app\model\NotFoundException $e) {
             $e = new \PDOException();
             $e->errorInfo[0] = '02000';

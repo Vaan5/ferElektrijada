@@ -38,12 +38,12 @@ class DBImaSponzora extends AbstractDBModel {
     }
     
     public function deleteActiveRow($idSponzora, $idElektrijade) {
-	try {
+		try {
             $pdo = $this->getPdo();
-	    $q = $pdo->prepare("DELETE FROM imasponzora WHERE idSponzora = :ids AND idElektrijade = :ide");
-	    $q->bindValue(":ids", $idSponzora);
-	    $q->bindValue(":ide", $idElektrijade);
-	    $q->execute();
+			$q = $pdo->prepare("CALL brisiSponzorstvo(:ids, :ide)");
+			$q->bindValue(":ids", $idSponzora);
+			$q->bindValue(":ide", $idElektrijade);
+			$q->execute();
         } catch (\PDOException $e) {
             throw $e;
         }

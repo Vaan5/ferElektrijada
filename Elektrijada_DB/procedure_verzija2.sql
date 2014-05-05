@@ -241,32 +241,6 @@ END IF;
 END $$
 DELIMITER ;
 
-DELIMITER $$
-CREATE  PROCEDURE `azurirajSponzorstvo`(IN  idImaSponzora INT(10) ,IN idSponzora INT(10), IN idKategorijeSponzora INT(10), IN idPromocije INT(10), IN idElektrijade INT(10), IN iznosDonacije DECIMAL(13,2), IN valutaDonacije VARCHAR(3), IN napomena VARCHAR(300))
-BEGIN
-IF EXISTS (SELECT * FROM ImaSponzora WHERE ImaSponzora.idImaSponzora=idImaSponzora ) THEN
-IF EXISTS (SELECT* FROM SPONZOR WHERE SPONZOR.idSponzora = idSponzora) THEN
-IF EXISTS (SELECT* FROM ELEKTRIJADA WHERE SUDJELOVANJE.idElektrijade = idElektrijade) THEN
-	IF valutaDonacije NOT IN( 'HRK','USD','EUR') THEN
-	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Valuta donacije mora biti HRK, USD ili EUR!';
-	ELSE
-	IF (iznosDonacije <= 0) THEN
-	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greksa: Iznos donacije je manji ili jednak nuli!';
-	ELSE
-		UPDATE ImaSponzora 
-		SET ImaSponzora.idKategorijaSponzora=idKategorijeSponzora,ImaSponzora.idPromocije=idPromocije,ImaSponzora.iznosDonacije=iznosDonacije,ImaSponzora.valutaDonacije=valutaDonacije,ImaSponzora.napomena=napomena ,ImaSponzora.idSponzora=idSponzora ,ImaSponzora.idElektrijade=idElektrijade
-		WHERE ImaSponzora.idImaSponzora=idImaSponzora;
-	END IF;
-	END IF;
-ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji doticni sponzor!';
-END IF;
-ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji doticna elektrijada!';
-END IF;
-ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji unos sa upisanim podacima!';
-END IF;
-END $$
-DELIMITER ;
-
 
 DELIMITER $$
 CREATE  PROCEDURE `azurirajSudjelovanje`(IN idSudjelovanja INT UNSIGNED, IN idOsobe INT UNSIGNED, IN idElektrijade INT UNSIGNED, IN tip CHAR(1), IN idVelicine INT UNSIGNED, IN idGodStud INT UNSIGNED, IN idSmjera INT UNSIGNED, IN idRadnogMjesta INT UNSIGNED, IN idZavoda INT UNSIGNED, IN idPutovanja INT UNSIGNED)
@@ -496,18 +470,6 @@ IF EXISTS (SELECT * FROM PODRUCJESUDJELOVANJA WHERE PODRUCJESUDJELOVANJA.idPodru
 ELSE
 	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Traženi zapis ne postoji!';
 END IF;
-END $$
-DELIMITER ;
-
-
-DELIMITER $$
-CREATE  PROCEDURE `brisiSponzorstvo`(IN idImaSponzora INT(10))
-BEGIN
-	IF EXISTS (SELECT * FROM ImaSponzora WHERE ImaSponzora.idImaSponzora=idImaSponzora) THEN
-		DELETE FROM ImaSponzora
-		WHERE ImaSponzora.idImaSponzora=idImaSponzora;
-	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji unos sa upisanim podacima!';
-	END IF;
 END $$
 DELIMITER ;
 
@@ -1059,21 +1021,6 @@ LEFT JOIN podrucje ON podrucjeSudjelovanja.idPodrucja = podrucje.idPodrucja
 WHERE sudjelovanje.idElektrijade = idElektrijade AND ( osoba.uloga = 'S' OR osoba.uloga = 's')
 AND ( osoba.uloga = 'd' OR osoba.uloga = 'D');
 	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeci idELEKTRIJADE';
-	END IF;
-END $$
-DELIMITER ;
-
-DELIMITER $$
-CREATE  PROCEDURE `dohvatiPopisSvihSponzora`(IN idElektrijade INT(10))
-BEGIN
-	IF EXISTS (SELECT * FROM Elektrijada WHERE Elektrijada.idElektrijade = idElektrijade) THEN
-		SELECT DISTINCT sponzor.idSponzora, sponzor.imeTvrtke, sponzor.adresaTvrtke, nacinPromocije.tipPromocije, kategorija.tipKategorijeSponzora, imaSponzora.iznosDonacije, imaSponzora.valutaDonacije, imaSponzora.napomena
-		FROM sponzor
-		JOIN imaSponzora ON sponzor.idSponzora = imaSponzora.idSponzora
-		LEFT JOIN nacinPromocije ON imaSponzora.idPromocije = nacinPromocije.idPromocije
-		LEFT JOIN kategorija ON imaSponzora.idKategorijeSponzora = kategorija.idKategorijeSponzora
-		WHERE imaSponzora.idElektrijade = idElektrijade;
-ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeci idELEKTRIJADE';
 	END IF;
 END $$
 DELIMITER ;

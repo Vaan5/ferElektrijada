@@ -181,6 +181,21 @@ SELECT * FROM KATEGORIJA ORDER BY tipKategorijeSponzora ASC;
 END $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE  PROCEDURE `dohvatiPopisSvihSponzora`(IN idElektrijade INT(10))
+BEGIN
+	IF EXISTS (SELECT * FROM Elektrijada WHERE Elektrijada.idElektrijade = idElektrijade) THEN
+		SELECT DISTINCT *
+		FROM sponzor
+		JOIN imaSponzora ON sponzor.idSponzora = imaSponzora.idSponzora
+		LEFT JOIN nacinPromocije ON imaSponzora.idPromocije = nacinPromocije.idPromocije
+		LEFT JOIN kategorija ON imaSponzora.idKategorijeSponzora = kategorija.idKategorijeSponzora
+		WHERE imaSponzora.idElektrijade = idElektrijade;
+ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Nepoznata Elektrijada';
+	END IF;
+END $$
+DELIMITER ;
+
 --			AŽURIRANJE PODATAKA
 
 DELIMITER $$
@@ -389,6 +404,36 @@ BEGIN
 END $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE  PROCEDURE `azurirajSponElekPod`(IN idSponElekPod INT(10), IN idSponzora INT(10), IN idPodrucja INT(10),IN idElektrijade INT(10), IN iznosDonacije DECIMAL(13,2), IN valutaDonacije VARCHAR(3), IN napomena VARCHAR(300))
+BEGIN
+IF EXISTS (SELECT* FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idPodrucja) THEN
+IF EXISTS (SELECT * FROM SPONZOR WHERE SPONZOR.idSponzora = idSponzora) THEN
+IF EXISTS (SELECT* FROM ELEKTRIJADA WHERE ELEKTRIJADA.idElektrijade = idElektrijade) THEN
+IF NOT EXISTS (SELECT* 
+		FROM SponElekPod WHERE SponElekPod.idSponElekPod = idSponElekPod ) THEN
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Ne postoji disciplina za sponzora na Elektrijadi koju želite ažurirati!';
+ELSE
+	UPDATE SponElekPod
+    SET SponElekPod.idElektrijade=idElektrijade, SponElekPod.idPodrucja=idPodrucja, SponElekPod.idSponzora=idSponzora, SponElekPod.iznosDonacije=iznosDonacije,SponElekPod.valutaDonacije=valutaDonacije,SponElekPod.napomena=napomena
+	WHERE SponElekPod.idSponElekPod= idSponElekPod  ;
+
+END IF;
+ELSE 
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Upisana nepostojeća Elektrijada!';
+END IF;
+
+ELSE 
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Upisan nepostojeći sponzor!';
+END IF;
+
+ELSE 
+	    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Tražena disciplina ne postoji!';
+END IF;
+
+END $$
+DELIMITER ; 
+
 --			BRISANJE PODATAKA
 DELIMITER $$
 CREATE  PROCEDURE `brisiFunkciju`(IN idObavljaFunkciju  INT(10))
@@ -563,6 +608,32 @@ BEGIN
 END $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE  PROCEDURE `brisiSponzorstvo`(IN idS INT(10), IN idE INT(10))
+BEGIN
+	IF EXISTS (SELECT * FROM ImaSponzora WHERE idSponzora=idS AND idElektrijade = idE) THEN
+		DELETE FROM imasponzora WHERE idSponzora = idS AND idElektrijade = idE;
+	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Ne postoji traženi zapis o sponzorstvu!';
+	END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `brisiSponElekPod`(IN idSponElekPod INT(10))
+BEGIN
+
+IF NOT EXISTS (SELECT* 
+		FROM SponElekPod WHERE SponElekPod.idSponElekPod = idSponElekPod ) THEN
+		 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Ne postoji sponzorstvo za disciplinu koje želite izbrisati';
+ELSE
+	DELETE FROM SponElekPod
+	WHERE SponElekPod.idSponElekPod = idSponElekPod ;
+
+END IF;
+
+END $$
+DELIMITER ;
+
 --				DODAVANJE PODATAKA
 DELIMITER $$
 CREATE  PROCEDURE `dodajUdrugu`( IN nazivUdruge VARCHAR (50))
@@ -697,5 +768,34 @@ IF NOT EXISTS (SELECT * FROM KATEGORIJA WHERE KATEGORIJA.tipKategorijeSponzora=t
 	INSERT INTO KATEGORIJA values (NULL, tipKategorijeSponzora);
 ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Zadani tip kategorije sponzora već postoji!';
 END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `dodajSponElekPod`(IN idSponzora INT(10), IN idPodrucja INT(10),IN idElektrijade INT(10), IN iznosDonacije DECIMAL(13,2), IN valutaDonacije VARCHAR(3), IN napomena VARCHAR(300))
+BEGIN
+	IF EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idPodrucja) THEN
+		IF EXISTS (SELECT * FROM ELEKTRIJADA WHERE ELEKTRIJADA.idElektrijade = idElektrijade) THEN
+			IF EXISTS (SELECT * FROM SPONZOR WHERE SPONZOR.idSponzora = idSponzora) THEN
+				IF NOT EXISTS (SELECT * FROM SponElekPod WHERE SponElekPod.idElektrijade = idElektrijade  AND SponElekPod.idPodrucja = idPodrucja AND SponElekPod.idSponzora = idSponzora ) THEN
+
+						INSERT INTO SponElekPod VALUES (NULL,idSponzora, idPodrucja, idElektrijade, iznosDonacije, valutaDonacije, napomena );
+
+				ELSE
+						SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Već postoji zapis za traženu disciplinu na aktualnoj Elektrijadi!';
+				END IF;
+
+			ELSE 
+					SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Upisan nepostojeći sponzor!';
+			END IF;
+
+		ELSE 
+				SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Upisana nepostojeća Elektrijada!';
+		END IF;
+
+	ELSE 
+			SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Tražena disciplina ne postoji!';
+	END IF;
+
 END $$
 DELIMITER ;
