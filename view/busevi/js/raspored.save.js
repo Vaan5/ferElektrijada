@@ -59,6 +59,7 @@ raspored.save = function() {
         $.post( "/ferElektrijada/busevi/spremiRaspored", { 'busevi': busevi }, function(response) {
             raspored.hideLoader();
             alert("Izmjene su uspješno spremljene");
+            //document.write(response);
         });
     }
     else {

@@ -583,6 +583,8 @@ raspored.removeActiveBus = function() {
     //raspored.bindItem();
 };
 
+raspored.busNameDictionary = [];
+raspored.busPlatesDictionary = [];
 raspored.busCount = 1;
 raspored.addBus = function() {
     //raspored.unbindItem();

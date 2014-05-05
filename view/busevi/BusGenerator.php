@@ -15,30 +15,107 @@ class BusGenerator extends AbstractView {
     }
 
     private $busevi;
-    /**
-     *
-     * @param string $busevi
-     */
-    public function setBusevi($busevi) {
-        $this->busevi = $busevi;
-    }
-
-    private $grupe;
-    /**
-     *
-     * @param string $grupe
-     */
-    public function setGrupe($grupe) {
-        $this->grupe = $grupe;
-    }
-
+    private $buseviHtml;
+    private $grupeHtml;
     private $rjecnikGrupa;
     /**
      *
-     * @param string $rjecnikGrupa
+     * @param array $busevi
      */
-    public function setRjecnikGrupa($rjecnikGrupa) {
-        $this->rjecnikGrupa = $rjecnikGrupa;
+    public function setBusevi($busevi) {
+        $this->busevi = $busevi;
+        try {
+            $bus_html = "";
+            $grupa_html = "";
+            $rjecnik_grupa = "";
+
+            for ($i=0; $i < count($busevi); $i++) {
+
+                $bus_inner_html = "";
+                $bus = $busevi[$i];
+                $grupe = $bus->grupe;
+
+                $zauzeto = 0;
+
+                for ($j=0; $j < count($grupe); $j++) {
+                    $grupa = $grupe[$j];
+                    $grupa_inner_html = "";
+
+                    $osobe = $grupa->osobe;
+
+                    $polazakCount = 0;
+                    $povratakCount = 0;
+                    for ($k=0; $k < count($osobe); $k++) {
+                        $osoba = $osobe[$k];
+
+                        $polazak = '';
+                        if(strcmp($osoba->polazak, "1") == 0)
+                        {
+                            $polazak = 'checked';
+                            $polazakCount++;
+                        }
+                        $povratak = '';
+                        if(strcmp($osoba->povratak, "1") == 0)
+                        {
+                            $povratak = 'checked';
+                            $povratakCount++;
+                        }
+
+                        $grupa_inner_html .=
+                            '<div class="student" id="'
+                            . $osoba->idSudjelovanja
+                            .'"><input type="checkbox" class="polazak" ' . $polazak . '>
+                            <input type="checkbox" class="odlazak" ' . $povratak . '> '
+                            . $osoba->ime . ' '
+                            . $osoba->prezime .
+                            '</div>';
+                    }
+                    $velicina = $povratakCount;
+                    if($polazakCount > $velicina)
+                        $velicina = $polazakCount;
+
+                    $zauzeto += $velicina;
+
+                    $rjecnik_grupa .= "raspored.groupDictionary[\"" . $grupa->nazivGrupe . "\"] = " . $grupa->idGrupe . ";";
+
+                    $grupa_html .=
+                    '<div class="col-lg-4 col-md-6 col-xs-12 group hide-students disabled" data-status="disabled" id="' . $grupa->idGrupe . '">' .
+                            '<div class="group-show-hide"><span class="glyphicon glyphicon-chevron-right"></span></div>' .
+                            '<div class="group-name">' . $grupa->nazivGrupe . '</div>' .
+                            '<div class="group-size">' . $velicina . '</div>' .
+                            $grupa_inner_html .
+                    '</div>';
+
+                    $bus_inner_html .=
+                    '<div class="bus-group" data-id="' . $grupa->idGrupe . '">' .
+                            '<button type="button" class="btn btn-default btn-sm removeFromBus">' .
+                                    '<span class="glyphicon glyphicon-arrow-left"></span>' .
+                            '</button>' .
+                            '<button type="button" class="btn btn-default btn-sm lockBusGroup">' .
+                                    '<span class="glyphicon glyphicon-lock"></span>' .
+                            '</button>' .
+                            $grupa->nazivGrupe . ' - ' . $velicina .
+                    '</div>';
+                }
+
+                $bus_html .=
+                '<div class="col-xs-12 bus">' .
+                    '<div class="bus-name">' . $bus->nazivBusa .'</div>' .
+                    'Kapacitet:' .
+                    '<span class="bus-used">' . $zauzeto . '</span> / <span class="bus-capacity">' . $bus->brojMjesta .'</span>' .
+                    '<div class="bus-percentage"><div class="bus-used-capacity"></div></div>' .
+                    'Registracija:' .
+                    '<span class="bus-plates">'. $bus->registracija .'</span>' .
+                    $bus_inner_html .
+                '</div>';
+            }
+            $this->grupeHtml = $grupa_html;
+            $this->buseviHtml = $bus_html;
+            $this->rjecnikGrupa = $rjecnik_grupa;
+        } catch (\PDOException $e) {
+            echo $e;
+            //throw $e;
+        }
     }
 
     /**
@@ -157,6 +234,13 @@ class BusGenerator extends AbstractView {
 
                         <div class="col-xs-12 top">SUDIONICI</div>
 
+                        <?php /*
+                            echo "<pre>";
+                            print_r($this->busevi2nd);
+                            echo "</pre>";
+                            */
+                        ?>
+
                         <div class="col-xs-12 group-ignore" id="unassigned">
                             <div class="group-name">Neraspoređeni sudionici
                                 <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="right"
@@ -184,7 +268,7 @@ class BusGenerator extends AbstractView {
                         </div>
 
                         <div id="group-container">
-                            <?php echo $this->grupe; ?>
+                            <?php echo $this->grupeHtml; ?>
                             <!--
                             <div class="col-lg-4 col-md-6 col-xs-12 group hide-students" id="group1" data-status="enabled">
                                 <div class="group-show-hide"><span class="glyphicon glyphicon-chevron-right"></span></div>
@@ -202,7 +286,7 @@ class BusGenerator extends AbstractView {
                         <div class="col-xs-12 top">BUSEVI</div>
                         <div id="bus-container">
                             <?php
-                                echo $this->busevi;
+                                echo $this->buseviHtml;
                             ?>
                         </div>
                     </div>

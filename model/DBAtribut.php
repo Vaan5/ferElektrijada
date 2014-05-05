@@ -76,7 +76,7 @@ class DBAtribut extends AbstractDBModel {
             throw $e;
         }
     }
-	
+
 	public function getTeamLeaderId() {
 		try {
             $pdo = $this->getPdo();
