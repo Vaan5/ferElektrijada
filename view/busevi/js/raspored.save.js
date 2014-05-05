@@ -1,6 +1,11 @@
 raspored.save = function() {
     raspored.showLoader();
 
+    if(!raspored.validate()) {
+        raspored.hideLoader();
+        return;
+    }
+
     var busevi = [];
     var buses = $(".bus");
     for(var i = 0; i < buses.length; i++)
@@ -74,4 +79,51 @@ raspored.showLoader = function() {
 
 raspored.hideLoader = function() {
     $("#loader").hide(500);
+};
+
+function hasDuplicates(array) {
+    var valuesSoFar = [];
+    for (var i = 0; i < array.length; ++i) {
+        var value = array[i];
+        if (valuesSoFar[value] === true) {
+            return true;
+        }
+        valuesSoFar[value] = true;
+    }
+    return false;
+}
+
+raspored.validate = function() {
+    var grupe = $(".group");
+    var naziviGrupa = [];
+    for(var i=0; i < grupe.length; i++) {
+        naziviGrupa.push(grupe.eq(i).children(".group-name").html());
+    }
+    if(hasDuplicates(naziviGrupa)) {
+        alert("Sve grupe moraju imati jedinstven naziv. Izmjene neće biti spremljene.");
+        return false;
+    }
+
+    var busevi = $(".bus");
+    var naziviBuseva = [];
+    var registracijeBuseva = [];
+    for(var i=0; i < busevi.length; i++) {
+        var bus = busevi.eq(i);
+        naziviBuseva.push(bus.children(".bus-name").html());
+        registracijeBuseva.push(bus.children(".bus-plates").html());
+    }
+    if(hasDuplicates(naziviBuseva)) {
+        alert("Sve busevi moraju imati jedinstven naziv. Izmjene neće biti spremljene.");
+        return false;
+    }
+    if(hasDuplicates(registracijeBuseva)) {
+        alert("Svi busevi moraju imati jedinstvenu registracijsku oznaku. Izmjene neće biti spremljene.");
+        return false;
+    }
+
+    console.log(naziviGrupa);
+    console.log(naziviBuseva);
+    console.log(registracijeBuseva);
+
+    return true;
 };
