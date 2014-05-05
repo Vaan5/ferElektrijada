@@ -5420,4 +5420,115 @@ class Ozsn implements Controller {
 	/******************************************************************
 	 *					KONTAKT OSOBE - INFORMACIJE
 	 ******************************************************************/
+	public function displayContactInfo() {
+		$this->checkRole();
+		$this->checkMessages();
+		
+		$k = new \model\DBKontaktOsobe();
+		$kontakti = array();
+		$mobiteli = null;
+		$mailovi = null;
+		if (postEmpty()) {
+			// get data to show
+			try {
+				$kontakti = $k->getAll();
+			} catch (app\model\NotFoundException $e) {
+				$this->createMessage("Nepoznata kontakt osoba!");
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler);
+			}
+		} else {
+			try {
+				$k->load(post("idKontakta"));
+				$mob = new \model\DBBrojeviMobitela();
+				$mail = new \model\DBEmailAdrese();
+				$mobiteli = $mob->getContactNumbers(post("idKontakta"));
+				$mailovi = $mail->getContactEmails(post("idKontakta"));
+				$_SESSION['search'] = post("idKontakta");
+			} catch (app\model\NotFoundException $e) {
+				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayContactInfo");
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler, "d3", "ozsn", "displayContactInfo");
+			}
+		}
+		
+		if (get("type") !== false) {
+			try {
+				$id = unserialize(session("search"));
+				$k->load($id);
+				$mob = new \model\DBBrojeviMobitela();
+				$mail = new \model\DBEmailAdrese();
+				$mobiteli = $mob->getContactNumbers($id);
+				$mailovi = $mail->getContactEmails($id);
+				$info = array();
+				if ($k->idTvrtke !== null) {
+					$t = new \model\DBTvrtka();
+					$t->load($k->idTvrtke);
+					
+					$info[] = array("Tvrtka", $t->imeTvrtke);
+					$info[] = array("Adresa tvrtke", $t->adresaTvrtke);
+				}
+				if ($k->idSponzora !== null) {
+					$s = new \model\DBSponzor();
+					$s->load($k->idSponzora);
+					
+					$info[] = array("Sponzor", $s->imeTvrtke);
+					$info[] = array("Adresa sponzora", $s->adresaTvrtke);
+				}
+				if ($k->idMedija !== null) {
+					$m = new \model\DBMedij();
+					$m->load($k->idMedija);
+					
+					$info[] = array("Medij", $m->nazivMedija);
+				}
+			} catch (app\model\NotFoundException $e) {
+				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayContactInfo");
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler, "d3", "ozsn", "displayContactInfo");
+			}
+			
+			$array = array();
+			$array[] = array("Ime", $k->imeKontakt);
+			$array[] = array("Prezime", $k->prezimeKontakt);
+			$array[] = array("Radno Mjesto", $k->radnoMjesto);
+			if (count($info))
+				foreach ($info as $i)
+					$array[] = $i;
+			$array[] = array("Telefon", $k->telefon);
+			
+			if (count($mobiteli)) {
+				foreach ($mobiteli as $v) {
+					$array[] = array("Broj mobitela", $v);
+				}
+			}
+			
+			if (count($mailovi)) {
+				foreach ($mailovi as $v) {
+					$array[] = array("Email", $v);
+				}
+			}
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+		
+		echo new \view\Main(array(
+			"title" => "Informacije o Kontaktima",
+			"body" => new \view\ozsn\ContactInfo(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"kontakti" => $kontakti,
+				"kontakt" => $k,
+				"mobiteli" => $mobiteli,
+				"mailovi" => $mailovi
+			))
+		));
+	}
 }

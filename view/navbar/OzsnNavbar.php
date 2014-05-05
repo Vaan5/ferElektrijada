@@ -28,6 +28,10 @@ class OzsnNavbar extends AbstractView{
                     "controller" => 'ozsn',
                     "action" => 'searchContacts'
                 ));?>">Kontakt Osobe</a></li>
+			<li><a href="<?php echo \route\Route::get('d3')->generate(array(
+                    "controller" => 'ozsn',
+                    "action" => 'displayContactInfo'
+                ));?>">Kontakt Informacije</a></li>
 			
             <li class="divider"></li>
 			
