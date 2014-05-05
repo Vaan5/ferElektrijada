@@ -6,7 +6,7 @@ use app\controller\Controller;
 class Busevi implements Controller {
 
     private $errorMessage;
-    private $resultMessage;
+    //private $resultMessage;
 
     private function checkRole() {
         // you must be logged in, and an Ozsn member with or without leadership
@@ -22,9 +22,9 @@ class Busevi implements Controller {
             //$this->checkRole();
             $busevi = array();
             $busevi = post("busevi");
-            echo "<pre>";
+            /*echo "<pre>";
             print_r($busevi);
-            echo "</pre>";
+            echo "</pre>";*/
 
             $busModelClear = new \model\DBBus();
             $busModelClear->clearBuses();
