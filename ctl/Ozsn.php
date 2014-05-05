@@ -164,97 +164,7 @@ class Ozsn implements Controller {
 		"script" => new \view\scripts\ozsn\TvrtkaListJs()
 	));
     }
-    
-    /**
-     * Displays associations in which the logged in user is registered
-     */
-    public function displayUserUdruge() {
-	$this->checkRole();
-	$this->checkMessages();
-	
-	$udruga = new \model\DBUdruga();
-	$jeUUdruzi = new \model\DBJeUUdruzi();
-	$sveUdruge = array();
-	$udrugeKorisnika = array();
-	try {
-	    $sveUdruge = $udruga->getAllUdruga();
-	    $udrugeKorisnika = $jeUUdruzi->loadUserUdruge(session("auth"));
-	} catch (\PDOException $e) {
-	    $handler = new \model\ExceptionHandlerModel($e);
-            $this->errorMessage = $handler;
-	}
-	
-	echo new \view\Main(array(
-	    "body" => new \view\ozsn\OzsnUdrugeList(array(
-		"errorMessage" => $this->errorMessage,
-		"resultMessage" => $this->resultMessage,
-		"sveUdruge" => $sveUdruge,
-		"udrugeKorisnika" => $udrugeKorisnika
-	    )),
-	    "title" => "Vaše Udruge",
-		"script" => new \view\scripts\ozsn\UdrugaListJs()
-	));
-    }
-    
-    /**
-     * Registers a user to an association via post parameter idUdruge
-     */
-    public function addUserUdruga() {
-	$this->checkRole();
 
-        $jeuudruzi = new \model\DBJeUUdruzi();
-        
-	if (!postEmpty()) {
-	    try {
-		$jeuudruzi->addRow(post("idUdruge", null), session("auth"));
-
-		preusmjeri(\route\Route::get('d3')->generate(array(
-		    "controller" => "ozsn",
-		    "action" => "displayUserUdruge"
-		)) . '?msg=succa');
-	    } catch (\PDOException $e){
-		$handler = new \model\ExceptionHandlerModel($e);
-		$_SESSION["exception"] = serialize($handler);
-		preusmjeri(\route\Route::get('d3')->generate(array(
-		    "controller" => "ozsn",
-		    "action" => "displayUserUdruge"
-		)) . "?msg=excep");
-	    }
-	} else {
-	    $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznata udruga!");
-	    $_SESSION["exception"] = serialize($handler);
-	    preusmjeri(\route\Route::get('d3')->generate(array(
-		"controller" => "ozsn",
-		"action" => "displayUserUdruge"
-	    )) . "?msg=excep");
-	}
-    }
-    
-    /**
-     * Deletes user registration from an association via get parameter
-     */
-    public function deleteUserUdruga() {
-	$this->checkRole();
-        
-        $this->idCheck("displayUserUdruge");
-	
-        $jeuudruzi = new \model\DBJeUUdruzi();
-        try {
-            $jeuudruzi->deleteRow(get("id"), session("auth"));
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayUserUdruge"
-            )) . '?msg=succd');
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayUserUdruge"
-            )) . "?msg=excep");
-        }
-    }
     
     /**
      * Adds a new company which stil isn't related to any Elektrijada competition
@@ -3384,145 +3294,6 @@ public function addSmjer() {
         }
     }
 
-		/**
-         *Displays all "udruga" from database
-         */
-    public function displayUdruga(){
-        $this->checkRole();
-        $this->checkMessages();
-	
-	$udruga = new \model\DBUdruga();
-	$udruge = null;
-	try {
-            $udruge = $udruga->getAllUdruga();
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $this->errorMessage = $handler;
-        }
-		
-	echo new \view\Main(array(
-            "body" => new \view\ozsn\UdrugaList(array(
-                "errorMessage" => $this->errorMessage,
-                "resultMessage" => $this->resultMessage,
-                "udruge" => $udruge
-            )),
-            "title" => "Lista udruga",
-            "script" => new \view\scripts\ozsn\UdrugaListJs()
-        ));
-	}
-	/**
-     * Inserts new data into database via post request
-     */
-    public function addUdruga() {
-        $this->checkRole();
-
-        $udruga = new \model\DBUdruga();
-        $validacija = new \model\formModel\UdrugaFormModel(array('nazivUdruge' => post("nazivUdruge")));
-        $pov = $validacija->validate();
-        if($pov !== true) {
-            $message = $validacija->decypherErrors($pov);
-            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayUdruga"
-            )) . "?msg=excep");
-        }
-        
-        try {
-            $udruga->addRow(post("nazivUdruge", null));
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayUdruga"
-            )) . '?msg=succa');
-        } catch (\PDOException $e){
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayUdruga"
-            )) . "?msg=excep");
-        }
-		}
-        /**
-     * Modifies attribute data via post request
-     */
-    public function modifyUdruga() {
-        $this->checkRole();
-        
-        $udruga = new \model\DBUdruga();
-        $validacija = new \model\formModel\UdrugaFormModel(array('nazivUdruge' => post("nazivUdruge")));
-        $pov = $validacija->validate();
-        if($pov !== true) {
-            $message = $validacija->decypherErrors($pov);
-            $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-            $_SESSION["exception"] = serialize($handler);
-			if (get("m") !== false) {
-				preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayUserUdruge"
-				 )) . '?msg=excep');
-			}
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayUdruga"
-            )) . "?msg=excep");
-        }
-        try {
-            $udruga->modifyRow(post($udruga->getPrimaryKeyColumn(), null), post('nazivUdruge', null));
-            
-			if (get("m") !== false) {
-				preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayUserUdruge"
-				 )) . '?msg=succm');
-			}
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayUdruga"
-            )) . '?msg=succm');
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-			if (get("m") !== false) {
-				preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayUserUdruge"
-				 )) . '?msg=excep');
-			}
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayUdruga"
-            )) . "?msg=excep");
-        }
-    }
-    /**
-     * Deletes udruga via get request
-     */
-    public function deleteUdruga() {
-        $this->checkRole();
-        
-        $this->idCheck("displayUdruga");
-	
-        $udruga = new \model\DBUdruga();
-        try {
-            $udruga->deleteRow(get("id"));
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayUdruga"
-            )) . '?msg=succd');
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displayUdruga"
-            )) . "?msg=excep");
-        }
-    }
-	
 	/*************************************************************************
 	 *					ISPRAVLJENO
 	 *************************************************************************/
@@ -5449,6 +5220,219 @@ public function addSmjer() {
                 "controller" => "ozsn",
                 "action" => "displayFunkcija"
             )) . "?msg=excep");
+        }
+    }
+	
+	
+	/******************************************************************
+	 *					O Meni -> MOJE UDRUGE + DBM UDRUGE
+	 ******************************************************************/
+	public function displayUdruga(){
+        $this->checkRole();
+        $this->checkMessages();
+	
+		$udruga = new \model\DBUdruga();
+		$udruge = null;
+		try {
+			$udruge = $udruga->getAllUdruga();
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->errorMessage = $handler;
+		}
+		
+		if (get("type") !== false) {
+			$pomPolje = array("Udruga");
+			$array = array();
+			$array[] = $pomPolje;
+			
+			if ($udruge !== null && count($udruge)) {
+				foreach ($udruge as $v) {
+					$array[] = array($v->nazivUdruge);
+				}
+			}
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+
+		echo new \view\Main(array(
+			"body" => new \view\ozsn\UdrugaList(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"udruge" => $udruge
+			)),
+			"title" => "Lista udruga",
+			"script" => new \view\scripts\ozsn\UdrugaListJs()
+		));
+	}
+	
+	public function displayUserUdruge() {
+		$this->checkRole();
+		$this->checkMessages();
+
+		$udruga = new \model\DBUdruga();
+		$jeUUdruzi = new \model\DBJeUUdruzi();
+		$sveUdruge = array();
+		$udrugeKorisnika = array();
+		try {
+			$sveUdruge = $udruga->getAllUdruga();
+			$udrugeKorisnika = $jeUUdruzi->loadUserUdruge(session("auth"));
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->errorMessage = $handler;
+		}
+		
+		if (get("type") !== false) {
+			$pomPolje = array("Udruga");
+			$array = array();
+			$array[] = $pomPolje;
+			
+			if ($udrugeKorisnika !== null && count($udrugeKorisnika)) {
+				foreach ($udrugeKorisnika as $v) {
+					$array[] = array($v->nazivUdruge);
+				}
+			}
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+
+		echo new \view\Main(array(
+			"body" => new \view\ozsn\OzsnUdrugeList(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"sveUdruge" => $sveUdruge,
+				"udrugeKorisnika" => $udrugeKorisnika
+				)),
+			"title" => "Vaše Udruge",
+			"script" => new \view\scripts\ozsn\UdrugaListJs()
+		));
+    }
+	
+	public function addUdruga() {
+        $this->checkRole();
+
+        $udruga = new \model\DBUdruga();
+        $validacija = new \model\formModel\UdrugaFormModel(array('nazivUdruge' => post("nazivUdruge")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+			$this->createMessage($message, "d3", "ozsn", "displayUdruga");
+        }
+        
+        try {
+            $udruga->addRow(post("nazivUdruge", null));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUdruga"
+            )) . '?msg=succa');
+        } catch (\PDOException $e){
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->createMessage($handler, "d3", "ozsn", "displayUdruga");
+        }
+	}
+	
+	public function addUserUdruga() {
+		$this->checkRole();
+
+        $jeuudruzi = new \model\DBJeUUdruzi();
+        
+		if (!postEmpty()) {
+			try {
+			$jeuudruzi->addRow(post("idUdruge", null), session("auth"));
+
+			preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "displayUserUdruge"
+				)) . '?msg=succa');
+			} catch (\PDOException $e){
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler, "d3", "ozsn", "displayUserUdruge");
+			}
+		} else {
+			$this->createMessage("Nepoznata udruga!", "d3", "ozsn", "displayUserUdruge");
+		}
+    }
+	
+	public function modifyUdruga() {
+        $this->checkRole();
+        
+        $udruga = new \model\DBUdruga();
+        $validacija = new \model\formModel\UdrugaFormModel(array('nazivUdruge' => post("nazivUdruge")));
+        $pov = $validacija->validate();
+        if($pov !== true) {
+            $message = $validacija->decypherErrors($pov);
+			if (get("m") !== false) {
+				$this->createMessage($message, "d3", "ozsn", "displayUserUdruge");
+			}
+            $this->createMessage($message, "d3", "ozsn", "displayUdruga");
+        }
+        try {
+            $udruga->modifyRow(post($udruga->getPrimaryKeyColumn(), null), post('nazivUdruge', null));
+            
+			if (get("m") !== false) {
+				preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUserUdruge"
+				 )) . '?msg=succm');
+			}
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUdruga"
+            )) . '?msg=succm');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+			if (get("m") !== false) {
+				$this->createMessage($handler, "d3", "ozsn", "displayUserUdruge");
+			}
+            $this->createMessage($handler, "d3", "ozsn", "displayUdruga");
+        }
+    }
+	
+	public function deleteUdruga() {
+        $this->checkRole();
+        
+        $this->idCheck("displayUdruga");
+	
+        $udruga = new \model\DBUdruga();
+        try {
+            $udruga->deleteRow(get("id"));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUdruga"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->createMessage($handler, "d3", "ozsn", "displayUdruga");
+        }
+    }
+	
+	public function deleteUserUdruga() {
+		$this->checkRole();
+        
+        $this->idCheck("displayUserUdruge");
+	
+        $jeuudruzi = new \model\DBJeUUdruzi();
+        try {
+            $jeuudruzi->deleteRow(get("id"), session("auth"));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displayUserUdruge"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->createMessage($handler, "d3", "ozsn", "displayUserUdruge");
         }
     }
 }
