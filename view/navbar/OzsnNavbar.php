@@ -129,6 +129,13 @@ class OzsnNavbar extends AbstractView{
                     "action" => 'displayCollectedMoney'
                 ));?>">Uplate Sudionika</a></li>
 			
+			<li class="divider"></li>
+			
+			<li><a href="<?php echo \route\Route::get('d3')->generate(array(
+                    "controller" => 'ozsn',
+                    "action" => 'displayCompetitionHistory'
+                ));?>">Povijest Sudjelovanja</a></li>
+			
           </ul>
         </li>
 		

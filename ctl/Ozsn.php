@@ -5319,4 +5319,30 @@ class Ozsn implements Controller {
 	/******************************************************************
 	 *					Arhiva
 	 ******************************************************************/
+	public function displayCompetitionHistory() {
+		$this->checkRole();
+		$this->checkMessages();
+		
+		try {
+			$elektrijada = new \model\DBElektrijada();
+			$rezultati = $elektrijada->generateHallOfFame();			
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->createMessage($handler);
+		}
+		
+		echo new \view\Main(array(
+			"title" => "Hall Of Fame",
+			"body" => new \view\ozsn\HallOfFame(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"rezultati" => $rezultati
+			))
+		));
+	}
+	
+	/******************************************************************
+	 *					PREGLED OBJAVA
+	 ******************************************************************/
+	
 }

@@ -171,5 +171,19 @@ class DBElektrijada extends AbstractDBModel {
             return false;
         }
     }
+	
+	public function generateHallOfFame() {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT * FROM elektrijada
+									LEFT JOIN elekpodrucje ON elektrijada.idElektrijade = elekpodrucje.idElektrijade
+									LEFT JOIN podrucje ON elekpodrucje.idPodrucja = podrucje.idPodrucja
+								ORDER BY elektrijada.idElektrijade");
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
 }
  
