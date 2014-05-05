@@ -242,22 +242,6 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `azurirajSponzora`(IN idSponzora INT(10), IN imeTvrtke VARCHAR(100), IN adresaTvrtke VARCHAR(100))
-BEGIN
-IF NOT EXISTS (SELECT * FROM SPONZOR WHERE SPONZOR.imeTvrtke=imeTvrtke AND SPONZOR.adresaTvrtke=adresaTvrtke) THEN
-	IF EXISTS (SELECT * FROM SPONZOR WHERE SPONZOR.idSponzora=idSponzora) THEN
-		UPDATE SPONZOR
-		SET SPONZOR.imeTvrtke=imeTvrtke, SPONZOR.adresaTvrtke=adresaTvrtke
-		WHERE SPONZOR.idSponzora=idSponzora;
-	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji sponzor sa unesenim identifikatorom!';
-	END IF;
-ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Zadani zapis vec postoji u bazi!';
-END IF;
-END $$
-DELIMITER ;
-
-
-DELIMITER $$
 CREATE  PROCEDURE `azurirajSponzorstvo`(IN  idImaSponzora INT(10) ,IN idSponzora INT(10), IN idKategorijeSponzora INT(10), IN idPromocije INT(10), IN idElektrijade INT(10), IN iznosDonacije DECIMAL(13,2), IN valutaDonacije VARCHAR(3), IN napomena VARCHAR(300))
 BEGIN
 IF EXISTS (SELECT * FROM ImaSponzora WHERE ImaSponzora.idImaSponzora=idImaSponzora ) THEN
@@ -512,17 +496,6 @@ IF EXISTS (SELECT * FROM PODRUCJESUDJELOVANJA WHERE PODRUCJESUDJELOVANJA.idPodru
 ELSE
 	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Traženi zapis ne postoji!';
 END IF;
-END $$
-DELIMITER ;
-
-DELIMITER $$
-CREATE  PROCEDURE `brisiSponzora`(IN idSponzora INT(10))
-BEGIN
-	IF EXISTS (SELECT * FROM SPONZOR WHERE SPONZOR.idSponzora=idSponzora) THEN
-		DELETE FROM SPONZOR
-		WHERE SPONZOR.idSponzora=idSponzora;
-	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Ne postoji sponzor sa unesenim identifikatorom!';
-	END IF;
 END $$
 DELIMITER ;
 
@@ -884,16 +857,6 @@ ELSE
 END IF;
 
 
-END $$
-DELIMITER ;
-
-DELIMITER $$
-CREATE  PROCEDURE `dodajSponzora`(IN imeTvrtke VARCHAR(100), IN adresaTvrtke VARCHAR(100))
-BEGIN
-IF NOT EXISTS (SELECT * FROM SPONZOR WHERE SPONZOR.imeTvrtke=imeTvrtke AND SPONZOR.adresaTvrtke=adresaTvrtke) THEN
-	INSERT INTO SPONZOR values (NULL,imeTvrtke,adresaTvrtke);
-ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Greška: Zadani zapis vec postoji u bazi!';
-END IF;
 END $$
 DELIMITER ;
 

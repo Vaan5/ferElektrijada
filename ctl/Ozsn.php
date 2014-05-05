@@ -118,6 +118,9 @@ class Ozsn implements Controller {
 		}
     }
     
+	
+	
+	
     /**
      * Displays all companies
      */
@@ -852,35 +855,6 @@ class Ozsn implements Controller {
     }
     
     /**
-     * Display sponzors for current Elektrijada (who have sponsored the whole competition, not only some areas of it)
-     */
-    public function displayActiveSponzor() {
-	$this->checkRole();
-        $this->checkMessages();
-        
-        $sponzor = new \model\DBSponzor();
-	$sponzori = null;
-        try {
-	    $elektrijada = new \model\DBElektrijada();
-	    $id = $elektrijada->getCurrentElektrijadaId();
-            $sponzori = $sponzor->getAllActive($id);
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $this->errorMessage = $handler;
-        }
-
-        echo new \view\Main(array(
-            "body" => new \view\ozsn\ActiveSponzorList(array(
-                "errorMessage" => $this->errorMessage,
-                "resultMessage" => $this->resultMessage,
-                "sponzori" => $sponzori
-            )),
-            "title" => "Ovogodišnji Sponzori",
-			"script" => new \view\scripts\ozsn\ActiveSponzorListJs()
-        ));
-    }
-    
-    /**
      * Display sponzors for current Elektrijada (who have sponsored some competition areas)
      */
     public function displayAreaSponzor() {
@@ -1198,32 +1172,6 @@ class Ozsn implements Controller {
 	    )),
 	    "title" => "Mijenjanje Djelomičnog Sponzora"
 	));
-    }
-    
-    /**
-     * Deletes a sponsor via get request
-     */
-    public function deleteSponzor() {
-	$this->checkRole();
-        
-        $this->idCheck("displaySponzor");
-	
-        $sponzor = new \model\DBSponzor();
-        try {
-            $sponzor->deleteRow(get("id"));
-            
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displaySponzor"
-            )) . '?msg=succd');
-        } catch (\PDOException $e) {
-            $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "ozsn",
-                "action" => "displaySponzor"
-            )) . "?msg=excep");
-        }
     }
     
     /**
@@ -4948,6 +4896,25 @@ class Ozsn implements Controller {
 			"title" => "Mijenjanje Sponzora"
 		));
     }
+	
+	public function deleteSponzor() {
+		$this->checkRole();
+        
+        $this->idCheck("displaySponzor");
+	
+        $sponzor = new \model\DBSponzor();
+        try {
+            $sponzor->deleteRow(get("id"));
+            
+            preusmjeri(\route\Route::get('d3')->generate(array(
+                "controller" => "ozsn",
+                "action" => "displaySponzor"
+            )) . '?msg=succd');
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+			$this->createMessage($handler, "d3", "ozsn", "displaySponzor");
+        }
+    }
     
     public function downloadLogo() {
 		$this->checkRole();
@@ -5195,5 +5162,53 @@ class Ozsn implements Controller {
             $handler = new \model\ExceptionHandlerModel($e);
             $this->createMessage($handler, "d3", "ozsn", "displayKategorija");
         }
+    }
+	
+	/******************************************************************
+	 *					OVOGODIŠNJI SPONZORI
+	 ******************************************************************/
+	public function displayActiveSponzor() {
+		$this->checkRole();
+        $this->checkMessages();
+        
+        $sponzor = new \model\DBSponzor();
+		$sponzori = null;
+        try {
+			$elektrijada = new \model\DBElektrijada();
+			$id = $elektrijada->getCurrentElektrijadaId();
+            $sponzori = $sponzor->getAllActive($id);
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->errorMessage = $handler;
+        }
+		
+		if (get("type") !== false) {
+			$pomPolje = array("Naziv tvrke", "Adresa");
+			$array = array();
+			$array[] = $pomPolje;
+			
+			if ($sponzori !== null && count($sponzori)) {
+				foreach ($sponzori as $v) {
+					$array[] = array($v->imeTvrtke, $v->adresaTvrtke);
+				}
+			}
+			
+			$path = $this->generateFile(get("type"), $array);
+			
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
+
+        echo new \view\Main(array(
+            "body" => new \view\ozsn\ActiveSponzorList(array(
+                "errorMessage" => $this->errorMessage,
+                "resultMessage" => $this->resultMessage,
+                "sponzori" => $sponzori
+            )),
+            "title" => "Ovogodišnji Sponzori",
+			"script" => new \view\scripts\ozsn\ActiveSponzorListJs()
+        ));
     }
 }

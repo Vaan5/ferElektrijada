@@ -22,52 +22,52 @@ class DBSponzor extends AbstractDBModel {
     }
     
     public function getAllByElektrijada($idElektrijade) {
-	try {
-	    $pdo = $this->getPdo();
-	    $q = $pdo->prepare("SELECT * FROM sponzor LEFT JOIN imasponzora ON sponzor.idSponzora = imasponzora.idSponzora
-						    LEFT JOIN kategorija ON kategorija.idKategorijeSponzora = imasponzora.idKategorijeSponzora
-						    LEFT JOIN nacinpromocije ON nacinpromocije.idPromocije = imasponzora.idPromocije
-						    LEFT JOIN sponelekpod ON sponelekpod.idSponzora = sponzor.idSponzora
-						    LEFT JOIN podrucje ON podrucje.idPodrucja = sponelekpod.idPodrucja
-						    WHERE imasponzora.idElektrijade = :id OR sponelekpod.idElektrijade = :id");
-	    $q->bindValue(":id", $idElektrijade);
-	    $q->execute();
-	    return $q->fetchAll();
-	} catch (\PDOException $e) {
-	    throw $e;
-	}
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT * FROM sponzor LEFT JOIN imasponzora ON sponzor.idSponzora = imasponzora.idSponzora
+								LEFT JOIN kategorija ON kategorija.idKategorijeSponzora = imasponzora.idKategorijeSponzora
+								LEFT JOIN nacinpromocije ON nacinpromocije.idPromocije = imasponzora.idPromocije
+								LEFT JOIN sponelekpod ON sponelekpod.idSponzora = sponzor.idSponzora
+								LEFT JOIN podrucje ON podrucje.idPodrucja = sponelekpod.idPodrucja
+								WHERE imasponzora.idElektrijade = :id OR sponelekpod.idElektrijade = :id");
+			$q->bindValue(":id", $idElektrijade);
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
+		}
     }
     
     public function getAllActive($idElektrijade) {
-	try {
-	    $pdo = $this->getPdo();
-	    $q = $pdo->prepare("SELECT sponzor.* FROM sponzor JOIN imasponzora ON sponzor.idSponzora = imasponzora.idSponzora WHERE imasponzora.idElektrijade = :id");
-	    $q->bindValue(":id", $idElektrijade);
-	    $q->execute();
-	    return $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));
-	} catch (\PDOException $e) {
-	    throw $e;
-	}
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT sponzor.* FROM sponzor JOIN imasponzora ON sponzor.idSponzora = imasponzora.idSponzora WHERE imasponzora.idElektrijade = :id");
+			$q->bindValue(":id", $idElektrijade);
+			$q->execute();
+			return $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+		} catch (\PDOException $e) {
+			throw $e;
+		}
     }
     
     public function getAllArea($idElektrijade) {
-	try {
-	    $pdo = $this->getPdo();
-	    $q = $pdo->prepare("SELECT * FROM sponzor JOIN sponelekpod ON sponzor.idSponzora = sponelekpod.idSponzora
-		JOIN podrucje ON sponelekpod.idPodrucja = podrucje.idPodrucja WHERE sponelekpod.idElektrijade = :id");
-	    $q->bindValue(":id", $idElektrijade);
-	    $q->execute();
-	    return $q->fetchAll();
-	} catch (\PDOException $e) {
-	    throw $e;
-	}
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT * FROM sponzor JOIN sponelekpod ON sponzor.idSponzora = sponelekpod.idSponzora
+						JOIN podrucje ON sponelekpod.idPodrucja = podrucje.idPodrucja WHERE sponelekpod.idElektrijade = :id");
+			$q->bindValue(":id", $idElektrijade);
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
+		}
     }
 
-    public function addRow($imeTvrtke, $adresaTvrtke, $logotip) {
-	try {
+    public function addRow($imeTvrtke, $adresaTvrtke, $logotip = NULL) {
+		try {
             $this->imeTvrtke = $imeTvrtke;
-	    $this->adresaTvrtke = $adresaTvrtke;
-	    $this->logotip = NULL;
+			$this->adresaTvrtke = $adresaTvrtke;
+			$this->logotip = $logotip;
             $this->save();
         } catch (\PDOException $e) {
             throw $e;
@@ -75,21 +75,21 @@ class DBSponzor extends AbstractDBModel {
     }
     
     public function deleteRow($idSponzora) {
-	try {
+		try {
             $this->load($idSponzora);
-	    if ($this->logotip != null) {
-		// delete logo image
-		$p = unlink($this->logotip);
-		if ($p === false) {
-		    $e = new \PDOException();
-		    $e->errorInfo[0] = '02000';
-		    $e->errorInfo[1] = 1604;
-		    $e->errorInfo[2] = "Greška prilikom brisanja logotipa!";
-		    $this->delete();
-		    throw $e;
-		}
-	    }
-	    $this->delete();
+			if ($this->logotip != null) {
+				// delete logo image
+				$p = unlink($this->logotip);
+				if ($p === false) {
+					$e = new \PDOException();
+					$e->errorInfo[0] = '02000';
+					$e->errorInfo[1] = 1604;
+					$e->errorInfo[2] = "Greška prilikom brisanja logotipa!";
+					$this->delete();
+					throw $e;
+				}
+			}
+			$this->delete();
         } catch (\app\model\NotFoundException $e) {
             $e = new \PDOException();
             $e->errorInfo[0] = '02000';
@@ -105,13 +105,13 @@ class DBSponzor extends AbstractDBModel {
      * Modifies row, but can't delete logotype with this function (use addLogo for that)
      */
     public function modifyRow($idSponzora, $imeTvrtke, $adresaTvrtke, $logotip) {
-	try {
-            $this->load($idSponzora);
-	    $this->imeTvrtke = $imeTvrtke;
-	    $this->adresaTvrtke = $adresaTvrtke;
-	    if ($logotip !== NULL && $logotip !== '' && $logotip !== false)
-		$this->logotip = $logotip;
-	    $this->save();
+		try {
+			$this->load($idSponzora);
+			$this->imeTvrtke = $imeTvrtke;
+			$this->adresaTvrtke = $adresaTvrtke;
+			if ($logotip !== NULL && $logotip !== '' && $logotip !== false)
+				$this->logotip = $logotip;
+			$this->save();
         } catch (\app\model\NotFoundException $e) {
             $e = new \PDOException();
             $e->errorInfo[0] = '02000';
@@ -124,20 +124,18 @@ class DBSponzor extends AbstractDBModel {
     }
     
     public function addLogo($idSponzora, $logotip) {
-	try {
-	    $this->load($idSponzora);
-	    $this->logotip = $logotip;
-	    $this->save();
-	} catch (app\model\NotFoundException $e) {
-	    $e = new \PDOException();
-            $e->errorInfo[0] = '02000';
-            $e->errorInfo[1] = 1604;
-            $e->errorInfo[2] = "Zapis ne postoji!";
-            throw $e;
-	} catch (\PDOException $e) {
-	    throw $e;
-	}
+		try {
+			$this->load($idSponzora);
+			$this->logotip = $logotip;
+			$this->save();
+		} catch (app\model\NotFoundException $e) {
+			$e = new \PDOException();
+			$e->errorInfo[0] = '02000';
+			$e->errorInfo[1] = 1604;
+			$e->errorInfo[2] = "Zapis ne postoji!";
+			throw $e;
+		} catch (\PDOException $e) {
+			throw $e;
+		}
     }
 }
-
-
