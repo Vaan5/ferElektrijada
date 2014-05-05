@@ -5,8 +5,21 @@ use app\controller\Controller;
 
 class Busevi implements Controller {
 
+    private $errorMessage;
+    private $resultMessage;
+
+    private function checkRole() {
+        // you must be logged in, and an Ozsn member with or without leadership
+        $o = new \model\DBOsoba();
+        if (!(\model\DBOsoba::isLoggedIn() && (\model\DBOsoba::getUserRole() === 'O' ||
+            \model\DBOsoba::getUserRole() === 'OV') && $o->isActiveOzsn(session("auth")))) {
+                preusmjeri(\route\Route::get('d1')->generate() . "?msg=accessDenied");
+        }
+    }
+
     public function spremiRaspored() {
         try {
+            //$this->checkRole();
             $busevi = array();
             $busevi = post("busevi");
             echo "<pre>";
@@ -58,12 +71,14 @@ class Busevi implements Controller {
                 }
             }
         } catch (\PDOException $e) {
-            throw $e;
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->createMessage($handler, "d2", "busevi", "");
         }
     }
 
     private function getBusevi() {
         try {
+            //$this->checkRole();
             $busModel = new \model\DBBus();
             $busevi = $busModel->getAllBusesAsArray();
             for ($i=0; $i < count($busevi); $i++) {
@@ -85,24 +100,62 @@ class Busevi implements Controller {
             }
             return $busevi;
         } catch (\PDOException $e) {
-            throw $e;
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->createMessage($handler, "d2", "busevi", "");
         }
     }
 
     private function checkForMessages() {
+        switch(get("msg")) {
+            case 'excep':
+                if(isset($_SESSION['exception'])) {
+                    $e = unserialize($_SESSION['exception']);
+                    unset($_SESSION['exception']);
+                    $this->errorMessage = $e;
+                }
+            default:
+                break;
+        }
+    }
+
+    private function createMessage($message, $type = 'd1', $controller = null, $action = null) {
+        $handler = new \model\ExceptionHandlerModel(new \PDOException(), (string)$message);
+        $_SESSION["exception"] = serialize($handler);
+        if ($type === 'd2') {
+            preusmjeri(\route\Route::get('d2')->generate(array(
+                "controller" => $controller
+                )) . "?msg=excep");
+        } else {
+             preusmjeri(\route\Route::get('d1')->generate() . "?msg=excep");
+        }
     }
 
     public function display() {
-        $this->checkForMessages();
+        $busevi = array();
+        $sudionici = array();
+        try {
+            //$this->checkRole();
+            $this->checkForMessages();
 
-        $busevi = $this->getBusevi();
-        $putovanjeModel = new \model\DBPutovanje();
-        $sudionici = $putovanjeModel->getSudioniciBezPutovanja();
-        echo new \view\busevi\BusGenerator(
-            array(
-            "sudionici" => $sudionici,
-            "busevi" => $busevi
-            )
-        );
+            if(!isset($this->errorMessage)) {
+
+                $busevi = $this->getBusevi();
+                $putovanjeModel = new \model\DBPutovanje();
+                $sudionici = $putovanjeModel->getSudioniciBezPutovanja();
+            }
+        } catch (\PDOException $e) {
+            $handler = new \model\ExceptionHandlerModel($e);
+            $this->createMessage($handler, "d2", "busevi", "");
+        }
+
+        echo new \view\Main(array(
+                "body" => new \view\busevi\BusGenerator(
+                            array(
+                            "sudionici" => $sudionici,
+                            "busevi" => $busevi,
+                            "errorMessage" => $this->errorMessage
+                            )),
+                "title" => "Izrada rasporeda po busevima za polazak i povratak",
+        ));
     }
 }
