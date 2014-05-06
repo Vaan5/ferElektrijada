@@ -195,15 +195,50 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
 		try {
 			$pdo = $this->getPdo();
 			$q = $pdo->prepare("SELECT SUM(podrucjesudjelovanja.iznosUplate) suma,
-										podrucjeSudjelovanja.idPodrucja,
 										podrucje.nazivPodrucja,
+										podrucje.idPodrucja,
 										sudjelovanje.idElektrijade
+										FROM podrucje
+											LEFT JOIN podrucjesudjelovanja ON podrucje.idPodrucja = podrucjesudjelovanja.idPodrucja
+											LEFT JOIN sudjelovanje ON sudjelovanje.idSudjelovanja = podrucjesudjelovanja.idSudjelovanja AND
+														sudjelovanje.idElektrijade = :idElektrijade
+										WHERE UPPER(podrucje.nazivPodrucja) <> 'ZNANJE' AND UPPER(podrucje.nazivPodrucja) <> 'SPORT'
+										GROUP BY podrucje.idPodrucja
+										ORDER BY podrucjesudjelovanja.vrstaPodrucja ASC");
+			$q->bindValue(":idElektrijade", $idElektrijade);
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
+	
+	public function getKnowledgeMoney($idElektrijade) {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT SUM(podrucjesudjelovanja.iznosUplate) suma
 										FROM podrucjesudjelovanja
 											JOIN sudjelovanje ON sudjelovanje.idSudjelovanja = podrucjesudjelovanja.idSudjelovanja
 											JOIN podrucje ON podrucje.idPodrucja = podrucjesudjelovanja.idPodrucja
-										GROUP BY podrucjesudjelovanja.idPodrucja
-										HAVING sudjelovanje.idElektrijade = :idElektrijade
-										ORDER BY podrucjesudjelovanja.vrstaPodrucja ASC");
+											JOIN podrucje k ON podrucje.idNadredjenog = k.idPodrucja
+										WHERE UPPER(k.nazivPodrucja) = 'ZNANJE'");
+			$q->bindValue(":idElektrijade", $idElektrijade);
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
+	
+	public function getSportMoney($idElektrijade) {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT SUM(podrucjesudjelovanja.iznosUplate) suma
+										FROM podrucjesudjelovanja
+											JOIN sudjelovanje ON sudjelovanje.idSudjelovanja = podrucjesudjelovanja.idSudjelovanja
+											JOIN podrucje ON podrucje.idPodrucja = podrucjesudjelovanja.idPodrucja
+											JOIN podrucje k ON podrucje.idNadredjenog = k.idPodrucja
+										WHERE UPPER(k.nazivPodrucja) = 'SPORT'");
 			$q->bindValue(":idElektrijade", $idElektrijade);
 			$q->execute();
 			return $q->fetchAll();

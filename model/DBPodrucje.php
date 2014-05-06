@@ -45,6 +45,18 @@ class DBPodrucje extends AbstractDBModel {
 			throw $e;
 		}
 	}
+	
+	public function getAllExceptKnowledgeAndSport() {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT * FROM podrucje WHERE UPPER(nazivPodrucja) <> 'ZNANJE' AND UPPER(nazivPodrucja) <> 'SPORT'
+								ORDER BY nazivPodrucja ASC");
+			$q->execute();
+			return $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
     
     public function getKnowledgeId() {
 		try {

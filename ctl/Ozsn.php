@@ -1553,7 +1553,7 @@ class Ozsn implements Controller {
 		
 		try {
 			$podrucje = new \model\DBPodrucje();
-			$podrucja = $podrucje->getAll();
+			$podrucja = $podrucje->getAllExceptKnowledgeAndSport();
 		} catch (app\model\NotFoundException $e) {
 			$this->createMessage("Nepoznati identifikator");
 		} catch (\PDOException $e) {
@@ -1687,9 +1687,14 @@ class Ozsn implements Controller {
 				$idElektrijade = $e->getCurrentElektrijadaId();
 				$novci = $podrucjeSudjelovanja->getMoneyStatistics($idElektrijade);
 				
+				$znanje = $podrucjeSudjelovanja->getKnowledgeMoney($idElektrijade);
+				$sport = $podrucjeSudjelovanja->getSportMoney($idElektrijade);
+				
 				$ukupno = $podrucjeSudjelovanja->getAllMoney($idElektrijade);
 				$ukupno = $ukupno[0]->suma;
 			} catch (\PDOException $e) {
+				var_dump($e);
+				die();
 				$handler = new \model\ExceptionHandlerModel($e);
 				$this->createMessage($handler, "d3", "ozsn", "displayCollectedMoney");
 			}
@@ -1723,7 +1728,9 @@ class Ozsn implements Controller {
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage,
 				"ukupno" => $ukupno,
-				"podrucja" => $novci
+				"podrucja" => $novci,
+				"znanje" => $znanje,
+				"sport" => $sport
 			))
 		));
 	}

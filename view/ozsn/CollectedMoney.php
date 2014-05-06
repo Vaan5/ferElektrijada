@@ -8,6 +8,8 @@ class CollectedMoney extends AbstractView {
     private $resultMessage;
     private $podrucja;
 	private $ukupno;
+	private $znanje;
+	private $sport;
     
     protected function outputHTML() {
 		// print messages if any
@@ -46,6 +48,14 @@ class CollectedMoney extends AbstractView {
 <?php
 			}
 ?>
+					<tr>
+						<td>Znanje</td>
+						<td><?php echo $this->znanje[0]->suma === null ? 0 : $this->znanje[0]->suma;?></td>
+					</tr>
+					<tr>
+						<td>Sport</td>
+						<td><?php echo $this->sport[0]->suma === null ? 0 : $this->sport[0]->suma;?></td>
+					</tr>
 					<tr>
 						<td>Ukupno</td>
 						<td><?php echo $this->ukupno === null ? 0 : $this->ukupno;?></td>
@@ -86,6 +96,16 @@ class CollectedMoney extends AbstractView {
 	
 	public function setUkupno($ukupno) {
 		$this->ukupno = $ukupno;
+		return $this;
+	}
+
+	public function setZnanje($znanje) {
+		$this->znanje = $znanje;
+		return $this;
+	}
+
+	public function setSport($sport) {
+		$this->sport = $sport;
 		return $this;
 	}
 
