@@ -131,9 +131,9 @@ class DBPodrucje extends AbstractDBModel {
 		try {
 			if (count($podrucja)) {
 				foreach ($podrucja as $p) {
-					$this->idPodrucja = null;
-					$this->load($p->idPodrucja);
-					$pov[] = $this;
+					$k = new DBPodrucje();
+					$k->load($p->idPodrucja);
+					$pov[] = $k;
 				}
 			}
 			return $pov;
