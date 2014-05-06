@@ -280,7 +280,6 @@ CREATE TABLE SUDJELOVANJE (
     idSmjera INT UNSIGNED,
     idRadnogMjesta INT UNSIGNED,
     idZavoda INT UNSIGNED,
-    idPutovanja INT UNSIGNED,
     FOREIGN KEY (idRadnogMjesta)
         REFERENCES RADNOMJESTO (idRadnogMjesta)
         ON UPDATE CASCADE ON DELETE CASCADE,
