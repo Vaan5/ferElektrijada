@@ -14,12 +14,12 @@ class AdminNavbar extends AbstractView{
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'administrator',
                     "action" => 'displayElektrijada'
-                ));?>">Prikaži elektrijade</a></li>
+                ));?>">Elektrijade</a></li>
             <li class="divider"></li>
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'administrator',
                     "action" => 'addElektrijada'
-                ));?>">Dodaj elektrijadu</a></li>
+                ));?>">Dodaj Elektrijadu</a></li>
           </ul>
         </li>
                 <li class="dropdown">
@@ -29,26 +29,23 @@ class AdminNavbar extends AbstractView{
                     "controller" => 'administrator',
                     "action" => 'addOzsn'
                 ));?>">Dodaj člana OZSN-a</a></li>
-            <li><a href="<?php echo \route\Route::get('d3')->generate(array(
-                    "controller" => 'administrator',
-                    "action" => 'modifyOzsn'
-                ));?>">Uredi OZSN</a></li>
+
             <li class="divider"></li>
 
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'administrator',
                     "action" => 'searchOzsn'
-                ));?>">Pretraži aktivne članove</a></li>
+                ));?>">Pretraži Aktivne Članove</a></li>
             <li class="divider"></li>
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'administrator',
                     "action" => 'listOldOzsn'
-                ));?>">Prikaži stare OZSN</a></li>
+                ));?>">Prikaži Stare Članove</a></li>
             <li class="divider"></li>
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'administrator',
                     "action" => 'searchPersons'
-                ));?>">Pretraži osobe</a></li>
+                ));?>">Pretraži Osobe</a></li>
           </ul>
         </li>
       </ul>

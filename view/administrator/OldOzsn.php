@@ -43,6 +43,12 @@ class OldOzsn extends AbstractView {
 		{
 			
 ?>
+<?php echo new \view\components\DownloadLinks(array(
+			"route" => \route\Route::get("d3")->generate(array(
+				"controller" => "administrator",
+				"action" => "listOldOzsn"
+			))
+		)); ?>
 			<div class="panel panel-default">
 				<div class="panel-heading">Prošlogodišnji članovi odbora</div>
 				

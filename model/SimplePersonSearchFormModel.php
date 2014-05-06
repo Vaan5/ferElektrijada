@@ -8,9 +8,9 @@ class SimplePersonSearchFormModel extends AbstractFormModel {
     protected function rules() {
         if ($this->rulesArray === null) {
             $this->rulesArray = array(
-                'ferId' => array('username'),
-                'ime' => array('name'), 
-                'prezime' => array('name') 
+                'ferId' => array('alnum'),
+                'ime' => array('words'), 
+                'prezime' => array('words') 
                 );
         }
         return $this->rulesArray;

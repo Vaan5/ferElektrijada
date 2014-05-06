@@ -28,6 +28,7 @@ class PersonModification extends AbstractView {
             )),
             "submitButtonText" => "Spremi promjene",
             "osoba" => $this->osoba,
+			"showDelete" => false
         ));
     }
     

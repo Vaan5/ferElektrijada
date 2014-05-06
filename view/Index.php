@@ -48,7 +48,7 @@ class Index extends AbstractView {
 	<a href="<?php echo \route\Route::get('d3')->generate(array(
 	    "controller" => 'sudionik',
 	    "action" => 'displayProfile'
-	)) . "";?>">Profil</a>
+	));?>">Profil</a>
 	
 	
 	<br><br>
@@ -60,7 +60,18 @@ class Index extends AbstractView {
 	<a href="<?php echo \route\Route::get('d3')->generate(array(
 	    "controller" => 'voditelj',
 	    "action" => 'displayProfile'
-	)) . "";?>">Profil</a>
+	));?>">Profil</a>
+	
+	<br><br>
+	
+	<b>Busevi Link -> Randy stavi u ozsn navbar</b>
+	
+	<br>
+	
+	<a href="<?php echo \route\Route::get('d3')->generate(array(
+	    "controller" => 'busevi',
+	    "action" => 'display'
+	));?>">Raspored po Autobusima</a>
 	
 </p>
 

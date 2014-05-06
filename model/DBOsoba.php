@@ -85,8 +85,7 @@ class DBOsoba extends AbstractDBModel {
 		$vel=count($rez);
 		if($vel>0){//ako postoji ba 1 podrucje vrati podrucje, ako ne vrati null
 			return $rez;
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
@@ -173,8 +172,7 @@ class DBOsoba extends AbstractDBModel {
 		$vel=count($final);
 		if($vel>0){//ako postoji vrati true, ako ne vrati false
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -219,30 +217,56 @@ class DBOsoba extends AbstractDBModel {
     public function addNewPerson($ime, $prezime, $mail, $brojMob, $ferId, $password, $JMBAG,
             $spol, $datRod, $brOsobne, $brPutovnice, $osobnaVrijediDo, $putovnicaVrijediDo, 
             $uloga, $zivotopis, $MBG, $OIB, $idNadredjena, $aktivanDokument = 0) {
-        
-        $this->idOsobe = null;
-        $atributi = $this->getColumns();
-        foreach($atributi as $a) {
-            $this->{$a} = ${$a};
-        }
-        $this->password = $this->kriptPass($this->password);
-        $this->save();
+        try {
+			$this->idOsobe = null;
+			$atributi = $this->getColumns();
+			
+			$dat1 = null; $dat2 = null; $dat3 = null;
+			if ($osobnaVrijediDo !== null) $dat1 = strtotime($osobnaVrijediDo);
+			if ($putovnicaVrijediDo !== null) $dat2 = strtotime($putovnicaVrijediDo);
+			if ($datRod !== null) $dat3 = strtotime($datRod);
+			
+			$now = time();
+			if (($dat1 !== null && $dat1 < $now) || ($dat2 !== null && $dat2 < $now) || ($dat3 !== null &&  $dat3 > $now)) {
+				$e = new \PDOException();
+				$e->errorInfo[0] = '02000';
+				$e->errorInfo[1] = 1604;
+				$e->errorInfo[2] = "Uneseni datum nije validan!";
+				throw $e;
+			}
+			
+			foreach($atributi as $a) {
+				$this->{$a} = ${$a};
+			}
+			$this->password = $this->kriptPass($this->password);
+			$this->save();
+		} catch (\app\model\NotFoundException $e) {
+			throw $e;
+		} catch (\PDOException $e) {
+			throw $e;
+		}
     }
     
 	public function getAllPersons($except = 'A') {
-        $pov = $this->select()->fetchAll();
-        if(count($pov)) {
-            foreach($pov as $k => $v) {
-				if ($except === 'A') {
-					if ($v->uloga === 'A')
-						unset($pov[$k]);
-				} else {
-					if ($v->uloga === 'A' || $v->uloga ==='O')
-						unset($pov[$k]);
-				} 
-            }
-        }
-        return $pov;
+		try {
+			$pov = $this->select()->fetchAll();
+			if(count($pov)) {
+				foreach($pov as $k => $v) {
+					if ($except === 'A') {
+						if ($v->uloga === 'A')
+							unset($pov[$k]);
+					} else {
+						if ($v->uloga === 'A' || $v->uloga ==='O')
+							unset($pov[$k]);
+					} 
+				}
+			}
+			return $pov;
+		} catch (\app\model\NotFoundException $e) {
+			throw $e;
+		} catch (\PDOException $e) {
+			throw $e;
+		}
     }
 	
 	public function find($ime, $prezime, $ferId, $OIB, $JMBAG, $notInvolve = 'A') {
@@ -299,32 +323,34 @@ class DBOsoba extends AbstractDBModel {
             return $pov;
         }
         return false;
-    }
-	
-	
-	
-	
+    }	
 	
     public function getAllActiveOzsn() {
-        $pov = $this->select()->where(array(
-            "uloga" => 'O'
-        ))->fetchAll();
-        
-        if (count($pov)) {
-            // i take only active ozsn members
-            $elektrijada = new DBElektrijada();
-            $id = $elektrijada->getCurrentElektrijadaId();
-            $obavljaFunkciju = new DBObavljaFunkciju();
-            foreach($pov as $k => $v) {
-                if($obavljaFunkciju->ozsnExists($v->getPrimaryKey(), $id))
-                        continue;
-                unset($pov[$k]);
-            }
-            if(count($pov))
-                return $pov;
-            return false;
-        }
-        return false;
+		try {
+			$pov = $this->select()->where(array(
+				"uloga" => 'O'
+			))->fetchAll();
+
+			if (count($pov)) {
+				// i take only active ozsn members
+				$elektrijada = new DBElektrijada();
+				$id = $elektrijada->getCurrentElektrijadaId();
+				$obavljaFunkciju = new DBObavljaFunkciju();
+				foreach($pov as $k => $v) {
+					if($obavljaFunkciju->ozsnExists($v->getPrimaryKey(), $id))
+							continue;
+					unset($pov[$k]);
+				}
+				if(count($pov))
+					return $pov;
+				return false;
+			}
+			return false;
+		} catch (\app\model\NotFoundException $e) {
+			throw $e;
+		} catch (\PDOException $e) {
+			throw $e;
+		}
     }
     
     /**
@@ -339,26 +365,26 @@ class DBOsoba extends AbstractDBModel {
         $query = '';
         $number = 0;
         if($ime !== '' && $ime !== null && $ime !== false) {
-            $query .= ' ime = :ime';
+            $query .= ' UPPER(ime) LIKE :ime';
             $number++;
         }
         if($prezime !== '' && $prezime !== null && $prezime !== false) {
             if ($number > 0) $query .= ' OR';
-            $query .= ' prezime = :prezime';
+            $query .= ' UPPER(prezime) LIKE :prezime';
             $number++;
         }
         if($ferId !== '' && $ferId !== null && $ferId !== false) {
             if ($number > 0) $query .= ' OR';
-            $query .= ' ferId = :ferId';
+            $query .= ' UPPER(ferId) LIKE :ferId';
         }
         $query = 'SELECT * FROM osoba WHERE (' . $query . ') AND uloga=\'O\'';
         $upit = $pdo->prepare($query);
         if($ime !== '' && $ime !== null && $ime !== false)
-            $upit->bindValue (':ime', $ime);
+            $upit->bindValue (':ime', "%" . strtoupper ($ime) . "%");
         if($prezime !== '' && $prezime !== null && $prezime !== false)
-            $upit->bindValue (':prezime', $prezime);
+            $upit->bindValue (':prezime', "%" . strtoupper ($prezime) . "%");
         if($ferId !== '' && $ferId !== null && $ferId !== false)
-            $upit->bindValue (':ferId', $ferId);
+            $upit->bindValue (':ferId', "%" . strtoupper ($ferId) . "%");
         try {
             $upit->execute();
         } catch (\PDOException $e) {
@@ -387,87 +413,139 @@ class DBOsoba extends AbstractDBModel {
     }
     
     public function isActiveOzsn($id) {
-	$obavlja = new DBObavljaFunkciju();
-	$el = new DBElektrijada();
-	$idElektrijade = $el->getCurrentElektrijadaId();
-	$pov = $obavlja->select()->where(array(
-	    "idOsobe" => $id,
-	    "idElektrijade" => $idElektrijade
-	))->fetchAll();
-	
-	return count($pov) === 0 ? false : true;
+		try {
+			$obavlja = new DBObavljaFunkciju();
+			$el = new DBElektrijada();
+			$idElektrijade = $el->getCurrentElektrijadaId();
+			$pov = $obavlja->select()->where(array(
+				"idOsobe" => $id,
+				"idElektrijade" => $idElektrijade
+			))->fetchAll();
+
+			return count($pov) === 0 ? false : true;
+		} catch (\app\model\NotFoundException $e) {
+			throw $e;
+		} catch (\PDOException $e) {
+			throw $e;
+		}
     }
     
     public function getOldOzsn() {
-        $elektrijada = new DBElektrijada();
-        $idElektrijade = $elektrijada->getLastYearElektrijadaId();
-        if ($idElektrijade === false)
-            return array();
-        
-        $obavljaFunkciju = new DBObavljaFunkciju();
-        $pov = $obavljaFunkciju->select()->where(array(
-            "idElektrijade" => $idElektrijade
-        ))->fetchAll();
-        if(!count($pov))
-            return array();
-        
-        $ret = array();
-        foreach ($pov as $v) {
-            $o = new DBOsoba();
-            try {
-                $o->load($v->idOsobe);
-                $ret[] = $o;
-            } catch (\app\model\NotFoundException $e) {
-                return array();
-            } catch (\PDOException $e) {
-                return array();
-            }
-        }
-        return $ret;        
+		try {
+			$elektrijada = new DBElektrijada();
+			$idElektrijade = $elektrijada->getLastYearElektrijadaId();
+			if ($idElektrijade === false)
+				return array();
+
+			$obavljaFunkciju = new DBObavljaFunkciju();
+			$pov = $obavljaFunkciju->select()->where(array(
+				"idElektrijade" => $idElektrijade
+			))->fetchAll();
+			if(!count($pov))
+				return array();
+
+			$ret = array();
+			foreach ($pov as $v) {
+				$o = new DBOsoba();
+				try {
+					$o->load($v->idOsobe);
+					$ret[] = $o;
+				} catch (\app\model\NotFoundException $e) {
+					return array();
+				} catch (\PDOException $e) {
+					return array();
+				}
+			}
+			return $ret;
+		} catch (\app\model\NotFoundException $e) {
+			throw $e;
+		} catch (\PDOException $e) {
+			throw $e;
+		}
     }
     
     public function modifyRow($primaryKey, $ime, $prezime, $mail, $brojMob, $ferId, $password, $JMBAG,
             $spol, $datRod, $brOsobne, $brPutovnice, $osobnaVrijediDo, $putovnicaVrijediDo, $uloga, $zivotopis, $MBG, $OIB, $aktivanDokument = 0) {
-        $atributi = $this->getColumns();
-        $this->load($primaryKey);
-        $stariPass = null;
-        if($password === null || $password === false) {
-            $stariPass = $this->password;
-        }
-        foreach($atributi as $a) {
-            $this->{$a} = ${$a};
-        }
-        if($stariPass !== null)
-            $this->password = $stariPass;
-        else
-            $this->password = $this->kriptPass ($this->password);
-        $this->save();
+		try {
+			$atributi = $this->getColumns();
+			$this->load($primaryKey);
+			$stariPass = null;
+			if($password === null || $password === false) {
+				$stariPass = $this->password;
+			}
+			$dat1 = null; $dat2 = null; $dat3 = null;
+			if ($osobnaVrijediDo !== null) $dat1 = strtotime($osobnaVrijediDo);
+			if ($putovnicaVrijediDo !== null) $dat2 = strtotime($putovnicaVrijediDo);
+			if ($datRod !== null) $dat3 = strtotime($datRod);
+			
+			$now = time();
+			if (($dat1 !== null && $dat1 < $now) || ($dat2 !== null && $dat2 < $now) || ($dat3 !== null &&  $dat3 > $now)) {
+				$e = new \PDOException();
+				$e->errorInfo[0] = '02000';
+				$e->errorInfo[1] = 1604;
+				$e->errorInfo[2] = "Uneseni datum nije validan!";
+				throw $e;
+			}
+			foreach($atributi as $a) {
+				$this->{$a} = ${$a};
+			}
+			if($stariPass !== null)
+				$this->password = $stariPass;
+			else
+				$this->password = $this->kriptPass ($this->password);
+			$this->save();
+		} catch (\app\model\NotFoundException $e) {
+			throw $e;
+		} catch (\PDOException $e) {
+			throw $e;
+		}
     }
     
     public function modifyPerson($primaryKey, $ime, $prezime, $mail, $brojMob, $ferId, $password, $JMBAG,
             $spol, $datRod, $brOsobne, $brPutovnice, $osobnaVrijediDo, $putovnicaVrijediDo, $zivotopis,
 			$MBG, $OIB, $aktivanDokument = 0, $idNadredjena = null) {
-        $atributi = $this->getColumns();
-        $this->load($primaryKey);
-        $stariPass = null;
-        if($password === null || $password === false) {
-            $stariPass = $this->password;
-        }
-		$stariNadredjeni = null;
-		if($idNadredjena === null) {
-			$stariNadredjeni = $this->idNadredjena;
+		try {
+			$atributi = $this->getColumns();
+			$this->load($primaryKey);
+			$stariPass = null;
+			if($password === null || $password === false) {
+				$stariPass = $this->password;
+			}
+			$stariNadredjeni = null;
+			if($idNadredjena === null) {
+				$stariNadredjeni = $this->idNadredjena;
+			}
+		
+			$dat1 = null; $dat2 = null; $dat3 = null;
+			if ($osobnaVrijediDo !== null) $dat1 = strtotime($osobnaVrijediDo);
+			if ($putovnicaVrijediDo !== null) $dat2 = strtotime($putovnicaVrijediDo);
+			if ($datRod !== null) $dat3 = strtotime($datRod);
+			
+			$now = time();
+			if (($dat1 !== null && $dat1 < $now) || ($dat2 !== null && $dat2 < $now) || ($dat3 !== null &&  $dat3 > $now)) {
+				$e = new \PDOException();
+				$e->errorInfo[0] = '02000';
+				$e->errorInfo[1] = 1604;
+				$e->errorInfo[2] = "Uneseni datum nije validan!";
+				throw $e;
+			}
+		
+			foreach($atributi as $a) {
+				if ($a !== 'uloga' && !($a === 'zivotopis' && $zivotopis === NULL))     // don't change the role
+					$this->{$a} = ${$a};
+			}
+			if($stariPass !== null)
+				$this->password = $stariPass;
+			else
+				$this->password = $this->kriptPass ($this->password);
+			if ($stariNadredjeni !== null)
+				$this->idNadredjena = $stariNadredjeni;
+			$this->save();
+		} catch (\app\model\NotFoundException $e) {
+			throw $e;
+		} catch (\PDOException $e) {
+			throw $e;
 		}
-        foreach($atributi as $a) {
-            if ($a !== 'uloga' && !($a === 'zivotopis' && $zivotopis === NULL))     // don't change the role
-                $this->{$a} = ${$a};
-        }
-        if($stariPass !== null)
-            $this->password = $stariPass;
-        else
-            $this->password = $this->kriptPass ($this->password);
-		if ($stariNadredjeni !== null)
-			$this->idNadredjena = $stariNadredjeni;
-        $this->save();
     }
     
     public function deleteOsoba($primaryKey) {
@@ -505,317 +583,314 @@ class DBOsoba extends AbstractDBModel {
     }
     
     public function promoteToOzsn($idOsobe) {
-        $this->load($idOsobe);
-        if ($this->uloga !== 'A' && $this->uloga !== 'O')
-            $this->uloga = 'O';
-        $this->save();
+		try {
+			$this->load($idOsobe);
+			if ($this->uloga !== 'A' && $this->uloga !== 'O')
+				$this->uloga = 'O';
+			$this->save();
+		} catch (\app\model\NotFoundException $e) {
+			throw $e;
+		} catch (\PDOException $e) {
+			throw $e;
+		}
     }
     
     public function reportCompetitorList($array, $idElektrijade, $idPodrucja) {
-	try {
-	    $statement = 'SELECT ';
-	    // only if there aren't atributes with same name, otherwise do it one by one or
-	    // put in the checkbox form the name of the table, like atribut_nazivAtributa,
-	    // and then with php replace _ with .
-	    foreach ($array as $k => $v) {
-		if ($k !== 'idElektrijade' && $k !== 'idPodrucja' && $k !== 'type') {
-		    $statement .= $k . ', ';
+		try {
+			$statement = 'SELECT ';
+			// only if there aren't atributes with same name, otherwise do it one by one or
+			// put in the checkbox form the name of the table, like atribut_nazivAtributa,
+			// and then with php replace _ with .
+			foreach ($array as $k => $v) {
+			if ($k !== 'idElektrijade' && $k !== 'idPodrucja' && $k !== 'type') {
+				$statement .= $k . ', ';
+			}
+			}
+			// remove last ', ';
+			$statement = rtrim($statement, ", ");
+
+			// now generate rest of query
+			$statement .= " FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
+						LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
+						LEFT JOIN godstud ON godstud.idGodStud = sudjelovanje.idGodStud
+						LEFT JOIN radnomjesto ON radnomjesto.idRadnogMjesta = sudjelovanje.idRadnogMjesta
+						LEFT JOIN zavod ON zavod.idZavoda = sudjelovanje.idZavoda
+						LEFT JOIN smjer ON smjer.idSmjera = sudjelovanje.idSmjera
+						LEFT JOIN imaatribut ON imaatribut.idSudjelovanja = sudjelovanje.idSudjelovanja
+						LEFT JOIN atribut ON imaatribut.idAtributa = atribut.idAtributa
+						LEFT JOIN podrucjesudjelovanja ON podrucjesudjelovanja.idSudjelovanja = sudjelovanje.idSudjelovanja
+						LEFT JOIN putovanje ON putovanje.idPutovanja = sudjelovanje.idPutovanja
+						LEFT JOIN bus ON bus.idBusa = putovanje.idBusa
+					WHERE sudjelovanje.idElektrijade = :idE AND (podrucjesudjelovanja.idPodrucja = :idP OR imaatribut.idPodrucja = :idP)";
+
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare($statement);
+			$q->bindValue(":idE", $idElektrijade);
+			$q->bindValue(":idP", $idPodrucja);	    
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
 		}
-	    }
-	    // remove last ', ';
-	    $statement = rtrim($statement, ", ");
-	    
-	    // now generate rest of query
-	    $statement .= " FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
-					LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
-					LEFT JOIN godstud ON godstud.idGodStud = sudjelovanje.idGodStud
-					LEFT JOIN radnomjesto ON radnomjesto.idRadnogMjesta = sudjelovanje.idRadnogMjesta
-					LEFT JOIN zavod ON zavod.idZavoda = sudjelovanje.idZavoda
-					LEFT JOIN smjer ON smjer.idSmjera = sudjelovanje.idSmjera
-					LEFT JOIN imaatribut ON imaatribut.idSudjelovanja = sudjelovanje.idSudjelovanja
-					LEFT JOIN atribut ON imaatribut.idAtributa = atribut.idAtributa
-					LEFT JOIN podrucjesudjelovanja ON podrucjesudjelovanja.idSudjelovanja = sudjelovanje.idSudjelovanja
-					LEFT JOIN putovanje ON putovanje.idPutovanja = sudjelovanje.idPutovanja
-					LEFT JOIN bus ON bus.idBusa = putovanje.idBusa
-				WHERE sudjelovanje.idElektrijade = :idE AND (podrucjesudjelovanja.idPodrucja = :idP OR imaatribut.idPodrucja = :idP)";
-	    
-	    $pdo = $this->getPdo();
-	    $q = $pdo->prepare($statement);
-	    $q->bindValue(":idE", $idElektrijade);
-	    $q->bindValue(":idP", $idPodrucja);	    
-	    $q->execute();
-	    return $q->fetchAll();
-	} catch (\PDOException $e) {
-	    throw $e;
-	}
     }
 	
-public function reportTshirtList($idElektrijade, $idOpcija) {
-	try {
-	    
-		
-		if($idOpcija == '0'){
-				
-	    $statement = "SELECT osoba.spol, COUNT(osoba.idOsobe) AS brojMajica
-                         FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
-					          LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
-                                  WHERE sudjelovanje.idElektrijade = :idE
-                                   GROUP BY osoba.spol";
+	public function reportTshirtList($idElektrijade, $idOpcija) {
+		try {
+			if($idOpcija == '0'){
+
+			$statement = "SELECT osoba.spol, COUNT(osoba.idOsobe) AS brojMajica
+							 FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
+								  LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
+									  WHERE sudjelovanje.idElektrijade = :idE
+									   GROUP BY osoba.spol";
+			}
+
+			else if($idOpcija == '1')
+			{
+				$statement = "SELECT velmajice.velicina, COUNT(osoba.idOsobe) AS brojMajica
+								 FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
+									LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
+									   WHERE sudjelovanje.idElektrijade = :idE
+									   GROUP BY velmajice.velicina";
+			}
+
+			else if($idOpcija == '2')
+			{
+				$statement = "SELECT velmajice.velicina, osoba.spol, COUNT(osoba.idOsobe) AS brojMajica
+								 FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
+									 LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
+									   WHERE sudjelovanje.idElektrijade = :idE 
+										  GROUP BY velmajice.velicina, osoba.spol
+										   ORDER by osoba.spol";
+
+			}
+
+
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare($statement);
+			$q->bindValue(":idE", $idElektrijade);
+		   // $q->bindValue(":idV", $idVelicine);	
+			//$q->bindValue(":idO", $idOsobe);    
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
 		}
-		
-		else if($idOpcija == '1')
-		{
-			$statement = "SELECT velmajice.velicina, COUNT(osoba.idOsobe) AS brojMajica
-                             FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
-				              	LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
-                                   WHERE sudjelovanje.idElektrijade = :idE
-                                   GROUP BY velmajice.velicina";
-		}
-		
-		else if($idOpcija == '2')
-		{
-			$statement = "SELECT velmajice.velicina, osoba.spol, COUNT(osoba.idOsobe) AS brojMajica
-                             FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
-					             LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
-                                   WHERE sudjelovanje.idElektrijade = :idE 
-                                      GROUP BY velmajice.velicina, osoba.spol
-                                       ORDER by osoba.spol";
-									   
-		}
-			
-		
-	    $pdo = $this->getPdo();
-	    $q = $pdo->prepare($statement);
-	    $q->bindValue(":idE", $idElektrijade);
-	   // $q->bindValue(":idV", $idVelicine);	
-		//$q->bindValue(":idO", $idOsobe);    
-	    $q->execute();
-	    return $q->fetchAll();
-	} catch (\PDOException $e) {
-	    throw $e;
-	}
     }
 	
-public function reportYearModuleCompetitorsList($array, $idElektrijade, $idOpcija) {
-	try {
-		if($idOpcija == '0')
-		{
-	    $statement = 'SELECT godstud.godina, ';
-		}
-		
-		else if($idOpcija == '1')
-		{
-	    $statement = 'SELECT smjer.nazivSmjera, ';
-		}
-		
-		else if($idOpcija == '2')
-		{
-	    $statement = 'SELECT godstud.godina, smjer.nazivSmjera,  ';
-		}
-		
-	    // only if there aren't atributes with same name, otherwise do it one by one or
-	    // put in the checkbox form the name of the table, like atribut_nazivAtributa,
-	    // and then with php replace _ with .
-	    foreach ($array as $k => $v) {
-			//sve osim idElektrijade, idPodrucija i tipa
-		if ($k !== 'idElektrijade' && $k !== 'idOpcija' && $k !== 'type') {
-		    $statement .= $k . ', ';  //npr. select ime, prezime, mail, brojMob,....,
-		}
-	    }
-	    // remove last ', ';
-	    $statement = rtrim($statement, ", ");  //makni zadnji zarez
-	    
-		
-		
-	    
-		
-		if($idOpcija == '0'){
-				
-							
-	    $statement .= " FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
-					LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
-					LEFT JOIN godstud ON godstud.idGodStud = sudjelovanje.idGodStud
-					LEFT JOIN radnomjesto ON radnomjesto.idRadnogMjesta = sudjelovanje.idRadnogMjesta
-					LEFT JOIN zavod ON zavod.idZavoda = sudjelovanje.idZavoda
-					LEFT JOIN smjer ON smjer.idSmjera = sudjelovanje.idSmjera
-					LEFT JOIN imaatribut ON imaatribut.idSudjelovanja = sudjelovanje.idSudjelovanja
-					LEFT JOIN atribut ON imaatribut.idAtributa = atribut.idAtributa
-					LEFT JOIN podrucjesudjelovanja ON podrucjesudjelovanja.idSudjelovanja = sudjelovanje.idSudjelovanja
-					LEFT JOIN putovanje ON putovanje.idPutovanja = sudjelovanje.idPutovanja
-					LEFT JOIN bus ON bus.idBusa = putovanje.idBusa
-				WHERE sudjelovanje.idElektrijade = :idE
-				GROUP BY godstud.godina, ";
-				 foreach ($array as $k => $v) {
-			//sve osim idElektrijade, idPodrucija i tipa
-		if ($k !== 'idElektrijade' && $k !== 'idOpcija' && $k !== 'type') {
-		    $statement .= $k . ', ';  //npr. select ime, prezime, mail, brojMob,....,
-		}
-	    }
-		 $statement = rtrim($statement, ", ");  //makni zadnji zarez
-				
-		}
-		
-		else if($idOpcija == '1')
-		{
+	public function reportYearModuleCompetitorsList($array, $idElektrijade, $idOpcija) {
+		try {
+			if($idOpcija == '0')
+			{
+			$statement = 'SELECT godstud.godina, ';
+			}
+
+			else if($idOpcija == '1')
+			{
+			$statement = 'SELECT smjer.nazivSmjera, ';
+			}
+
+			else if($idOpcija == '2')
+			{
+			$statement = 'SELECT godstud.godina, smjer.nazivSmjera,  ';
+			}
+
+			// only if there aren't atributes with same name, otherwise do it one by one or
+			// put in the checkbox form the name of the table, like atribut_nazivAtributa,
+			// and then with php replace _ with .
+			foreach ($array as $k => $v) {
+				//sve osim idElektrijade, idPodrucija i tipa
+			if ($k !== 'idElektrijade' && $k !== 'idOpcija' && $k !== 'type') {
+				$statement .= $k . ', ';  //npr. select ime, prezime, mail, brojMob,....,
+			}
+			}
+			// remove last ', ';
+			$statement = rtrim($statement, ", ");  //makni zadnji zarez
+
+
+
+
+
+			if($idOpcija == '0'){
+
+
 			$statement .= " FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
-					LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
-					LEFT JOIN godstud ON godstud.idGodStud = sudjelovanje.idGodStud
-					LEFT JOIN radnomjesto ON radnomjesto.idRadnogMjesta = sudjelovanje.idRadnogMjesta
-					LEFT JOIN zavod ON zavod.idZavoda = sudjelovanje.idZavoda
-					LEFT JOIN smjer ON smjer.idSmjera = sudjelovanje.idSmjera
-					LEFT JOIN imaatribut ON imaatribut.idSudjelovanja = sudjelovanje.idSudjelovanja
-					LEFT JOIN atribut ON imaatribut.idAtributa = atribut.idAtributa
-					LEFT JOIN podrucjesudjelovanja ON podrucjesudjelovanja.idSudjelovanja = sudjelovanje.idSudjelovanja
-					LEFT JOIN putovanje ON putovanje.idPutovanja = sudjelovanje.idPutovanja
-					LEFT JOIN bus ON bus.idBusa = putovanje.idBusa
-				WHERE sudjelovanje.idElektrijade = :idE
-				GROUP BY smjer.nazivSmjera, ";
-				 foreach ($array as $k => $v) {
-			//sve osim idElektrijade, idPodrucija i tipa
-		if ($k !== 'idElektrijade' && $k !== 'idOpcija' && $k !== 'type') {
-		    $statement .= $k . ', ';  //npr. select ime, prezime, mail, brojMob,....,
+						LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
+						LEFT JOIN godstud ON godstud.idGodStud = sudjelovanje.idGodStud
+						LEFT JOIN radnomjesto ON radnomjesto.idRadnogMjesta = sudjelovanje.idRadnogMjesta
+						LEFT JOIN zavod ON zavod.idZavoda = sudjelovanje.idZavoda
+						LEFT JOIN smjer ON smjer.idSmjera = sudjelovanje.idSmjera
+						LEFT JOIN imaatribut ON imaatribut.idSudjelovanja = sudjelovanje.idSudjelovanja
+						LEFT JOIN atribut ON imaatribut.idAtributa = atribut.idAtributa
+						LEFT JOIN podrucjesudjelovanja ON podrucjesudjelovanja.idSudjelovanja = sudjelovanje.idSudjelovanja
+						LEFT JOIN putovanje ON putovanje.idPutovanja = sudjelovanje.idPutovanja
+						LEFT JOIN bus ON bus.idBusa = putovanje.idBusa
+					WHERE sudjelovanje.idElektrijade = :idE
+					GROUP BY godstud.godina, ";
+					 foreach ($array as $k => $v) {
+				//sve osim idElektrijade, idPodrucija i tipa
+			if ($k !== 'idElektrijade' && $k !== 'idOpcija' && $k !== 'type') {
+				$statement .= $k . ', ';  //npr. select ime, prezime, mail, brojMob,....,
+			}
+			}
+			 $statement = rtrim($statement, ", ");  //makni zadnji zarez
+
+			}
+
+			else if($idOpcija == '1')
+			{
+				$statement .= " FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
+						LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
+						LEFT JOIN godstud ON godstud.idGodStud = sudjelovanje.idGodStud
+						LEFT JOIN radnomjesto ON radnomjesto.idRadnogMjesta = sudjelovanje.idRadnogMjesta
+						LEFT JOIN zavod ON zavod.idZavoda = sudjelovanje.idZavoda
+						LEFT JOIN smjer ON smjer.idSmjera = sudjelovanje.idSmjera
+						LEFT JOIN imaatribut ON imaatribut.idSudjelovanja = sudjelovanje.idSudjelovanja
+						LEFT JOIN atribut ON imaatribut.idAtributa = atribut.idAtributa
+						LEFT JOIN podrucjesudjelovanja ON podrucjesudjelovanja.idSudjelovanja = sudjelovanje.idSudjelovanja
+						LEFT JOIN putovanje ON putovanje.idPutovanja = sudjelovanje.idPutovanja
+						LEFT JOIN bus ON bus.idBusa = putovanje.idBusa
+					WHERE sudjelovanje.idElektrijade = :idE
+					GROUP BY smjer.nazivSmjera, ";
+					 foreach ($array as $k => $v) {
+				//sve osim idElektrijade, idPodrucija i tipa
+			if ($k !== 'idElektrijade' && $k !== 'idOpcija' && $k !== 'type') {
+				$statement .= $k . ', ';  //npr. select ime, prezime, mail, brojMob,....,
+			}
+			}
+			 $statement = rtrim($statement, ", ");  //makni zadnji
+			}
+
+			else if($idOpcija == '2')
+			{
+				$statement .= " FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
+						LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
+						LEFT JOIN godstud ON godstud.idGodStud = sudjelovanje.idGodStud
+						LEFT JOIN radnomjesto ON radnomjesto.idRadnogMjesta = sudjelovanje.idRadnogMjesta
+						LEFT JOIN zavod ON zavod.idZavoda = sudjelovanje.idZavoda
+						LEFT JOIN smjer ON smjer.idSmjera = sudjelovanje.idSmjera
+						LEFT JOIN imaatribut ON imaatribut.idSudjelovanja = sudjelovanje.idSudjelovanja
+						LEFT JOIN atribut ON imaatribut.idAtributa = atribut.idAtributa
+						LEFT JOIN podrucjesudjelovanja ON podrucjesudjelovanja.idSudjelovanja = sudjelovanje.idSudjelovanja
+						LEFT JOIN putovanje ON putovanje.idPutovanja = sudjelovanje.idPutovanja
+						LEFT JOIN bus ON bus.idBusa = putovanje.idBusa
+					WHERE sudjelovanje.idElektrijade = :idE
+					GROUP BY smjer.nazivSmjera, godstud.godina, ";
+					 foreach ($array as $k => $v) {
+				//sve osim idElektrijade, idPodrucija i tipa
+			if ($k !== 'idElektrijade' && $k !== 'idOpcija' && $k !== 'type') {
+				$statement .= $k . ', ';  //npr. select ime, prezime, mail, brojMob,....,
+			}
+			}
+			 $statement = rtrim($statement, ", ");  //makni zadnji
+
+			}
+
+
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare($statement);
+			$q->bindValue(":idE", $idElektrijade);
+		   // $q->bindValue(":idV", $idVelicine);	
+			//$q->bindValue(":idO", $idOsobe);    
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
 		}
-	    }
-		 $statement = rtrim($statement, ", ");  //makni zadnji
-		}
-		
-		else if($idOpcija == '2')
-		{
-			$statement .= " FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
-					LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
-					LEFT JOIN godstud ON godstud.idGodStud = sudjelovanje.idGodStud
-					LEFT JOIN radnomjesto ON radnomjesto.idRadnogMjesta = sudjelovanje.idRadnogMjesta
-					LEFT JOIN zavod ON zavod.idZavoda = sudjelovanje.idZavoda
-					LEFT JOIN smjer ON smjer.idSmjera = sudjelovanje.idSmjera
-					LEFT JOIN imaatribut ON imaatribut.idSudjelovanja = sudjelovanje.idSudjelovanja
-					LEFT JOIN atribut ON imaatribut.idAtributa = atribut.idAtributa
-					LEFT JOIN podrucjesudjelovanja ON podrucjesudjelovanja.idSudjelovanja = sudjelovanje.idSudjelovanja
-					LEFT JOIN putovanje ON putovanje.idPutovanja = sudjelovanje.idPutovanja
-					LEFT JOIN bus ON bus.idBusa = putovanje.idBusa
-				WHERE sudjelovanje.idElektrijade = :idE
-				GROUP BY smjer.nazivSmjera, godstud.godina, ";
-				 foreach ($array as $k => $v) {
-			//sve osim idElektrijade, idPodrucija i tipa
-		if ($k !== 'idElektrijade' && $k !== 'idOpcija' && $k !== 'type') {
-		    $statement .= $k . ', ';  //npr. select ime, prezime, mail, brojMob,....,
-		}
-	    }
-		 $statement = rtrim($statement, ", ");  //makni zadnji
-									   
-		}
-			
-		
-	    $pdo = $this->getPdo();
-	    $q = $pdo->prepare($statement);
-	    $q->bindValue(":idE", $idElektrijade);
-	   // $q->bindValue(":idV", $idVelicine);	
-		//$q->bindValue(":idO", $idOsobe);    
-	    $q->execute();
-	    return $q->fetchAll();
-	} catch (\PDOException $e) {
-	    throw $e;
-	}
     }
     
-public function reportYearModuleStatisticsList($idElektrijade, $idOpcija) {
-	try {
-	    
-		
-		if($idOpcija == '0'){
-				
-	    $statement = "SELECT godstud.godina, COUNT(osoba.idOsobe) AS brojStudenata
-            FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
-				LEFT JOIN godstud ON godstud.idGodStud = sudjelovanje.idGodStud
-				LEFT JOIN smjer ON smjer.idSmjera = sudjelovanje.idSmjera
-                        WHERE sudjelovanje.idElektrijade = :idE
-                            GROUP BY godstud.idGodStud
-							ORDER BY godstud.idGodStud";
+	public function reportYearModuleStatisticsList($idElektrijade, $idOpcija) {
+		try {
+			if($idOpcija == '0'){
+
+			$statement = "SELECT godstud.godina, COUNT(osoba.idOsobe) AS brojStudenata
+				FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
+					LEFT JOIN godstud ON godstud.idGodStud = sudjelovanje.idGodStud
+					LEFT JOIN smjer ON smjer.idSmjera = sudjelovanje.idSmjera
+							WHERE sudjelovanje.idElektrijade = :idE
+								GROUP BY godstud.idGodStud
+								ORDER BY godstud.idGodStud";
+			}
+
+			else if($idOpcija == '1')
+			{
+				$statement = "SELECT smjer.nazivSmjera, COUNT(osoba.idOsobe) AS brojStudenata
+				FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
+					LEFT JOIN godstud ON godstud.idGodStud = sudjelovanje.idGodStud
+					LEFT JOIN smjer ON smjer.idSmjera = sudjelovanje.idSmjera
+							WHERE sudjelovanje.idElektrijade = :idE
+								GROUP BY smjer.idSmjera
+								ORDER BY smjer.nazivSmjera";
+			}
+
+			else if($idOpcija == '2')
+			{
+				$statement = "SELECT godstud.godina, smjer.nazivSmjera, COUNT(osoba.idOsobe) AS brojStudenata
+				FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
+					LEFT JOIN godstud ON godstud.idGodStud = sudjelovanje.idGodStud
+					LEFT JOIN smjer ON smjer.idSmjera = sudjelovanje.idSmjera
+							WHERE sudjelovanje.idElektrijade = :idE
+								GROUP BY smjer.idSmjera, godstud.idGodStud
+								ORDER BY smjer.nazivSmjera";
+
+			}
+
+
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare($statement);
+			$q->bindValue(":idE", $idElektrijade);
+		   // $q->bindValue(":idV", $idVelicine);	
+			//$q->bindValue(":idO", $idOsobe);    
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
 		}
-		
-		else if($idOpcija == '1')
-		{
-			$statement = "SELECT smjer.nazivSmjera, COUNT(osoba.idOsobe) AS brojStudenata
-            FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
-				LEFT JOIN godstud ON godstud.idGodStud = sudjelovanje.idGodStud
-				LEFT JOIN smjer ON smjer.idSmjera = sudjelovanje.idSmjera
-                        WHERE sudjelovanje.idElektrijade = :idE
-                            GROUP BY smjer.idSmjera
-							ORDER BY smjer.nazivSmjera";
-		}
-		
-		else if($idOpcija == '2')
-		{
-			$statement = "SELECT godstud.godina, smjer.nazivSmjera, COUNT(osoba.idOsobe) AS brojStudenata
-            FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
-				LEFT JOIN godstud ON godstud.idGodStud = sudjelovanje.idGodStud
-				LEFT JOIN smjer ON smjer.idSmjera = sudjelovanje.idSmjera
-                        WHERE sudjelovanje.idElektrijade = :idE
-                            GROUP BY smjer.idSmjera, godstud.idGodStud
-							ORDER BY smjer.nazivSmjera";
-									   
-		}
-			
-		
-	    $pdo = $this->getPdo();
-	    $q = $pdo->prepare($statement);
-	    $q->bindValue(":idE", $idElektrijade);
-	   // $q->bindValue(":idV", $idVelicine);	
-		//$q->bindValue(":idO", $idOsobe);    
-	    $q->execute();
-	    return $q->fetchAll();
-	} catch (\PDOException $e) {
-	    throw $e;
-	}
     }
 	
 	
-public function reportBusCompetitorsList($array, $idElektrijade) {
-	try {
-		
-		
-	    $statement = 'SELECT bus.brojBusa, putovanje.polazak, putovanje.povratak, putovanje.napomena, putovanje.brojSjedala, ';
-		
-		
-		
-		
-	    // only if there aren't atributes with same name, otherwise do it one by one or
-	    // put in the checkbox form the name of the table, like atribut_nazivAtributa,
-	    // and then with php replace _ with .
-	    foreach ($array as $k => $v) {
-			//sve osim idElektrijade, idPodrucija i tipa
-		if ($k !== 'idElektrijade'  && $k !== 'type') {
-		    $statement .= $k . ', ';  //npr. select ime, prezime, mail, brojMob,....,
+	public function reportBusCompetitorsList($array, $idElektrijade) {
+		try {
+			$statement = 'SELECT bus.brojBusa, putovanje.polazak, putovanje.povratak, putovanje.napomena, putovanje.brojSjedala, ';
+
+			// only if there aren't atributes with same name, otherwise do it one by one or
+			// put in the checkbox form the name of the table, like atribut_nazivAtributa,
+			// and then with php replace _ with .
+			foreach ($array as $k => $v) {
+				//sve osim idElektrijade, idPodrucija i tipa
+			if ($k !== 'idElektrijade'  && $k !== 'type') {
+				$statement .= $k . ', ';  //npr. select ime, prezime, mail, brojMob,....,
+			}
+			}
+			// remove last ', ';
+			$statement = rtrim($statement, ", ");  //makni zadnji zarez
+
+
+
+			$statement .= " FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
+									   LEFT JOIN putovanje ON putovanje.idPutovanja = sudjelovanje.idPutovanja
+									   LEFT JOIN bus ON bus.idBusa = putovanje.idBusa
+											WHERE sudjelovanje.idElektrijade = :idE
+											   GROUP BY bus.brojBusa, putovanje.polazak, putovanje.povratak, putovanje.napomena, putovanje.brojSjedala, ";
+					 foreach ($array as $k => $v) {
+				//sve osim idElektrijade, idPodrucija i tipa
+			if ($k !== 'idElektrijade'  && $k !== 'type') {
+				$statement .= $k . ', ';  //npr. select ime, prezime, mail, brojMob,....,
+			}
+			}
+			 $statement = rtrim($statement, ", ");  //makni zadnji zarez
+			 $statement .= " ORDER by bus.brojBusa, putovanje.brojSjedala";
+
+
+
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare($statement);
+			$q->bindValue(":idE", $idElektrijade);    
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
 		}
-	    }
-	    // remove last ', ';
-	    $statement = rtrim($statement, ", ");  //makni zadnji zarez
-	    
-		
-	
-		$statement .= " FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
-                                   LEFT JOIN putovanje ON putovanje.idPutovanja = sudjelovanje.idPutovanja
-				                   LEFT JOIN bus ON bus.idBusa = putovanje.idBusa
-                                        WHERE sudjelovanje.idElektrijade = :idE
-				                           GROUP BY bus.brojBusa, putovanje.polazak, putovanje.povratak, putovanje.napomena, putovanje.brojSjedala, ";
-				 foreach ($array as $k => $v) {
-			//sve osim idElektrijade, idPodrucija i tipa
-		if ($k !== 'idElektrijade'  && $k !== 'type') {
-		    $statement .= $k . ', ';  //npr. select ime, prezime, mail, brojMob,....,
-		}
-	    }
-		 $statement = rtrim($statement, ", ");  //makni zadnji zarez
-		 $statement .= " ORDER by bus.brojBusa, putovanje.brojSjedala";
-		
-			
-		
-	    $pdo = $this->getPdo();
-	    $q = $pdo->prepare($statement);
-	    $q->bindValue(":idE", $idElektrijade);    
-	    $q->execute();
-	    return $q->fetchAll();
-	} catch (\PDOException $e) {
-	    throw $e;
-	}
     }
     
     /**************************************************************************
