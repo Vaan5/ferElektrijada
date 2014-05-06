@@ -5414,7 +5414,7 @@ class Ozsn implements Controller {
 			));
 		}
 		
-		echo new Main(array(
+		echo new \view\Main(array(
 			"title" => "Arhiva Objava",
 			"body" => new \view\ozsn\ObjavaArchive(array(
 				"errorMessage" => $this->errorMessage,
