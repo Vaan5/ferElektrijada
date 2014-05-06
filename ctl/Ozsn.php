@@ -4520,7 +4520,8 @@ class Ozsn implements Controller {
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage
 				)),
-			"title" => "Pretraga Kontakt Osoba"
+			"title" => "Pretraga Kontakt Osoba",
+			"script" => new \view\scripts\ozsn\ContactListJs()
 		));
     }
 	
