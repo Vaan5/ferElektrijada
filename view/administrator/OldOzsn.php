@@ -49,6 +49,9 @@ class OldOzsn extends AbstractView {
 				"action" => "listOldOzsn"
 			))
 		)); ?>
+
+			<br><br>
+			
 			<div class="panel panel-default">
 				<div class="panel-heading">Prošlogodišnji članovi odbora</div>
 				
