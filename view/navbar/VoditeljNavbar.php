@@ -11,7 +11,6 @@ class VoditeljNavbar extends AbstractView{
                     "controller" => 'voditelj',
                     "action" => 'displayPodrucja'
                 ));?>">Discipline</a></li>
-
         </ul>
 <?php
     }

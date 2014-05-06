@@ -8,7 +8,7 @@ class ActiveSponzorForm extends AbstractView {
     private $submitButtonText;
     private $kategorije;
     private $promocije;
-	private $sponzor;
+    private $sponzor;
     private $imasponzora;
     private $kategorija;
     private $promocija;
