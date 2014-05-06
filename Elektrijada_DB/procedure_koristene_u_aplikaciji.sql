@@ -908,3 +908,16 @@ IF NOT EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.nazivPodrucja = nazivPodruc
 
 END $$
 DELIMITER ;
+DELIMITER $$
+
+CREATE  PROCEDURE `dohvatiPodredenaPodrucja`(IN idPodrucja INT(10))
+BEGIN
+	IF EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idPodrucja=idPodrucja) THEN
+		
+			SELECT DISTINCT podrucje.idPodrucja FROM  podrucje 
+			WHERE podrucje.idNadredjenog = idPodrucja;
+	ELSE
+	   SIGNAL SQLSTATE '02000'SET MESSAGE_TEXT = 'Nepoznato područje!';
+	END IF;
+END $$
+DELIMITER ;

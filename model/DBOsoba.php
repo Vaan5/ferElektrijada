@@ -84,11 +84,28 @@ class DBOsoba extends AbstractDBModel {
 		}
 		$vel=count($rez);
 		if($vel>0){//ako postoji ba 1 podrucje vrati podrucje, ako ne vrati null
+			for($j=0;$j<$vel; $j++){
+			try{
+			$i = $rez[$j]->idPodrucja;
+			$q = $pdo->prepare("CALL dohvatiPodredenaPodrucja(:id)");
+			$q->bindValue(":id", $i);
+			$q->execute();
+			$pom = $q->fetchAll();
+			}catch (\PDOException $e) {
+              return false;
+		      }
+			foreach($pom as $dio){
+			$vel++;
+			array_push($rez,$dio);//ubaci ih u rez ali ne krene u petlju dalje
+			}
+			
+			}
 			return $rez;
 		} else {
 			return null;
 		}
 	}
+	
 	
     /**
      * 
