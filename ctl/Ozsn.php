@@ -5251,7 +5251,8 @@ class Ozsn implements Controller {
 				"podrucja" => $podrucja,
 				"korijenski" => $korijenski
 			)),
-			"title" => "Lista Disciplina",
+			"title" => "Područja",
+			"script" => new \view\scripts\ozsn\PodrucjaListJs()
 		));
 	}
 	
