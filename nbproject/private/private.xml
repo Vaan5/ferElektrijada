@@ -3,8 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/ctl/Voditelj.php</file>
             <file>file:/C:/xampp/htdocs/ferElektrijada/view/components/DownloadLinks.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/Index.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/model/DBOsoba.php</file>
             <file>file:/C:/xampp/htdocs/ferElektrijada/view/components/AreaSponzorForm.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/model/DBPodrucje.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/model/DBSudjelovanje.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/ctl/Sudionik.php</file>
         </group>
     </open-files>
 </project-private>

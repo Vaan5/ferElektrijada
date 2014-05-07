@@ -35,29 +35,21 @@ class Main extends AbstractView {
         <title><?php echo $this->title; ?></title>
         <meta charset="utf-8">
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-		<link href="../assets/css/bootstrap.css" rel="stylesheet">
-		<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
-		<link href="../assets/css/bootstrap-theme.css" rel="stylesheet">
-		<link href="../assets/css/bootstrap-theme.min.css" rel="stylesheet">
-		<script src="../assets/js/bootstrap.min.js"></script>
-		<link href="../assets/css/style.css" rel="stylesheet">
-        <link href="../assets/css/menu.css" rel="stylesheet">
 
-		<link href="./assets/css/bootstrap.css" rel="stylesheet">
-		<link href="./assets/css/bootstrap.min.css" rel="stylesheet">
-		<link href="./assets/css/bootstrap-theme.css" rel="stylesheet">
-		<link href="./assets/css/bootstrap-theme.min.css" rel="stylesheet">
-		<script src="./assets/js/bootstrap.min.js"></script>
-		<link href="./assets/css/style.css" rel="stylesheet">
-        <link href="./assets/css/menu.css" rel="stylesheet">
-
-        <link href="/assets/css/bootstrap.css" rel="stylesheet">
 		<link href="/assets/css/bootstrap.min.css" rel="stylesheet">
-		<link href="/assets/css/bootstrap-theme.css" rel="stylesheet">
-		<link href="/assets/css/bootstrap-theme.min.css" rel="stylesheet">
 		<script src="/assets/js/bootstrap.min.js"></script>
 		<link href="/assets/css/style.css" rel="stylesheet">
         <link href="/assets/css/menu.css" rel="stylesheet">
+        
+		<link href="./assets/css/bootstrap.min.css" rel="stylesheet">
+		<script src="./assets/js/bootstrap.min.js"></script>
+		<link href="./assets/css/style.css" rel="stylesheet">
+        <link href="./assets/css/menu.css" rel="stylesheet">
+        	
+		<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+		<script src="../assets/js/bootstrap.min.js"></script>
+		<link href="../assets/css/style.css" rel="stylesheet">
+        <link href="../assets/css/menu.css" rel="stylesheet">
         <?php if (null !== $this->script) {
             echo $this->script;
         }
@@ -86,8 +78,8 @@ class Main extends AbstractView {
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">    
         <?php if(\model\DBOsoba::isLoggedIn() && ($_SESSION ['vrsta']==='O' || $_SESSION['vrsta'] === 'OV')) echo new navbar\OzsnNavbar(); ?>
         <?php if(\model\DBOsoba::isLoggedIn() && $_SESSION ['vrsta']==='A') echo new navbar\AdminNavbar(); ?>
-        <?php if(\model\DBOsoba::isLoggedIn() && $_SESSION ['vrsta']==='S') echo new navbar\SudionikNavbar(); ?>
-        <?php if(\model\DBOsoba::isLoggedIn() && $_SESSION ['vrsta']==='SV') echo new navbar\VoditeljNavbar(); ?>
+        <?php if(\model\DBOsoba::isLoggedIn() && ($_SESSION ['vrsta']==='S' || $_SESSION ['vrsta']==='SV')) echo new navbar\SudionikNavbar(); ?>
+        <?php if(\model\DBOsoba::isLoggedIn() && ($_SESSION ['vrsta']==='SV' || $_SESSION ['vrsta']==='OV')) echo new navbar\VoditeljNavbar(); ?>
         <ul class="nav navbar-nav navbar-right">
           <p class="navbar-text">
                <?php if(!\model\DBOsoba::isLoggedIn()) echo
@@ -119,10 +111,10 @@ class Main extends AbstractView {
                                                                                        "controller" => 'sudionik',
                                                                                        "action" => 'displayProfile'
                                                 )) . "\"> Profil</a>"?>
-				<?php if(\model\DBOsoba::isLoggedIn())     echo "<span class=\"glyphicon glyphicon-off\"></span><a href=\"" . \route\Route::get('d3')->generate(array(
+				<?php if(\model\DBOsoba::isLoggedIn())     echo "<span class=\"glyphicon glyphicon-off\"></span> <a href=\"" . \route\Route::get('d3')->generate(array(
                                                                                         "controller" => "login",
                                                                                         "action" => "logout"
-                                                                                        )) . "\"> Odjava</a>";
+                                                                                        )) . "\">Odjava</a>";
                  ?>
           </p>
           </ul>

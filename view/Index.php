@@ -38,30 +38,6 @@ class Index extends AbstractView {
 <p><center><img src="./assets/img/naslovna.jpg" alt="FER logo" align="middle"></center></p>
 <p>
 	
-	
-	<br><br>
-	
-	<b>Sudionik NavBar</b>
-	
-	<br>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-	    "controller" => 'sudionik',
-	    "action" => 'displayProfile'
-	));?>">Profil</a>
-	
-	
-	<br><br>
-	
-	<b>Voditelj NavBar</b>
-	
-	<br>
-	
-	<a href="<?php echo \route\Route::get('d3')->generate(array(
-	    "controller" => 'voditelj',
-	    "action" => 'displayProfile'
-	));?>">Profil</a>
-	
 	<br><br>
 	
 	<b>Busevi Link -> Randy stavi u ozsn navbar</b>
