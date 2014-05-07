@@ -15,6 +15,7 @@ class ContestantAttributes extends AbstractView {
 	private $korisnikoviAtributi;
 
 	protected function outputHTML() {
+		// print messages if any
 		echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
         ));

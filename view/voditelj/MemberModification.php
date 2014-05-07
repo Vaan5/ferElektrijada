@@ -23,6 +23,7 @@ class MemberModification extends AbstractView {
 	private $osoba;
 
 	protected function outputHTML() {
+		// print messages if any
 		echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
         ));

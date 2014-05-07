@@ -13,8 +13,7 @@ class OzsnModification extends AbstractView {
      */
     private $errorMessage;
     
-    protected function outputHTML() {
-		
+    protected function outputHTML() {		
 		// print messages if any
         echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage

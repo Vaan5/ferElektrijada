@@ -22,28 +22,21 @@ class OldOzsn extends AbstractView {
     private $clanovi;
     
     protected function outputHTML() {
-        
-		if($this->resultMessage)
-		{
-			echo new \view\components\ResultMessage(array(
-				"resultMessage" => $this->resultMessage
-			));
-		}
-		
-		// Print errorMessage if is set
-		if($this->errorMessage)
-		{
-			echo new \view\components\ErrorMessage(array(
-            "errorMessage" => $this->errorMessage
-			));
-		}
-		
+        // print messages if any
+		echo new \view\components\ResultMessage(array(
+			"resultMessage" => $this->resultMessage
+		));
+				
+		echo new \view\components\ErrorMessage(array(
+           "errorMessage" => $this->errorMessage
+		));
+				
 		// Else showOldOzsn in table
-		else
+		if(count($this->clanovi))
 		{
 			
 ?>
-<?php echo new \view\components\DownloadLinks(array(
+		<?php echo new \view\components\DownloadLinks(array(
 			"route" => \route\Route::get("d3")->generate(array(
 				"controller" => "administrator",
 				"action" => "listOldOzsn"
@@ -89,6 +82,13 @@ class OldOzsn extends AbstractView {
 			));?>?a=1">Obnovi ovlasti svim članovima odbora</a>
 					
 <?php
+		}
+		
+		else
+		{
+			echo new \view\components\ErrorMessage(array(
+				"errorMessage" => "Ne postoji niti jedna osoba!"
+			));
 		}
     }
     

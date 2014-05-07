@@ -13,9 +13,9 @@ class TvrtkaListJs extends AbstractView {
 			// When Uredi is clicked, show form
 			var idTvrtke;
 			$('.editTvrtka').click(function () {
-				$idTvrtke = $(this).data("id");
-				$('.modify-' + $idTvrtke).hide();
-				$('.modifyOn-' + $idTvrtke).show();
+				idTvrtke = $(this).data("id");
+				$('.modify-' + idTvrtke).hide();
+				$('.modifyOn-' + idTvrtke).show();
 			});
 			
 			// When Obriši is clicked, show confirmation

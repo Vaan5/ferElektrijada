@@ -13,9 +13,9 @@ class AtributListJs extends AbstractView {
 			// When Uredi is clicked, show form
 			var idAtributa;
 			$('.editAtribut').click(function () {
-				$idAtributa = $(this).data("id");
-				$('.modify-' + $idAtributa).hide();
-				$('.modifyOn-' + $idAtributa).show();
+				idAtributa = $(this).data("id");
+				$('.modify-' + idAtributa).hide();
+				$('.modifyOn-' + idAtributa).show();
 			});
 			
 			// When Obriši is clicked, show confirmation

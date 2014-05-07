@@ -9,13 +9,13 @@ class ContactList extends AbstractView {
     private $kontakti;
     
     protected function outputHTML() {
-
+		// print messages if any
 		echo new \view\components\ResultMessage(array(
 			"resultMessage" => $this->resultMessage
 		));
 
 		echo new \view\components\ErrorMessage(array(
-		"errorMessage" => $this->errorMessage
+			"errorMessage" => $this->errorMessage
 		));
 		
 		// listContacts in table

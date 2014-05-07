@@ -13,9 +13,9 @@ class KategorijaListJs extends AbstractView {
 			// When Uredi is clicked, show form
 			var idKategorijeSponzora;
 			$('.editKategorija').click(function () {
-				$idKategorijeSponzora = $(this).data("id");
-				$('.modify-' + $idKategorijeSponzora).hide();
-				$('.modifyOn-' + $idKategorijeSponzora).show();
+				idKategorijeSponzora = $(this).data("id");
+				$('.modify-' + idKategorijeSponzora).hide();
+				$('.modifyOn-' + idKategorijeSponzora).show();
 			});
 			
 			// When Obriši is clicked, show confirmation

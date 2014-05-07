@@ -13,9 +13,9 @@ class VelMajiceListJs extends AbstractView {
 			// When Uredi is clicked, show form
 			var idVelMajice;
 			$('.editVelMajice').click(function () {
-				$idVelMajice = $(this).data("id");
-				$('.modify-' + $idVelMajice).hide();
-				$('.modifyOn-' + $idVelMajice).show();
+				idVelMajice = $(this).data("id");
+				$('.modify-' + idVelMajice).hide();
+				$('.modifyOn-' + idVelMajice).show();
 			});
 			
 			// When Obriši is clicked, show confirmation

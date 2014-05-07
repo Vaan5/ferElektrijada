@@ -9,22 +9,23 @@ class YearModuleCompetitorsList extends AbstractView {
     private $elektrijade;
 
     protected function outputHTML() {
+		// print messages if any
         echo new \view\components\ErrorMessage(array(
-	    "errorMessage" => $this->errorMessage
-	));
-	
-	echo new \view\components\ResultMessage(array(
-	    "resultMessage" => $this->resultMessage
-	));
-	
-	echo new forms\YearModuleCompetitorsForm(array(
-	    "route" => \route\Route::get('d3')->generate(array(
-		"controller" => "reportGenerator",
-                "action" => "generateYearModuleCompetitorsList"
-	    )),
-	    "submitButtonText" => "Generiraj",
-	    "elektrijade" => $this->elektrijade
-	));
+			"errorMessage" => $this->errorMessage
+		));
+
+		echo new \view\components\ResultMessage(array(
+			"resultMessage" => $this->resultMessage
+		));
+
+		echo new forms\YearModuleCompetitorsForm(array(
+			"route" => \route\Route::get('d3')->generate(array(
+			"controller" => "reportGenerator",
+					"action" => "generateYearModuleCompetitorsList"
+			)),
+			"submitButtonText" => "Generiraj",
+			"elektrijade" => $this->elektrijade
+		));
     }
     
     public function setErrorMessage($errorMessage) {

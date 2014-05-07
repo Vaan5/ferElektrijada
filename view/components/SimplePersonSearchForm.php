@@ -23,13 +23,6 @@ class SimplePersonSearchForm extends AbstractView {
     private $showAllButtonText;
     
     protected function outputHTML() {
-        /*
-         * dodaj kucice za pretragu po imenu prezimenu korisnickom imenu (nazovi name atribute kao sto su u bazi)
-         * poziva se akcija displayOzsn (predajes kao postAction)
-         * + dodaj jedno dugme izvan forme u kojem ce biti link na displayOzsn (kao get parametar a=1)
-         * u tom slucaju ce se ispisati svi clanovi odbora
-         * To dugme parametriziraj kao privatnu varijablu (da li ce se ispisati ili ne i koji ce tekst biti na njemu)
-         */
 ?>
     <form class="form-horizontal" role="form" action="<?php echo $this->postAction;?>" method="POST">
         <div class="form-group">

@@ -12,7 +12,7 @@ class ObjavaModification extends AbstractView {
     private $objava;
     
     protected function outputHTML() {
-	// print messages if any
+		// print messages if any
         echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
         ));

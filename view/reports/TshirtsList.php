@@ -10,23 +10,24 @@ class TshirtsList extends AbstractView {
 	
 
     protected function outputHTML() {
+		// print messages if any
         echo new \view\components\ErrorMessage(array(
-	    "errorMessage" => $this->errorMessage
-	));
-	
-	echo new \view\components\ResultMessage(array(
-	    "resultMessage" => $this->resultMessage
-	));
-	
-	echo new forms\TshirtsForm(array(
-	    "route" => \route\Route::get('d3')->generate(array(
-		"controller" => "reportGenerator",
-                "action" => "generateTshirtsList"
-	    )),
-	    "submitButtonText" => "Generiraj",
-	    "elektrijade" => $this->elektrijade
-		
-	));
+			"errorMessage" => $this->errorMessage
+		));
+
+		echo new \view\components\ResultMessage(array(
+			"resultMessage" => $this->resultMessage
+		));
+
+		echo new forms\TshirtsForm(array(
+			"route" => \route\Route::get('d3')->generate(array(
+			"controller" => "reportGenerator",
+					"action" => "generateTshirtsList"
+			)),
+			"submitButtonText" => "Generiraj",
+			"elektrijade" => $this->elektrijade
+
+		));
     }
     
     public function setErrorMessage($errorMessage) {

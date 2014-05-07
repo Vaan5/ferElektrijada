@@ -13,9 +13,9 @@ class NacinPromocijeListJs extends AbstractView {
 			// When Uredi is clicked, show form
 			var idPromocije;
 			$('.editNacinPromocije').click(function () {
-				$idPromocije = $(this).data("id");
-				$('.modify-' + $idPromocije).hide();
-				$('.modifyOn-' + $idPromocije).show();
+				idPromocije = $(this).data("id");
+				$('.modify-' + idPromocije).hide();
+				$('.modifyOn-' + idPromocije).show();
 			});
 			
 			// When Obriši is clicked, show confirmation

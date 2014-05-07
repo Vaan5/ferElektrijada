@@ -9,22 +9,23 @@ class BusCompetitorsList extends AbstractView {
     private $elektrijade;
 
     protected function outputHTML() {
+		// print messages if any
         echo new \view\components\ErrorMessage(array(
-	    "errorMessage" => $this->errorMessage
-	));
+			"errorMessage" => $this->errorMessage
+		));
 	
-	echo new \view\components\ResultMessage(array(
-	    "resultMessage" => $this->resultMessage
-	));
-	
-	echo new forms\BusCompetitorsForm(array(
-	    "route" => \route\Route::get('d3')->generate(array(
-		"controller" => "reportGenerator",
-                "action" => "generateBusCompetitorsList"
-	    )),
-	    "submitButtonText" => "Generiraj",
-	    "elektrijade" => $this->elektrijade
-	));
+		echo new \view\components\ResultMessage(array(
+			"resultMessage" => $this->resultMessage
+		));
+
+		echo new forms\BusCompetitorsForm(array(
+			"route" => \route\Route::get('d3')->generate(array(
+			"controller" => "reportGenerator",
+					"action" => "generateBusCompetitorsList"
+			)),
+			"submitButtonText" => "Generiraj",
+			"elektrijade" => $this->elektrijade
+		));
     }
     
     public function setErrorMessage($errorMessage) {

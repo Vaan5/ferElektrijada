@@ -10,6 +10,7 @@ class ContestantSearch extends AbstractView {
     private $resultMessage;
     
     protected function outputHTML() {
+		// print messages if any
 		echo new \view\components\ResultMessage(array(
 			"resultMessage" => $this->resultMessage
 		));
