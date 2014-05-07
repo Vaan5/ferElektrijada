@@ -23,7 +23,7 @@ class AreaSponzorList extends AbstractView {
             "errorMessage" => $this->errorMessage
 			));
 		}
-		var_dump($this->sponzori);
+
 		// list sponzori in table
 		if(count($this->sponzori))
 		{
