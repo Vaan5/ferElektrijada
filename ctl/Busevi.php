@@ -155,7 +155,7 @@ class Busevi implements Controller {
                             "busevi" => $busevi,
                             "errorMessage" => $this->errorMessage
                             )),
-                "title" => "Izrada rasporeda po busevima za polazak i povratak",
+                "title" => "Raspored po Busevima",
         ));
     }
 }

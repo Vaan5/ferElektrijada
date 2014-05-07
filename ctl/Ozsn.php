@@ -360,7 +360,7 @@ class Ozsn implements Controller {
 						if (false !== ($prim = $sudjelovanje->exists($k, $idElektrijade))) {
 							$imaatribut->addRow(post("idPodrucja"), $id, $prim);
 						} else {
-							$sudjelovanje->addRow($osoba->getPrimaryKey(), $idElektrijade, post("tip", "S"), NULL, 
+							$sudjelovanje->addRow($k, $idElektrijade, post("tip", "S"), NULL, 
 								NULL, NULL, NULL, NULL, NULL);
 							$imaatribut->addRow(post("idPodrucja"), $id, $sudjelovanje->getPrimaryKey());
 						}
@@ -1693,8 +1693,6 @@ class Ozsn implements Controller {
 				$ukupno = $podrucjeSudjelovanja->getAllMoney($idElektrijade);
 				$ukupno = $ukupno[0]->suma;
 			} catch (\PDOException $e) {
-				var_dump($e);
-				die();
 				$handler = new \model\ExceptionHandlerModel($e);
 				$this->createMessage($handler, "d3", "ozsn", "displayCollectedMoney");
 			}
