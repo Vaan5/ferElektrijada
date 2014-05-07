@@ -35,29 +35,21 @@ class Main extends AbstractView {
         <title><?php echo $this->title; ?></title>
         <meta charset="utf-8">
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-		<link href="../assets/css/bootstrap.css" rel="stylesheet">
-		<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
-		<link href="../assets/css/bootstrap-theme.css" rel="stylesheet">
-		<link href="../assets/css/bootstrap-theme.min.css" rel="stylesheet">
-		<script src="../assets/js/bootstrap.min.js"></script>
-		<link href="../assets/css/style.css" rel="stylesheet">
-        <link href="../assets/css/menu.css" rel="stylesheet">
 
-		<link href="./assets/css/bootstrap.css" rel="stylesheet">
-		<link href="./assets/css/bootstrap.min.css" rel="stylesheet">
-		<link href="./assets/css/bootstrap-theme.css" rel="stylesheet">
-		<link href="./assets/css/bootstrap-theme.min.css" rel="stylesheet">
-		<script src="./assets/js/bootstrap.min.js"></script>
-		<link href="./assets/css/style.css" rel="stylesheet">
-        <link href="./assets/css/menu.css" rel="stylesheet">
-
-        <link href="/assets/css/bootstrap.css" rel="stylesheet">
 		<link href="/assets/css/bootstrap.min.css" rel="stylesheet">
-		<link href="/assets/css/bootstrap-theme.css" rel="stylesheet">
-		<link href="/assets/css/bootstrap-theme.min.css" rel="stylesheet">
 		<script src="/assets/js/bootstrap.min.js"></script>
 		<link href="/assets/css/style.css" rel="stylesheet">
         <link href="/assets/css/menu.css" rel="stylesheet">
+        
+		<link href="./assets/css/bootstrap.min.css" rel="stylesheet">
+		<script src="./assets/js/bootstrap.min.js"></script>
+		<link href="./assets/css/style.css" rel="stylesheet">
+        <link href="./assets/css/menu.css" rel="stylesheet">
+        	
+		<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+		<script src="../assets/js/bootstrap.min.js"></script>
+		<link href="../assets/css/style.css" rel="stylesheet">
+        <link href="../assets/css/menu.css" rel="stylesheet">
         <?php if (null !== $this->script) {
             echo $this->script;
         }
