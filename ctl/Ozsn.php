@@ -5528,6 +5528,7 @@ class Ozsn implements Controller {
 		
 		echo new \view\Main(array(
 			"title" => "Informacije o Kontaktima",
+			"script" => new \view\scripts\ozsn\ContactInfoJs(),
 			"body" => new \view\ozsn\ContactInfo(array(
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage,
