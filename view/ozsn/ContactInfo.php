@@ -26,6 +26,10 @@ class ContactInfo extends AbstractView {
 		// Na neki nacin ispisi osnovne podatke o korisniku i njegove mailove i brojeve mobitela
 		// Dodaj downloadLinks
 		
+		
+		var_dump($this->kontakt);
+		var_dump($this->mailovi);
+		var_dump($this->mobiteli);
 		if($this->mailovi === NULL || $this->mobiteli === NULL)
 		{
 			echo new \view\components\DownloadLinks(array(

@@ -5432,27 +5432,18 @@ class Ozsn implements Controller {
 		$this->checkMessages();
 		
 		$k = new \model\DBKontaktOsobe();
-		$kontakti = array();
 		$mobiteli = null;
 		$mailovi = null;
-		if (postEmpty()) {
-			// get data to show
+		if (get("idKontakta") === false && get("type") === false)
+			$this->createMessage("Nepoznata kontakt osoba!");
+		if (get("idKontakta") !== false) {
 			try {
-				$kontakti = $k->getAll();
-			} catch (app\model\NotFoundException $e) {
-				$this->createMessage("Nepoznata kontakt osoba!");
-			} catch (\PDOException $e) {
-				$handler = new \model\ExceptionHandlerModel($e);
-				$this->createMessage($handler);
-			}
-		} else {
-			try {
-				$k->load(post("idKontakta"));
+				$k->load(get("idKontakta"));
 				$mob = new \model\DBBrojeviMobitela();
 				$mail = new \model\DBEmailAdrese();
-				$mobiteli = $mob->getContactNumbers(post("idKontakta"));
-				$mailovi = $mail->getContactEmails(post("idKontakta"));
-				$_SESSION['search'] = post("idKontakta");
+				$mobiteli = $mob->getContactNumbers(get("idKontakta"));
+				$mailovi = $mail->getContactEmails(get("idKontakta"));
+				$_SESSION['search'] = get("idKontakta");
 			} catch (app\model\NotFoundException $e) {
 				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayContactInfo");
 			} catch (\PDOException $e) {
@@ -5532,7 +5523,6 @@ class Ozsn implements Controller {
 			"body" => new \view\ozsn\ContactInfo(array(
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage,
-				"kontakti" => $kontakti,
 				"kontakt" => $k,
 				"mobiteli" => $mobiteli,
 				"mailovi" => $mailovi
