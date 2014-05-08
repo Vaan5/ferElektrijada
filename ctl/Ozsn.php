@@ -4576,7 +4576,7 @@ class Ozsn implements Controller {
 					$validator = new \model\formModel\NumberValidationModel(array("number" => post("mob" . $i)));
 					$pov = $validator->validate();
 					if ($pov !== true) {
-						$message = $validacija->decypherErrors($pov);
+						$message = $validator->decypherErrors($pov);
 						$this->createMessage($message, "d3", "ozsn", "addContact");
 					}
 				}
@@ -4589,7 +4589,7 @@ class Ozsn implements Controller {
 					$validator = new \model\formModel\MailValidationModel(array("mail" => post("mail" . $k)));
 					$pov = $validator->validate();
 					if ($pov !== true) {
-						$message = $validacija->decypherErrors($pov);
+						$message = $validator->decypherErrors($pov);
 						$this->createMessage($message, "d3", "ozsn", "addContact");
 					}
 				}
@@ -4704,7 +4704,7 @@ class Ozsn implements Controller {
 					$validator = new \model\formModel\NumberValidationModel(array("number" => post("mob" . $i)));
 					$pov = $validator->validate();
 					if ($pov !== true) {
-						$message = $validacija->decypherErrors($pov);
+						$message = $validator->decypherErrors($pov);
 						$handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
 						$_SESSION["exception"] = serialize($handler);
 						preusmjeri(\route\Route::get('d3')->generate(array(
@@ -4722,7 +4722,7 @@ class Ozsn implements Controller {
 					$validator = new \model\formModel\MailValidationModel(array("mail" => post("mail" . $k)));
 					$pov = $validator->validate();
 					if ($pov !== true) {
-						$message = $validacija->decypherErrors($pov);
+						$message = $validator->decypherErrors($pov);
 						$handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
 						$_SESSION["exception"] = serialize($handler);
 						preusmjeri(\route\Route::get('d3')->generate(array(
