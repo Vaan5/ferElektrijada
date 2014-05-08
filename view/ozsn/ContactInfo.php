@@ -20,106 +20,60 @@ class ContactInfo extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 		
-		// ako su mobiteli ili mailovi === null ispisujes formu sa postojecim kontaktima (svaki nek ima jedan radio bbutton)
-		// MOZE SE KLIKNUTI SAMO JEDAN OD NJIH
-		// inace (mobiteli ili mailovi nisu null nego array() ili neprazan array)
-		// Na neki nacin ispisi osnovne podatke o korisniku i njegove mailove i brojeve mobitela
-		// Dodaj downloadLinks
 		
-		
-		var_dump($this->kontakt);
-		var_dump($this->mailovi);
-		var_dump($this->mobiteli);
-		if($this->mailovi === NULL || $this->mobiteli === NULL)
-		{
-			echo new \view\components\DownloadLinks(array(
-				"route" => \route\Route::get("d3")->generate(array(
-					"controller" => "ozsn",
-					"action" => "displayContactInfo"
-				))
-			)); 
+		echo new \view\components\DownloadLinks(array(
+			"route" => \route\Route::get("d3")->generate(array(
+				"controller" => "ozsn",
+				"action" => "displayContactInfo"
+			))
+		));
+
+		echo '<h2>' . $this->kontakt->imeKontakt . ' ' . $this->kontakt->prezimeKontakt . '</h2>';
 ?>
+				<b>Radno mjesto:</b> <?php echo $this->kontakt->radnoMjesto; ?><br>
+				<b>Telefon:</b> <?php echo $this->kontakt->telefon; ?>
 
-			<br><br>
-
-			<div class="panel panel-default">
-				<div class="panel-heading">Kontakt osobe</div>
-
-				<table class="table">
-					<thead>
-						<tr>
-							<th>Ime</th>
-							<th>Prezime</th>
-							<th>Radno mjesto</th>
-							<th>Telefon</th>
-							<th>Opcije</th>
-						</tr>
-					</thead>
-
-					<tbody>
+				<?php if(count($this->mobiteli)) { ?>
+				<table>
+					<tr>
+						<td valign="top"><b>Brojevi mobitela: &nbsp;</b></td>
+						<td>
 <?php
-			foreach($this->kontakti as $val)
+			foreach($this->mobiteli as $val)
 			{
-				echo '<tr><td>' . $val->imeKontakt . '</td>';
-				echo '<td>' . $val->prezimeKontakt . '</td>';
-				echo '<td>' . $val->radnoMjesto . '</td>';
-				echo '<td>' . $val->telefon . '</td>';
-				echo '<td><a href="javascript:;" class="prikaziDetalje" data-id="' . $val->idKontakta . '">Prikaži detalje</a>';
+				echo $val->broj . '<br>';
 			}
-			
-			echo '</tbody></table></div>';
-		}
-		
-		else		
-		{
-			echo '<h2>' . $this->kontakt->imeKontakt . ' ' . $this->kontakt->prezimeKontakt . '</h2>';
 ?>
-					<b>Radno mjesto:</b> <?php echo $this->kontakt->radnoMjesto; ?><br>
-					<b>Telefon:</b> <?php echo $this->kontakt->telefon; ?>
-					
-					<?php if(count($this->mobiteli)) { ?>
-					<table>
-						<tr>
-							<td valign="top"><b>Brojevi mobitela: &nbsp;</b></td>
-							<td>
-<?php
-				foreach($this->mobiteli as $val)
-				{
-					echo $val->broj . '<br>';
-				}
-?>
-							</td>
-						</tr>
-					</table>
-					<?php } else { ?>
-					
-					<br><b>Brojevi mobitela: </b> <i>Nema brojeva</i>
-					
-					<?php } ?>
-					
-					<?php if(count($this->mailovi)) { ?>
-					<table>
-						<tr>
-							<td valign="top"><b>E-mail adrese: &nbsp;</b></td>
-							<td>
-<?php
-				foreach($this->mailovi as $val)
-				{
-					echo $val->email . '<br>';
-				}
-?>
-							</td>
-						</tr>
-					</table>
-					<?php } else { ?>
-					
-					<br><b>E-mail adrese: </b> <i>Nema e-mail adresa</i>
-					
-					<?php } ?>
-					
-<?php
-		}
+						</td>
+					</tr>
+				</table>
+				<?php } else { ?>
 
+				<br><b>Brojevi mobitela: </b> <i>Nema brojeva</i>
+
+				<?php } ?>
+
+				<?php if(count($this->mailovi)) { ?>
+				<table>
+					<tr>
+						<td valign="top"><b>E-mail adrese: &nbsp;</b></td>
+						<td>
+<?php
+			foreach($this->mailovi as $val)
+			{
+				echo $val->email . '<br>';
+			}
+?>
+						</td>
+					</tr>
+				</table>
+				<?php } else { ?>
+
+				<br><b>E-mail adrese: </b> <i>Nema e-mail adresa</i>
+
+				<?php } ?>
+					
+<?php
     }
     
     public function setErrorMessage($errorMessage) {

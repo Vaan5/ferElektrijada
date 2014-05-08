@@ -61,6 +61,12 @@ class ContactList extends AbstractView {
 				echo '<td><a href="';
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
+					"action" => 'displayContactInfo'
+				));
+				echo '?idKontakta=' . $val->idKontakta . '">Prikaži detalje</a> &nbsp; ';
+				echo '<a href="';
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
 					"action" => 'modifyContact'
 				));
 				echo '?id=' . $val->idKontakta . '">Uredi</a> &nbsp; <a class="deleteContact" href="';
