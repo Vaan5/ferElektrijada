@@ -25,7 +25,8 @@ class ContactInfo extends AbstractView {
 			"route" => \route\Route::get("d3")->generate(array(
 				"controller" => "ozsn",
 				"action" => "displayContactInfo"
-			))
+			)) . "?idKontakta=" . $this->kontakt->idKontakta,
+			"onlyParam" => false
 		));
 
 		echo '<h2>' . $this->kontakt->imeKontakt . ' ' . $this->kontakt->prezimeKontakt . '</h2>';

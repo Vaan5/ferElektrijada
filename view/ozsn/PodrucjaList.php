@@ -18,8 +18,6 @@ class PodrucjaList extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 		
-		var_dump($this->podrucja);
-		
 		// klasican DBM, samo kad nudis idNadredjenog ponudi one korijenske i josh jedan prazan value=""
     ?>
 		<?php echo new \view\components\DownloadLinks(array(

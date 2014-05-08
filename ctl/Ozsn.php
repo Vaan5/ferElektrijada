@@ -5443,12 +5443,12 @@ class Ozsn implements Controller {
 				$mail = new \model\DBEmailAdrese();
 				$mobiteli = $mob->getContactNumbers(get("idKontakta"));
 				$mailovi = $mail->getContactEmails(get("idKontakta"));
-				$_SESSION['search'] = get("idKontakta");
+				$_SESSION['search'] = serialize(get("idKontakta"));
 			} catch (app\model\NotFoundException $e) {
-				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayContactInfo");
+				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayContacts");
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
-				$this->createMessage($handler, "d3", "ozsn", "displayContactInfo");
+				$this->createMessage($handler, "d3", "ozsn", "displayContacts");
 			}
 		}
 		
@@ -5482,10 +5482,10 @@ class Ozsn implements Controller {
 					$info[] = array("Medij", $m->nazivMedija);
 				}
 			} catch (app\model\NotFoundException $e) {
-				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayContactInfo");
+				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayContacts");
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
-				$this->createMessage($handler, "d3", "ozsn", "displayContactInfo");
+				$this->createMessage($handler, "d3", "ozsn", "displayContacts");
 			}
 			
 			$array = array();
@@ -5499,13 +5499,13 @@ class Ozsn implements Controller {
 			
 			if (count($mobiteli)) {
 				foreach ($mobiteli as $v) {
-					$array[] = array("Broj mobitela", $v);
+					$array[] = array("Broj mobitela", $v->broj);
 				}
 			}
 			
 			if (count($mailovi)) {
 				foreach ($mailovi as $v) {
-					$array[] = array("Email", $v);
+					$array[] = array("Email", $v->email);
 				}
 			}
 			
