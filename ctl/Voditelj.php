@@ -168,7 +168,7 @@ class Voditelj implements Controller {
 		$podrucja = null;
 		
 		try {
-			$podrucja = $podrucje->loadDisciplines(session("podrucja"));			
+			$podrucja = $podrucje->loadDisciplines(session("podrucja"));
 		} catch (app\model\NotFoundException $e) {
 			$this->createMessage("Problem prilikom dohvata podataka o disciplinama!");
 		} catch (\PDOException $e) {

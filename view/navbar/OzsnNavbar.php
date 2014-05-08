@@ -6,9 +6,9 @@ class OzsnNavbar extends AbstractView{
     
     protected function outputHTML() {
 ?>
-        <ul class="nav navbar-nav">
+    <ul class="nav navbar-nav">     
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">O meni<b class="caret"></b></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">O meni <b class="caret"></b></a>
           <ul class="dropdown-menu">
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
@@ -22,16 +22,12 @@ class OzsnNavbar extends AbstractView{
           </ul>
         </li>
                 <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tvrtke i sponzori<b class="caret"></b></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tvrtke i sponzori <b class="caret"></b></a>
           <ul class="dropdown-menu">
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'searchContacts'
                 ));?>">Kontakt Osobe</a></li>
-			<li><a href="<?php echo \route\Route::get('d3')->generate(array(
-                    "controller" => 'ozsn',
-                    "action" => 'displayContactInfo'
-                ));?>">Kontakt Informacije</a></li>
 			
             <li class="divider"></li>
 			
@@ -79,7 +75,7 @@ class OzsnNavbar extends AbstractView{
           </ul>
         </li>
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Mediji<b class="caret"></b></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Mediji <b class="caret"></b></a>
           <ul class="dropdown-menu">
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
@@ -96,16 +92,16 @@ class OzsnNavbar extends AbstractView{
                     "controller" => 'ozsn',
                     "action" => 'displayObjava'
                 ));?>">Objave</a></li>
-			<a href="<?php echo \route\Route::get('d3')->generate(array(
+            <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
                     "action" => 'displayObjavaReport'
-                ));?>">Pretraga Objava</a>
+                ));?>">Pretraga Objava</a></li>
 
           </ul>
         </li>
 		
 		<li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Upravljanje Elektrijadom<b class="caret"></b></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Upravljanje Elektrijadom <b class="caret"></b></a>
           <ul class="dropdown-menu">
 			<li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
@@ -148,7 +144,7 @@ class OzsnNavbar extends AbstractView{
         </li>
 		
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pomoćni podaci<b class="caret"></b></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pomoćni podaci <b class="caret"></b></a>
           <ul class="dropdown-menu">
               <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'ozsn',
@@ -200,7 +196,7 @@ class OzsnNavbar extends AbstractView{
         </li>
 		
 		<li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Izvještaji<b class="caret"></b></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Izvještaji <b class="caret"></b></a>
           <ul class="dropdown-menu">
 			<li><a href="<?php echo \route\Route::get('d3')->generate(array(
 					"controller" => 'reportGenerator',
@@ -225,7 +221,7 @@ class OzsnNavbar extends AbstractView{
 			
           </ul>
         </li>
-      </ul>
+    </ul>
 <?php
     }
 }

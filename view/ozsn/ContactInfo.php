@@ -20,12 +20,61 @@ class ContactInfo extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 		
-		// ako su mobiteli ili mailovi === null ispisujes formu sa postojecim kontaktima (svaki nek ima jedan radio bbutton)
-		// MOZE SE KLIKNUTI SAMO JEDAN OD NJIH
-		// inace (mobiteli ili mailovi nisu null nego array() ili neprazan array)
-		// Na neki nacin ispisi osnovne podatke o korisniku i njegove mailove i brojeve mobitela
-		// Dodaj downloadLinks
+		
+		echo new \view\components\DownloadLinks(array(
+			"route" => \route\Route::get("d3")->generate(array(
+				"controller" => "ozsn",
+				"action" => "displayContactInfo"
+			)) . "?idKontakta=" . $this->kontakt->idKontakta,
+			"onlyParam" => false
+		));
 
+		echo '<h2>' . $this->kontakt->imeKontakt . ' ' . $this->kontakt->prezimeKontakt . '</h2>';
+?>
+				<b>Radno mjesto:</b> <?php echo $this->kontakt->radnoMjesto; ?><br>
+				<b>Telefon:</b> <?php echo $this->kontakt->telefon; ?>
+
+				<?php if(count($this->mobiteli)) { ?>
+				<table>
+					<tr>
+						<td valign="top"><b>Brojevi mobitela: &nbsp;</b></td>
+						<td>
+<?php
+			foreach($this->mobiteli as $val)
+			{
+				echo $val->broj . '<br>';
+			}
+?>
+						</td>
+					</tr>
+				</table>
+				<?php } else { ?>
+
+				<br><b>Brojevi mobitela: </b> <i>Nema brojeva</i>
+
+				<?php } ?>
+
+				<?php if(count($this->mailovi)) { ?>
+				<table>
+					<tr>
+						<td valign="top"><b>E-mail adrese: &nbsp;</b></td>
+						<td>
+<?php
+			foreach($this->mailovi as $val)
+			{
+				echo $val->email . '<br>';
+			}
+?>
+						</td>
+					</tr>
+				</table>
+				<?php } else { ?>
+
+				<br><b>E-mail adrese: </b> <i>Nema e-mail adresa</i>
+
+				<?php } ?>
+					
+<?php
     }
     
     public function setErrorMessage($errorMessage) {

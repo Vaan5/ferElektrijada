@@ -10,20 +10,14 @@ class AreaSponzorList extends AbstractView {
     
     protected function outputHTML() {		
 		// Show messages if any
-		if($this->resultMessage)
-		{
-			echo new \view\components\ResultMessage(array(
-				"resultMessage" => $this->resultMessage
-			));
-		}
+		echo new \view\components\ResultMessage(array(
+			"resultMessage" => $this->resultMessage
+		));
 		
-		if($this->errorMessage)
-		{
-			echo new \view\components\ErrorMessage(array(
-            "errorMessage" => $this->errorMessage
-			));
-		}
-		
+		echo new \view\components\ErrorMessage(array(
+			"errorMessage" => $this->errorMessage
+		));
+
 		// list sponzori in table
 		if(count($this->sponzori))
 		{
@@ -52,8 +46,9 @@ class AreaSponzorList extends AbstractView {
 				<table class="table">
 				<thead>
 					<tr>
-						<th>Ime tvrtke</th>
-						<th>Adresa</th>
+						<th>Tvrtka</th>
+						<th>Sponzorira</th>
+						<th>Iznos</th>
 						<th>Opcije</th>
 					</tr>
 				</thead>
@@ -61,9 +56,14 @@ class AreaSponzorList extends AbstractView {
 				<tbody>
 <?php
 			// Foreach areaSponzor, generate row in table
-			foreach($this->sponzori as $val)
-			{
-				echo '<tr><td>' . $val->imeTvrtke . '</td><td>' . $val->adresaTvrtke . '</td>';
+				foreach($this->sponzori as $val)
+				{
+?>
+						<tr>
+							<td><?php echo $val->imeTvrtke; ?></td>
+							<td><?php if($val->idPodrucja) echo $val->nazivPodrucja; else echo 'Elektrijada'; ?></td>
+							<td><?php echo $val->iznosDonacije . ' ' . $val->valutaDonacije; ?></td>
+<?php
 				echo '<td><a href="';
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',

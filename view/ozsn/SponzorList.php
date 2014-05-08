@@ -11,20 +11,14 @@ class SponzorList extends AbstractView {
     protected function outputHTML() {
 		
 		// Show messages if any
-		if($this->resultMessage)
-		{
-			echo new \view\components\ResultMessage(array(
-				"resultMessage" => $this->resultMessage
-			));
-		}
+		echo new \view\components\ResultMessage(array(
+			"resultMessage" => $this->resultMessage
+		));
 		
-		if($this->errorMessage)
-		{
-			echo new \view\components\ErrorMessage(array(
-				"errorMessage" => $this->errorMessage
-			));
-		}
-		
+		echo new \view\components\ErrorMessage(array(
+			"errorMessage" => $this->errorMessage
+		));
+
 		// list sponzori in table
 		if(count($this->sponzori))
 		{

@@ -25,11 +25,6 @@ class ElektrijadaForm extends AbstractView {
 	private $modifyDates = true;
     
     protected function outputHTML() {
-        /*
-         * Ispuni odgovarajuca polja (dodaj input) i prvo provjeri da li je $elektrijada postavljena
-         * ako jest onda popuni polja s postojecim podacima (prilikom ispisa koristi __ funkciju iz pomocna.php)
-         * ako nije -> PAZI DA NE ISPISES U POLJA BAS NISTA, cak niti ''
-         */
 ?>
     <form class="form-horizontal" role="form" action="<?php echo $this->postAction;?>" method="POST">
         <div class="form-group">

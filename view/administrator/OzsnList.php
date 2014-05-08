@@ -23,23 +23,17 @@ class OzsnList extends AbstractView {
     private $resultMessage;
     
     protected function outputHTML() {
-		
-		if($this->resultMessage)
-		{
-			echo new \view\components\ResultMessage(array(
-				"resultMessage" => $this->resultMessage
-			));
-		}
-		
-		if($this->errorMessage)
-		{
-			echo new \view\components\ErrorMessage(array(
-            "errorMessage" => $this->errorMessage
-			));
-		}
-		
+		// print messages if any
+		echo new \view\components\ResultMessage(array(
+			"resultMessage" => $this->resultMessage
+		));
+				
+		echo new \view\components\ErrorMessage(array(
+           "errorMessage" => $this->errorMessage
+		));
+				
 		// Else listOzsn in table
-		else
+		if(count($this->osobe))
 		{
 			
 ?>		
@@ -94,15 +88,20 @@ class OzsnList extends AbstractView {
 				</tbody>
 			</table>
 		</div>
-<?php
-		}
 		
-?>		
 		<a href="<?php echo \route\Route::get('d3')->generate(array(
 			"controller" => 'administrator',
 			"action" => 'searchOzsn'
 		));?>">Pretraži članove odbora</a>
 <?php
+		}
+		
+		else
+		{
+			echo new \view\components\ErrorMessage(array(
+				"errorMessage" => "Ne postoji niti jedna osoba!"
+			 ));
+		}
     }
     
     public function setOsobe($osobe) {

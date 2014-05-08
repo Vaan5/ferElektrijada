@@ -23,7 +23,7 @@ class ElektrijadaList extends AbstractView {
     private $resultMessage;
     
     protected function outputHTML() {
-		// Show messages if any
+		// print messages if any
 		echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
         ));

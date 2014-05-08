@@ -360,7 +360,7 @@ class Ozsn implements Controller {
 						if (false !== ($prim = $sudjelovanje->exists($k, $idElektrijade))) {
 							$imaatribut->addRow(post("idPodrucja"), $id, $prim);
 						} else {
-							$sudjelovanje->addRow($osoba->getPrimaryKey(), $idElektrijade, post("tip", "S"), NULL, 
+							$sudjelovanje->addRow($k, $idElektrijade, post("tip", "S"), NULL, 
 								NULL, NULL, NULL, NULL, NULL);
 							$imaatribut->addRow(post("idPodrucja"), $id, $sudjelovanje->getPrimaryKey());
 						}
@@ -1553,7 +1553,7 @@ class Ozsn implements Controller {
 		
 		try {
 			$podrucje = new \model\DBPodrucje();
-			$podrucja = $podrucje->getAll();
+			$podrucja = $podrucje->getAllExceptKnowledgeAndSport();
 		} catch (app\model\NotFoundException $e) {
 			$this->createMessage("Nepoznati identifikator");
 		} catch (\PDOException $e) {
@@ -1687,6 +1687,9 @@ class Ozsn implements Controller {
 				$idElektrijade = $e->getCurrentElektrijadaId();
 				$novci = $podrucjeSudjelovanja->getMoneyStatistics($idElektrijade);
 				
+				$znanje = $podrucjeSudjelovanja->getKnowledgeMoney($idElektrijade);
+				$sport = $podrucjeSudjelovanja->getSportMoney($idElektrijade);
+				
 				$ukupno = $podrucjeSudjelovanja->getAllMoney($idElektrijade);
 				$ukupno = $ukupno[0]->suma;
 			} catch (\PDOException $e) {
@@ -1723,7 +1726,9 @@ class Ozsn implements Controller {
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage,
 				"ukupno" => $ukupno,
-				"podrucja" => $novci
+				"podrucja" => $novci,
+				"znanje" => $znanje,
+				"sport" => $sport
 			))
 		));
 	}
@@ -4520,7 +4525,8 @@ class Ozsn implements Controller {
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage
 				)),
-			"title" => "Pretraga Kontakt Osoba"
+			"title" => "Pretraga Kontakt Osoba",
+			"script" => new \view\scripts\ozsn\ContactListJs()
 		));
     }
 	
@@ -4570,7 +4576,7 @@ class Ozsn implements Controller {
 					$validator = new \model\formModel\NumberValidationModel(array("number" => post("mob" . $i)));
 					$pov = $validator->validate();
 					if ($pov !== true) {
-						$message = $validacija->decypherErrors($pov);
+						$message = $validator->decypherErrors($pov);
 						$this->createMessage($message, "d3", "ozsn", "addContact");
 					}
 				}
@@ -4583,7 +4589,7 @@ class Ozsn implements Controller {
 					$validator = new \model\formModel\MailValidationModel(array("mail" => post("mail" . $k)));
 					$pov = $validator->validate();
 					if ($pov !== true) {
-						$message = $validacija->decypherErrors($pov);
+						$message = $validator->decypherErrors($pov);
 						$this->createMessage($message, "d3", "ozsn", "addContact");
 					}
 				}
@@ -4698,7 +4704,7 @@ class Ozsn implements Controller {
 					$validator = new \model\formModel\NumberValidationModel(array("number" => post("mob" . $i)));
 					$pov = $validator->validate();
 					if ($pov !== true) {
-						$message = $validacija->decypherErrors($pov);
+						$message = $validator->decypherErrors($pov);
 						$handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
 						$_SESSION["exception"] = serialize($handler);
 						preusmjeri(\route\Route::get('d3')->generate(array(
@@ -4716,7 +4722,7 @@ class Ozsn implements Controller {
 					$validator = new \model\formModel\MailValidationModel(array("mail" => post("mail" . $k)));
 					$pov = $validator->validate();
 					if ($pov !== true) {
-						$message = $validacija->decypherErrors($pov);
+						$message = $validator->decypherErrors($pov);
 						$handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
 						$_SESSION["exception"] = serialize($handler);
 						preusmjeri(\route\Route::get('d3')->generate(array(
@@ -5245,7 +5251,8 @@ class Ozsn implements Controller {
 				"podrucja" => $podrucja,
 				"korijenski" => $korijenski
 			)),
-			"title" => "Lista Disciplina",
+			"title" => "Discipline",
+			"script" => new \view\scripts\ozsn\PodrucjaListJs()
 		));
 	}
 	
@@ -5406,7 +5413,7 @@ class Ozsn implements Controller {
 			));
 		}
 		
-		echo new Main(array(
+		echo new \view\Main(array(
 			"title" => "Arhiva Objava",
 			"body" => new \view\ozsn\ObjavaArchive(array(
 				"errorMessage" => $this->errorMessage,
@@ -5425,32 +5432,23 @@ class Ozsn implements Controller {
 		$this->checkMessages();
 		
 		$k = new \model\DBKontaktOsobe();
-		$kontakti = array();
 		$mobiteli = null;
 		$mailovi = null;
-		if (postEmpty()) {
-			// get data to show
+		if (get("idKontakta") === false && get("type") === false)
+			$this->createMessage("Nepoznata kontakt osoba!");
+		if (get("idKontakta") !== false) {
 			try {
-				$kontakti = $k->getAll();
-			} catch (app\model\NotFoundException $e) {
-				$this->createMessage("Nepoznata kontakt osoba!");
-			} catch (\PDOException $e) {
-				$handler = new \model\ExceptionHandlerModel($e);
-				$this->createMessage($handler);
-			}
-		} else {
-			try {
-				$k->load(post("idKontakta"));
+				$k->load(get("idKontakta"));
 				$mob = new \model\DBBrojeviMobitela();
 				$mail = new \model\DBEmailAdrese();
-				$mobiteli = $mob->getContactNumbers(post("idKontakta"));
-				$mailovi = $mail->getContactEmails(post("idKontakta"));
-				$_SESSION['search'] = post("idKontakta");
+				$mobiteli = $mob->getContactNumbers(get("idKontakta"));
+				$mailovi = $mail->getContactEmails(get("idKontakta"));
+				$_SESSION['search'] = serialize(get("idKontakta"));
 			} catch (app\model\NotFoundException $e) {
-				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayContactInfo");
+				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayContacts");
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
-				$this->createMessage($handler, "d3", "ozsn", "displayContactInfo");
+				$this->createMessage($handler, "d3", "ozsn", "displayContacts");
 			}
 		}
 		
@@ -5484,10 +5482,10 @@ class Ozsn implements Controller {
 					$info[] = array("Medij", $m->nazivMedija);
 				}
 			} catch (app\model\NotFoundException $e) {
-				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayContactInfo");
+				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayContacts");
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
-				$this->createMessage($handler, "d3", "ozsn", "displayContactInfo");
+				$this->createMessage($handler, "d3", "ozsn", "displayContacts");
 			}
 			
 			$array = array();
@@ -5501,13 +5499,13 @@ class Ozsn implements Controller {
 			
 			if (count($mobiteli)) {
 				foreach ($mobiteli as $v) {
-					$array[] = array("Broj mobitela", $v);
+					$array[] = array("Broj mobitela", $v->broj);
 				}
 			}
 			
 			if (count($mailovi)) {
 				foreach ($mailovi as $v) {
-					$array[] = array("Email", $v);
+					$array[] = array("Email", $v->email);
 				}
 			}
 			
@@ -5521,10 +5519,10 @@ class Ozsn implements Controller {
 		
 		echo new \view\Main(array(
 			"title" => "Informacije o Kontaktima",
+			"script" => new \view\scripts\ozsn\ContactInfoJs(),
 			"body" => new \view\ozsn\ContactInfo(array(
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage,
-				"kontakti" => $kontakti,
 				"kontakt" => $k,
 				"mobiteli" => $mobiteli,
 				"mailovi" => $mailovi

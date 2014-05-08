@@ -13,9 +13,9 @@ class RadnoMjestoListJs extends AbstractView {
 			// When Uredi is clicked, show form
 			var idRadnogMjesta;
 			$('.editRadnoMjesto').click(function () {
-				$idRadnogMjesta = $(this).data("id");
-				$('.modify-' + $idRadnogMjesta).hide();
-				$('.modifyOn-' + $idRadnogMjesta).show();
+				idRadnogMjesta = $(this).data("id");
+				$('.modify-' + idRadnogMjesta).hide();
+				$('.modifyOn-' + idRadnogMjesta).show();
 			});
 			
 			// When Obriši is clicked, show confirmation

@@ -13,9 +13,9 @@ class ZavodListJs extends AbstractView {
 			// When Uredi is clicked, show form
 			var idZavoda;
 			$('.editZavod').click(function () {
-				$idZavoda = $(this).data("id");
-				$('.modify-' + $idZavoda).hide();
-				$('.modifyOn-' + $idZavoda).show();
+				idZavoda = $(this).data("id");
+				$('.modify-' + idZavoda).hide();
+				$('.modifyOn-' + idZavoda).show();
 			});
 			
 			// When Obriši is clicked, show confirmation

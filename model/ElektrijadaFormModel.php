@@ -7,11 +7,11 @@ class ElektrijadaFormModel extends AbstractFormModel {
     
     protected function rules() {
         if($this->rulesArray === null) {
-            $this->rulesArray = array('mjestoOdrzavanja' => array('required', 'name'),
+            $this->rulesArray = array('mjestoOdrzavanja' => array('required', 'words'),
                 'datumPocetka' => array('required', 'date'),
                 'datumKraja' => array('required', 'date'), 
                 'ukupniRezultat' => array('numbers'),
-                'drzava' => array('required', 'name'),
+                'drzava' => array('required', 'words'),
                 'rokZaZnanje' => array('date'),
                 'rokZaSport' => array('date'),
                 'ukupanBrojSudionika' => array('numbers'));

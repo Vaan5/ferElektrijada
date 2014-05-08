@@ -26,18 +26,6 @@ class KontaktOsobeForm extends AbstractView {
 
     
     protected function outputHTML() {
-/**
- * Za mailove i brojeve mobitela napravi s js-om da se dinamicki mogu dodavati input type =text pri cemu im kao name staljvaj sljedece
- * mail1
- * mail2
- * mail3
- * ... (koliko ih ima)
- * te
- * mob1
- * mob2
- * mob3
- * itd koliko ih ima
- */
 ?>
 	<form class="form-horizontal" role="form" method="post" action="<?php echo $this->postAction;?>">
 		<div class="form-group">

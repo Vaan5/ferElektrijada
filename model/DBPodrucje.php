@@ -18,7 +18,16 @@ class DBPodrucje extends AbstractDBModel {
     }
     
     public function getAll() {
-		return $this->select()->fetchAll();
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT podrucje.idPodrucja, podrucje.nazivPodrucja, k.nazivPodrucja idNadredjenog 
+									FROM podrucje JOIN podrucje k ON podrucje.idNadredjenog = k.idPodrucja
+									ORDER BY k.nazivPodrucja ASC");
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
+		}
     }
 	
 	public function getAllForReport() {
@@ -38,6 +47,18 @@ class DBPodrucje extends AbstractDBModel {
 		try {
 			$pdo = $this->getPdo();
 			$q = $pdo->prepare("SELECT * FROM podrucje WHERE idNadredjenog IS NULL
+								ORDER BY nazivPodrucja ASC");
+			$q->execute();
+			return $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
+	
+	public function getAllExceptKnowledgeAndSport() {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT * FROM podrucje WHERE UPPER(nazivPodrucja) <> 'ZNANJE' AND UPPER(nazivPodrucja) <> 'SPORT'
 								ORDER BY nazivPodrucja ASC");
 			$q->execute();
 			return $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));
@@ -119,9 +140,9 @@ class DBPodrucje extends AbstractDBModel {
 		try {
 			if (count($podrucja)) {
 				foreach ($podrucja as $p) {
-					$this->idPodrucja = null;
-					$this->load($p->idPodrucja);
-					$pov[] = $this;
+					$k = new DBPodrucje();
+					$k->load($p->idPodrucja);
+					$pov[] = $k;
 				}
 			}
 			return $pov;

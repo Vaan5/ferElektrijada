@@ -15,7 +15,7 @@ class DBSudjelovanje extends AbstractDBModel {
     
     public function getColumns() {
         return array('idOsobe', 'idElektrijade', 'tip', 'idVelicine', 'idGodStud', 'idSmjera',
-            'idRadnogMjesta', 'idZavoda', 'idPutovanja');
+            'idRadnogMjesta', 'idZavoda');
     }
     
     /**************************************************************************
@@ -102,7 +102,7 @@ class DBSudjelovanje extends AbstractDBModel {
 	 * Attributes with NULL value will
 	 */
 	public function modifyRow($idSudjelovanja, $idOsobe, $idElektrijade, $tip, $idVelicine, $idGodStud, $idSmjera,
-            $idRadnogMjesta, $idZavoda, $idPutovanja) {
+            $idRadnogMjesta, $idZavoda, $idPutovanja = NULL) {
 		try {
 			$this->load($idSudjelovanja);
 			$atributi = $this->getColumns();
@@ -130,7 +130,7 @@ class DBSudjelovanje extends AbstractDBModel {
      **************************************************************************/
 	
 	public function addRow($idOsobe, $idElektrijade, $tip, $idVelicine, $idGodStud, $idSmjera,
-            $idRadnogMjesta, $idZavoda, $idPutovanja) {
+            $idRadnogMjesta, $idZavoda, $idPutovanja = NULL) {
 		try {
 			$atributi = $this->getColumns();
 			foreach ($atributi as $a) {

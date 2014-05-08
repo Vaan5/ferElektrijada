@@ -3,7 +3,7 @@
 namespace view\scripts\ozsn;
 use app\view\AbstractView;
 
-class TvrtkaListJs extends AbstractView {
+class PodrucjaListJs extends AbstractView {
     protected function outputHTML() {
 ?>
 	<script src="../assets/js/confirm.js"></script>
@@ -11,25 +11,25 @@ class TvrtkaListJs extends AbstractView {
 	<script type="text/javascript">
 		$(function(){
 			// When Uredi is clicked, show form
-			var idTvrtke;
-			$('.editTvrtka').click(function () {
-				idTvrtke = $(this).data("id");
-				$('.modify-' + idTvrtke).hide();
-				$('.modifyOn-' + idTvrtke).show();
+			var idPodrucja;
+			$('.editPodrucje').click(function () {
+				idPodrucja = $(this).data("id");
+				$('.modify-' + idPodrucja).hide();
+				$('.modifyOn-' + idPodrucja).show();
 			});
 			
 			// When Obriši is clicked, show confirmation
-			$('.deleteTvrtka').confirm({
+			$('.deletePodrucje').confirm({
 				text: "Jeste li sigurni da želite obrisati?",
 				title: "Potrebna potvrda",
 				confirmButton: "Obriši",
 				cancelButton: "Odustani"
 			});
 			
-			// When addTvrtka is clicked, show form for adding
-			$('#addTvrtka').click( function () {
-				$('.addTvrtka').hide();
-				$('.addTvrtkaOn').show();
+			// When addPodrucje is clicked, show form for adding
+			$('#addPodrucje').click( function () {
+				$('.addPodrucje').hide();
+				$('.addPodrucjeOn').show();
 				$('.alert').hide();
 			});
 		});

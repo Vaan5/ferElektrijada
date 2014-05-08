@@ -23,23 +23,17 @@ class PersonList extends AbstractView {
     private $resultMessage;
     
     protected function outputHTML() {
+		// print messages if any
+		echo new \view\components\ResultMessage(array(
+			"resultMessage" => $this->resultMessage
+		));
 		
-		if($this->resultMessage)
-		{
-			echo new \view\components\ResultMessage(array(
-				"resultMessage" => $this->resultMessage
-			));
-		}
-		
-		if($this->errorMessage)
-		{
-			echo new \view\components\ErrorMessage(array(
+		echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
-			));
-		}
+		));		
 		
 		// Else list osobe in table
-		else
+		if(count($this->osobe))
 		{
 			
 ?>		
@@ -94,14 +88,20 @@ class PersonList extends AbstractView {
 				</tbody>
 			</table>
 		</div>
-<?php
-		}
-?>
+		
 		<a href="<?php echo \route\Route::get('d3')->generate(array(
 			"controller" => 'administrator',
 			"action" => 'searchPersons'
 		));?>">Pretraži osobe</a>
 <?php
+		}
+		
+		else
+		{
+			echo new \view\components\ErrorMessage(array(
+				"errorMessage" => "Ne postoji niti jedna osoba!"
+			));
+		}
     }
     
     public function setOsobe($osobe) {

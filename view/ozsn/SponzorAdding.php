@@ -10,7 +10,7 @@ class SponzorAdding extends AbstractView {
     private $promocije;
     
     protected function outputHTML() {
-	// print messages if any
+		// print messages if any
         echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
         ));

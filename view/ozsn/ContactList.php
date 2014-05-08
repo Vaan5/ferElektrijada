@@ -9,13 +9,13 @@ class ContactList extends AbstractView {
     private $kontakti;
     
     protected function outputHTML() {
-
+		// print messages if any
 		echo new \view\components\ResultMessage(array(
 			"resultMessage" => $this->resultMessage
 		));
 
 		echo new \view\components\ErrorMessage(array(
-		"errorMessage" => $this->errorMessage
+			"errorMessage" => $this->errorMessage
 		));
 		
 		// listContacts in table
@@ -59,6 +59,12 @@ class ContactList extends AbstractView {
 			{
 				echo '<tr><td>' . $val->imeKontakt . '</td><td>' . $val->prezimeKontakt . '</td><td>' . $val->telefon . '</td><td>' . $val->radnoMjesto . '</td>';
 				echo '<td><a href="';
+				echo \route\Route::get('d3')->generate(array(
+					"controller" => 'ozsn',
+					"action" => 'displayContactInfo'
+				));
+				echo '?idKontakta=' . $val->idKontakta . '">Prikaži detalje</a> &nbsp; ';
+				echo '<a href="';
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'modifyContact'

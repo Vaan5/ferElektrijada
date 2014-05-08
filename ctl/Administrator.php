@@ -22,24 +22,24 @@ class Administrator implements Controller {
     }
     
     private function generateFile($type, $array) {
-	$reportGen = new \model\reports\ReportModel();
-	$tmp = sys_get_temp_dir();
-	$path = $tmp . "/" . date("Y_m_d_H_i_s") . "_" . session("auth");
-	switch ($type) {
-	    case 'pdf':
-		$pdf = $reportGen->generatePdf($array);
-		$path .= ".pdf";
-		$pdf->Output($path);
-		break;
-	    case 'xls':
-	    case 'xlsx':
-		$path = $reportGen->generateExcel($array, $type);
-		break;
-	    default:
-		preusmjeri(\route\Route::get('d1')->generate() . "?msg=typeconf");
-		break;
-	}
-	return $path;
+		$reportGen = new \model\reports\ReportModel();
+		$tmp = sys_get_temp_dir();
+		$path = $tmp . "/" . date("Y_m_d_H_i_s") . "_" . session("auth");
+		switch ($type) {
+			case 'pdf':
+				$pdf = $reportGen->generatePdf($array);
+				$path .= ".pdf";
+				$pdf->Output($path);
+				break;
+			case 'xls':
+			case 'xlsx':
+				$path = $reportGen->generateExcel($array, $type);
+				break;
+			default:
+				preusmjeri(\route\Route::get('d1')->generate() . "?msg=typeconf");
+				break;
+		}
+		return $path;
     }
     
     private function checkMessages() {
@@ -60,10 +60,10 @@ class Administrator implements Controller {
                 $this->errorMessage = "Zahtjevani zapis ne postoji!";
                 break;
             case 'delo':
-                $this->errorMessage = "Uspješno izbrisan član odbora!";
+                $this->resultMessage = "Uspješno izbrisan član odbora!";
                 break;
             case 'delp':
-                $this->errorMessage = "Uspješno izbrisana osoba!";
+                $this->resultMessage = "Uspješno izbrisana osoba!";
                 break;
             case 'derr':
                 $this->errorMessage = "Dogodila se pogreška prilikom brisanja! Pokušajte ponovno!";
@@ -94,13 +94,26 @@ class Administrator implements Controller {
                 break;
             case 'excep':
                 if(isset($_SESSION['exception'])) {
-                    $e = unserialize($_SESSION['exception']);   // don't forget 'use \PDOException;'
+                    $e = unserialize($_SESSION['exception']);
                     unset($_SESSION['exception']);
                     $this->errorMessage = $e;
                 }
             default:
                 break;
         }
+    }
+	
+	private function createMessage($message, $type = 'd1', $controller = null, $action = null) {
+		$handler = new \model\ExceptionHandlerModel(new \PDOException(), (string)$message);
+		$_SESSION["exception"] = serialize($handler);
+		if ($type === 'd3') {
+			preusmjeri(\route\Route::get('d3')->generate(array(
+				"controller" => $controller,
+				"action" => $action
+				)) . "?msg=excep");
+		} else {
+			 preusmjeri(\route\Route::get('d1')->generate() . "?msg=excep");
+		}
     }
     
     /**
@@ -144,51 +157,31 @@ class Administrator implements Controller {
                         $pov = $osoba->checkAdmin(post("password"));
                         if ($pov === false || $pov->getPrimaryKey() != session('auth')) {
                             $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Pogrešna stara lozinka");
-                            $_SESSION["exception"] = serialize($handler);
-                            preusmjeri(\route\Route::get('d3')->generate(array(
-                                "controller" => "administrator",
-                                "action" => "changeProfile"
-                             )) . "?msg=excep");
+							$this->createMessage($handler, "d3", "administrator", "changeProfile");
                         }
                         if (post("password_new") !== post("password_new2")) {
                             $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nove lozinke se ne podudaraju");
-                            $_SESSION["exception"] = serialize($handler);
-                            preusmjeri(\route\Route::get('d3')->generate(array(
-                                "controller" => "administrator",
-                                "action" => "changeProfile"
-                             )) . "?msg=excep");
+                            $this->createMessage($handler, "d3", "administrator", "changeProfile");
                         }
                     } else {
                         $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Ukoliko mijenjate lozinku, morate unijeti staru, kao i novu lozinku!");
-                        $_SESSION["exception"] = serialize($handler);
-                        preusmjeri(\route\Route::get('d3')->generate(array(
-                            "controller" => "administrator",
-                            "action" => "changeProfile"
-                         )) . "?msg=excep");
+                        $this->createMessage($handler, "d3", "administrator", "changeProfile");
                     }
                 } else {
                     if(post("password_new") !== false || post("password_new2") !== false) {
                         $handler = new \model\ExceptionHandlerModel(new \PDOException(), "Morate unijeti staru lozinku");
-                        $_SESSION["exception"] = serialize($handler);
-                        preusmjeri(\route\Route::get('d3')->generate(array(
-                            "controller" => "administrator",
-                            "action" => "changeProfile"
-                         )) . "?msg=excep");
+                        $this->createMessage($handler, "d3", "administrator", "changeProfile");
                     }
                 }
                 try {
                     $osoba->modifyRow(session("auth"), post('ime', null), post('prezime', null), post('mail', null), post('brojMob', null), post('ferId'), post('password_new', null), 
                         post('JMBAG', null), post('spol', null), post('datRod', null), post('brOsobne', null), post('brPutovnice', null), post('osobnaVrijediDo', null),
-                        post('putovnicaVrijediDo', null), 'A', NULL, post('MBG', null), post('OIB', null));
+                        post('putovnicaVrijediDo', null), 'A', NULL, post('MBG', null), post('OIB', null), post("aktivanDokument", "0"));
                     // redirect with according message
                     preusmjeri(\route\Route::get('d1')->generate() . "?msg=profSucc");
                 } catch(\PDOException $e) {
                     $handler = new \model\ExceptionHandlerModel($e);
-                    $_SESSION["exception"] = serialize($handler);
-                    preusmjeri(\route\Route::get('d3')->generate(array(
-                        "controller" => "administrator",
-                        "action" => "changeProfile"
-                     )) . "?msg=excep");
+                    $this->createMessage($handler, "d3", "administrator", "changeProfile");
                 }
             }
         }
@@ -199,19 +192,15 @@ class Administrator implements Controller {
             preusmjeri(\route\Route::get('d1')->generate() . "?msg=e");
         } catch (\PDOException $e) {
             $handler = new \model\ExceptionHandlerModel($e);
-            $_SESSION["exception"] = serialize($handler);
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "administrator",
-                "action" => "changeProfile"
-             )) . "?msg=excep");
+            $this->createMessage($handler, "d3", "administrator", "changeProfile");
         }
         
         echo new \view\Main(array(
             "body" => new \view\administrator\AdminProfile(array(
-                "errorMessage" => $this->errorMessage,
-                "resultMessage" => $this->resultMessage,
-                "admin" => $osoba
-            )),
+					"errorMessage" => $this->errorMessage,
+					"resultMessage" => $this->resultMessage,
+					"admin" => $osoba
+				)),
             "title" => "Uređivanje profila",
             "script" => new \view\scripts\PersonFormJs()
         ));
@@ -258,7 +247,7 @@ class Administrator implements Controller {
                     }
                     $osoba->addNewPerson(post('ime', null), post('prezime', null), post('mail', null), post('brojMob', null), post('ferId'), post('password'), 
                         post('JMBAG', null), post('spol', null), post('datRod', null), post('brOsobne', null), post('brPutovnice', null), post('osobnaVrijediDo', null),
-                        post('putovnicaVrijediDo', null), 'O', NULL, post('MBG', null), post('OIB', null), session("auth"));
+                        post('putovnicaVrijediDo', null), 'O', NULL, post('MBG', null), post('OIB', null), session("auth"), post("aktivanDokument", "0"));
                         // added successfully
                     // now assign them to the current Elektrijada
                     $obavlja = new \model\DBObavljaFunkciju();
@@ -306,35 +295,71 @@ class Administrator implements Controller {
         $osobe = array();
         $osoba = new \model\DBOsoba();
         
-        if(!postEmpty()) {
-            // search db
-            // first validate input
-            $validacija = new \model\SimplePersonSearchFormModel(array(
-                'ferId' => post('ferId'),
-                'ime' => post('ime'), 
-                'prezime' => post('prezime')
-            ));
-            
-            $pov = $validacija->validate();
-            if($pov !== true) {
-                $this->errorMessage = $validacija->decypherErrors($pov);
-            } else {
-                // ok the data is correct now lets find what they're looking for
-                $osobe = $osoba->findActiveOzsnMembers(post('ime'), post('prezime'), post('ferId'));
-                if($osobe === false)
-                    $this->errorMessage = "Nije pronađen niti jedan član!";
-            }
-        } else if (get("a") !== false) {
-            // get all ozsn members
-            $osobe = $osoba->getAllActiveOzsn();
-            if($osobe === false)
-                $this->errorMessage = "Ne postoji niti jedan član, koji zadovoljava zahtjeve pretrage!";
-        } else {
-            preusmjeri(\route\Route::get('d3')->generate(array(
-                "controller" => "administrator",
-                "action" => "searchOzsn"
-            )) . '?msg=param');
-        }
+		try {
+			if(!postEmpty()) {
+				// search db
+				// first validate input
+				$validacija = new \model\SimplePersonSearchFormModel(array(
+					'ferId' => post('ferId'),
+					'ime' => post('ime'), 
+					'prezime' => post('prezime')
+				));
+
+				$pov = $validacija->validate();
+				if($pov !== true) {
+					$this->errorMessage = $validacija->decypherErrors($pov);
+				} else {
+					// ok the data is correct now lets find what they're looking for
+					$osobe = $osoba->findActiveOzsnMembers(post('ime'), post('prezime'), post('ferId'));
+					$_SESSION['search'] = serialize(array(post('ime'), post('prezime'), post('ferId')));
+					if($osobe === false)
+						$this->errorMessage = "Nije pronađen niti jedan član!";
+				}
+			} else if (get("a") !== false) {
+				// get all ozsn members
+				$osobe = $osoba->getAllActiveOzsn();
+				$_SESSION['search'] = serialize(array('a'));
+				if($osobe === false)
+					$this->errorMessage = "Ne postoji niti jedan član, koji zadovoljava zahtjeve pretrage!";
+			} else if (get("type") !== false) {
+				$polje = unserialize(session("search"));
+				if (count($polje) == 1) {
+					$osobe = $osoba->getAllActiveOzsn();
+				} else {
+					$osobe = $osoba->findActiveOzsnMembers($polje[0], $polje[1], $polje[2]);
+				}
+				
+				$pomPolje = array("Ime", "Prezime", "Email", "Mobitel", "JMBAG", "Spol", "Datum rođenja", "Osobna iskaznica", "Vrijedi do",
+					"Putovnica", "Vrijedi do", "Aktivan dokument", "MBO", "OIB");
+				$array = array();
+				$array[] = $pomPolje;
+
+				if ($osobe !== null && count($osobe)) {
+					foreach ($osobe as $v) {
+						$array[] = array($v->ime, $v->prezime, $v->mail, $v->brojMob, $v->JMBAG, ($v->spol == "M" ? "Muško" : "Žensko"),
+							$v->datRod, $v->brOsobne, $v->osobnaVrijediDo, $v->brPutovnice, $v->putovnicaVrijediDo, 
+									($v->aktivanDokument == "0" ? "Putovnica" : "Osobna"), $v->MBG, $v->OIB);
+					}
+				}
+
+				$path = $this->generateFile(get("type"), $array);
+
+				echo new \view\ShowFile(array(
+					"path" => $path,
+					"type" => get("type")
+				));
+			} else {
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "administrator",
+					"action" => "searchOzsn"
+				)) . '?msg=param');
+			}
+		} catch (\app\model\NotFoundException $e) {
+			$this->createMessage("Nepoznati identifikator!", "d3", "administrator", "searchOzsn");
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->createMessage($handler, "d3", "administrator", "searchOzsn");
+		}
         
         echo new \view\Main(array(
             "body" => new \view\administrator\OzsnList(array(
@@ -432,7 +457,7 @@ class Administrator implements Controller {
                 try {
                     $osoba->modifyRow(post($osoba->getPrimaryKeyColumn()), post('ime', null), post('prezime', null), post('mail', null), post('brojMob', null), post('ferId'), post('password_new', null), 
                         post('JMBAG', null), post('spol', null), post('datRod', null), post('brOsobne', null), post('brPutovnice', null), post('osobnaVrijediDo', null),
-                        post('putovnicaVrijediDo', null), 'O', NULL, post('MBG', null), post('OIB', null));
+                        post('putovnicaVrijediDo', null), 'O', NULL, post('MBG', null), post('OIB', null), post("aktivanDokument", "0"));
                     // redirect with according message
                     preusmjeri(\route\Route::get('d3')->generate(array(
                         "controller" => "administrator",
@@ -465,7 +490,7 @@ class Administrator implements Controller {
                 "errorMessage" => $this->errorMessage,
                 "osoba" => $osoba
             )),
-            "title" => "Ažuriranje članova Odbora",
+            "title" => "Ažuriranje Člana Odbora",
             "script" => new \view\scripts\PersonFormJs()
         ));  
         
@@ -636,41 +661,43 @@ class Administrator implements Controller {
         $osobe = array();
         $osoba = new \model\DBOsoba();
         
-	if (get("type")) {
-	    // generate file
-	    $pomPolje = array("Ime", "Prezime", "Korisničko ime", "JMBAG", "Datum Rođenja", "Mobitel", "Email", "OIB", "Uloga");
-	    $array = array();
-	    $array[] = $pomPolje;
-	    if (session('search') === 'all') {
-		$osobe = $osoba->getAllPersons();
-	    } else {
-		$polje = unserialize(session('search'));
-		$osobe = $osoba->find($polje[0], $polje[1], $polje[2], $polje[3], $polje[4]);
-	    }
-	    if($osobe !== false && count($osobe)) {
-		foreach ($osobe as $v) {
-		    $pom = array($v->ime, $v->prezime, $v->ferId, $v->JMBAG, $v->datRod, $v->brojMob, $v->mail, $v->OIB, $v->uloga);
-		    $array[] = $pom;
+		if (get("type")) {
+			// generate file
+			$pomPolje = array("Ime", "Prezime", "Email", "Mobitel", "JMBAG", "Spol", "Datum rođenja", "Osobna iskaznica", "Vrijedi do",
+				"Putovnica", "Vrijedi do", "Aktivan dokument", "MBO", "OIB");
+			$array = array();
+			$array[] = $pomPolje;
+			if (session('search') === 'all') {
+				$osobe = $osoba->getAllPersons();
+			} else {
+				$polje = unserialize(session('search'));
+				$osobe = $osoba->find($polje[0], $polje[1], $polje[2], $polje[3], $polje[4]);
+			}
+			if($osobe !== false && count($osobe)) {
+				foreach ($osobe as $v) {
+					$array[] = array($v->ime, $v->prezime, $v->mail, $v->brojMob, $v->JMBAG, ($v->spol == "M" ? "Muško" : "Žensko"),
+						$v->datRod, $v->brOsobne, $v->osobnaVrijediDo, $v->brPutovnice, $v->putovnicaVrijediDo, 
+								($v->aktivanDokument == "0" ? "Putovnica" : "Osobna"), $v->MBG, $v->OIB);
+				}
+			}
+			$path = $this->generateFile(get("type"), $array);
+
+			echo new \view\ShowFile(array(
+			"path" => $path,
+			"type" => get("type")
+			));
 		}
-	    }
-	    $path = $this->generateFile(get("type"), $array);
-	    
-	    echo new \view\ShowFile(array(
-		"path" => $path,
-		"type" => get("type")
-	    ));
-	}
 	
         if(!postEmpty()) {
             // search db
             // first validate input
             $validacija = new \model\MediumPersonSearchFormModel(array(
-                'ferId' => post('ferId'),
-                'ime' => post('ime'), 
-                'prezime' => post('prezime'),
-                'OIB' => post('OIB'),
-                'JMBAG' => post('JMBAG')
-            ));
+					'ferId' => post('ferId'),
+					'ime' => post('ime'), 
+					'prezime' => post('prezime'),
+					'OIB' => post('OIB'),
+					'JMBAG' => post('JMBAG')
+				));
             
             $pov = $validacija->validate();
             if($pov !== true) {
@@ -679,7 +706,7 @@ class Administrator implements Controller {
                 // ok the data is correct now lets find what they're looking for
                 $osobe = $osoba->find(post('ime'), post('prezime'), post('ferId'), post('OIB'), post('JMBAG'));
 		
-		$_SESSION['search'] = serialize(array(post('ime'), post('prezime'), post('ferId'), post('OIB'), post('JMBAG')));
+				$_SESSION['search'] = serialize(array(post('ime'), post('prezime'), post('ferId'), post('OIB'), post('JMBAG')));
 		
                 if($osobe === false)
                     $this->errorMessage = "Nije pronađena niti jedna osoba!";
@@ -687,7 +714,7 @@ class Administrator implements Controller {
         } else if (get("a") !== false) {
             // get all persons
             $osobe = $osoba->getAllPersons();
-	    $_SESSION['search'] = 'all';
+			$_SESSION['search'] = 'all';
             if($osobe === false)
                 $this->errorMessage = "Ne postoji niti jedna osoba!";
         } else {
@@ -777,6 +804,28 @@ class Administrator implements Controller {
             }
             
         }
+		
+		if (get("type") !== false) {
+			$pomPolje = array("Ime", "Prezime", "Email", "Mobitel", "JMBAG", "Spol", "Datum rođenja", "Osobna iskaznica", "Vrijedi do",
+				"Putovnica", "Vrijedi do", "Aktivan dokument", "MBO", "OIB");
+			$array = array();
+			$array[] = $pomPolje;
+
+			if ($clanovi !== null && count($clanovi)) {
+				foreach ($clanovi as $v) {
+					$array[] = array($v->ime, $v->prezime, $v->mail, $v->brojMob, $v->JMBAG, ($v->spol == "M" ? "Muško" : "Žensko"),
+						$v->datRod, $v->brOsobne, $v->osobnaVrijediDo, $v->brPutovnice, $v->putovnicaVrijediDo, 
+								($v->aktivanDokument == "0" ? "Putovnica" : "Osobna"), $v->MBG, $v->OIB);
+				}
+			}
+
+			$path = $this->generateFile(get("type"), $array);
+
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
         
         echo new \view\Main(array(
             "body" => new \view\administrator\OldOzsn(array(
@@ -970,13 +1019,19 @@ class Administrator implements Controller {
             $pov = $validacija->validate();
             if($pov !== true) {
                 $message = $validacija->decypherErrors($pov);
-                $handler = new \model\ExceptionHandlerModel(new \PDOException(), $message);
-                $_SESSION["exception"] = serialize($handler);
-                preusmjeri(\route\Route::get('d3')->generate(array(
-                    "controller" => "administrator",
-                    "action" => "addElektrijada"
-                )) . "?msg=excep");
+				$this->createMessage($message, "d3", "administrator", "addElektrijada");
             } else {
+				if (post('datumPocetka') !== false && post('datumKraja') !== false) {
+					$datp = strtotime(post('datumPocetka'));
+					$datk = strtotime(post('datumKraja'));
+					if ($datp >= $datk) {
+						$this->createMessage("Datum početka mora biti manji od datuma kraja Elektrijade!", "d3", "administrator", "addElektrijada");
+					}
+				}
+				
+				if (post("ukupniRezultat", "0") > post("ukupanBrojSudionika", "0")) {
+					$this->createMessage("Rezultat mora biti manji od broja sudionika!", "d3", "administrator", "addElektrijada");
+				}
                 // everything's ok i add the new Elektrijada data
                 $elektrijada = new \model\DBElektrijada();
                 
@@ -991,11 +1046,7 @@ class Administrator implements Controller {
                     }
                 } catch (\PDOException $e) {
                     $handler = new \model\ExceptionHandlerModel($e);
-                    $_SESSION["exception"] = serialize($handler);
-                    preusmjeri(\route\Route::get('d3')->generate(array(
-                        "controller" => "administrator",
-                        "action" => "addElektrijada"
-                     )) . "?msg=excep");
+                    $this->createMessage($handler, "d3", "administrator", "addElektrijada");
                 }
                 
             }
@@ -1029,6 +1080,26 @@ class Administrator implements Controller {
         if(count($elektrijade) === 0) {
             $this->errorMessage = "Ne postoji niti jedan zapis o Elektrijadi!";
         }
+		
+		if (get("type") !== false) {
+			$pomPolje = array("Mjesto održavanja", "Početak", "Kraj", "Rezultat", "Ukupno sudionika", "Država");
+			$array = array();
+			$array[] = $pomPolje;
+
+			if ($elektrijade !== null && count($elektrijade)) {
+				foreach ($elektrijade as $v) {
+					$array[] = array($v->mjestoOdrzavanja, $v->datumPocetka, $v->datumKraja, $v->ukupniRezultat, $v->ukupanBrojSudionika,
+						$v->drzava);
+				}
+			}
+
+			$path = $this->generateFile(get("type"), $array);
+
+			echo new \view\ShowFile(array(
+				"path" => $path,
+				"type" => get("type")
+			));
+		}
         
         echo new \view\Main(array(
             "body" => new \view\administrator\ElektrijadaList(array(
@@ -1075,6 +1146,26 @@ class Administrator implements Controller {
             } else {
                 // everything's ok ; insert new row
                 try {
+					if (post('datumPocetka') !== false && post('datumKraja') !== false) {
+						$datp = strtotime(post('datumPocetka'));
+						$datk = strtotime(post('datumKraja'));
+						if ($datp >= $datk) {
+							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Datum početka mora biti manji od datuma kraja Elektrijade!");
+							$_SESSION["exception"] = serialize($handler);
+							preusmjeri(\route\Route::get('d3')->generate(array(
+								"controller" => "administrator",
+								"action" => "modifyElektrijada"
+							)) . "?msg=excep&id=" . post($elektrijada->getPrimaryKeyColumn()));
+						}
+					}
+					if (post("ukupniRezultat", "0") > post("ukupanBrojSudionika", "0")) {
+						$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Rezultat mora biti manji od broja sudionika!");
+						$_SESSION["exception"] = serialize($handler);
+						preusmjeri(\route\Route::get('d3')->generate(array(
+							"controller" => "administrator",
+							"action" => "modifyElektrijada"
+						)) . "?msg=excep&id=" . post($elektrijada->getPrimaryKeyColumn()));
+					}
                     if ($elektrijada->existsElektrijadaWithYearDifferentFrom(post('datumPocetka'), post($elektrijada->getPrimaryKeyColumn()))) {
                         $this->errorMessage = "Već postoji Elektrijada za tu godinu";
                     } else {

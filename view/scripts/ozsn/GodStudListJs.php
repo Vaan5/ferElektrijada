@@ -13,9 +13,9 @@ class GodStudListJs extends AbstractView {
 			// When Uredi is clicked, show form
 			var idGodStud;
 			$('.editGodStud').click(function () {
-				$idGodStud = $(this).data("id");
-				$('.modify-' + $idGodStud).hide();
-				$('.modifyOn-' + $idGodStud).show();
+				idGodStud = $(this).data("id");
+				$('.modify-' + idGodStud).hide();
+				$('.modifyOn-' + idGodStud).show();
 			});
 			
 			// When Obriši is clicked, show confirmation

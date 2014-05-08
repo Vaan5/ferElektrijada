@@ -59,21 +59,26 @@ class Sudionik implements Controller {
 					if ($checkSport && $checkZnanje)
 						break;
 				}
-			} else {
-				throw new \app\model\NotFoundException();
+			}
+			$pocetak = strtotime($elektrijada->datumPocetka);
+			$currentTime = time();
+			if ($currentTime > $pocetak) {
+				$this->changesDisabled = true;
+				return;
 			}
 
 			// now check if the dates are right
-			$currentTime = time();
-			if ($checkZnanje) {
+			if ($checkZnanje && $this->rokZaZnanje !== null) {
 				if ($currentTime > $rokZaZnanje) {
 					$this->changesDisabled = true;
+					return;
 				}
 			}
 
-			if ($checkSport) {
+			if ($checkSport && $this->rokZaSport !== null) {
 				if ($currentTime > $rokZaSport) {
 					$this->changesDisabled = true;
+					return;
 				}
 			}
 			$this->changesDisabled = false;
