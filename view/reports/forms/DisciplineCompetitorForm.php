@@ -38,7 +38,7 @@ class DisciplineCompetitorForm extends AbstractView {
 ?>					
         </select>
         </div></center><br/><br/>
-	<div class="checkbox">
+        <center><div class="checkbox">
             <label>
                 <input type="checkbox" name="ime"> Ime &nbsp;
             </label>
@@ -178,10 +178,10 @@ class DisciplineCompetitorForm extends AbstractView {
                 <input type="checkbox" name="ukupanBrojSudionika"> Ukupan broj sudionika &nbsp;
             </label>
         </div><br><br>
-
-	<?php echo new DownloadOptionsForm();?>	
+        <br/>
+        <?php echo new DownloadOptionsForm();?>
 	
-        <center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText; ?>" /></center>
+        <input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText; ?>" /></center>
     </form>
 <?php
     }

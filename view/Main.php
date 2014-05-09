@@ -57,7 +57,7 @@ class Main extends AbstractView {
     </head>
 
     <body>
-<nav class="navbar navbar-default" role="navigation">
+<nav class="navbar  navbar-default" role="navigation">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
@@ -71,8 +71,8 @@ class Main extends AbstractView {
 		<span class="glyphicon glyphicon-home"></span>
 	</a>
         <a class="navbar-brand">
-            <!--<span class="glyphicon glyphicon-chevron-right"></span>--><?php echo " ".$this->title; ?>
-        </a>
+		<?php echo " ".$this->title; ?>
+	</a>
      </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">    
@@ -119,10 +119,9 @@ class Main extends AbstractView {
           </p>
           </ul>
     </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
+  </div><!-- /.container-fluid-->
 </nav>
-        <br>
-        
+        <br/>
         <div class = "container-narrow">
         <?php echo $this->body; ?>
         </div>
