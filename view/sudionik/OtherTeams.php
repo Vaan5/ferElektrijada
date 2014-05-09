@@ -31,7 +31,7 @@ class OtherTeams extends AbstractView {
 					"action" => "displayOtherTeams"
 				));?>">
 					<div class="form-group">	
-								<label for="podrucje" class="col-sm-3 control-label">Odaberite disciplinu:</label>
+								<label for="podrucje" class="col-sm-3 control-label">Odaberite disciplinu</label>
 						<div class="col-sm-9">
 								<select name="idPodrucja" class="form-control">
 							<option value="">Odaberi...</option>

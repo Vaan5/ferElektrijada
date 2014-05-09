@@ -43,7 +43,7 @@ class AssignExistingPerson extends AbstractView {
 						<th>Prezime</th>
 						<th>JMBAG</th>
 						<th>Korisničko ime</th>
-						<th>Opcije</th>
+                                                <th><center>Opcije</center></th>
 					</tr>
 				</thead>
 
@@ -56,7 +56,7 @@ class AssignExistingPerson extends AbstractView {
 						<td><?php echo $o->prezime; ?></td>
 						<td><?php echo $o->JMBAG; ?></td>
 						<td><?php echo $o->ferId; ?></td>
-						<td> <input type="checkbox" name="osobe[]" value="<?php echo $o->getPrimaryKey();?>"></td>
+                                                <td> <center><input type="checkbox" name="osobe[]" value="<?php echo $o->getPrimaryKey();?>"></center></td>
 					</tr>
 			 
 <?php
@@ -67,16 +67,16 @@ class AssignExistingPerson extends AbstractView {
 	</div>
 	
 	<div>
-		<p> Odaberite tip natjecanja:
+		<center><p> Odaberite tip natjecanja:
 			&nbsp;<input type="radio" name="vrstaPodrucja" value="0" checked> Pojedinačno natjecanje
 			&nbsp;<input type="radio" name="vrstaPodrucja" value="1"> Timsko natjecanje
-		</p>
+                    </p></center>
 	</div>
 	
 	<input type="hidden" name="idPodrucja" value="<?php echo $this->idPodrucja?>" />
 	
 	<?php if (!$this->disabled) { ?>
-		<input type="submit" value="Dodaj" />
+        <center><input type="submit" class="btn btn-primary" value="Dodaj" /></center>
 	<?php } ?>
 </form>
 <?php

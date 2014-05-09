@@ -103,7 +103,7 @@ if($this->osoba){ ?>
 		<div class="form-group">
             <label for="spol" class="col-sm-3 control-label">Spol</label>
         <div class="col-sm-9">
-			<input type="radio" name="spol" value="M" <?php if($this->osoba && $this->osoba->spol == 'M'){ echo 'checked'; } ?>> Muški
+			<input style="margin-top: 11px" type="radio" name="spol" value="M" <?php if($this->osoba && $this->osoba->spol == 'M'){ echo 'checked'; } ?>> Muški
 			&nbsp; &nbsp;
 			<input type="radio" name="spol" value="Ž" <?php if($this->osoba && $this->osoba->spol == 'Ž'){ echo 'checked'; } ?>> Ženski
         </div>        
@@ -172,7 +172,7 @@ if($this->osoba){ ?>
 	<div class="form-group">
             <label for="aktivanDokument" class="col-sm-3 control-label">Dokument za putovanje</label>
         <div class="col-sm-9">
-			<input type="radio" name="aktivanDokument" value="0" <?php if($this->osoba && $this->osoba->aktivanDokument == '0'){ echo 'checked'; } ?>> Putovnica
+			<input type="radio" style="margin-top: 11px" name="aktivanDokument" value="0" <?php if($this->osoba && $this->osoba->aktivanDokument == '0'){ echo 'checked'; } ?>> Putovnica
 			&nbsp; &nbsp;
 			<input type="radio" name="aktivanDokument" value="1" <?php if($this->osoba && $this->osoba->aktivanDokument == '1'){ echo 'checked'; } ?>> Osobna iskaznica
         </div>        
@@ -204,7 +204,7 @@ if($this->osoba){ ?>
 ?>              <div class="form-group">
 		<label for="logotip" class="col-sm-3 control-label">Životopis</label>
 		<div class="col-sm-9">
-                <input type="file" name="datoteka" />
+                <input style="margin-top: 6px" type="file" name="datoteka" />
                 </div>
                 </div>
 <?php

@@ -31,7 +31,7 @@ class MyTeam extends AbstractView {
 					"action" => "displayMyTeam"
 				));?>">
 					<div class="form-group">	
-								<label for="podrucje" class="col-sm-3 control-label">Odaberite disciplinu:</label>
+								<label for="podrucje" class="col-sm-3 control-label">Odaberite disciplinu</label>
 						<div class="col-sm-9">
 								<select name="idPodrucja" class="form-control">
 							<option value="">Odaberi...</option>
@@ -120,9 +120,9 @@ class MyTeam extends AbstractView {
 			"action" => "displayMyTeam"
 		))));
 			?>
-				<a href="<?php echo \route\Route::get('d3')->generate(array(
+				<!--<a href="<?php echo \route\Route::get('d3')->generate(array(
 					"controller" => "sudionik",
-					"action" => "displayMyTeam"))?>">Povratak</a>
+					"action" => "displayMyTeam"))?>">Povratak</a>-->
 			<?php
 		}
     }

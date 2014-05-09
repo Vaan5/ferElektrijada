@@ -44,7 +44,7 @@ class YearModuleStatisticsForm extends AbstractView {
 
       
 
-	<?php echo new DownloadOptionsForm();?>	
+	<center><?php echo new DownloadOptionsForm();?></center>	
 	
         <center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText; ?>" /></center>
     </form>

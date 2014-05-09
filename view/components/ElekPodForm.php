@@ -23,7 +23,7 @@ class ElekPodForm extends AbstractView {
         </div>
         <div class="form-group">
             <label for="ukupnoEkipa" class="col-sm-4 control-label">Ukupni broj ekipa</label>
-                        <div class="col-sm-7">           
+                        <div class="col-sm-5">           
                         <input type="text" name="ukupanBrojEkipa" class="form-control" placeholder="Upišite broj ekipa" <?php if($this->elekPod && $this->elekPod->ukupanBrojEkipa){ echo 'value="' . $this->elekPod->ukupanBrojEkipa . '"'; } ?> />
                         </div>
         </div>
@@ -49,9 +49,9 @@ class ElekPodForm extends AbstractView {
 		else
 		{
 ?>              <div class="form-group">
-		<label for="slika" class="col-sm-3 control-label">Slika</label>
-		<div class="col-sm-9">
-                <input type="file" name="datoteka" />
+		<label for="slika" class="col-sm-4 control-label">Slika</label>
+		<div class="col-sm-8">
+                <input type="file" style="margin-top: 7px" name="datoteka" />
                 </div>
                 </div>
 <?php
