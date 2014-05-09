@@ -172,7 +172,7 @@ if($this->osoba){ ?>
 	<div class="form-group">
             <label for="aktivanDokument" class="col-sm-3 control-label">Dokument za putovanje</label>
         <div class="col-sm-9">
-			<input type="radio" style="margin-top: 11px" name="aktivanDokument" value="0" <?php if($this->osoba && $this->osoba->aktivanDokument == '0'){ echo 'checked'; } ?>> Putovnica
+			<input type="radio" style="margin-top: 22px" name="aktivanDokument" value="0" <?php if($this->osoba && $this->osoba->aktivanDokument == '0'){ echo 'checked'; } ?>> Putovnica
 			&nbsp; &nbsp;
 			<input type="radio" name="aktivanDokument" value="1" <?php if($this->osoba && $this->osoba->aktivanDokument == '1'){ echo 'checked'; } ?>> Osobna iskaznica
         </div>        
@@ -336,7 +336,7 @@ if($this->osoba){ ?>
 		<div class="form-group">
             <label for="tip" class="col-sm-3 control-label">Tip sudionika</label>
         <div class="col-sm-9">
-			<input type="radio" name="tip" value="S" <?php if ($this->sudjelovanje !== null && $this->sudjelovanje->tip == "S") echo "checked"?>> Student
+			<input type="radio" style="margin-top: 11px" name="tip" value="S" <?php if ($this->sudjelovanje !== null && $this->sudjelovanje->tip == "S") echo "checked"?>> Student
 			&nbsp; &nbsp;
 			<input type="radio" name="tip" value="D" <?php if ($this->sudjelovanje !== null && $this->sudjelovanje->tip == "D") echo "checked"?>> Djelatnik
 			<?php if (session("vrsta") === "OV") {?>
@@ -414,7 +414,7 @@ if($this->osoba){ ?>
 		<div class="form-group">
             <label for="vrstaPodrucja" class="col-sm-3 control-label">Vrsta discipline</label>
         <div class="col-sm-9">
-			<input type="radio" name="vrstaPodrucja" value="1" <?php if ($this->podrucjeSudjelovanja !== null && $this->podrucjeSudjelovanja->vrstaPodrucja == 1) echo "checked" ?>> Timsko natjecanje
+			<input type="radio" style="margin-top:11px" name="vrstaPodrucja" value="1" <?php if ($this->podrucjeSudjelovanja !== null && $this->podrucjeSudjelovanja->vrstaPodrucja == 1) echo "checked" ?>> Timsko natjecanje
 			&nbsp; &nbsp;
 			<input type="radio" name="vrstaPodrucja" value="0" <?php if ($this->podrucjeSudjelovanja !== null && $this->podrucjeSudjelovanja->vrstaPodrucja == 0) echo "checked" ?>> Pojedinačno natjecanje
         </div>        
