@@ -63,6 +63,7 @@ class ReportGenerator implements Controller {
 	    $podrucja = $podrucje->getAll();  //dohvati sve iz tablice podrucja
 		$elektrijade = $e->getAll();   //koristi se pri kraju, treba nam za poglede
 		 
+	
 		
 		
 	} catch (\PDOException $e) {
@@ -745,7 +746,7 @@ class ReportGenerator implements Controller {
 		$header = $this->decypherHeader();
 		
 		
-		$pom = array('Redni broj busa', 'Polazak', 'Povratak', 'Napomena', 'Broj sjedala');  
+		$pom = array('Redni broj busa', 'Naziv grupe', 'Polazak', 'Povratak', 'Napomena', 'Broj sjedala');  
 		array_splice($header,0,0,$pom); 	
 		
 		
@@ -769,7 +770,7 @@ class ReportGenerator implements Controller {
 				
 			    }
 			}
-			$buf = array($v->{'brojBusa'}, $v->{'polazak'}, $v->{'povratak'}, $v->{'napomena'}, $v->{'brojSjedala'}); 
+			$buf = array($v->{'brojBusa'}, $v->{'nazivGrupe'}, $v->{'polazak'}, $v->{'povratak'}, $v->{'napomena'}, $v->{'brojSjedala'}); 
 			array_splice($h,0,0,$buf);
 			
 
