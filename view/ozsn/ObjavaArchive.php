@@ -111,11 +111,6 @@ class ObjavaArchive extends AbstractView {
 			));
 		}
 	}
-		
-		// napravi nesh slicno DBM-u
-		// dakle ako rezultati nisu postavljeni (null) prikazujes post formu sa drop down om elektrijada
-		// inace prikazujes rezultate (ako je prazno polje ispisi poruku)
-		// dodaj download linkove i nista vise (ne treba uredjivanje i ostalo...)
     }
     
     public function setErrorMessage($errorMessage) {
