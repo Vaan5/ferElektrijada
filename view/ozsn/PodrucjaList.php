@@ -30,13 +30,13 @@ class PodrucjaList extends AbstractView {
 		<br><br>
 		
 		<div class="panel panel-default">
-			<div class="panel-heading">Popis područja</div>
+			<div class="panel-heading">Popis disciplina</div>
 
 			<table class="table">
 				<thead>
 					<tr>
 						<th>Naziv</th>
-						<th>ID nadređenog</th>
+						<th>Nadređeni</th>
 						<th>Opcije</th>
 					</tr>
 				</thead>
@@ -56,9 +56,8 @@ class PodrucjaList extends AbstractView {
 				));
 				echo '" method="POST">';
 				echo '<tr><td><span class="modify-' . $val->idPodrucja . '">' . $val->nazivPodrucja . '</span><input type="text" class="modifyOn-' . $val->idPodrucja . '" style="display:none;" name="nazivPodrucja" value="' . $val->nazivPodrucja . '"><input type="hidden" name="idPodrucja" value="' . $val->idPodrucja . '"></td>';
-				echo '<td><span class="modify-' . $val->idPodrucja . '">' . $val->idNadredjenog . '</span><select class="modifyOn-' . $val->idPodrucja . '" style="display:none;" name="idNadredjenog"><option ';
-				if(!$val->idNadredjenog) echo 'selected="selected"'; ?>
- value="">Nema nadređenog</option>
+				echo '<td><span class="modify-' . $val->idPodrucja . '">' . $val->idNadredjenog . '</span><select class="modifyOn-' . $val->idPodrucja . '" style="display:none;" name="idNadredjenog"><option '; 
+				if(!$val->idNadredjenog) echo 'selected="selected"'; ?> value="">Nema nadređenog</option>?>
 
 <?php
 		foreach($this->korijenski as $val2)
@@ -89,14 +88,14 @@ class PodrucjaList extends AbstractView {
 		{
 ?>
 						<tr>
-							<td class="addPodrucje" colspan="2"><i>Ne postoji niti jedno područje</i></td>
+							<td class="addPodrucje" colspan="3"><i>Ne postoji niti jedna disciplina</i></td>
 						</tr>
 <?php
 		}
 ?>
 					<tr class="addPodrucje">
-						<td colspan="2">
-							<a id="addPodrucje" href="javascript:;"><span class="glyphicon glyphicon-plus"></span> Dodaj novo područje</a>
+						<td colspan="3">
+							<a id="addPodrucje" href="javascript:;"><span class="glyphicon glyphicon-plus"></span> Dodaj novu disciplinu</a>
 						</td>
 					</tr>
 					<tr style="display: none;" class="addPodrucjeOn">
@@ -106,7 +105,7 @@ class PodrucjaList extends AbstractView {
 								"action" => 'addPodrucje'
 							)); ?>							  
 							  " method="post">
-							<td><input type="text" name="nazivPodrucja" placeholder="Upišite naziv područja"></td>
+							<td><input type="text" name="nazivPodrucja" placeholder="Upišite naziv discipline"></td>
 							<td>
 								<select name="idNadredjenog"><option value="">Nema nadređenog</option>
 
