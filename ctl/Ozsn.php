@@ -5225,6 +5225,7 @@ class Ozsn implements Controller {
 			
 			try {
 				$podrucja = $podrucje->getAllForReport();
+				$korijenski = $podrucje->getRoot();
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
 				$this->errorMessage = $handler;
@@ -5233,6 +5234,12 @@ class Ozsn implements Controller {
 			if ($podrucja !== null && count($podrucja)) {
 				foreach ($podrucja as $v) {
 					$array[] = array($v->nazivPodrucja, $v->kategorija);
+				}
+			}
+			
+			if ($korijenski !== null && count($korijenski)) {
+				foreach ($korijenski as $v) {
+					$array[] = array($v->nazivPodrucja, "Vršna disciplina");
 				}
 			}
 			
