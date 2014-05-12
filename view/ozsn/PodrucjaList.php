@@ -19,6 +19,7 @@ class PodrucjaList extends AbstractView {
         ));
 		
 		// klasican DBM, samo kad nudis idNadredjenog ponudi one korijenske i josh jedan prazan value=""
+		var_dump($this->podrucja, $this->korijenski);
     ?>
 		<?php echo new \view\components\DownloadLinks(array(
 			"route" => \route\Route::get("d3")->generate(array(
@@ -56,15 +57,15 @@ class PodrucjaList extends AbstractView {
 				));
 				echo '" method="POST">';
 				echo '<tr><td><span class="modify-' . $val->idPodrucja . '">' . $val->nazivPodrucja . '</span><input type="text" class="modifyOn-' . $val->idPodrucja . '" style="display:none;" name="nazivPodrucja" value="' . $val->nazivPodrucja . '"><input type="hidden" name="idPodrucja" value="' . $val->idPodrucja . '"></td>';
-				echo '<td><span class="modify-' . $val->idPodrucja . '">' . $val->idNadredjenog . '</span><select class="modifyOn-' . $val->idPodrucja . '" style="display:none;" name="idNadredjenog"><option '; 
-				if(!$val->idNadredjenog) echo 'selected="selected"'; ?> value="">Nema nadređenog</option>?>
+				echo '<td><span class="modify-' . $val->idPodrucja . '">' . $val->kategorija . '</span><select class="modifyOn-' . $val->idPodrucja . '" style="display:none;" name="idNadredjenog"><option '; 
+				if(!$val->idNadredjenog) echo 'selected="selected"'; ?> value="">Nema nadređenog</option>
 
 <?php
 		foreach($this->korijenski as $val2)
 		{
 			if($val->idPodrucja != $val2->idPodrucja)
 			{
-				echo '<option value="' . $val->idPodrucja . '"';
+				echo '<option value="' . $val2->idPodrucja . '"';
 				if ($val->idNadredjenog && $val->idNadredjenog == $val2->idPodrucja)
 				{
 					echo 'selected="selected"';

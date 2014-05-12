@@ -5232,7 +5232,7 @@ class Ozsn implements Controller {
 			
 			if ($podrucja !== null && count($podrucja)) {
 				foreach ($podrucja as $v) {
-					$array[] = array($v->nazivPodrucja, $v->tip);
+					$array[] = array($v->nazivPodrucja, $v->kategorija);
 				}
 			}
 			
@@ -5489,6 +5489,7 @@ class Ozsn implements Controller {
 			}
 			
 			$array = array();
+			$array[] = array("", "Kontakt informacije");
 			$array[] = array("Ime", $k->imeKontakt);
 			$array[] = array("Prezime", $k->prezimeKontakt);
 			$array[] = array("Radno Mjesto", $k->radnoMjesto);

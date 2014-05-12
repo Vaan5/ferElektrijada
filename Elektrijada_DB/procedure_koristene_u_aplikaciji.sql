@@ -455,7 +455,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE  PROCEDURE `azurirajPodrucje`(IN idPodrucja INT(10),IN nazivPodrucja VARCHAR(100),IN idNadredjenog INT(10))
 BEGIN
-IF NOT EXISTS (SELECT* FROM PODRUCJE WHERE PODRUCJE.nazivPodrucja = nazivPodrucja) THEN
+IF NOT EXISTS (SELECT* FROM PODRUCJE WHERE PODRUCJE.nazivPodrucja = nazivPodrucja AND PODRUCJE.idPodrucja <> idPodrucja) THEN
 IF NOT EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idPodrucja) THEN
 	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Nepoznata disciplina!';
 ELSE
@@ -896,10 +896,10 @@ DELIMITER $$
 CREATE  PROCEDURE `dodajPodrucje`(IN nazivPodrucja VARCHAR(100),IN idNadredjenog INT(10))
 BEGIN
 IF NOT EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.nazivPodrucja = nazivPodrucja) THEN
-	IF NOT EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idNadredjenog) THEN
-		SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Nadređena disciplina je pogrešno zadana!';
-	ELSE
+	IF idNadredjenog IS NULL OR EXISTS (SELECT * FROM PODRUCJE WHERE PODRUCJE.idPodrucja = idNadredjenog) THEN
 		INSERT INTO PODRUCJE VALUES (NULL,nazivPodrucja,idNadredjenog);
+	ELSE
+SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Nadređena disciplina je pogrešno zadana!';
 
 	END IF;
 	ELSE
