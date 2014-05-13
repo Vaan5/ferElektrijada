@@ -168,7 +168,8 @@ class Ozsn implements Controller {
 				"resultMessage" => $this->resultMessage,
 				"voditelji" => $voditelji,
 				"podrucja" => $podrucja
-			))
+			)),
+			"script" => new \view\scripts\ozsn\TeamLeadersJs()
 		));
 	}
 	
@@ -305,7 +306,8 @@ class Ozsn implements Controller {
 				"smjerovi" => $smjerovi,
 				"godine" => $godine,
 				"zavodi" => $zavodi
-			))
+			)),
+			"script" => new \view\scripts\PersonFormJs()
 		));
 	}
 	
@@ -396,7 +398,8 @@ class Ozsn implements Controller {
 				"resultMessage" => $this->resultMessage,
 				"idPodrucja" => $idPodrucja,
 				"osobe" => $osobe
-			))
+			)),
+			"script" => new \view\scripts\ozsn\AddExistingTeamLeaderJs()
 		));
 	}
 	
@@ -5552,7 +5555,6 @@ class Ozsn implements Controller {
 		
 		echo new \view\Main(array(
 			"title" => "Informacije o Kontaktima",
-			"script" => new \view\scripts\ozsn\ContactInfoJs(),
 			"body" => new \view\ozsn\ContactInfo(array(
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage,

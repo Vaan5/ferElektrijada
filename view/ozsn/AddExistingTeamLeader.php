@@ -18,10 +18,6 @@ class AddExistingTeamLeader extends AbstractView {
         ));
 		
 ?>
-<form action="<?php echo \route\Route::get('d3')->generate(array(
-	"controller" => "ozsn",
-	"action" => "addExistingTeamLeader"
-))?>" method="POST">
 		<div class="panel panel-default">
 			<div class="panel-heading">Članovi tima</div>
 
@@ -32,7 +28,7 @@ class AddExistingTeamLeader extends AbstractView {
 						<th>Ime</th>
 						<th>Prezime</th>
 						<th>Uloga</th>
-						<th>Proglasiti voditeljem</th>
+						<th>Proglasi voditeljem</th>
 					</tr>
 				</thead>
 
@@ -42,10 +38,9 @@ class AddExistingTeamLeader extends AbstractView {
 		{
 			foreach($this->osobe as $val)
 			{
-				$ispis = "<tr><td>" . $val->ferId . "</td><td>" . $val->ime . "</td><td>" . $val->prezime . 
-						"</td><td>" . ($val->uloga == 'O' ? 'Ozsn' : 'Sudionik') . "</td><td>
-							<input type=\"checkbox\" name=\"" . $val->idOsobe . "\" value=\"on\"/></td>";
-				echo $ispis;
+				echo '<tr><td>' . $val->ferId . '</td><td>' . $val->ime . '</td><td>' . $val->prezime . 
+						'</td><td>' . ($val->uloga == 'O' ? 'Ozsn' : 'Sudionik') . '</td><td>
+							<a href="javascript:;" class="proglasiVoditeljem" data-id="' . $val->idOsobe . '" data-idpodrucja="' . $this->idPodrucja . '">Proglasi voditeljem</a></td>';
 			}
 		}
 		else
@@ -60,9 +55,6 @@ class AddExistingTeamLeader extends AbstractView {
 				</tbody>
 			</table>
 		</div>
-	<input type="hidden" name="idPodrucja" value="<?php echo $this->idPodrucja?>"/>
-	<center><input type="submit" class="btn btn-primary" value="Spremi" /></center>
-</form>
 <?php
 		
     }
