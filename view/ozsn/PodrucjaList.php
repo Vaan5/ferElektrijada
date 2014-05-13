@@ -18,9 +18,7 @@ class PodrucjaList extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 		
-		// klasican DBM, samo kad nudis idNadredjenog ponudi one korijenske i josh jedan prazan value=""
-		var_dump($this->podrucja, $this->korijenski);
-    ?>
+?>
 		<?php echo new \view\components\DownloadLinks(array(
 			"route" => \route\Route::get("d3")->generate(array(
 				"controller" => "ozsn",
@@ -37,7 +35,6 @@ class PodrucjaList extends AbstractView {
 				<thead>
 					<tr>
 						<th>Naziv</th>
-						<th>Nadređeni</th>
 						<th>Opcije</th>
 					</tr>
 				</thead>
@@ -45,10 +42,10 @@ class PodrucjaList extends AbstractView {
 				<tbody>
 <?php
 
-		if(count($this->podrucja))
+		if(count($this->korijenski))
 		{
-			// Foreach smjer, generate row in table
-			foreach($this->podrucja as $val)
+			// Foreach korijensko podrucje, generate row in table
+			foreach($this->korijenski as $val)
 			{
 				echo '<form action="';
 				echo \route\Route::get('d3')->generate(array(
@@ -56,8 +53,8 @@ class PodrucjaList extends AbstractView {
 					"action" => 'modifyPodrucje'
 				));
 				echo '" method="POST">';
-				echo '<tr><td><span class="modify-' . $val->idPodrucja . '">' . $val->nazivPodrucja . '</span><input type="text" class="modifyOn-' . $val->idPodrucja . '" style="display:none;" name="nazivPodrucja" value="' . $val->nazivPodrucja . '"><input type="hidden" name="idPodrucja" value="' . $val->idPodrucja . '"></td>';
-				echo '<td><span class="modify-' . $val->idPodrucja . '">' . $val->kategorija . '</span><select class="modifyOn-' . $val->idPodrucja . '" style="display:none;" name="idNadredjenog"><option '; 
+				echo '<tr><td><span class="modify-' . $val->idPodrucja . '">' . $val->nazivPodrucja . '</span><input type="text" class="modifyOn-' . $val->idPodrucja . '" style="display:none;" name="nazivPodrucja" value="' . $val->nazivPodrucja . '"><input type="hidden" name="idPodrucja" value="' . $val->idPodrucja . '">';
+				echo '<select class="modifyOn-' . $val->idPodrucja . '" style="display:none;" name="idNadredjenog"><option '; 
 				if(!$val->idNadredjenog) echo 'selected="selected"'; ?> value="">Nema nadređenog</option>
 
 <?php
@@ -82,6 +79,49 @@ class PodrucjaList extends AbstractView {
 				));
 				echo '?id=' . $val->idPodrucja . '">Obriši</a>';
 				echo '</td></tr></form>';
+			
+				if(count($this->podrucja))
+				{
+					// Foreach podrucje, generate row in table
+					foreach($this->podrucja as $val3)
+					{
+						if($val3->idNadredjenog == $val->idPodrucja)
+						{
+							echo '<form action="';
+							echo \route\Route::get('d3')->generate(array(
+								"controller" => 'ozsn',
+								"action" => 'modifyPodrucje'
+							));
+							echo '" method="POST">';
+							echo '<tr><td><span class="modify-' . $val3->idPodrucja . '">&nbsp; <img width="13px" style="margin-top:-6px;" src="../assets/img/subcategory.png"> ' . $val3->nazivPodrucja . '</span><input type="text" class="modifyOn-' . $val3->idPodrucja . '" style="display:none;" name="nazivPodrucja" value="' . $val3->nazivPodrucja . '"><input type="hidden" name="idPodrucja" value="' . $val3->idPodrucja . '">';
+							echo '<select class="modifyOn-' . $val3->idPodrucja . '" style="display:none;" name="idNadredjenog"><option '; 
+							if(!$val3->idNadredjenog) echo 'selected="selected"'; ?> value="">Nema nadređenog</option>
+
+			<?php
+					foreach($this->korijenski as $val2)
+					{
+						if($val3->idPodrucja != $val2->idPodrucja)
+						{
+							echo '<option value="' . $val2->idPodrucja . '"';
+							if ($val3->idNadredjenog && $val3->idNadredjenog == $val2->idPodrucja)
+							{
+								echo 'selected="selected"';
+							}
+							echo '>' . $val2->nazivPodrucja . '</option>';
+						}
+					}				
+							echo '</select></td>';
+							echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val3->idPodrucja . '" value="Spremi" /><a href="javascript:;" class="editPodrucje modify-' . $val3->idPodrucja . '" data-id="' . $val3->idPodrucja . '">Uredi</a> &nbsp; <a class="deletePodrucje modify-' . $val3->idPodrucja . '" href="';
+
+							echo \route\Route::get('d3')->generate(array(
+								"controller" => 'ozsn',
+								"action" => 'deletePodrucje'
+							));
+							echo '?id=' . $val3->idPodrucja . '">Obriši</a>';
+							echo '</td></tr></form>';				
+						}	
+					}
+				}
 			}
 		}
 		
@@ -106,8 +146,7 @@ class PodrucjaList extends AbstractView {
 								"action" => 'addPodrucje'
 							)); ?>							  
 							  " method="post">
-							<td><input type="text" name="nazivPodrucja" placeholder="Upišite naziv discipline"></td>
-							<td>
+							<td><input type="text" name="nazivPodrucja" placeholder="Upišite naziv discipline">
 								<select name="idNadredjenog"><option value="">Nema nadređenog</option>
 
 <?php
