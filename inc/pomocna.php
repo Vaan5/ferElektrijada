@@ -135,4 +135,19 @@ function postEmpty() {
  */
 function session($key, $default = false) {
     return element($key, $_SESSION, $default);
-} 
+}
+
+function postArray($key) {
+	if (isset($_POST[$key])) {
+		if (is_array($_POST[$key])) {
+			if (count($_POST[$key]) >= 1) {
+				if ($_POST[$key][0] === '' && count($_POST[$key]) === 1) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}

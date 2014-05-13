@@ -1061,6 +1061,27 @@ class Ozsn implements Controller {
 				$this->createMessage($validacija->decypherErrors($pov), "d3", "ozsn", "addContestant");
 			}
 			
+			if (postArray("idAtributa") !== false) {
+				if (post("idPodrucja") === false) {
+					$this->createMessage("Da biste dodali atribut morate odabrati i disciplinu!", "d3", "ozsn", "addContestant");
+				}
+				if (post("option") === '0') {
+					$this->createMessage("Da biste dodali natjecatelja, ne trebate odabrati atribut!", "d3", "ozsn", "addContestant");
+				}
+				if (post("option") === false) {
+					$this->createMessage("Odaberite atribut!", "d3", "ozsn", "addContestant");
+				}
+			}
+			if (post("idPodrucja") !== false && postArray("idAtributa") === false) {
+				if (post("option") === false) {
+					$this->createMessage("Odaberite opciju!", "d3", "ozsn", "addContestant");
+				}
+				if (post("option") === '1')
+					$this->createMessage("Da biste dodali natjecatelja, odaberite odgovarajuću opciju!", "d3", "ozsn", "addContestant");
+				if (post("option") === '2' && postArray("idAtributa") === false) {
+					$this->createMessage("Da biste dodali koordinatora, odaberite atribut!", "d3", "ozsn", "addContestant");
+				}
+			}
 			if (post("idPodrucja") === false && post("idAtributa") === true) {
 				$this->createMessage("Da biste dodali atribut morate odabrati i disciplinu!", "d3", "ozsn", "addContestant");
 			} else if (post("option") === false && !(post("idPodrucja") === false || post("idAtributa") === false)){
@@ -1095,8 +1116,10 @@ class Ozsn implements Controller {
 				
 				if (post("idPodrucja") !== false && post("idAtributa") !== false && (post("option") === '1' || post("option") === '2')) {
 					foreach (post("idAtributa") as $k => $v) {
-						$imaAtribut = new \model\DBImaatribut();
-						$imaAtribut->addRow(post("idPodrucja"), $v, $sudjelovanje->getPrimaryKey());
+						if ($v !== '') {
+							$imaAtribut = new \model\DBImaatribut();
+							$imaAtribut->addRow(post("idPodrucja"), $v, $sudjelovanje->getPrimaryKey());
+						}
 					}
 				}
 
