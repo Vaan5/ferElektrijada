@@ -1067,7 +1067,7 @@ class Ozsn implements Controller {
 					$this->createMessage("Da biste dodali atribut morate odabrati i disciplinu!", "d3", "ozsn", "addContestant");
 				}
 				if (post("option") === '0') {
-					$this->createMessage("Da biste dodali natjecatelja, ne trebate odabrati atribut!", "d3", "ozsn", "addContestant");
+					$this->createMessage("Ukoliko dodajete natjecatelja, atribut je suvišan!", "d3", "ozsn", "addContestant");
 				}
 				if (post("option") === false) {
 					$this->createMessage("Odaberite atribut!", "d3", "ozsn", "addContestant");
