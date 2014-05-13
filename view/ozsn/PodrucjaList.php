@@ -54,24 +54,7 @@ class PodrucjaList extends AbstractView {
 				));
 				echo '" method="POST">';
 				echo '<tr><td><span class="modify-' . $val->idPodrucja . '">' . $val->nazivPodrucja . '</span><input type="text" class="modifyOn-' . $val->idPodrucja . '" style="display:none;" name="nazivPodrucja" value="' . $val->nazivPodrucja . '"><input type="hidden" name="idPodrucja" value="' . $val->idPodrucja . '">';
-				echo '<select class="modifyOn-' . $val->idPodrucja . '" style="display:none;" name="idNadredjenog"><option '; 
-				if(!$val->idNadredjenog) echo 'selected="selected"'; ?> value="">Nema nadređenog</option>
-
-<?php
-		foreach($this->korijenski as $val2)
-		{
-			if($val->idPodrucja != $val2->idPodrucja)
-			{
-				echo '<option value="' . $val2->idPodrucja . '"';
-				if ($val->idNadredjenog && $val->idNadredjenog == $val2->idPodrucja)
-				{
-					echo 'selected="selected"';
-				}
-				echo '>' . $val2->nazivPodrucja . '</option>';
-			}
-		}				
-				echo '</select></td>';
-				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idPodrucja . '" value="Spremi" /><a href="javascript:;" class="editPodrucje modify-' . $val->idPodrucja . '" data-id="' . $val->idPodrucja . '">Uredi</a> &nbsp; <a class="deletePodrucje modify-' . $val->idPodrucja . '" href="';
+				echo '</td><td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idPodrucja . '" value="Spremi" /><a href="javascript:;" class="editPodrucje modify-' . $val->idPodrucja . '" data-id="' . $val->idPodrucja . '">Uredi</a> &nbsp; <a class="deletePodrucje modify-' . $val->idPodrucja . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
