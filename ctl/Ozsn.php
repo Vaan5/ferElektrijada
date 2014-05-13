@@ -998,6 +998,7 @@ class Ozsn implements Controller {
                 "resultMessage" => $this->resultMessage
             )),
             "title" => "Pretraga Sudionika",
+			"script" => new \view\scripts\ozsn\ContestantListJs()
         ));
 	}
 	
