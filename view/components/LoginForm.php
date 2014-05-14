@@ -15,7 +15,7 @@ class LoginForm extends AbstractView {
     
     protected function outputHTML() {
 ?>
-    <form action="<?php echo $this->actionRoute;?>" method="POST">
+    <form action="<?php echo $this->actionRoute;?>" id="loginForm" method="POST">
 	<br><br><br>
 	<div class="login-container" style="width:350px; margin:auto">
 		<div class="panel panel-default login">

@@ -1281,7 +1281,8 @@ class Administrator implements Controller {
                 "errorMessage" => $this->errorMessage,
                 "id" => get('id')
             )),
-            "title" => "Provjera identiteta"
+            "title" => "Provjera identiteta",
+			"script" => new \view\scripts\administrator\AdminDoubleCheckJs()
         ));
     }
 }
