@@ -202,7 +202,7 @@ class Administrator implements Controller {
 					"admin" => $osoba
 				)),
             "title" => "Uređivanje profila",
-            "script" => new \view\scripts\PersonFormJs()
+            "script" => new \view\scripts\PersonFormJs(),
         ));
     }
 

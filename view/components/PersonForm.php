@@ -38,7 +38,7 @@ class PersonForm extends AbstractView {
     protected function outputHTML() {
 		
 ?>
-        <form class="form-horizontal" role="form" action="<?php echo $this->postAction;?>" method="POST" enctype="multipart/form-data">
+        <form class="form-horizontal" id="personForm" role="form" action="<?php echo $this->postAction;?>" method="POST" enctype="multipart/form-data">
         <div class="form-group">
             <label for="korisnickoime" class="col-sm-3 control-label">Korisničko ime</label>            
             <div class="col-sm-9">

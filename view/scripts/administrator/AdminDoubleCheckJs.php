@@ -5,10 +5,10 @@ use app\view\AbstractView;
 
 class AdminDoubleCheckJs extends AbstractView {
     protected function outputHTML() {
-		/*	Validates password confirm form
-		 *	Includes validator JS file
-		 *	On keyup or on submit checks if pass field is empty
-		 *	Prints error message
+		/*	======  FORM VALIDATION ======
+		 *	Includes validator JS file, sets rules and messages
+		 *	On keyup or on submit checks if input is valid
+		 *	Prints error message in case it's not valid
 		 */
 ?>
 	<script src="../assets/js/jquery.validate.js"></script>
