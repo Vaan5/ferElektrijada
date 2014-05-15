@@ -18,7 +18,7 @@ class TeamLeaders extends AbstractView {
         ));
 		
 		if ($this->voditelji !== null && count($this->voditelji)) {
-			echo new \view\components\DownloadLinks(array(
+                        echo new \view\components\DownloadLinks(array(
 				"route" => \route\Route::get("d3")->generate(array(
 					"controller" => "ozsn",
 					"action" => "displayTeamLeaders"
@@ -29,14 +29,16 @@ class TeamLeaders extends AbstractView {
 				"class" => "dodajVoditelja",
 				"buttonText" => 'Dodaj voditelja'
 			));
-?>		
-		<form class="addForm" method="POST" action="<?php echo \route\Route::get('d3')->generate(array(
+?>
+<div style="float:left; padding-bottom:20px;">          
+<form class="form-inline addForm" role="form" method="POST" action="<?php echo \route\Route::get('d3')->generate(array(
 									"controller" => "ozsn",
 									"action" => "addTeamLeader"
 								)) ?>">
-			<div style="display:none;" class="input-append dodajVoditeljaOn">	
-				Disciplina
-				<select name="idDolazak">
+			<div  style="display:none; float:left;" class="input-append dodajVoditeljaOn">
+			<div class="form-group">
+				<select class="form-control" name="idDolazak">
+                        
 <?php
 			if (count($this->podrucja)) {
 				foreach($this->podrucja as $val)
@@ -47,17 +49,20 @@ class TeamLeaders extends AbstractView {
 			}
 ?>					
 				</select>
-				<select name="type" class="chooseType">
+                        </div>
+			<div class="form-group">	
+                            <select name="type" class="form-control chooseType">
 					<option value="novi">Novi korisnik</option>
 					<option value="postojeci">Postojeći korisnik</option>
 				</select>
-				<input type="submit" value="Dodaj">
+                        </div>
+				<input type="submit" class="btn btn-default" value="Dodaj">
 			</div>
-		</form>		
+    </form>	
+</div>
+<br><br>	
 
-		<br>	
-
-		<div class="panel panel-default">
+		<div style="clear:both;" class="panel panel-default">
 			<div class="panel-heading">Voditelji Disciplina</div>
 
 			<table class="table">
@@ -105,6 +110,7 @@ class TeamLeaders extends AbstractView {
 				</tbody>
 			</table>
 		</div>
+
 
 
 <?php

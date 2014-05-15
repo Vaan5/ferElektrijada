@@ -52,9 +52,9 @@ class TvrtkaList extends AbstractView {
 					"action" => 'modifyTvrtka'
 				));
 				echo '" method="POST">';
-				echo '<tr><td><span class="modify-' . $val->idTvrtke . '">' . $val->imeTvrtke . '</span><input type="text" class="modifyOn-' . $val->idTvrtke . '" style="display:none;" name="imeTvrtke" value="' . $val->imeTvrtke . '"><input type="hidden" name="idTvrtke" value="' . $val->idTvrtke . '"></td>';
-				echo '<td><span class="modify-' . $val->idTvrtke . '">' . $val->adresaTvrtke . '</span><input type="text" class="modifyOn-' . $val->idTvrtke . '" style="display:none;" name="adresaTvrtke" value="' . $val->adresaTvrtke . '">';
-				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idTvrtke . '" value="Spremi" />';
+				echo '<tr><td><span class="modify-' . $val->idTvrtke . '">' . $val->imeTvrtke . '</span><input type="text" class="form-control modifyOn-' . $val->idTvrtke . '" style="display:none;" name="imeTvrtke" value="' . $val->imeTvrtke . '"><input type="hidden" name="idTvrtke" value="' . $val->idTvrtke . '"></td>';
+				echo '<td><span class="modify-' . $val->idTvrtke . '">' . $val->adresaTvrtke . '</span><input type="text" class="form-control modifyOn-' . $val->idTvrtke . '" style="display:none;" name="adresaTvrtke" value=" '. $val->adresaTvrtke . '">';
+				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idTvrtke . '" value="Spremi" /> ';
 				echo '<a href="';
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',

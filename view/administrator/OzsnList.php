@@ -89,10 +89,10 @@ class OzsnList extends AbstractView {
 			</table>
 		</div>
 		
-		<a href="<?php echo \route\Route::get('d3')->generate(array(
+                <center><a type="button" class="btn btn-primary" href="<?php echo \route\Route::get('d3')->generate(array(
 			"controller" => 'administrator',
 			"action" => 'searchOzsn'
-		));?>">Pretraži članove odbora</a>
+                    ));?>">Pretraži članove odbora</a></center>
 <?php
 		}
 		

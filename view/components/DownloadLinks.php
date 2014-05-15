@@ -10,7 +10,7 @@ class DownloadLinks extends AbstractView {
     protected function outputHTML() {
 		$param = $this->onlyParam === true ? "?type=" : "&type=";
 ?>
-	<div style="float:right;">
+        <div class="form-group" style="float:right;">
 		
 		<div class="btn-group">
 			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Izvoz <span class="caret"></span></button>
