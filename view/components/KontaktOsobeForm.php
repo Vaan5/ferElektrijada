@@ -221,7 +221,7 @@ class KontaktOsobeForm extends AbstractView {
 		</div>
 			
 		<?php if ($this->kontakt && $this->kontakt->idKontakta) { ?><input type="hidden" name="id" value="<?php echo $this->kontakt->idKontakta?>"/><?php } ?>
-		<center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText; ?>" /></center>
+                <center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText; ?>" /></center><br>
 	</form>
 <?php		
     }

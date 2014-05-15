@@ -29,7 +29,7 @@ class AddContact extends AbstractView {
 		"sponzori" => $this->sponzori,
 		"tvrtke" => $this->tvrtke,
 		"mediji" => $this->mediji
-	));
+	)).'<br>';
     }
     
     public function setErrorMessage($errorMessage) {

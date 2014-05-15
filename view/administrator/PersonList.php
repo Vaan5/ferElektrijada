@@ -89,10 +89,10 @@ class PersonList extends AbstractView {
 			</table>
 		</div>
 		
-		<a href="<?php echo \route\Route::get('d3')->generate(array(
+		<center><a type="button" class="btn btn-primary" href="<?php echo \route\Route::get('d3')->generate(array(
 			"controller" => 'administrator',
 			"action" => 'searchPersons'
-		));?>">Pretraži osobe</a>
+		));?>">Pretraži osobe</a></center>
 <?php
 		}
 		

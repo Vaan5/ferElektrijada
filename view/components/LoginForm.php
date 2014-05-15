@@ -21,7 +21,7 @@ class LoginForm extends AbstractView {
 		<div class="panel panel-default login">
 			<div class="panel-body">
 				<?php if ($this->showUserName) { ?>
-                            <h2>Prijava</h2>
+                            <h2 style="margin-top:0px;">Prijava</h2>
 				
 					<div class="form-group">
 						<label for="korisničkoIme"><b>Korisničko ime</b></label>

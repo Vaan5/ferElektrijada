@@ -3,16 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/ferElektrijada/view/navbar/SudionikNavbar.php</file>
-            <file>file:/C:/xampp/htdocs/ferElektrijada/ctl/Voditelj.php</file>
-            <file>file:/C:/xampp/htdocs/ferElektrijada/view/components/DownloadLinks.php</file>
-            <file>file:/C:/xampp/htdocs/ferElektrijada/view/navbar/VoditeljNavbar.php</file>
-            <file>file:/C:/xampp/htdocs/ferElektrijada/view/Main.php</file>
-            <file>file:/C:/xampp/htdocs/ferElektrijada/view/components/AreaSponzorForm.php</file>
-            <file>file:/C:/xampp/htdocs/ferElektrijada/model/DBSudjelovanje.php</file>
-            <file>file:/C:/xampp/htdocs/ferElektrijada/ctl/Sudionik.php</file>
-            <file>file:/C:/xampp/htdocs/ferElektrijada/view/navbar/AdminNavbar.php</file>
-            <file>file:/C:/xampp/htdocs/ferElektrijada/view/navbar/OzsnNavbar.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/components/SponzorForm.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/ozsn/SponzorAdding.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/components/ActiveSponzorForm.php</file>
             <file>file:/C:/xampp/htdocs/ferElektrijada/view/components/PersonForm.php</file>
         </group>
     </open-files>

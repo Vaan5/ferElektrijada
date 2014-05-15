@@ -24,9 +24,16 @@ class TvrtkaAssignForm extends AbstractView {
 		{
 			echo '<input type="hidden" name="id" value="' . $this->tvrtka->idTvrtke . '" />';
 		}
-?>
-		<label>Ime tvrtke:</label> <?php echo $this->tvrtka->imeTvrtke; ?><br>
-		<label>Adresa tvrtke:</label> <?php echo $this->tvrtka->adresaTvrtke; ?><br>
+?>              <div class="form-group">
+                <label for="imetvrtke" class="col-sm-3 control-label">Ime tvrtke</label>		
+                <div class="col-sm-9">
+                <span class="form-control"><?php echo $this->tvrtka->imeTvrtke; ?></span>
+                </div></div>
+                <div class="form-group">
+                <label for="adresatvrtke" class="col-sm-3 control-label">Adresa tvrtke</label>		
+                <div class="col-sm-9">
+                <span class="form-control"><?php echo $this->tvrtka->adresaTvrtke; ?></span>
+                </div></div>
 		
 		<div class="form-group">
 			<label for="usluga" class="col-sm-3 control-label">Usluga</label>
@@ -50,13 +57,13 @@ class TvrtkaAssignForm extends AbstractView {
         </div>
 		
 		<div class="form-group">
-			<label for="iznosRacuna" class="col-sm-3 control-label">Iznos računa</label>
+			<label for="iznosRacuna" class="col-sm-3 control-label" style="float:left;">Iznos računa</label>
 			<div class="col-sm-9">
 				<div class="input-group">
 					<input type="text" name="iznosRacuna" class="form-control" placeholder="Upišite iznos računa" <?php if($this->koristiPruza && $this->koristiPruza->iznosRacuna) echo 'value="' . $this->koristiPruza->iznosRacuna . '"' ?> />
 					
 					<div class="input-group-btn">
-						<select name="valutaRacuna" class="form-control btn btn-default" style="width:80px;">
+						<select name="valutaRacuna" class="form-control btn btn-primary" style="width:80px;">
 						<option <?php if(!$this->koristiPruza || ($this->koristiPruza && $this->koristiPruza->valutaDonacije == 'HRK')) echo 'selected="selected"' ?> value="HRK">HRK</option>
 						<option <?php if($this->koristiPruza && $this->koristiPruza->valutaDonacije == 'USD') echo 'selected="selected"' ?> value="USD">USD</option>
 						<option <?php if($this->koristiPruza && $this->koristiPruza->valutaDonacije == 'EUR') echo 'selected="selected"' ?> value="EUR">EUR</option>
