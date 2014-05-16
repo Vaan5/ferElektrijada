@@ -80,7 +80,7 @@ class DBOsoba extends AbstractDBModel {
 			$q->execute();
 			$rez  = $q->fetchAll();
 		}catch (\PDOException $e) {
-           return false;
+           return array();
 		}
 		$vel=count($rez);
 		if($vel>0){//ako postoji ba 1 podrucje vrati podrucje, ako ne vrati null
@@ -102,7 +102,7 @@ class DBOsoba extends AbstractDBModel {
 			}
 			return $rez;
 		} else {
-			return null;
+			return array();
 		}
 	}
 	

@@ -135,7 +135,7 @@ class DBPodrucje extends AbstractDBModel {
 	 *				Team Leader
 	 **************************************************************/
 	
-	public function loadDisciplines(array $podrucja) {
+	public function loadDisciplines($podrucja) {
 		$pov = array();
 		try {
 			if (count($podrucja)) {

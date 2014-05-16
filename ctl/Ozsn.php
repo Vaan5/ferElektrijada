@@ -12,8 +12,8 @@ class Ozsn implements Controller {
     private function checkRole() {
         // you must be logged in, and an Ozsn member with or without leadership
 		$o = new \model\DBOsoba();
-		if (!(\model\DBOsoba::isLoggedIn() && (\model\DBOsoba::getUserRole() === 'O' ||
-			\model\DBOsoba::getUserRole() === 'OV') && $o->isActiveOzsn(session("auth")))) {
+		if (!((\model\DBOsoba::isLoggedIn() && (\model\DBOsoba::getUserRole() === 'O' ||
+			\model\DBOsoba::getUserRole() === 'OV') && $o->isActiveOzsn(session("auth"))) || (\model\DBOsoba::isLoggedIn() && \model\DBOsoba::getUserRole() === 'A' ))) {
 				preusmjeri(\route\Route::get('d1')->generate() . "?msg=accessDenied");
 		}
     }

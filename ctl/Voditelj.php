@@ -14,6 +14,9 @@ class Voditelj implements Controller {
 		// you must be an active team leader
 		if (\model\DBOsoba::isLoggedIn() && (session("vrsta") === "SV" ||  session("vrsta") === "OV"))
 			return;
+		if (\model\DBOsoba::isLoggedIn() && \model\DBOsoba::getUserRole() === 'A' ) {
+			return;
+		}
 
 		preusmjeri(\route\Route::get('d1')->generate() . "?msg=accessDenied");
     }
@@ -46,6 +49,10 @@ class Voditelj implements Controller {
     }
 	
     private function changesAllowed() {
+		if (\model\DBOsoba::getUserRole() === 'A') {
+			$this->changesDisabled = false;
+			return;
+		}
 		try {
 			$elektrijada = new \model\DBElektrijada();
 			$idElektrijade = $elektrijada->getCurrentElektrijadaId();
