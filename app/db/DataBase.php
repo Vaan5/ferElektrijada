@@ -32,5 +32,7 @@ class DataBase {
         
         return self::$db;
     }
+	
+	private function __construct() {}
     
 }
