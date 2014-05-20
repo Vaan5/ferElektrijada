@@ -72,7 +72,7 @@ class DBOsoba extends AbstractDBModel {
 			$pdo = $this->getPdo();
 			$id = $elektrijada->getCurrentElektrijadaId();
 			if($id === false){
-				return null;
+				return array();
 			}
 			$q = $pdo->prepare("CALL dohvatiOsobnaPodrucja(:id,:Osoba)");
 			$q->bindValue(":id", $id);
@@ -92,7 +92,7 @@ class DBOsoba extends AbstractDBModel {
 			$q->execute();
 			$pom = $q->fetchAll();
 			}catch (\PDOException $e) {
-              return false;
+              return array();
 		      }
 			foreach($pom as $dio){
 			$vel++;
@@ -127,7 +127,7 @@ class DBOsoba extends AbstractDBModel {
         
         return true;
     }
-    
+	
     /**
      * 
      * @param string $userName
@@ -141,7 +141,10 @@ class DBOsoba extends AbstractDBModel {
         if ($this->isLoggedIn) {
             $_SESSION["auth"] = $this->getPrimaryKey();
 			$uloga=$this->uloga;
-			$_SESSION["vrsta"] =$this->getUloga($_SESSION["auth"], $uloga);
+			if ($uloga !== 'A')
+				$_SESSION["vrsta"] =$this->getUloga($_SESSION["auth"], $uloga);
+			else
+				$_SESSION["vrsta"] = 'A';
             $_SESSION["user"] = $this->ime == NULL ? null:$this->ime;
 			$_SESSION["podrucja"] = $this->getPodrucja ($_SESSION["auth"]);//vraca id podrucja
 			$_SESSION["active"]= $this->isActive($uloga,$_SESSION["auth"]);//true ako je aktivan, false ako nije

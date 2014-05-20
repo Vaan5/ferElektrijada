@@ -176,7 +176,7 @@ class Voditelj implements Controller {
 		
 		try {
 			$podrucja = $podrucje->loadDisciplines(session("podrucja"));
-		} catch (app\model\NotFoundException $e) {
+		} catch (\app\model\NotFoundException $e) {
 			$this->createMessage("Problem prilikom dohvata podataka o disciplinama!");
 		} catch (\PDOException $e) {
 			$handler = new \model\ExceptionHandlerModel($e);
@@ -203,7 +203,7 @@ class Voditelj implements Controller {
 		}
 		
 		echo new \view\Main(array(
-			"title" => "Upravljanje Disciplinama",
+			"title" => "Discipline",
 			"body" => new \view\voditelj\MyDisciplines(array(
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage,
@@ -340,7 +340,7 @@ class Voditelj implements Controller {
 						"action" => "assignExistingPerson"
 					)) . "?id=" . post("idPodrucja"));
 				}	
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				preusmjeri(\route\Route::get("d3")->generate(array(
 						"controller" => "voditelj",
 						"action" => "assignExistingPerson"
@@ -473,7 +473,7 @@ class Voditelj implements Controller {
 					$zavodi = null;
 				}
 				$velicina->loadIfExists($sudjelovanje->idVelicine);
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$this->createMessage("Nepostojeći zapis!", "d3", "voditelj", "displayPodrucja");
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
@@ -618,7 +618,7 @@ class Voditelj implements Controller {
 						"controller" => "voditelj",
 						"action" => "displayTeam"
 					)) . "?msg=succM&id=" . post("idPodrucja"));
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator!");
 				$_SESSION["exception"] = serialize($handler);
 				preusmjeri(\route\Route::get('d3')->generate(array(
@@ -695,7 +695,7 @@ class Voditelj implements Controller {
 					"action" => "displayTeam"
 				)) . "?msg=succD&id=" . $podrucje);
 				
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$this->createMessage("Dogodila se greška prilikom brisanja!", "d3", "voditelj", "displayPodrucja");
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
@@ -727,7 +727,7 @@ class Voditelj implements Controller {
 				$podrucje->load(get("id"));
 				$idPodrucja = get("id");
 				$naziv = $podrucje->nazivPodrucja;
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$this->createMessage("Nepoznati identifikator!", "d3", "voditelj", "displayPodrucja");
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
@@ -840,7 +840,7 @@ class Voditelj implements Controller {
 								"action" => "modifyCompetitionData"
 							)) . "?msg=succC&id=" . post("idPodrucja"));
 				}
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator!");
 				$_SESSION["exception"] = serialize($handler);
 				preusmjeri(\route\Route::get('d3')->generate(array(
@@ -885,7 +885,7 @@ class Voditelj implements Controller {
 			try {
 				$idElektrijade = $elektrijada->getCurrentElektrijadaId();
 				$takmicari = $podrucjeSudjelovanja->getPaticipants(get("id"), $idElektrijade);
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$this->createMessage("Nepoznati identifikator!", "d3", "voditelj", "displayPodrucja");
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
@@ -935,7 +935,7 @@ class Voditelj implements Controller {
 								"controller" => "voditelj",
 								"action" => "modifyResults"
 							)) . "?msg=succR&id=" . post("idPodrucja"));
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator!");
 				$_SESSION["exception"] = serialize($handler);
 				preusmjeri(\route\Route::get('d3')->generate(array(
@@ -1229,7 +1229,7 @@ class Voditelj implements Controller {
 		$elekPod = new \model\DBElekPodrucje();
 		try {
 			$elekPod->load(get("id"));
-		} catch (app\model\NotFoundException $e) {
+		} catch (\app\model\NotFoundException $e) {
 			$this->createMessage("Nepoznati zapis!");
 		} catch (\PDOException $e) {
 			$handler = new \model\ExceptionHandlerModel($e);

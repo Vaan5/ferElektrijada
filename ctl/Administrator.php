@@ -264,7 +264,7 @@ class Administrator implements Controller {
             "body" => new \view\administrator\OzsnAdding(array(
                     "errorMessage" => $this->errorMessage
                 )),
-            "title" => "Dodavanje članova odbora",
+            "title" => "Novi član",
             "script" => new \view\scripts\PersonFormJs()
         ));
         
@@ -407,7 +407,7 @@ class Administrator implements Controller {
                 $this->errorMessage = $validacija->decypherErrors($pov);
                 try {
                     $osoba->load(post('idOsobe'));
-                } catch (app\model\NotFoundException $e) {
+                } catch (\app\model\NotFoundException $e) {
                     
                 } catch (\PDOException $e) {
                     $handler = new \model\ExceptionHandlerModel($e);
@@ -833,7 +833,7 @@ class Administrator implements Controller {
                 "resultMessage" => $this->resultMessage,
                 "clanovi" => $clanovi
             )),
-            "title" => "Prošlogodišnji članovi odbora"
+            "title" => "Prošlogodišnji Članovi"
         ));
     }
     public function deletePerson() {
@@ -908,7 +908,7 @@ class Administrator implements Controller {
                 $this->errorMessage = $validacija->decypherErrors($pov);
                 try {
                     $osoba->load(post('idOsobe'));
-                } catch (app\model\NotFoundException $e) {
+                } catch (\app\model\NotFoundException $e) {
                     
                 } catch (\PDOException $e) {
                     $handler = new \model\ExceptionHandlerModel($e);

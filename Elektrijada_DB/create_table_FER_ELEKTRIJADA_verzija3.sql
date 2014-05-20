@@ -472,7 +472,5 @@ CREATE TABLE ObjavaOElektrijadi (
 );
 
 
-
-
-
-
+INSERT INTO `osoba` (`idOsobe`, `ime`, `prezime`, `mail`, `brojMob`, `ferId`, `password`, `JMBAG`, `spol`, `datRod`, `brOsobne`, `brPutovnice`, `osobnaVrijediDo`, `putovnicaVrijediDo`, `uloga`, `zivotopis`, `MBG`, `OIB`, `idNadredjena`, `aktivanDokument`) VALUES
+(1, 'Root', 'Root', 'root@fer.hr', NULL, 'Root', 'dc76e9f0c0006e8f919e0c515c66dbba3982f785', NULL, 'M', NULL, NULL, NULL, NULL, NULL, 'A', NULL, NULL, NULL, NULL, 1);
