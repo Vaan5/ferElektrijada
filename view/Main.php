@@ -80,7 +80,7 @@ class Main extends AbstractView {
         <?php if(\model\DBOsoba::isLoggedIn() && ($_SESSION ['vrsta']==='O' || $_SESSION['vrsta'] === 'OV' || $_SESSION ['vrsta']==='A')) echo new navbar\OzsnNavbar(); ?>
         <?php if(\model\DBOsoba::isLoggedIn() && $_SESSION ['vrsta']==='A') echo new navbar\AdminNavbar(); ?>
         <?php if(\model\DBOsoba::isLoggedIn() && ($_SESSION ['vrsta']==='S' || $_SESSION ['vrsta']==='SV')) echo new navbar\SudionikNavbar(); ?>
-        <?php if(\model\DBOsoba::isLoggedIn() && ($_SESSION ['vrsta']==='SV' || $_SESSION ['vrsta']==='OV'  || $_SESSION ['vrsta']==='A')) echo new navbar\VoditeljNavbar(); ?>
+        <?php if(\model\DBOsoba::isLoggedIn() && ($_SESSION ['vrsta']==='SV' || $_SESSION ['vrsta']==='OV')) echo new navbar\VoditeljNavbar(); ?>
         <ul class="nav navbar-nav navbar-right">
           <p class="navbar-text">
                <?php if(!\model\DBOsoba::isLoggedIn()) echo
