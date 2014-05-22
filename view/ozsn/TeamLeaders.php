@@ -17,20 +17,15 @@ class TeamLeaders extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 		
-		if ($this->voditelji !== null && count($this->voditelji)) {
-                        echo new \view\components\DownloadLinks(array(
-				"route" => \route\Route::get("d3")->generate(array(
-					"controller" => "ozsn",
-					"action" => "displayTeamLeaders"
-				))));
-			
-			echo new \view\components\AddNewLink(array(
-				"link" => "javascript:;",
-				"class" => "dodajVoditelja",
-				"buttonText" => 'Dodaj voditelja'
-			));
+		echo new \view\components\AddNewLink(array(
+			"link" => "javascript:;",
+			"class" => "dodajVoditelja",
+			"buttonText" => 'Dodaj voditelja'
+		));
+		
 ?>
-<div style="float:left; padding-bottom:20px;">          
+
+	<div style="float:left; padding-bottom:20px;">          
 <form class="form-inline addForm" role="form" method="POST" action="<?php echo \route\Route::get('d3')->generate(array(
 									"controller" => "ozsn",
 									"action" => "addTeamLeader"
@@ -60,7 +55,17 @@ class TeamLeaders extends AbstractView {
 			</div>
     </form>	
 </div>
-<br><br>	
+<br><br>
+
+<?php
+		
+		if ($this->voditelji !== null && count($this->voditelji)) {
+                        echo new \view\components\DownloadLinks(array(
+				"route" => \route\Route::get("d3")->generate(array(
+					"controller" => "ozsn",
+					"action" => "displayTeamLeaders"
+				))));
+?>	
 
 		<div style="clear:both;" class="panel panel-default">
 			<div class="panel-heading">Voditelji Disciplina</div>
