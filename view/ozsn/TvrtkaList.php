@@ -93,8 +93,8 @@ class TvrtkaList extends AbstractView {
 								"action" => 'addTvrtka'
 							)); ?>							  
 							  " method="post">
-							<td><input type="text" name="imeTvrtke" placeholder="Upišite ime tvrtke"></td>
-							<td><input type="text" name="adresaTvrtke" placeholder="Upišite adresu tvrtke"></td>
+							<td><input type="text" class="form-control" name="imeTvrtke" placeholder="Upišite ime tvrtke"></td>
+							<td><input type="text" class="form-control" name="adresaTvrtke" placeholder="Upišite adresu tvrtke"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
 						</form>
 					</tr>

@@ -400,7 +400,7 @@ if($this->osoba){ ?>
 		<div class="form-group">
             <label for="opcija" class="col-sm-3 control-label">Natjecatelj ili Koordinator</label>
         <div class="col-sm-9">
-			<input type="radio" name="option" value="0" > Natjecatelj
+			<input style="margin-top:20px;" type="radio" name="option" value="0" > Natjecatelj
 			&nbsp; &nbsp;
 			<input type="radio" name="option" value="1" > Koordinator
 			&nbsp; &nbsp;

@@ -69,7 +69,7 @@ class ModifyContestant extends AbstractView {
 		// another form for attribute data
 		
 ?>
-<form action="<?php echo \route\Route::get("d3")->generate(array(
+<form class="form-horizontal" role="form" action="<?php echo \route\Route::get("d3")->generate(array(
 	"controller" => "ozsn",
 	"action" => "changeContestantAttributes"
 ));?>" method="GET">
@@ -95,11 +95,11 @@ if ($this->korisnikovaPodrucja !== null) {
 	
 <?php }
 ?>
-	<input type="hidden" name="idS" value="<?php echo $this->sudjelovanje->getPrimaryKey()?>">
-	<input type="radio" name="vrsta" value="0"> Pojedinačno natjecanje
-	<input type="radio" name="vrsta" value="1"> Timsko natjecanje
-	<input type="submit" value="Ažuriranje Atributa" />
-</form>
+    <br><div class="col-sm-3"> </div><div class="col sm-9"><input type="hidden" name="idS" value="<?php echo $this->sudjelovanje->getPrimaryKey()?>">
+	<input type="radio" name="vrsta" value="0"> Pojedinačno natjecanje &nbsp;
+        <input type="radio" name="vrsta" value="1"> Timsko natjecanje</div><br>
+        <center><input type="submit" class="btn btn-primary" value="Ažuriranje Atributa" /></center>
+</form><br>
 <?php
 	}
 	

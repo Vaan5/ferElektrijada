@@ -51,7 +51,7 @@ class UslugaList extends AbstractView {
 					"action" => 'modifyUsluga'
 				));
 				echo '" method="POST">';
-				echo '<tr><td><span class="modify-' . $val->idUsluge . '">' . $val->nazivUsluge . '</span><input type="text" class="modifyOn-' . $val->idUsluge . '" style="display:none;" name="nazivUsluge" value="' . $val->nazivUsluge . '"><input type="hidden" name="idUsluge" value="' . $val->idUsluge . '"></td>';
+				echo '<tr><td><span class="modify-' . $val->idUsluge . '">' . $val->nazivUsluge . '</span><input type="text" class="form-control modifyOn-' . $val->idUsluge . '" style="display:none;" name="nazivUsluge" value="' . $val->nazivUsluge . '"><input type="hidden" name="idUsluge" value="' . $val->idUsluge . '"></td>';
 				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idUsluge . '" value="Spremi" /><a href="javascript:;" class="editUsluga modify-' . $val->idUsluge . '" data-id="' . $val->idUsluge . '">Uredi</a> &nbsp; <a class="deleteUsluga modify-' . $val->idUsluge . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
@@ -84,7 +84,7 @@ class UslugaList extends AbstractView {
 								"action" => 'addUsluga'
 							)); ?>							  
 							  " method="post">
-							<td><input type="text" name="nazivUsluge" placeholder="Upišite naziv usluge"></td>
+							<td><input type="text" class="form-control" name="nazivUsluge" placeholder="Upišite naziv usluge"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
 						</form>
 					</tr>

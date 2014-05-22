@@ -95,8 +95,8 @@ class ObjavaForm extends AbstractView {
 		
         <div class="form-group">        
         <label for="preuzmi" class="col-sm-3 control-label">Dokument</label>
-            <div class="col-sm-9">
-            <a href="<?php echo \route\Route::get('d3')->generate(array(
+            <div style="margin-top:6px;" class="col-sm-9">
+                <a href="<?php echo \route\Route::get('d3')->generate(array(
 			"controller" => 'ozsn',
 			"action" => 'download'
 		));?>?id=<?php echo $this->objava->idObjave; ?>">Preuzmi dokument</a> &nbsp; 
@@ -113,7 +113,7 @@ class ObjavaForm extends AbstractView {
 ?>		<div class="form-group">
 			<label for="dokument" class="col-sm-3 control-label">Dokument</label>
 			<div class="col-sm-9">
-				<input type="file" name="datoteka" />
+				<input style="margin-top:7px;" type="file" name="datoteka" />
 			</div>
 		</div>
 		<?php } ?>

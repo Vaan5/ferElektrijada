@@ -51,7 +51,7 @@ class MedijList extends AbstractView {
 					"action" => 'modifyMedij'
 				));
 				echo '" method="POST">';
-				echo '<tr><td><span class="modify-' . $val->idMedija . '">' . $val->nazivMedija . '</span><input type="text" class="modifyOn-' . $val->idMedija . '" style="display:none;" name="nazivMedija" value="' . $val->nazivMedija . '"><input type="hidden" name="idMedija" value="' . $val->idMedija . '"></td>';
+				echo '<tr><td><span class="modify-' . $val->idMedija . '">' . $val->nazivMedija . '</span><input type="text" class="form-control modifyOn-' . $val->idMedija . '" style="display:none;" name="nazivMedija" value="' . $val->nazivMedija . '"><input type="hidden" name="idMedija" value="' . $val->idMedija . '"></td>';
 				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idMedija . '" value="Spremi" /><a href="javascript:;" class="editMedij modify-' . $val->idMedija . '" data-id="' . $val->idMedija . '">Uredi</a> &nbsp; <a class="deleteMedij modify-' . $val->idMedija . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
@@ -84,7 +84,7 @@ class MedijList extends AbstractView {
 								"action" => 'addMedij'
 							)); ?>							  
 							  " method="post">
-							<td><input type="text" name="nazivMedija" placeholder="Upišite naziv medija"></td>
+							<td><input type="text" class="form-control" name="nazivMedija" placeholder="Upišite naziv medija"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
 						</form>
 					</tr>

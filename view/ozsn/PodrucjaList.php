@@ -53,8 +53,8 @@ class PodrucjaList extends AbstractView {
 					"action" => 'modifyPodrucje'
 				));
 				echo '" method="POST">';
-				echo '<tr><td><span class="modify-' . $val->idPodrucja . '">' . $val->nazivPodrucja . '</span><input type="text" class="modifyOn-' . $val->idPodrucja . '" style="display:none;" name="nazivPodrucja" value="' . $val->nazivPodrucja . '"><input type="hidden" name="idPodrucja" value="' . $val->idPodrucja . '">';
-				echo '</td><td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idPodrucja . '" value="Spremi" /><a href="javascript:;" class="editPodrucje modify-' . $val->idPodrucja . '" data-id="' . $val->idPodrucja . '">Uredi</a> &nbsp; <a class="deletePodrucje modify-' . $val->idPodrucja . '" href="';
+				echo '<tr><td><div class="col-sm-5"><span class="modify-' . $val->idPodrucja . '">' . $val->nazivPodrucja . '</span><input type="text" class="form-control modifyOn-' . $val->idPodrucja . '" style="display:none;" name="nazivPodrucja" value="' . $val->nazivPodrucja . '"><input type="hidden" name="idPodrucja" value="' . $val->idPodrucja . '">';
+				echo '</div></td><td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idPodrucja . '" value="Spremi" /><a href="javascript:;" class="editPodrucje modify-' . $val->idPodrucja . '" data-id="' . $val->idPodrucja . '">Uredi</a> &nbsp; <a class="deletePodrucje modify-' . $val->idPodrucja . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
@@ -76,8 +76,8 @@ class PodrucjaList extends AbstractView {
 								"action" => 'modifyPodrucje'
 							));
 							echo '" method="POST">';
-							echo '<tr><td><span class="modify-' . $val3->idPodrucja . '">&nbsp; <img width="13px" style="margin-top:-6px;" src="../assets/img/subcategory.png"> ' . $val3->nazivPodrucja . '</span><input type="text" class="modifyOn-' . $val3->idPodrucja . '" style="display:none;" name="nazivPodrucja" value="' . $val3->nazivPodrucja . '"><input type="hidden" name="idPodrucja" value="' . $val3->idPodrucja . '">';
-							echo '<select class="modifyOn-' . $val3->idPodrucja . '" style="display:none;" name="idNadredjenog"><option '; 
+							echo '<tr><td><span class="col-sm-5 modify-' . $val3->idPodrucja . '">&nbsp; <img width="13px" style="margin-top:-6px;" src="../assets/img/subcategory.png"> ' . $val3->nazivPodrucja . '</span><div class=col-sm-5><input type="text" class="form-control modifyOn-' . $val3->idPodrucja . '" style="display:none;" name="nazivPodrucja" value="' . $val3->nazivPodrucja . '"></div><input type="hidden" name="idPodrucja" value="' . $val3->idPodrucja . '">';
+							echo '<div class="col-sm-5"><select class="form-control modifyOn-' . $val3->idPodrucja . '" style="display:none;" name="idNadredjenog"><option '; 
 							if(!$val3->idNadredjenog) echo 'selected="selected"'; ?> value="">Nema nadređenog</option>
 
 			<?php
@@ -93,7 +93,7 @@ class PodrucjaList extends AbstractView {
 							echo '>' . $val2->nazivPodrucja . '</option>';
 						}
 					}				
-							echo '</select></td>';
+							echo '</select></div></td>';
 							echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val3->idPodrucja . '" value="Spremi" /><a href="javascript:;" class="editPodrucje modify-' . $val3->idPodrucja . '" data-id="' . $val3->idPodrucja . '">Uredi</a> &nbsp; <a class="deletePodrucje modify-' . $val3->idPodrucja . '" href="';
 
 							echo \route\Route::get('d3')->generate(array(
@@ -123,14 +123,14 @@ class PodrucjaList extends AbstractView {
 						</td>
 					</tr>
 					<tr style="display: none;" class="addPodrucjeOn">
-						<form action="
+						<form class="form-horizontal" role="form" action="
 							  <?php echo \route\Route::get('d3')->generate(array(
 								"controller" => 'ozsn',
 								"action" => 'addPodrucje'
 							)); ?>							  
 							  " method="post">
-							<td><input type="text" name="nazivPodrucja" placeholder="Upišite naziv discipline">
-								<select name="idNadredjenog"><option value="">Nema nadređenog</option>
+                                                    <td><div class="form-group"><div class="col-sm-5"><input type="text" class="form-control" name="nazivPodrucja" placeholder="Upišite naziv discipline"></div>
+                                                            <div class="col-sm-5"><select class="form-control" name="idNadredjenog"><option value="">Nema nadređenog</option>
 
 <?php
 		foreach($this->korijenski as $val2)
@@ -143,7 +143,7 @@ class PodrucjaList extends AbstractView {
 			echo '>' . $val2->nazivPodrucja . '</option>';
 		}				
 ?>
-								</select>
+								</select></div></div>
 							</td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
 						</form>

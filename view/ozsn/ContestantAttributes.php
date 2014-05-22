@@ -24,7 +24,7 @@ class ContestantAttributes extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 ?>
-		<form action="<?php echo \route\Route::get("d3")->generate(array(
+		<form class="form-horizontal" role="form" action="<?php echo \route\Route::get("d3")->generate(array(
 			"controller" => "ozsn",
 			"action" => "changeContestantAttributes"
 		));?>" method="POST">
@@ -37,7 +37,7 @@ class ContestantAttributes extends AbstractView {
         </div>
 			
 		<div class="form-group">
-            <label for="ukupanBrojSudionika" class="col-sm-3 control-label">Ukupno sudionika:</label>            
+            <label for="ukupanBrojSudionika" class="col-sm-3 control-label">Ukupno sudionika</label>            
             <div class="col-sm-9">
             <input type="text" name="ukupanBrojSudionika" class="form-control" placeholder="Upišite broj sudionika" <?php if($this->podrucjeSudjelovanja && $this->podrucjeSudjelovanja->ukupanBrojSudionika){ echo 'value="' . $this->podrucjeSudjelovanja->ukupanBrojSudionika . '"'; } ?> autocomplete="off"  />
             </div>  
@@ -50,7 +50,7 @@ class ContestantAttributes extends AbstractView {
 					<input type="text" name="iznosUplate" class="form-control" placeholder="Upišite iznos uplate" <?php if($this->podrucjeSudjelovanja && $this->podrucjeSudjelovanja->iznosUplate) echo 'value="' . $this->podrucjeSudjelovanja->iznosUplate . '"' ?> />
 					
 					<div class="input-group-btn">
-						<select name="valuta" class="form-control btn btn-default" style="width:80px;">
+						<select name="valuta" class="form-control btn btn-primary" style="width:80px;">
 						<option <?php if(!$this->podrucjeSudjelovanja || ($this->podrucjeSudjelovanja && $this->podrucjeSudjelovanja->valuta == 'HRK')) echo 'selected="selected"' ?> value="HRK">HRK</option>
 						<option <?php if($this->podrucjeSudjelovanja && $this->podrucjeSudjelovanja->valuta == 'USD') echo 'selected="selected"' ?> value="USD">USD</option>
 						<option <?php if($this->podrucjeSudjelovanja && $this->podrucjeSudjelovanja->valuta == 'EUR') echo 'selected="selected"' ?> value="EUR">EUR</option>
@@ -92,8 +92,8 @@ if ($this->atributi !== null) {
 			<input type="hidden" name="idS" value="<?php echo $this->idSudjelovanja?>" />
 			<input type="hidden" name="idP" value="<?php echo $this->idPodrucja?>" />
 			<input type="hidden" name="vrsta" value="<?php echo $this->vrsta?>" />
-			<input type="submit" value="Ažuriraj" />
-		</form>
+                        <center><input type="submit" class="btn btn-primary" value="Ažuriraj" /></center>
+                </form><br>
 <?php
 	}
 	
