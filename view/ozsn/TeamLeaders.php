@@ -120,6 +120,13 @@ class TeamLeaders extends AbstractView {
 
 <?php
 		}
+		
+		else
+		{
+			echo new \view\components\ErrorMessage(array(
+				"errorMessage" => "Ne postoji niti jedan zapis o voditeljima područja"
+			));
+		}
     }
     
     public function setErrorMessage($errorMessage) {

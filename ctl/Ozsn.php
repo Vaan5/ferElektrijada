@@ -5380,7 +5380,8 @@ class Ozsn implements Controller {
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage,
 				"rezultati" => $rezultati
-			))
+			)),
+			"script" => new \view\scripts\ozsn\HallOfFameJs()
 		));
 	}
 	
