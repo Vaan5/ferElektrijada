@@ -63,13 +63,13 @@ class ObjavaList extends AbstractView {
 						<td><?php echo $val->autorIme . ' ' . $val->autorPrezime; ?></td>
 						<td><?php echo $val->nazivMedija; ?></td>
 						<td><?php echo date('d.m.Y', strtotime($val->datumObjave)); ?></td>
-						<td><?php if ($val->link) echo '<a href="'  . $val->link . '" target="_blank">Link</a>'; else echo '<i>Ne postoji</i>'; ?></td>
+						<td><?php if ($val->link) echo '<a href="'  . $val->link . '" target="_blank"><span class="glyphicon glyphicon-globe"></span> Link</a>'; else echo '<i>Ne postoji</i>'; ?></td>
 						<td>
 							<?php if ($val->dokument) { ?>
 							<a href="<?php echo \route\Route::get('d3')->generate(array(
 								"controller" => 'ozsn',
 								"action" => 'download'
-							));?>?id=<?php echo $val->idObjave; ?>">Preuzmi</a>
+							));?>?id=<?php echo $val->idObjave; ?>"><span class="glyphicon glyphicon-download"></span> Preuzmi</a>
 							<?php } else echo '<i>Ne postoji</i>'; ?>
 						</td>
 						<td><a href="					
@@ -78,13 +78,13 @@ class ObjavaList extends AbstractView {
 					"controller" => 'ozsn',
 					"action" => 'modifyObjava'
 				));
-				echo '?id=' . $val->idObjave . '">Uredi</a> &nbsp; <a class="obrisiObjavu" href="';
+				echo '?id=' . $val->idObjave . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="obrisiObjavu" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'deleteObjava'
 				));
-				echo '?id=' . $val->idObjave . '">Obriši</a></td></tr>';
+				echo '?id=' . $val->idObjave . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a></td></tr>';
 			}
 			echo '</tbody></table></div>';
 		}

@@ -118,7 +118,7 @@ class OtherTeams extends AbstractView {
 			"action" => "displayOtherTeams"
 		))));
 			?>
-				<a href="<?php echo \route\Route::get('d3')->generate(array(
+				<a class="btn btn-primary" href="<?php echo \route\Route::get('d3')->generate(array(
 					"controller" => "sudionik",
 					"action" => "displayOtherTeams"))?>">Povratak</a>
 			<?php

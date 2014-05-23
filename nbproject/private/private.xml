@@ -2,6 +2,28 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/ozsn/ObjavaList.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/ozsn/NacinPromocijeList.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/ozsn/AreaSponzorList.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/ctl/Voditelj.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/ozsn/OzsnUdrugeList.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/sudionik/OtherTeams.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/ctl/Ozsn.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/ozsn/TvrtkaList.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/ozsn/ContestantSearch.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/ctl/Sudionik.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/ozsn/DisciplineMoney.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/ozsn/ActiveObjavaList.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/ozsn/OzsnFunctionsList.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/ozsn/ActiveTvrtkeList.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/ozsn/KategorijaList.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/ozsn/ObjavaArchive.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/ozsn/ActiveSponzorList.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/ozsn/SponzorList.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/ozsn/TeamLeaders.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/ozsn/MedijList.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/voditelj/MyDisciplines.php</file>
+        </group>
     </open-files>
 </project-private>

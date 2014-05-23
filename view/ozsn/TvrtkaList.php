@@ -60,14 +60,14 @@ class TvrtkaList extends AbstractView {
 					"controller" => 'ozsn',
 					"action" => 'assignTvrtka'
 				)) . "?id=" . $val->idTvrtke;
-				echo '">Pridruži elektrijadi</a>  &nbsp; ';
-				echo'<a href="javascript:;" class="editTvrtka modify-' . $val->idTvrtke . '" data-id="' . $val->idTvrtke . '">Uredi</a> &nbsp; <a class="deleteTvrtka modify-' . $val->idTvrtke . '" href="';
+				echo '"><span class="glyphicon glyphicon-plus"></span> Pridruži elektrijadi</a>  &nbsp; ';
+				echo'<a href="javascript:;" class="editTvrtka modify-' . $val->idTvrtke . '" data-id="' . $val->idTvrtke . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="deleteTvrtka modify-' . $val->idTvrtke . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'deleteTvrtka'
 				));
-				echo '?id=' . $val->idTvrtke . '">Obriši</a>';
+				echo '?id=' . $val->idTvrtke . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a>';
 				echo '</td></tr></form>';
 			}
 		}

@@ -61,13 +61,13 @@ class ContestantSearch extends AbstractView {
 					"controller" => 'ozsn',
 					"action" => 'modifyContestant'
 				));
-				echo '?id=' . $val->idOsobe . '">Uredi</a> &nbsp; <a class="deleteContestant" href="';
+				echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="deleteContestant" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'deleteContestant'
 				));
-				echo '?id=' . $val->idOsobe . '">Obriši</a></td></tr>';
+				echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a></td></tr>';
 			}
 ?>
 				</tbody>

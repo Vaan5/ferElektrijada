@@ -43,19 +43,19 @@ class MyDisciplines extends AbstractView {
 					echo "<td><a href=\"" . \route\Route::get('d3')->generate(array(
 						"controller" => "voditelj",
 						"action" => "assignExistingPerson"
-					)) .  "?id=" . $val->idPodrucja . "\">Dodaj postojećeg natjecatelja</a>&nbsp;&nbsp;<a href=\"" . 
+					)) .  "?id=" . $val->idPodrucja . "\">".'<span class="glyphicon glyphicon-plus"></span>'." Dodaj postojećeg natjecatelja</a>&nbsp;&nbsp;&nbsp;<a href=\"" . 
 						\route\Route::get('d3')->generate(array(
 						"controller" => "voditelj",
 						"action" => "assignNewPerson"
-					)) . "?id=" . $val->idPodrucja ."\">Dodaj novog natjecatelja</a>&nbsp;&nbsp;<a href=\"" . 
+					)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-plus"></span>'." Dodaj novog natjecatelja</a>&nbsp;&nbsp;&nbsp;<a href=\"" . 
 						\route\Route::get('d3')->generate(array(
 						"controller" => "voditelj",
 						"action" => "modifyCompetitionData"
-					)) . "?id=" . $val->idPodrucja ."\">Uredi područje</a>&nbsp;&nbsp;<a href=\"" . 
+					)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-pencil"></span>'." Uredi područje</a>&nbsp;&nbsp;<a href=\"" . 
 						\route\Route::get('d3')->generate(array(
 						"controller" => "voditelj",
 						"action" => "modifyResults"
-					)) . "?id=" . $val->idPodrucja ."\">Rezultati</a></td>";				
+					)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-list-alt"></span>'." Rezultati</a></td>";				
 				} else {
 					echo "<td>Istekao je rok za promjene</td>";
 				}

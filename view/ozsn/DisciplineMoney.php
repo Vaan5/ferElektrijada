@@ -45,22 +45,22 @@ class DisciplineMoney extends AbstractView {
 				echo "<tr><td>" . $val->ferId . "</td><td>" . $val->ime . "</td><td>" . $val->prezime . 
 						"</td><td>";
 ?>
-						<div class="form-group">
-			<div class="col-sm-9">
-				<div class="input-group">
-					<input type="text" name="<?php echo $val->idPodrucjeSudjelovanja?>" class="form-control" placeholder="Upišite iznos uplate" <?php if($val && $val->iznosUplate) echo 'value="' . $val->iznosUplate . '"' ?> />
+						<!--<div class="form-group">-->
+                                <!--<div class="col-sm-8">-->
+				<div class="input-group col-sm-7">
+                                        <input type="text" name="<?php echo $val->idPodrucjeSudjelovanja?>" class="form-control" placeholder="Upišite iznos uplate" <?php if($val && $val->iznosUplate) echo 'value="' . $val->iznosUplate . '"' ?> />
 					
 					<div class="input-group-btn">
-						<select name="valuta<?php echo $val->idPodrucjeSudjelovanja?>" class="form-control btn btn-default" style="width:80px;">
+						<select name="valuta<?php echo $val->idPodrucjeSudjelovanja?>" class="form-control btn btn-primary" style="width:80px;">
 						<option <?php if(!$val || ($val && $val->valuta == 'HRK')) echo 'selected="selected"' ?> value="HRK">HRK</option>
 						<option <?php if($val && $val->valuta == 'USD') echo 'selected="selected"' ?> value="USD">USD</option>
 						<option <?php if($val && $val->valuta == 'EUR') echo 'selected="selected"' ?> value="EUR">EUR</option>
 						</select>
 					</div>
 					
-					</div>
-			</div>
-		</div>
+				</div>
+                                <!--</div>-->
+		<!--</div>-->
 <?php
 				echo "</td></tr>";
 			}

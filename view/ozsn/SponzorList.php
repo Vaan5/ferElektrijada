@@ -64,13 +64,13 @@ class SponzorList extends AbstractView {
 					"controller" => 'ozsn',
 					"action" => 'modifySponzor'
 				));
-				echo '?id=' . $val->idSponzora . '">Uredi</a> &nbsp; <a class="deleteSponzor" href="';
+				echo '?id=' . $val->idSponzora . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="deleteSponzor" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'deleteSponzor'
 				));
-				echo '?id=' . $val->idSponzora . '">Obriši</a></td></tr>';
+				echo '?id=' . $val->idSponzora . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a></td></tr>';
 			}
 ?>
 				</tbody>

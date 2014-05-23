@@ -24,8 +24,7 @@ class TeamLeaders extends AbstractView {
 		));
 		
 ?>
-
-	<div style="float:left; padding-bottom:20px;">          
+<div style="float:left;">          
 <form class="form-inline addForm" role="form" method="POST" action="<?php echo \route\Route::get('d3')->generate(array(
 									"controller" => "ozsn",
 									"action" => "addTeamLeader"
@@ -55,16 +54,16 @@ class TeamLeaders extends AbstractView {
 			</div>
     </form>	
 </div>
-<br><br>
+<!--<br><br>-->
 
 <?php
 		
 		if ($this->voditelji !== null && count($this->voditelji)) {
-                        echo new \view\components\DownloadLinks(array(
+                        echo '<div style="float:right;">'.new \view\components\DownloadLinks(array(
 				"route" => \route\Route::get("d3")->generate(array(
 					"controller" => "ozsn",
 					"action" => "displayTeamLeaders"
-				))));
+				)))).'</div>';
 ?>	
 
 		<div style="clear:both;" class="panel panel-default">
@@ -94,11 +93,11 @@ class TeamLeaders extends AbstractView {
 				$ispis .= "<td><a href=\"" . \route\Route::get('d3')->generate(array(
 					"controller" => "ozsn",
 					"action" => "modifyTeamLeader"
-				)) . "?idS=". $val->idSudjelovanja . "&idA=". $val->idImaAtribut ."\">Uredi</a>&nbsp;";
+				)) . "?idS=". $val->idSudjelovanja . "&idA=". $val->idImaAtribut ."\">".'<span class="glyphicon glyphicon-pencil"></span>'." Uredi</a>&nbsp;";
 				$ispis .= "&nbsp;<a class=\"deleteTeamLeader\" href=\"" . \route\Route::get('d3')->generate(array(
 					"controller" => "ozsn",
 					"action" => "removeTeamLeader"
-				)) . "?idA=" . $val->idImaAtribut . "&idS=". $val->idSudjelovanja ."\">Obriši</a></td></tr>";
+				)) . "?idA=" . $val->idImaAtribut . "&idS=". $val->idSudjelovanja ."\">".'<span class="glyphicon glyphicon-remove"></span>'." Obriši</a></td></tr>";
 				echo $ispis;
 			}
 		}

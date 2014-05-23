@@ -69,13 +69,13 @@ class AreaSponzorList extends AbstractView {
 					"controller" => 'ozsn',
 					"action" => 'modifyAreaSponzor'
 				));
-				echo '?id=' . $val->idSponElekPod . '">Uredi</a> &nbsp; <a class="deleteAreaSponzor" href="';
+				echo '?id=' . $val->idSponElekPod . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="deleteAreaSponzor" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'deleteAreaSponzor'
 				));
-				echo '?id=' . $val->idSponElekPod . '">Obriši</a></td></tr>';
+				echo '?id=' . $val->idSponElekPod . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a></td></tr>';
 			}
 ?>
 				</tbody>

@@ -53,13 +53,13 @@ class OzsnUdrugeList extends AbstractView {
 				));			
 				echo '?m=1" method="POST">';
 				echo '<tr><td><span class="modify-' . $val->idUdruge . '">' . $val->nazivUdruge . '</span><input type="text" class="modifyOn-' . $val->idUdruge . '" style="display:none;" name="nazivUdruge" value="' . $val->nazivUdruge . '"><input type="hidden" name="idUdruge" value="' . $val->idUdruge . '"></td>';
-				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idUdruge . '" value="Spremi" /><a href="javascript:;" class="editUdruga modify-' . $val->idUdruge . '" data-id="' . $val->idUdruge . '">Uredi</a> &nbsp; <a class="deleteUdruga modify-' . $val->idUdruge . '" href="';
+				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idUdruge . '" value="Spremi" /><a href="javascript:;" class="editUdruga modify-' . $val->idUdruge . '" data-id="' . $val->idUdruge . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="deleteUdruga modify-' . $val->idUdruge . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'deleteUserUdruga'
 				));
-				echo '?id=' . $val->idUdruge . '">Obriši</a>';
+				echo '?id=' . $val->idUdruge . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a>';
 				echo '</td></tr></form>';
 			}
 		}
