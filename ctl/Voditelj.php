@@ -783,7 +783,7 @@ class Voditelj implements Controller {
 						} else {
 							$mime = \mime_content_type(files("tmp_name", "datoteka"));
 						}
-						if($mime != 'image/jpeg') {
+						if($mime != 'image/jpeg' && $mime != 'image/jpg') {
 							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Sliku možete poslati samo u jpeg formatu!");
 							$_SESSION["exception"] = serialize($handler);
 							preusmjeri(\route\Route::get('d3')->generate(array(
