@@ -175,9 +175,14 @@ class DBElektrijada extends AbstractDBModel {
 	public function generateHallOfFame() {
 		try {
 			$pdo = $this->getPdo();
-			$q = $pdo->prepare("SELECT * FROM elektrijada
+			$q = $pdo->prepare("SELECT elektrijada.*,
+										elekpodrucje.*,
+										podrucje.*,
+										nad.nazivPodrucja nazivNadredjenog
+										FROM elektrijada
 									LEFT JOIN elekpodrucje ON elektrijada.idElektrijade = elekpodrucje.idElektrijade
 									LEFT JOIN podrucje ON elekpodrucje.idPodrucja = podrucje.idPodrucja
+									LEFT JOIN podrucje nad ON nad.idPodrucja = podrucje.idNadredjenog
 								ORDER BY elektrijada.idElektrijade");
 			$q->execute();
 			return $q->fetchAll();
