@@ -83,13 +83,6 @@ class OldOzsn extends AbstractView {
 					
 <?php
 		}
-		
-		else
-		{
-			echo new \view\components\ErrorMessage(array(
-				"errorMessage" => "Ne postoji niti jedna osoba!"
-			));
-		}
     }
     
     public function setErrorMessage($errorMessage) {

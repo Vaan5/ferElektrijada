@@ -202,7 +202,9 @@ class Administrator implements Controller {
 					"admin" => $osoba
 				)),
             "title" => "Uređivanje profila",
-            "script" => new \view\scripts\PersonFormJs(),
+            "script" => new \view\scripts\PersonFormJs(array(
+				"modification" => true
+			))
         ));
     }
 
@@ -491,7 +493,9 @@ class Administrator implements Controller {
                 "osoba" => $osoba
             )),
             "title" => "Ažuriranje Člana Odbora",
-            "script" => new \view\scripts\PersonFormJs()
+            "script" => new \view\scripts\PersonFormJs(array(
+				"modification" => "true"
+			))
         ));  
         
     }
@@ -992,7 +996,9 @@ class Administrator implements Controller {
                 "osoba" => $osoba
             )),
             "title" => "Ažuriranje osoba",
-            "script" => new \view\scripts\PersonFormJs()
+            "script" => new \view\scripts\PersonFormJs(array(
+				"modification" => true
+			))
         ));  
         
     }
