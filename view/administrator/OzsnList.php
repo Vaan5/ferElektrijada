@@ -70,19 +70,19 @@ class OzsnList extends AbstractView {
 					"controller" => 'administrator',
 					"action" => 'modifyOzsn'
 				));
-				echo '?id=' . $val->idOsobe . '">Uredi</a> &nbsp; <a href="';
+				echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'administrator',
 					"action" => 'removeOzsnFromCurrentElektrijada'
 				));
-				echo '?id=' . $val->idOsobe . '">Ukloni iz Odbora</a> &nbsp; <a class="deleteOzsn" href="';
+				echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-remove"></span> Ukloni iz Odbora</a> &nbsp; <a class="deleteOzsn" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'administrator',
 					"action" => 'deleteOzsn'
 				));
-				echo '?id=' . $val->idOsobe . '">Obriši</a></td></tr>';
+				echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a></td></tr>';
 			}
 ?>
 				</tbody>

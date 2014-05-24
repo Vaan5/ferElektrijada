@@ -68,13 +68,13 @@ class ElektrijadaList extends AbstractView {
 					"controller" => 'administrator',
 					"action" => 'modifyElektrijada'
 				));
-				echo '?id=' . $val->idElektrijade . '">Uredi</a> &nbsp; <a class="obrisiElektrijadu" href="';
+				echo '?id=' . $val->idElektrijade . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="obrisiElektrijadu" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'administrator',
 					"action" => 'doubleCheckAdmin'
 				));
-				echo '?id=' . $val->idElektrijade . '">Obriši</a>';
+				echo '?id=' . $val->idElektrijade . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a>';
 			}
 			
 			echo '</tbody></table></div>';

@@ -32,7 +32,7 @@ class DisciplineMoney extends AbstractView {
 						<th>Korisničko ime</th>
 						<th>Ime</th>
 						<th>Prezime</th>
-						<th>Iznos</th>
+                                                <th><center>Iznos</center></th>
 					</tr>
 				</thead>
 
@@ -43,13 +43,12 @@ class DisciplineMoney extends AbstractView {
 			foreach($this->osobe as $val)
 			{
 				echo "<tr><td>" . $val->ferId . "</td><td>" . $val->ime . "</td><td>" . $val->prezime . 
-						"</td><td>";
+						"</td><td".' style="width:250px;">';
 ?>
 						<!--<div class="form-group">-->
                                 <!--<div class="col-sm-8">-->
-				<div class="input-group col-sm-7">
-                                        <input type="text" name="<?php echo $val->idPodrucjeSudjelovanja?>" class="form-control" placeholder="Upišite iznos uplate" <?php if($val && $val->iznosUplate) echo 'value="' . $val->iznosUplate . '"' ?> />
-					
+                                <center><div class="input-group col-sm-7">
+                                        <input type="text" name="<?php echo $val->idPodrucjeSudjelovanja?>" class="form-control" placeholder="Iznos" <?php if($val && $val->iznosUplate) echo 'value="' . $val->iznosUplate . '"' ?> />
 					<div class="input-group-btn">
 						<select name="valuta<?php echo $val->idPodrucjeSudjelovanja?>" class="form-control btn btn-primary" style="width:80px;">
 						<option <?php if(!$val || ($val && $val->valuta == 'HRK')) echo 'selected="selected"' ?> value="HRK">HRK</option>
@@ -58,7 +57,7 @@ class DisciplineMoney extends AbstractView {
 						</select>
 					</div>
 					
-				</div>
+                                    </div></center>
                                 <!--</div>-->
 		<!--</div>-->
 <?php

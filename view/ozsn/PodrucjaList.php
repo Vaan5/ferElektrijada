@@ -54,13 +54,13 @@ class PodrucjaList extends AbstractView {
 				));
 				echo '" method="POST">';
 				echo '<tr><td><div class="col-sm-5"><span class="modify-' . $val->idPodrucja . '">' . $val->nazivPodrucja . '</span><input type="text" class="form-control modifyOn-' . $val->idPodrucja . '" style="display:none;" name="nazivPodrucja" value="' . $val->nazivPodrucja . '"><input type="hidden" name="idPodrucja" value="' . $val->idPodrucja . '">';
-				echo '</div></td><td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idPodrucja . '" value="Spremi" /><a href="javascript:;" class="editPodrucje modify-' . $val->idPodrucja . '" data-id="' . $val->idPodrucja . '">Uredi</a> &nbsp; <a class="deletePodrucje modify-' . $val->idPodrucja . '" href="';
+				echo '</div></td><td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idPodrucja . '" value="Spremi" /><a href="javascript:;" class="editPodrucje modify-' . $val->idPodrucja . '" data-id="' . $val->idPodrucja . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="deletePodrucje modify-' . $val->idPodrucja . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'deletePodrucje'
 				));
-				echo '?id=' . $val->idPodrucja . '">Obriši</a>';
+				echo '?id=' . $val->idPodrucja . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a>';
 				echo '</td></tr></form>';
 			
 				if(count($this->podrucja))
@@ -94,13 +94,13 @@ class PodrucjaList extends AbstractView {
 						}
 					}				
 							echo '</select></div></td>';
-							echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val3->idPodrucja . '" value="Spremi" /><a href="javascript:;" class="editPodrucje modify-' . $val3->idPodrucja . '" data-id="' . $val3->idPodrucja . '">Uredi</a> &nbsp; <a class="deletePodrucje modify-' . $val3->idPodrucja . '" href="';
+							echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val3->idPodrucja . '" value="Spremi" /><a href="javascript:;" class="editPodrucje modify-' . $val3->idPodrucja . '" data-id="' . $val3->idPodrucja . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="deletePodrucje modify-' . $val3->idPodrucja . '" href="';
 
 							echo \route\Route::get('d3')->generate(array(
 								"controller" => 'ozsn',
 								"action" => 'deletePodrucje'
 							));
-							echo '?id=' . $val3->idPodrucja . '">Obriši</a>';
+							echo '?id=' . $val3->idPodrucja . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a>';
 							echo '</td></tr></form>';				
 						}	
 					}

@@ -52,13 +52,13 @@ class AtributList extends AbstractView {
 				));
 				echo '" method="POST">';
 				echo '<tr><td><span class="modify-' . $val->idAtributa . '">' . $val->nazivAtributa . '</span><input type="text" class="form-control modifyOn-' . $val->idAtributa . '" style="display:none;" name="nazivAtributa" value="' . $val->nazivAtributa . '"><input type="hidden" name="idAtributa" value="' . $val->idAtributa . '"></td>';
-				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idAtributa . '" value="Spremi" /><a href="javascript:;" class="editAtribut modify-' . $val->idAtributa . '" data-id="' . $val->idAtributa . '">Uredi</a> &nbsp; <a class="deleteAtribut modify-' . $val->idAtributa . '" href="';
+				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idAtributa . '" value="Spremi" /><a href="javascript:;" class="editAtribut modify-' . $val->idAtributa . '" data-id="' . $val->idAtributa . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="deleteAtribut modify-' . $val->idAtributa . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'deleteAtribut'
 				));
-				echo '?id=' . $val->idAtributa . '">Obriši</a>';
+				echo '?id=' . $val->idAtributa . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a>';
 				echo '</td></tr></form>';
 			}
 		}

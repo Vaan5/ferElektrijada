@@ -88,13 +88,13 @@ class MyTeam extends AbstractView {
 ?>
 				<thead>
 					<tr>
-						<th class="addAtribut" colspan="3"><i><center>Voditelji</center></i></td>
+						<th class="addAtribut" colspan="4"><i><center>Voditelji</center></i></th>
 					</tr>
 				</thead>
 <?php
 				foreach($this->voditelji as $val)
 				{
-					$ispis = "<tr><td>" . $val->ime . "</td><td>" . $val->prezime . "</td><td>&nbsp;</td></tr>";
+					$ispis = "<tr><td>" . $val->ime . "</td><td>" . $val->prezime . "</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
 					if ($val->idOsobe == $this->osoba->idOsobe)
 						$ispis = "<b>" . $ispis . "</b>";
 					echo $ispis;
@@ -105,7 +105,7 @@ class MyTeam extends AbstractView {
 		{
 ?>
 						<tr>
-							<td class="addAtribut" colspan="3"><i>Ne postoji ni jedan atribut</i></td>
+							<td class="addAtribut" colspan="4"><i>Ne postoji ni jedan atribut</i></td>
 						</tr>
 <?php
 		}
@@ -120,9 +120,9 @@ class MyTeam extends AbstractView {
 			"action" => "displayMyTeam"
 		))));
 			?>
-				<!--<a href="<?php echo \route\Route::get('d3')->generate(array(
+				<a class="btn btn-primary" href="<?php echo \route\Route::get('d3')->generate(array(
 					"controller" => "sudionik",
-					"action" => "displayMyTeam"))?>">Povratak</a>-->
+					"action" => "displayMyTeam"))?>">Povratak</a>
 			<?php
 		}
     }

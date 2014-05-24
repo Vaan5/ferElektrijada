@@ -69,7 +69,7 @@ class OldOzsn extends AbstractView {
 					"controller" => 'administrator',
 					"action" => 'listOldOzsn'
 				));
-				echo '?id=' . $val->idOsobe . '">Dodaj</a></td></tr>';
+				echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-plus"></span> Dodaj</a></td></tr>';
 			}
 ?>
 					</tbody>

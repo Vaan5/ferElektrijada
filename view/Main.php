@@ -106,7 +106,7 @@ class Main extends AbstractView {
                                                                                        "controller" => 'ozsn',
                                                                                        "action" => 'displayProfile'
                                                 )) . "\"> Profil</a>"
-                                                ;elseif ($_SESSION ['vrsta']==='SV') echo 
+                                                ;elseif ($_SESSION ['vrsta']==='SV') echo
                                                     $_SESSION ['user']." (voditelj) ".
                                                     "<span class=\"glyphicon glyphicon-user\"></span> <a href=\"" . \route\Route::get('d3')->generate(array(
                                                                                        "controller" => 'voditelj',

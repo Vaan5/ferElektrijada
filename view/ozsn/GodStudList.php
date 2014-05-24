@@ -54,13 +54,13 @@ class GodStudList extends AbstractView {
 				echo '" method="POST">';
 				echo '<tr><td><span class="modify-' . $val->idGodStud . '">' . $val->studij . '</span><input type="text" class="form-control modifyOn-' . $val->idGodStud . '" style="display:none;" name="studij" value="' . $val->studij . '"><input type="hidden" name="idGodStud" value="' . $val->idGodStud . '"></td>';
 				echo '<td><span class="modify-' . $val->idGodStud . '">' . $val->godina . '</span><input type="text" class=" form-control modifyOn-' . $val->idGodStud . '" style="display:none;" name="godina" value="' . $val->godina . '">';
-				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idGodStud . '" value="Spremi" /><a href="javascript:;" class="editGodStud modify-' . $val->idGodStud . '" data-id="' . $val->idGodStud . '">Uredi</a> &nbsp; <a class="deleteGodStud modify-' . $val->idGodStud . '" href="';
+				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idGodStud . '" value="Spremi" /><a href="javascript:;" class="editGodStud modify-' . $val->idGodStud . '" data-id="' . $val->idGodStud . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="deleteGodStud modify-' . $val->idGodStud . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'deleteGodStud'
 				));
-				echo '?id=' . $val->idGodStud . '">Obriši</a>';
+				echo '?id=' . $val->idGodStud . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a>';
 				echo '</td></tr></form>';
 			}
 		}
