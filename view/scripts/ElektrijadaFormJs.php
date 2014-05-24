@@ -6,7 +6,7 @@ use app\view\AbstractView;
 class ElektrijadaFormJs extends AbstractView {
     protected function outputHTML() {
 ?>
-	<!-- Include JS and CSS files for dateTimePicker -->
+	<!-- Include JS and CSS files for dateTimePicker and validation -->
 	<link href="../assets/css/datetimepicker.css" rel="stylesheet">
 	<script src="../assets/js/datetimepicker.js"></script>
 	<script src="../assets/js/jquery.validate.js"></script>

@@ -27,7 +27,7 @@ class KontaktOsobeForm extends AbstractView {
     
     protected function outputHTML() {
 ?>
-	<form class="form-horizontal" role="form" method="post" action="<?php echo $this->postAction;?>">
+	<form id="kontaktOsobeForm" class="form-horizontal" role="form" method="post" action="<?php echo $this->postAction;?>">
 		<div class="form-group">
 			<label for="imeKontakt" class="col-sm-3 control-label">Ime</label>
 			<div class="col-sm-9">
