@@ -26,7 +26,7 @@ class ElektrijadaForm extends AbstractView {
     
     protected function outputHTML() {
 ?>
-    <form class="form-horizontal" role="form" action="<?php echo $this->postAction;?>" method="POST">
+    <form id="elektrijadaForm" class="form-horizontal" role="form" action="<?php echo $this->postAction;?>" method="POST">
         <div class="form-group">
             <label for="mjestoodrzavanja" class="col-sm-3 control-label">Mjesto održavanja</label>
                         <div class="col-sm-8">
@@ -56,14 +56,7 @@ class ElektrijadaForm extends AbstractView {
         </div>
 <?php
 		}
-?>
-        <div class="form-group">
-            <label for="ukupnirez" class="col-sm-3 control-label">Ukupni rezultat</label>
-                        <div class="col-sm-8">
-                        <input type="text" name="ukupniRezultat" class="form-control" placeholder="Upišite ukupni rezultat" <?php if($this->elektrijada && $this->elektrijada->ukupniRezultat){ echo 'value="' . $this->elektrijada->ukupniRezultat . '"'; } ?> />
-                        </div>
-        </div>
-<?php
+		
 		if($this->modifyDates === true) {
 ?>
         <div class="form-group">
@@ -85,6 +78,13 @@ class ElektrijadaForm extends AbstractView {
             <label for="ukupnibrsud" class="col-sm-4 control-label">Ukupni broj sudionika</label>
                         <div class="col-sm-7">           
                         <input type="text" name="ukupanBrojSudionika" class="form-control" placeholder="Upišite broj sudionika" <?php if($this->elektrijada && $this->elektrijada->ukupanBrojSudionika){ echo 'value="' . $this->elektrijada->ukupanBrojSudionika . '"'; } ?> />
+                        </div>
+        </div>
+		
+        <div class="form-group">
+            <label for="ukupnirez" class="col-sm-3 control-label">Ukupni rezultat</label>
+                        <div class="col-sm-8">
+                        <input type="text" name="ukupniRezultat" class="form-control" placeholder="Upišite ukupni rezultat" <?php if($this->elektrijada && $this->elektrijada->ukupniRezultat){ echo 'value="' . $this->elektrijada->ukupniRezultat . '"'; } ?> />
                         </div>
         </div>
 		
