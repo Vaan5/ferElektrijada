@@ -96,7 +96,7 @@ class PersonFormJs extends AbstractView {
 						validatePassword: true,
 						required: {
 							depends: function(element){
-								return $("input[name=password]").val()!=""
+								return $("input[name=password]").val()!="";
 							}
 						}
 					},
