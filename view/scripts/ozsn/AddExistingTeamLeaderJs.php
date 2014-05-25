@@ -16,10 +16,25 @@ class AddExistingTeamLeaderJs extends AbstractView {
 			$('.proglasiVoditeljem').click(function () {
 				idOsobe = $(this).data("id");
 				idPodrucja = $(this).data("idpodrucja");
-				$('<form action="<?php echo \route\Route::get('d3')->generate(array(
-	"controller" => "ozsn",
-	"action" => "addExistingTeamLeader"
-))?>" method="POST">' + '<input type="hidden" name="idPodrucja" value="' + idPodrucja + '"/><input type="hidden" name="' + idOsobe + '" value="on">' + '</form>').submit();
+				var dataObj = {};
+				dataObj["idPodrucja"] = idPodrucja;
+				dataObj[idOsobe] = "on";
+
+				$.ajax({
+					type: "POST",
+					url: "<?php echo \route\Route::get('d3')->generate(array(
+							"controller" => "ozsn",
+							"action" => "addExistingTeamLeader"
+						))?>",
+					data: dataObj,
+					cache: false,
+					success: function(data, textStatus) {
+						window.location.href = "<?php echo \route\Route::get('d3')->generate(array(
+							"controller" => "ozsn",
+							"action" => "displayTeamLeaders"
+						))?>";
+					}
+				});
 			});
 		});
 	</script>    
