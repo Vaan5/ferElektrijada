@@ -15,7 +15,7 @@ class ActiveSponzorForm extends AbstractView {
 
     protected function outputHTML() {
 ?>
-    <form method="post" class="form-horizontal" role="form" action="<?php echo $this->route;?>" enctype="multipart/form-data">
+    <form id="activeSponzorForm" method="post" class="form-horizontal" role="form" action="<?php echo $this->route;?>" enctype="multipart/form-data">
 	<div class="form-group">	
         <label for="kategorija" class="col-sm-3 control-label">Kategorija</label>
 	<div class="col-sm-7">  	

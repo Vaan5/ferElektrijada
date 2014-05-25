@@ -3254,7 +3254,8 @@ class Ozsn implements Controller {
 				"kategorije" => $kategorije,
 				"promocije" => $promocije
 				)),
-			"title" => "Dodavanje Sponzora"
+			"title" => "Dodavanje Sponzora",
+			"script" => new \view\scripts\SponzorFormJs()
 		));
     }
 	
@@ -3405,7 +3406,8 @@ class Ozsn implements Controller {
 				"kategorija" => $kategorija,
 				"promocija" => $promocija
 				)),
-			"title" => "Mijenjanje Sponzora"
+			"title" => "Mijenjanje Sponzora",
+			"script" => new \view\scripts\SponzorFormJs()
 		));
     }
 	
@@ -3809,7 +3811,8 @@ class Ozsn implements Controller {
 				"kategorija" => $kategorija,
 				"promocija" => $promocija
 				)),
-			"title" => "Mijenjanje Ovogodišnjeg Sponzora"
+			"title" => "Mijenjanje Ovogodišnjeg Sponzora",
+			"script" => new \view\scripts\ActiveSponzorFormJs()
 		));
     }
 	

@@ -15,7 +15,7 @@ class SponzorForm extends AbstractView {
 
     protected function outputHTML() {
 ?>
-    <form class="form-horizontal" role="form" method="post" action="<?php echo $this->route;?>" enctype="multipart/form-data">
+    <form id="sponzorForm" class="form-horizontal" role="form" method="post" action="<?php echo $this->route;?>" enctype="multipart/form-data">
 <?php
 		if($this->sponzor && $this->sponzor->idSponzora)
 		{
