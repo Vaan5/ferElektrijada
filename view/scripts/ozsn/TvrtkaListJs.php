@@ -6,6 +6,7 @@ use app\view\AbstractView;
 class TvrtkaListJs extends AbstractView {
     protected function outputHTML() {
 ?>
+	<!-- Include files for confirm -->
 	<script src="../assets/js/confirm.js"></script>
 	
 	<script type="text/javascript">

@@ -4398,7 +4398,8 @@ class Ozsn implements Controller {
 				"tvrtka" => $tvrtka,
 				"usluga" => $usluga,
 				"usluge" => $usluge
-				))
+			)),
+			"script" => new \view\scripts\TvrtkaAssignFormJs()
 		));
     }
     

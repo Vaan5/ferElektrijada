@@ -13,7 +13,7 @@ class TvrtkaAssignForm extends AbstractView {
 
     protected function outputHTML() {
 ?>		
-		<form class="form-horizontal" role="form" method="post" action="<?php echo $this->route;?>" enctype="multipart/form-data">
+		<form id="tvrtkaAssignForm" class="form-horizontal" role="form" method="post" action="<?php echo $this->route;?>" enctype="multipart/form-data">
 <?php
 		if($this->koristiPruza && $this->koristiPruza->idKoristiPruza)
 		{
