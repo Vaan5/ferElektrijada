@@ -82,23 +82,12 @@ class HallOfFame extends AbstractView {
 <?php
 				foreach($this->rezultati as $val2)
 				{
-					if($val2->idElektrijade == $val["idElektrijade"] && $val2->idNadredjenog == NULL)
+					if($val2->idElektrijade == $val["idElektrijade"])
 					{
 						echo '<tr><td>' . $val2->nazivPodrucja . '</td><td>' . $val2->ukupanBrojEkipa . '</td><td>' . $val2->rezultatGrupni . '</td><td>';
 						if($val2->slikaLink) echo '<a class="fancyboxLoader" href="' . $val2->slikaLink . '">Prikaži</a>';
 						else echo '<i>Ne postoji</i>';
 						echo '</td></tr>';
-						
-						foreach($this->rezultati as $val3)
-						{
-							if($val3->idElektrijade == $val2->idElektrijade && $val3->idNadredjenog == $val2->idPodrucja)
-							{
-								echo '<tr><td>&nbsp; <img width="13px" style="margin-top:-6px;" src="../assets/img/subcategory.png"> ' . $val3->nazivPodrucja . '</td><td>' . $val3->ukupanBrojEkipa . '</td><td>' . $val3->rezultatGrupni . '</td><td>';
-								if($val3->slikaLink) echo '<a class="fancyboxLoader" href="' . $val3->slikaLink . '">Prikaži</a>';
-								else echo '<i>Ne postoji</i>';
-								echo '</td></tr>';
-							}
-						}
 					}
 				}	
 ?>
