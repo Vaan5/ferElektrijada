@@ -436,8 +436,13 @@ class Ozsn implements Controller {
 				$sudjelovanje->delete();
 			}
 			
-			if($zast)
+			if($zast) {
 				session_destroy ();
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "login",
+					"action" => "display"
+				)));
+			}
 			
 			// okay lets redirect
 			preusmjeri(\route\Route::get('d3')->generate(array(
