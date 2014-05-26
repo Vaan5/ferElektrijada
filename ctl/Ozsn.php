@@ -690,7 +690,8 @@ class Ozsn implements Controller {
 				"zavod" => $zavod,
 				"smjer" => $smjer,
 				"idimaatribut" => $idImaAtribut
-			))
+			)),
+			"script" => new \view\scripts\PersonFormJs()
 		));
 	}
 	
@@ -1818,7 +1819,8 @@ class Ozsn implements Controller {
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage,
 				"elektrijada" => $elektrijada
-			))
+			)),
+			"script" => new \view\scripts\ElektrijadaFormJs()
 		));
 	}
 	

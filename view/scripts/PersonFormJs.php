@@ -13,6 +13,7 @@ class PersonFormJs extends AbstractView {
 	<script src="../assets/js/datetimepicker.js"></script>
 	<script src="../assets/js/confirm.js"></script>
 	<script src="../assets/js/jquery.validate.js"></script>
+	<script src="../assets/js/jquery.validate.additional-methods.js"></script>
 	
 	<script type="text/javascript">
 		$( document ).ready(function() {
@@ -80,6 +81,15 @@ class PersonFormJs extends AbstractView {
 				if (value) return /^[0-9]{11}$/.test(value);
 				else return true;
 			}, "Neispravan OIB");
+			
+			jQuery.validator.addMethod("validatePhone", function(value, element) {
+				if (value) return /^[0-9]{6,}$/.test(value);
+				else return true;
+			}, "Neispravan broj mobitela");
+			
+			$.validator.addMethod('validateFilesize', function(value, element, param) {
+				return this.optional(element) || (element.files[0].size <= param);
+			});
 		   
 			$("#personForm").validate({
 				rules: {
@@ -115,7 +125,7 @@ class PersonFormJs extends AbstractView {
 						validateMail: true
 					},
 					brojMob: {
-						validateNumbers: true
+						validatePhone: true
 					},
 					JMBAG: {
 						validateJmbag: true
@@ -125,6 +135,10 @@ class PersonFormJs extends AbstractView {
 					},
 					MBG: {
 						validateNumbers: true
+					},
+					datoteka: {
+						accept: "pdf",
+						validateFilesize: 1048576
 					}
 				},
 				messages: {
@@ -145,6 +159,10 @@ class PersonFormJs extends AbstractView {
 					},
 					MBG: {
 						validateNumbers: "Neispravan matični broj osiguranika"
+					},
+					datoteka: {
+						accept: "Životopis mora biti u PDF formatu",
+						validateFilesize: "Maksimalna dozvoljena veličina datoteke je 1 MB"
 					}
 				}
 			});
