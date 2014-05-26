@@ -379,7 +379,7 @@ if($this->osoba){ ?>
 	<div class="form-group">	
                 <label for="atributi" class="col-sm-3 control-label">Atribut</label>
 		<div class="col-sm-9">
-                <select name="idAtributa[]" class="form-control" multiple>
+                <select name="idAtributa[]" id="idAtributaSelect" class="form-control" multiple>
 			<option <?php if(!$this->atribut) echo 'selected="selected"'; ?> value=""><?php if(!$this->atribut) echo '(prazno)'; else echo '(prazno)'; ?></option>
 
 <?php

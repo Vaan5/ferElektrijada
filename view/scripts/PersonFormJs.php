@@ -106,7 +106,7 @@ class PersonFormJs extends AbstractView {
 						validatePassword: true,
 						required: {
 							depends: function(element){
-								return $("input[name=password]").val()!="";
+								return $("input[name=password]").val()!= "";
 							}
 						}
 					},
@@ -139,6 +139,13 @@ class PersonFormJs extends AbstractView {
 					datoteka: {
 						accept: "pdf",
 						validateFilesize: 1048576
+					},
+					idPodrucja: {
+						required: {
+							depends: function(element){
+								return $("#idAtributaSelect").val()!= "";
+							}
+						}
 					}
 				},
 				messages: {
@@ -163,6 +170,9 @@ class PersonFormJs extends AbstractView {
 					datoteka: {
 						accept: "Životopis mora biti u PDF formatu",
 						validateFilesize: "Maksimalna dozvoljena veličina datoteke je 1 MB"
+					},
+					idPodrucja: {
+						required: "Da biste dodali atribut morate odabrati i disciplinu"
 					}
 				}
 			});
