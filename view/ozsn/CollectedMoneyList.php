@@ -27,8 +27,8 @@ class CollectedMoneyList extends AbstractView {
 			if ($this->podrucja && count($this->podrucja)) {
 ?>
 				<div class="form-group">	
-					<label for="podrucja" class="col-sm-3 control-label">Discipline</label>
-                                        <div class="col-sm-9">
+					<label for="podrucja" class="col-sm-2 control-label">Discipline</label>
+                                        <div class="col-sm-10">
 						<select name="id" class="form-control">
                                                     <option value="">Odaberi...</option>
 
@@ -43,8 +43,11 @@ class CollectedMoneyList extends AbstractView {
                                         </div>
 				</div>
 				
-                            <center><input type="submit" class="btn btn-primary" value="Prikupljeni novac za disciplinu!" /></center><br>
-				
+                            <center><input style="" type="submit" class="btn btn-primary" value="Prikupljeni novac za disciplinu" />
+			    <a href="<?php echo \route\Route::get('d3')->generate(array(
+					"controller" => "ozsn",
+					"action" => "displayMoneySum"
+                                ))?>?x=1"><button type="button" class="btn btn-primary">Pregled prikupljenog novca</button></a></center>	
 <?php 
 
 						} else {
@@ -53,15 +56,8 @@ class CollectedMoneyList extends AbstractView {
 							));
 						}
 ?>
-			</form>
-
-<form action="<?php echo \route\Route::get('d3')->generate(array(
-					"controller" => "ozsn",
-					"action" => "displayMoneySum"
-				))?>" method="GET">
-					<input type="hidden" name="x" value="sss" />
-                                        <center><input type="submit" class="btn btn-primary" value="Pregled prikupljenog novca!" /></center>
-					</form
+                        
+                        </form>
 <?php
     }
     

@@ -82,8 +82,8 @@ class ElektrijadaForm extends AbstractView {
         </div>
 		
         <div class="form-group">
-            <label for="ukupnirez" class="col-sm-3 control-label">Ukupni rezultat</label>
-                        <div class="col-sm-8">
+            <label for="ukupnirez" class="col-sm-4 control-label">Ukupni rezultat</label>
+                        <div class="col-sm-7">
                         <input type="text" name="ukupniRezultat" class="form-control" placeholder="Upišite ukupni rezultat" <?php if($this->elektrijada && $this->elektrijada->ukupniRezultat){ echo 'value="' . $this->elektrijada->ukupniRezultat . '"'; } ?> />
                         </div>
         </div>

@@ -23,7 +23,7 @@ class KontaktOsobeFormJs extends AbstractView {
 			
 			$('#dodajMobPolje').click(function () {
 				i += 1;
-				$('.brojeviMobitela').append('<div class="form-group" id="brojMoba' + i + '"><label for="mob" class="col-sm-3 control-label"></label><div class="col-sm-9"><div class="input-group"><input type="text" name="mob' + i + '" class="form-control" placeholder="Upišite broj mobitela" /><div class="input-group-btn"><button type="button" class="btn btn-danger removeMob" data-toggle="tooltip" data-removeId="' + i + '" data-placement="right" data-title="Obriši broj">x</button></div></div></div></div>');
+				$('.brojeviMobitela').append('<div class="form-group" id="brojMoba' + i + '"><label for="mob" class="col-sm-3 control-label"></label><div class="col-sm-9"><div class="input-group"><input type="text" name="mob' + i + '" class="form-control" placeholder="Upišite broj mobitela" /><span style="vertical-align:top;" class="input-group-btn"><button type="button" class="btn btn-danger removeMob" data-toggle="tooltip" data-removeId="' + i + '" data-placement="left" data-title="Obriši broj">x</button></span></div></div></div>');
 				$('[name="mob'+i+'"]').rules('add', {
 					validatePhone: true
 				});
@@ -31,7 +31,7 @@ class KontaktOsobeFormJs extends AbstractView {
 			
 			$('#dodajMailPolje').click(function () {
 				j += 1;
-				$('.mailovi').append('<div class="form-group" id="mailAdresa' + j + '"><label for="mail" class="col-sm-3 control-label"></label><div class="col-sm-9"><div class="input-group"><input type="text" name="mail' + j + '" class="form-control" placeholder="Upišite e-mail adresu" /><div class="input-group-btn"><button type="button" class="btn btn-danger removeMail" data-toggle="tooltip" data-removeId="' + j + '" data-placement="right" data-title="Obriši e-mail adresu">x</button></div></div</div></div>');
+				$('.mailovi').append('<div class="form-group" id="mailAdresa' + j + '"><label for="mail" class="col-sm-3 control-label"></label><div class="col-sm-9"><div class="input-group"><input type="text" name="mail' + j + '" class="form-control" placeholder="Upišite e-mail adresu" /><span style="vertical-align:top;" class="input-group-btn"><button type="button" class="btn btn-danger removeMail" data-toggle="tooltip" data-removeId="' + j + '" data-placement="right" data-title="Obriši e-mail adresu">x</button></span></div></div></div>');
 				$('[name="mail'+j+'"]').rules('add', {
 					validateMail: true
 				});
@@ -180,7 +180,7 @@ class KontaktOsobeFormJs extends AbstractView {
 	<style type="text/css">
 		.error
 		{
-			border-color: red;
+                        border-color: red;
 			color: red;
 			padding-top:4px;
 		}

@@ -62,7 +62,7 @@ class TvrtkaAssignForm extends AbstractView {
 				<div class="input-group">
 					<input type="text" name="iznosRacuna" class="form-control" placeholder="Upišite iznos računa" <?php if($this->koristiPruza && $this->koristiPruza->iznosRacuna) echo 'value="' . $this->koristiPruza->iznosRacuna . '"' ?> />
 					
-					<div class="input-group-btn">
+					<div style="vertical-align:top;" class="input-group-btn">
 						<select name="valutaRacuna" class="form-control btn btn-primary" style="width:80px;">
 						<option <?php if(!$this->koristiPruza || ($this->koristiPruza && $this->koristiPruza->valutaDonacije == 'HRK')) echo 'selected="selected"' ?> value="HRK">HRK</option>
 						<option <?php if($this->koristiPruza && $this->koristiPruza->valutaDonacije == 'USD') echo 'selected="selected"' ?> value="USD">USD</option>

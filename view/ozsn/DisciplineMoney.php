@@ -11,14 +11,24 @@ class DisciplineMoney extends AbstractView {
 	
 	protected function outputHTML() {
 		// print messages if any
-		echo new \view\components\ErrorMessage(array(
+
+        echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
         ));
 	
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
+
 ?>
+<?php
+            echo new \view\components\DownloadLinks(array("route" => \route\Route::get("d3")->generate(array(
+            "controller" => "ozsn",
+            "action" => "disciplineMoney"
+            )) . "?id=" . $this->idPodrucja,
+            "onlyParam" => false));
+?>
+<br><br>
 <form action="<?php echo \route\Route::get('d3')->generate(array(
 	"controller" => "ozsn",
 	"action" => "disciplineMoney"
@@ -43,7 +53,7 @@ class DisciplineMoney extends AbstractView {
 			foreach($this->osobe as $val)
 			{
 				echo "<tr><td>" . $val->ferId . "</td><td>" . $val->ime . "</td><td>" . $val->prezime . 
-						"</td><td".' style="width:250px;">';
+						"</td><td".' style="width:270px;">';
 ?>
 						<!--<div class="form-group">-->
                                 <!--<div class="col-sm-8">-->
@@ -80,11 +90,6 @@ class DisciplineMoney extends AbstractView {
 	<center><input type="submit" class="btn btn-primary" value="Spremi" /></center>
 </form>
 <?php
-		echo new \view\components\DownloadLinks(array("route" => \route\Route::get("d3")->generate(array(
-			"controller" => "ozsn",
-			"action" => "disciplineMoney"
-		)) . "?id=" . $this->idPodrucja,
-			"onlyParam" => false));
 	}
 	
 	public function setErrorMessage($errorMessage) {
