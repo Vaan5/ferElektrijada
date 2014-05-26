@@ -13,7 +13,7 @@ class ObjavaForm extends AbstractView {
 
     protected function outputHTML() {
 ?>
-    <form class="form-horizontal" role="form" method="post" action="<?php echo $this->route;?>" enctype="multipart/form-data">
+    <form id="objavaForm" class="form-horizontal" role="form" method="post" action="<?php echo $this->route;?>" enctype="multipart/form-data">
 		<div class="form-group">	
 			<label for="elektrijada" class="col-sm-3 control-label">Elektrijade</label>
 			<div class="col-sm-9">
