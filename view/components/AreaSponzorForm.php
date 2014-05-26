@@ -14,7 +14,7 @@ class AreaSponzorForm extends AbstractView {
     protected function outputHTML() {
 ?>
 
-	<form method="post" class="form-horizontal" role="form" action="<?php echo $this->route;?>">
+	<form id="areaSponzorForm" method="post" class="form-horizontal" role="form" action="<?php echo $this->route;?>">
 <?php
 		if(!$this->sponelekpod)
 		{

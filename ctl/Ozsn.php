@@ -3949,7 +3949,8 @@ class Ozsn implements Controller {
 				"sponzori" => $sponzori,
 				"podrucja" => $podrucja
 				)),
-			"title" => "Pojedinačne Donacije"
+			"title" => "Pojedinačne Donacije",
+			"script" => new \view\scripts\AreaSponzorFormJs()
 		));
     }
 	
@@ -4018,7 +4019,8 @@ class Ozsn implements Controller {
 				"sponelekpod" => $sponElekPod,
 				"podrucja" => $podrucja
 				)),
-			"title" => "Ažuriranje Sponzora Discipline"
+			"title" => "Ažuriranje Sponzora Discipline",
+			"script" => new \view\scripts\AreaSponzorFormJs()
 		));
     }
 	
