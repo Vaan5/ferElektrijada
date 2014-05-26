@@ -38,7 +38,10 @@ class MyDisciplines extends AbstractView {
 			foreach($this->podrucja as $val)
 			{
 				echo "<tr>";
-				echo "<td>" . $val->nazivPodrucja . "</td>";
+				echo "<td><a href=\"" . \route\Route::get('d3')->generate(array(
+						"controller" => "voditelj",
+						"action" => "displayTeam"
+					)) .  "?id=" . $val->idPodrucja . "\">" . $val->nazivPodrucja . "</a></td>";
 				if (!$this->disabled) {
 					echo "<td><a href=\"" . \route\Route::get('d3')->generate(array(
 						"controller" => "voditelj",

@@ -238,10 +238,28 @@ if($this->osoba){ ?>
         </div>
 	
 <?php }
+
+	if ($this->showTip !== false) {
+?>
+		<div class="form-group">
+            <label for="tip" class="col-sm-3 control-label">Tip sudionika</label>
+        <div class="col-sm-9">
+			<input type="radio" style="margin-top: 11px" name="tip" value="S" <?php if ($this->sudjelovanje !== null && $this->sudjelovanje->tip == "S") echo "checked"?>> Student
+			&nbsp; &nbsp;
+			<input type="radio" name="tip" value="D" <?php if ($this->sudjelovanje !== null && $this->sudjelovanje->tip == "D") echo "checked"?>> Djelatnik
+			<?php if (session("vrsta") === "OV") {?>
+			&nbsp; &nbsp;
+			<input type="radio" name="tip" value="O" <?php if ($this->sudjelovanje !== null && $this->sudjelovanje->tip == "O") echo "checked"?>> Ozsn
+			<?php } ?>
+        </div>        
+        </div>
+<?php
+		}
+
 	if ($this->smjerovi !== null) {
 ?>
 	
-	<div class="form-group">	
+	<div id="smjerField" <?php if(!$this->smjer) echo 'style="display:none;"'; ?> class="form-group">	
                 <label for="smjer" class="col-sm-3 control-label">Smjer</label>
 		<div class="col-sm-9">
                 <select name="idSmjera" class="form-control">
@@ -265,7 +283,7 @@ if($this->osoba){ ?>
 	if ($this->zavodi !== null) {
 ?>
 	
-	<div class="form-group">	
+	<div id="zavodField" <?php if(!$this->zavod) echo 'style="display:none;"'; ?> class="form-group">	
                 <label for="zavod" class="col-sm-3 control-label">Zavod</label>
 		<div class="col-sm-9">
                 <select name="idZavoda" class="form-control">
@@ -288,7 +306,7 @@ if($this->osoba){ ?>
 <?php }
 	if ($this->godine !== null) {
 ?>
-	<div class="form-group">	
+	<div id="godStudField" <?php if(!$this->godina) echo 'style="display:none;"'; ?> class="form-group">	
                 <label for="godina" class="col-sm-3 control-label">Godina studija</label>
 		<div class="col-sm-9">
                 <select name="idGodStud" class="form-control">
@@ -312,7 +330,7 @@ if($this->osoba){ ?>
 	if ($this->radnaMjesta !== null) {
 ?>	
 
-	<div class="form-group">	
+	<div id="radnoMjestoField" <?php if(!$this->radnoMjesto) echo 'style="display:none;"'; ?> class="form-group">	
                 <label for="radnomjesto" class="col-sm-3 control-label">Radno mjesto</label>
 		<div class="col-sm-9">
                 <select name="idRadnogMjesta" class="form-control">
@@ -332,23 +350,7 @@ if($this->osoba){ ?>
 </select></div>
         </div>
 	
-	<?php }} 
-		if ($this->showTip !== false) {
-?>
-		<div class="form-group">
-            <label for="tip" class="col-sm-3 control-label">Tip sudionika</label>
-        <div class="col-sm-9">
-			<input type="radio" style="margin-top: 11px" name="tip" value="S" <?php if ($this->sudjelovanje !== null && $this->sudjelovanje->tip == "S") echo "checked"?>> Student
-			&nbsp; &nbsp;
-			<input type="radio" name="tip" value="D" <?php if ($this->sudjelovanje !== null && $this->sudjelovanje->tip == "D") echo "checked"?>> Djelatnik
-			<?php if (session("vrsta") === "OV") {?>
-			&nbsp; &nbsp;
-			<input type="radio" name="tip" value="O" <?php if ($this->sudjelovanje !== null && $this->sudjelovanje->tip == "O") echo "checked"?>> Ozsn
-			<?php } ?>
-        </div>        
-        </div>
-<?php
-		}
+<?php }}
 		if ($this->podrucja !== null) {
 ?>	
 

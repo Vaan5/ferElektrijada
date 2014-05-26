@@ -35,6 +35,26 @@ class PersonFormJs extends AbstractView {
 				cancelButton: "Odustani"
 			});
 			
+			// Showing different selects whether the user is sudionik or djelatnik
+			$("input:radio[name=tip]").change(function () {
+				if ($("input[name=tip]:checked").val() == "S") {
+					$('#godStudField').show();
+					$('#smjerField').show();
+					$('#radnoMjestoField').hide();
+					$('#zavodField').hide();
+					$('#radnoMjestoField select').val("");
+					$('#zavodField select').val("");
+				}
+				else if ($("input[name=tip]:checked").val() == "D") {
+					$('#radnoMjestoField').show();
+					$('#zavodField').show();
+					$('#godStudField').hide();
+					$('#smjerField').hide();
+					$('#godStudField select').val("");
+					$('#smjerField select').val("");
+				}
+			});
+			
 			/*	======  FORM VALIDATION ======
 			*	Includes validator JS file, sets rules and messages
 			*	On keyup or on submit checks if input is valid
