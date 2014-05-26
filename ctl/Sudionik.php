@@ -391,6 +391,11 @@ class Sudionik implements Controller {
 				$voditelji = $imaatribut->getVoditelji(post("idPodrucja"), $idElektrijade);
 			} else {
 				$podrucja = $sudjelovanje->getContestantAreas(session("auth"), $idElektrijade);
+				if (session("vrsta") === 'SV' && count($podrucja) === 0)
+					preusmjeri (\route\Route::get('d3')->generate (array(
+						"controller" => "voditelj",
+						"action" => "displayPodrucja"
+					)));
 			}
 		} catch (\app\model\NotFoundException $e) {
 			$this->createMessage("Nepostojeći identifikator!", "d3", "sudionik", "displayMyTeam");
