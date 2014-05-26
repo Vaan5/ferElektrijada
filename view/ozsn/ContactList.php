@@ -18,17 +18,18 @@ class ContactList extends AbstractView {
 			"errorMessage" => $this->errorMessage
 		));
 		
+		echo new \view\components\AddNewLink(array(
+			"link" => \route\Route::get('d3')->generate(array(
+				"controller" => 'ozsn',
+				"action" => 'addContact'
+			)),
+			"buttonText" => 'Dodaj kontakt osobu'
+		));
+		
 		// listContacts in table
 		if(count($this->kontakti))
 		{
 ?>
-			<?php echo new \view\components\AddNewLink(array(
-				"link" => \route\Route::get('d3')->generate(array(
-					"controller" => 'ozsn',
-					"action" => 'addContact'
-				)),
-				"buttonText" => 'Dodaj kontakt osobu'
-			)); ?>
 			<?php echo new \view\components\DownloadLinks(array(
 				"route" => \route\Route::get("d3")->generate(array(
 					"controller" => "ozsn",
@@ -54,7 +55,7 @@ class ContactList extends AbstractView {
 				
 				<tbody>
 <?php
-			// Foreach Ozsn member, generate row in table
+			// Foreach Contact, generate row in table
 			foreach($this->kontakti as $val)
 			{
 				echo '<tr><td>' . $val->imeKontakt . '</td><td>' . $val->prezimeKontakt . '</td><td>' . $val->telefon . '</td><td>' . $val->radnoMjesto . '</td>';

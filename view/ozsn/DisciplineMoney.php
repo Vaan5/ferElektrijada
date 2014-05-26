@@ -42,7 +42,7 @@ class DisciplineMoney extends AbstractView {
 						<th>Korisničko ime</th>
 						<th>Ime</th>
 						<th>Prezime</th>
-                                                <th><center>Iznos</center></th>
+                        <th><center>Iznos</center></th>
 					</tr>
 				</thead>
 
