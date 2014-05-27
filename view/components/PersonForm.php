@@ -338,13 +338,30 @@ if($this->osoba){ ?>
         </div>
 	
 <?php }
+
+		if ($this->showOption !== false) {
+		?>
+		<div class="form-group">
+            <label for="opcija" class="col-sm-3 control-label">Natjecatelj ili Koordinator</label>
+        <div class="col-sm-9">
+			<input style="margin-top:20px;" type="radio" name="option" value="0" > Natjecatelj
+			&nbsp; &nbsp;
+			<input type="radio" name="option" value="1" > Koordinator
+			&nbsp; &nbsp;
+			<input type="radio" name="option" value="2" > Natjecatelj i Koordinator
+			<span id="lastOption"></span>
+        </div>        
+        </div>
+<?php
+		}
+
 		if ($this->podrucja !== null) {
 ?>	
 
 	<div class="form-group">	
                 <label for="podrucja" class="col-sm-3 control-label">Disciplina</label>
 		<div class="col-sm-9">
-                <select name="idPodrucja" class="form-control">
+                <select name="idPodrucja" id="idPodrucjaSelect" class="form-control">
 			<option <?php if(!$this->podrucje) echo 'selected="selected"'; ?> value=""><?php if(!$this->podrucje) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
 
 <?php
@@ -365,12 +382,10 @@ if($this->osoba){ ?>
 			if ($this->atributi !== null) {
 ?>	
 
-	<div class="form-group">	
+	<div id="atributField" <?php if(!$this->atribut) echo 'style="display:none;"'; ?> class="form-group">	
                 <label for="atributi" class="col-sm-3 control-label">Atribut</label>
 		<div class="col-sm-9">
                 <select name="idAtributa[]" id="idAtributaSelect" class="form-control" multiple>
-			<option <?php if(!$this->atribut) echo 'selected="selected"'; ?> value=""><?php if(!$this->atribut) echo '(prazno)'; else echo '(prazno)'; ?></option>
-
 <?php
 		foreach($this->atributi as $val)
 		{
@@ -382,24 +397,12 @@ if($this->osoba){ ?>
 			echo '>' . $val->nazivAtributa . '</option>';
 		}
 ?>					
-</select></div>
+</select>
+		<span style="font-size: 12px">NAPOMENA: Za višestruki odabir držite tipku CTRL i mišem kliknite na željene elektrijade</span>
+		</div>
         </div>
 	
 	<?php }
-	if ($this->showOption !== false) {
-		?>
-		<div class="form-group">
-            <label for="opcija" class="col-sm-3 control-label">Natjecatelj ili Koordinator</label>
-        <div class="col-sm-9">
-			<input style="margin-top:20px;" type="radio" name="option" value="0" > Natjecatelj
-			&nbsp; &nbsp;
-			<input type="radio" name="option" value="1" > Koordinator
-			&nbsp; &nbsp;
-			<input type="radio" name="option" value="2" > Natjecatelj i Koordinator
-        </div>        
-        </div>
-<?php
-		}
 		if ($this->showVrstaPodrucja !== false) {
 ?>
 		<div class="form-group">
