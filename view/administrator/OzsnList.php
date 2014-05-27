@@ -33,74 +33,77 @@ class OzsnList extends AbstractView {
 		));
 				
 		// Else listOzsn in table
-		if(count($this->osobe))
+		if($this->osobe)
 		{
-			
-?>		
-		<?php echo new \view\components\DownloadLinks(array(
-			"route" => \route\Route::get("d3")->generate(array(
-				"controller" => "administrator",
-				"action" => "displayOzsn"
-			))
-		)); ?>
-
-		<br><br>
-	
-			<div class="panel panel-default">
-				<div class="panel-heading">Članovi odbora</div>
-				
-				<table class="table">
-				<thead>
-					<tr>
-						<th>Ime</th>
-						<th>Prezime</th>
-						<th>FerID</th>
-						<th>Opcije</th>
-					</tr>
-				</thead>
-				
-				<tbody>
-<?php
-			// Foreach Ozsn member, generate row in table
-			foreach($this->osobe as $val)
+			if(count($this->osobe))
 			{
-				echo '<tr><td>' . $val->ime . '</td><td>' . $val->prezime . '</td><td>' . $val->ferId . '</td>';
-				echo '<td><a href="';
-				echo \route\Route::get('d3')->generate(array(
-					"controller" => 'administrator',
-					"action" => 'modifyOzsn'
-				));
-				echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a href="';
-				
-				echo \route\Route::get('d3')->generate(array(
-					"controller" => 'administrator',
-					"action" => 'removeOzsnFromCurrentElektrijada'
-				));
-				echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-remove"></span> Ukloni iz Odbora</a> &nbsp; <a class="deleteOzsn" href="';
-				
-				echo \route\Route::get('d3')->generate(array(
-					"controller" => 'administrator',
-					"action" => 'deleteOzsn'
-				));
-				echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a></td></tr>';
-			}
-?>
-				</tbody>
-			</table>
-		</div>
-		
-                <center><a type="button" class="btn btn-primary" href="<?php echo \route\Route::get('d3')->generate(array(
-			"controller" => 'administrator',
-			"action" => 'searchOzsn'
-                    ));?>">Pretraži članove odbora</a></center>
+
+?>		
+			<?php echo new \view\components\DownloadLinks(array(
+				"route" => \route\Route::get("d3")->generate(array(
+					"controller" => "administrator",
+					"action" => "displayOzsn"
+				))
+			)); ?>
+
+			<br><br>
+
+				<div class="panel panel-default">
+					<div class="panel-heading">Članovi odbora</div>
+
+					<table class="table">
+					<thead>
+						<tr>
+							<th>Ime</th>
+							<th>Prezime</th>
+							<th>FerID</th>
+							<th>Opcije</th>
+						</tr>
+					</thead>
+
+					<tbody>
 <?php
-		}
-		
-		else
-		{
-			echo new \view\components\ErrorMessage(array(
-				"errorMessage" => "Ne postoji niti jedna osoba!"
-			 ));
+				// Foreach Ozsn member, generate row in table
+				foreach($this->osobe as $val)
+				{
+					echo '<tr><td>' . $val->ime . '</td><td>' . $val->prezime . '</td><td>' . $val->ferId . '</td>';
+					echo '<td><a href="';
+					echo \route\Route::get('d3')->generate(array(
+						"controller" => 'administrator',
+						"action" => 'modifyOzsn'
+					));
+					echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a href="';
+
+					echo \route\Route::get('d3')->generate(array(
+						"controller" => 'administrator',
+						"action" => 'removeOzsnFromCurrentElektrijada'
+					));
+					echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-remove"></span> Ukloni iz Odbora</a> &nbsp; <a class="deleteOzsn" href="';
+
+					echo \route\Route::get('d3')->generate(array(
+						"controller" => 'administrator',
+						"action" => 'deleteOzsn'
+					));
+					echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a></td></tr>';
+				}
+?>
+					</tbody>
+				</table>
+			</div>
+
+					<center><a type="button" class="btn btn-primary" href="<?php echo \route\Route::get('d3')->generate(array(
+				"controller" => 'administrator',
+				"action" => 'searchOzsn'
+						));?>">Pretraži članove odbora</a></center>
+<?php
+			}
+
+			else
+			{
+				echo new \view\components\ErrorMessage(array(
+					"errorMessage" => "Ne postoji niti jedna osoba!"
+				 ));
+			}
 		}
     }
     
