@@ -5389,7 +5389,7 @@ class Ozsn implements Controller {
 		}
 		
 		echo new \view\Main(array(
-			"title" => "Hall Of Fame",
+			"title" => "Povijest sudjelovanja",
 			"body" => new \view\ozsn\HallOfFame(array(
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage,

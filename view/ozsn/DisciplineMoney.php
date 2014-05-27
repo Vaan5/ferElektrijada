@@ -59,7 +59,7 @@ class DisciplineMoney extends AbstractView {
                                 <!--<div class="col-sm-8">-->
                                 <center><div class="input-group col-sm-7">
                                         <input type="text" name="<?php echo $val->idPodrucjeSudjelovanja?>" class="form-control" placeholder="Iznos" <?php if($val && $val->iznosUplate) echo 'value="' . $val->iznosUplate . '"' ?> />
-					<div class="input-group-btn">
+					<div style="vertical-align:top;" class="input-group-btn">
 						<select name="valuta<?php echo $val->idPodrucjeSudjelovanja?>" class="form-control btn btn-primary" style="width:80px;">
 						<option <?php if(!$val || ($val && $val->valuta == 'HRK')) echo 'selected="selected"' ?> value="HRK">HRK</option>
 						<option <?php if($val && $val->valuta == 'USD') echo 'selected="selected"' ?> value="USD">USD</option>
