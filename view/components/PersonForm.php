@@ -255,11 +255,9 @@ if($this->osoba){ ?>
         </div>
 <?php
 		}
-
-	if ($this->smjerovi !== null) {
 ?>
 	
-	<div id="smjerField" <?php if(!$this->smjer) echo 'style="display:none;"'; ?> class="form-group">	
+	<div id="smjerField" <?php if(!$this->smjer || $this->smjerovi === null) echo 'style="display:none;"'; ?> class="form-group">	
                 <label for="smjer" class="col-sm-3 control-label">Smjer</label>
 		<div class="col-sm-9">
                 <select name="idSmjera" class="form-control">
@@ -279,11 +277,7 @@ if($this->osoba){ ?>
 </select></div>
         </div>
 	
-<?php }
-	if ($this->zavodi !== null) {
-?>
-	
-	<div id="zavodField" <?php if(!$this->zavod) echo 'style="display:none;"'; ?> class="form-group">	
+	<div id="zavodField" <?php if(!$this->zavod || $this->zavodi === null) echo 'style="display:none;"'; ?> class="form-group">	
                 <label for="zavod" class="col-sm-3 control-label">Zavod</label>
 		<div class="col-sm-9">
                 <select name="idZavoda" class="form-control">
@@ -303,10 +297,7 @@ if($this->osoba){ ?>
 </select></div>
         </div>
 	
-<?php }
-	if ($this->godine !== null) {
-?>
-	<div id="godStudField" <?php if(!$this->godina) echo 'style="display:none;"'; ?> class="form-group">	
+	<div id="godStudField" <?php if(!$this->godina || $this->godine === null) echo 'style="display:none;"'; ?> class="form-group">	
                 <label for="godina" class="col-sm-3 control-label">Godina studija</label>
 		<div class="col-sm-9">
                 <select name="idGodStud" class="form-control">
@@ -326,11 +317,7 @@ if($this->osoba){ ?>
 </select></div>
         </div>
 	
-<?php }
-	if ($this->radnaMjesta !== null) {
-?>	
-
-	<div id="radnoMjestoField" <?php if(!$this->radnoMjesto) echo 'style="display:none;"'; ?> class="form-group">	
+	<div id="radnoMjestoField" <?php if(!$this->radnoMjesto || $this->radnaMjesta === null) echo 'style="display:none;"'; ?> class="form-group">	
                 <label for="radnomjesto" class="col-sm-3 control-label">Radno mjesto</label>
 		<div class="col-sm-9">
                 <select name="idRadnogMjesta" class="form-control">
@@ -350,7 +337,7 @@ if($this->osoba){ ?>
 </select></div>
         </div>
 	
-<?php }}
+<?php }
 		if ($this->podrucja !== null) {
 ?>	
 

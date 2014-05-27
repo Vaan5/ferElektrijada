@@ -78,7 +78,7 @@ if ($this->korisnikovaPodrucja !== null) {
 ?>
 	
 	<div class="form-group">	
-                <label for="podrucja" class="col-sm-3 control-label">Discipline</label>
+                <label for="podrucja" class="col-sm-3 control-label">Disciplina</label>
 		<div class="col-sm-9">
                 <select name="idP" class="form-control">
 			<option value="">Odaberi...</option>
