@@ -15,9 +15,11 @@ class ActiveSponzorForm extends AbstractView {
 
     protected function outputHTML() {
 ?>
-    <form method="post" action="<?php echo $this->route;?>" enctype="multipart/form-data">
-		<label for="kategorija">Kategorija</label><br>
-		<select name="idKategorijeSponzora">
+    <form id="activeSponzorForm" method="post" class="form-horizontal" role="form" action="<?php echo $this->route;?>" enctype="multipart/form-data">
+	<div class="form-group">	
+        <label for="kategorija" class="col-sm-3 control-label">Kategorija</label>
+	<div class="col-sm-7">  	
+        <select name="idKategorijeSponzora" class="form-control">
 			<option <?php if(!$this->kategorija) echo 'selected="selected"'; ?> value=""><?php if(!$this->kategorija) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
 <?php
 		foreach($this->kategorije as $val)
@@ -30,10 +32,11 @@ class ActiveSponzorForm extends AbstractView {
 			echo '>' . $val->tipKategorijeSponzora . '</option>';
 		}
 ?>					
-		</select><br><br>
-		
-		<label for="nacinPromocije">Način promocije</label><br>
-		<select name="idPromocije">
+        </select></div></div>
+		<div class="form-group">
+		<label for="nacinPromocije" class="col-sm-3 control-label">Način promocije</label>
+		<div class="col-sm-7">
+                <select name="idPromocije" class="form-control">
 			<option <?php if(!$this->promocija) echo 'selected="selected"'; ?> value=""><?php if(!$this->promocija) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
 <?php
 		foreach($this->promocije as $val)
@@ -46,26 +49,26 @@ class ActiveSponzorForm extends AbstractView {
 			echo '>' . $val->tipPromocije . '</option>';
 		}
 ?>					
-		</select><br><br>
-		
-		<label for="imeTvrtke">Ime tvrtke</label><br>
-		<input type="text" name="imeTvrtke" placeholder="Upišite ime tvrtke" <?php if($this->sponzor && $this->sponzor->imeTvrtke) echo 'value="' . $this->sponzor->imeTvrtke . '"' ?> disabled/>
-		
-		<br><br>
-		
-		<label for="adresaTvrtke">Adresa tvrtke</label><br>
-		<input type="text" name="adresaTvrtke" placeholder="Upišite adresu tvrtke" <?php if($this->sponzor && $this->sponzor->adresaTvrtke) echo 'value="' . $this->sponzor->adresaTvrtke . '"' ?> disabled/>
-
-		<br><br>
+                </select></div></div>
+		<div class="form-group">
+		<label for="imeTvrtke" class="col-sm-3 control-label">Ime tvrtke</label>
+		<div class="col-sm-7">
+                <input type="text" name="imeTvrtke" class="form-control" placeholder="Upišite ime tvrtke" <?php if($this->sponzor && $this->sponzor->imeTvrtke) echo 'value="' . $this->sponzor->imeTvrtke . '"' ?> disabled/>
+                </div></div>
+		<div class="form-group">
+		<label for="adresaTvrtke" class="col-sm-3 control-label">Adresa tvrtke</label>
+		<div class="col-sm-7">
+                <input type="text" class="form-control" name="adresaTvrtke" placeholder="Upišite adresu tvrtke" <?php if($this->sponzor && $this->sponzor->adresaTvrtke) echo 'value="' . $this->sponzor->adresaTvrtke . '"' ?> disabled/>
+                </div></div>
 		
 		<div class="form-group">
 			<label for="iznosDonacije" class="col-sm-3 control-label">Iznos donacije</label>
-			<div class="col-sm-9">
+			<div class="col-sm-7">
 				<div class="input-group">
 					<input type="text" name="iznosDonacije" class="form-control" placeholder="Upišite iznos donacije" <?php if($this->imasponzora && $this->imasponzora->iznosDonacije) echo 'value="' . $this->imasponzora->iznosDonacije . '"' ?> />
 					
 					<div class="input-group-btn">
-						<select name="valutaDonacije" class="form-control btn btn-default" style="width:80px;">
+						<select name="valutaDonacije" class="form-control btn btn-primary" style="width:80px;">
 						<option <?php if(!$this->imasponzora || ($this->imasponzora && $this->imasponzora->valutaDonacije == 'HRK')) echo 'selected="selected"' ?> value="HRK">HRK</option>
 						<option <?php if($this->imasponzora && $this->imasponzora->valutaDonacije == 'USD') echo 'selected="selected"' ?> value="USD">USD</option>
 						<option <?php if($this->imasponzora && $this->imasponzora->valutaDonacije == 'EUR') echo 'selected="selected"' ?> value="EUR">EUR</option>
@@ -75,14 +78,14 @@ class ActiveSponzorForm extends AbstractView {
 			</div>
 		</div>
 		
-		<br><br>
-		
-		<label for="napomena">Napomena</label><br>
-		<textarea name="napomena"><?php if($this->imasponzora && $this->imasponzora->napomena) echo $this->imasponzora->napomena; ?></textarea>
-		
+		<div class="form-group">
+		<label for="napomena" class="col-sm-3 control-label">Napomena</label>
+		<div class="col-sm-7">
+                <textarea name="napomena" class="form-control"><?php if($this->imasponzora && $this->imasponzora->napomena) echo $this->imasponzora->napomena; ?></textarea>
+                </div></div>
 		<br>
 			
-		<input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText; ?>" />
+                <center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText; ?>" /></center>
     </form>
 <?php
     }

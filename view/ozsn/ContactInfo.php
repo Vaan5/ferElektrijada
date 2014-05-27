@@ -21,57 +21,57 @@ class ContactInfo extends AbstractView {
         ));
 		
 		
-		echo new \view\components\DownloadLinks(array(
+		echo '<center><div style="width:400px; text-align:right">'.new \view\components\DownloadLinks(array(
 			"route" => \route\Route::get("d3")->generate(array(
 				"controller" => "ozsn",
 				"action" => "displayContactInfo"
 			)) . "?idKontakta=" . $this->kontakt->idKontakta,
 			"onlyParam" => false
-		));
-
-		echo '<h2>' . $this->kontakt->imeKontakt . ' ' . $this->kontakt->prezimeKontakt . '</h2>';
+		)).'</div></center>';
+                ?><br><br><br><center><div class="well" style="width:400px; text-align:left;">
+		<?php echo '<h2 style="margin-top:0px;">' . $this->kontakt->imeKontakt . ' ' . $this->kontakt->prezimeKontakt . '</h2>'; 
 ?>
-				<b>Radno mjesto:</b> <?php echo $this->kontakt->radnoMjesto; ?><br>
-				<b>Telefon:</b> <?php echo $this->kontakt->telefon; ?>
+                    <h4>Radno mjesto:<span style="color:grey;">  <?php echo $this->kontakt->radnoMjesto; ?></span></h4>
+				<h4>Telefon:<span style="color:grey;"> <?php echo $this->kontakt->telefon; ?></span></h4>
 
 				<?php if(count($this->mobiteli)) { ?>
 				<table>
 					<tr>
-						<td valign="top"><b>Brojevi mobitela: &nbsp;</b></td>
-						<td>
+						<td valign="top"><h4 style="margin-top:0px;">Brojevi mobitela: &nbsp;</h4></td>
+						<td><h4 style="margin-top:0px;"><span style="color:grey;">
 <?php
 			foreach($this->mobiteli as $val)
 			{
 				echo $val->broj . '<br>';
 			}
 ?>
-						</td>
+						</span></h4></td>
 					</tr>
 				</table>
 				<?php } else { ?>
 
-				<br><b>Brojevi mobitela: </b> <i>Nema brojeva</i>
+                                <h4 style="margin-top:0px;">Brojevi mobitela: &nbsp;<span style="color:grey;"><i>Nema brojeva</i></span></h4>
 
 				<?php } ?>
 
 				<?php if(count($this->mailovi)) { ?>
 				<table>
 					<tr>
-						<td valign="top"><b>E-mail adrese: &nbsp;</b></td>
-						<td>
+						<td valign="top"><h4 style="margin-top:0px;">E-mail adrese: &nbsp;</h4></td>
+						<td><h4 style="margin-top:0px;"><span style="color:grey;">
 <?php
 			foreach($this->mailovi as $val)
 			{
-				echo $val->email . '<br>';
+				echo '<a href="mailto:'.$val->email.'">'.$val->email.'</a>'.'<br>';
 			}
 ?>
-						</td>
+						</span></h4></td>
 					</tr>
 				</table>
 				<?php } else { ?>
 
-				<br><b>E-mail adrese: </b> <i>Nema e-mail adresa</i>
-
+                                <h4 style="margin-top:0px;">E-mail adrese:  &nbsp;<span style="color:grey;"><i>Nema e-mail adresa</i></span></h4>
+                        </div></center>
 				<?php } ?>
 					
 <?php

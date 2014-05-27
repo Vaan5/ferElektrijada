@@ -69,7 +69,7 @@ class OldOzsn extends AbstractView {
 					"controller" => 'administrator',
 					"action" => 'listOldOzsn'
 				));
-				echo '?id=' . $val->idOsobe . '">Dodaj</a></td></tr>';
+				echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-plus"></span> Dodaj</a></td></tr>';
 			}
 ?>
 					</tbody>
@@ -82,13 +82,6 @@ class OldOzsn extends AbstractView {
 			));?>?a=1">Obnovi ovlasti svim članovima odbora</a>
 					
 <?php
-		}
-		
-		else
-		{
-			echo new \view\components\ErrorMessage(array(
-				"errorMessage" => "Ne postoji niti jedna osoba!"
-			));
 		}
     }
     

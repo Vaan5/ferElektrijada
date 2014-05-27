@@ -51,14 +51,14 @@ class VelMajiceList extends AbstractView {
 					"action" => 'modifyVelMajice'
 				));
 				echo '" method="POST">';
-				echo '<tr><td><span class="modify-' . $val->idVelicine . '">' . $val->velicina . '</span><input type="text" class="modifyOn-' . $val->idVelicine . '" style="display:none;" name="velicina" value="' . $val->velicina . '"><input type="hidden" name="idVelicine" value="' . $val->idVelicine . '"></td>';
-				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idVelicine . '" value="Spremi" /><a href="javascript:;" class="editVelMajice modify-' . $val->idVelicine . '" data-id="' . $val->idVelicine . '">Uredi</a> &nbsp; <a class="deleteVelMajice modify-' . $val->idVelicine . '" href="';
+				echo '<tr><td><span class="modify-' . $val->idVelicine . '">' . $val->velicina . '</span><input type="text" class="form-control modifyOn-' . $val->idVelicine . '" style="display:none;" name="velicina" value="' . $val->velicina . '"><input type="hidden" name="idVelicine" value="' . $val->idVelicine . '"></td>';
+				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idVelicine . '" value="Spremi" /><a href="javascript:;" class="editVelMajice modify-' . $val->idVelicine . '" data-id="' . $val->idVelicine . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="deleteVelMajice modify-' . $val->idVelicine . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'deleteVelMajice'
 				));
-				echo '?id=' . $val->idVelicine . '">Obriši</a>';
+				echo '?id=' . $val->idVelicine . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a>';
 				echo '</td></tr></form>';
 			}
 		}
@@ -84,7 +84,7 @@ class VelMajiceList extends AbstractView {
 								"action" => 'addVelMajice'
 							)); ?>							  
 							  " method="post">
-							<td><input type="text" name="velicina" placeholder="Upišite veličinu majice"></td>
+							<td><input type="text" class="form-control" name="velicina" placeholder="Upišite veličinu majice"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
 						</form>
 					</tr>

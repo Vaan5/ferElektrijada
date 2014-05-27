@@ -52,15 +52,15 @@ class ZavodList extends AbstractView {
 					"action" => 'modifyZavod'
 				));
 				echo '" method="POST">';
-				echo '<tr><td><span class="modify-' . $val->idZavoda . '">' . $val->nazivZavoda . '</span><input type="text" class="modifyOn-' . $val->idZavoda . '" style="display:none;" name="nazivZavoda" value="' . $val->nazivZavoda . '"><input type="hidden" name="idZavoda" value="' . $val->idZavoda . '"></td>';
-				echo '<td><span class="modify-' . $val->idZavoda . '">' . $val->skraceniNaziv . '</span><input type="text" class="modifyOn-' . $val->idZavoda . '" style="display:none;" name="skraceniNaziv" value="' . $val->skraceniNaziv . '">';
-				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idZavoda . '" value="Spremi" /><a href="javascript:;" class="editZavod modify-' . $val->idZavoda . '" data-id="' . $val->idZavoda . '">Uredi</a> &nbsp; <a class="deleteZavod modify-' . $val->idZavoda . '" href="';
+				echo '<tr><td><span class="modify-' . $val->idZavoda . '">' . $val->nazivZavoda . '</span><input type="text" class="form-control modifyOn-' . $val->idZavoda . '" style="display:none;" name="nazivZavoda" value="' . $val->nazivZavoda . '"><input type="hidden" name="idZavoda" value="' . $val->idZavoda . '"></td>';
+				echo '<td><span class="modify-' . $val->idZavoda . '">' . $val->skraceniNaziv . '</span><input type="text" class="form-control modifyOn-' . $val->idZavoda . '" style="display:none;" name="skraceniNaziv" value="' . $val->skraceniNaziv . '">';
+				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idZavoda . '" value="Spremi" /><a href="javascript:;" class="editZavod modify-' . $val->idZavoda . '" data-id="' . $val->idZavoda . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="deleteZavod modify-' . $val->idZavoda . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'deleteZavod'
 				));
-				echo '?id=' . $val->idZavoda . '">Obriši</a>';
+				echo '?id=' . $val->idZavoda . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a>';
 				echo '</td></tr></form>';
 			}
 		}
@@ -86,8 +86,8 @@ class ZavodList extends AbstractView {
 								"action" => 'addZavod'
 							)); ?>							  
 							  " method="post">
-							<td><input type="text" name="nazivZavoda" placeholder="Upišite naziv zavoda"></td>
-							<td><input type="text" name="skraceniNaziv" placeholder="Upišite skraćeni naziv"></td>
+							<td><input type="text" class="form-control" name="nazivZavoda" placeholder="Upišite naziv zavoda"></td>
+							<td><input type="text" class="form-control" name="skraceniNaziv" placeholder="Upišite skraćeni naziv"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
 						</form>
 					</tr>

@@ -70,29 +70,29 @@ class PersonList extends AbstractView {
 					"controller" => 'administrator',
 					"action" => 'modifyPerson'
 				));
-				echo '?id=' . $val->idOsobe . '">Uredi</a> &nbsp; <a href="';
+				echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'administrator',
 					"action" => 'promoteToOzsn'
 				));
-				echo '?id=' . $val->idOsobe . '">Premjesti u Odbor</a> &nbsp; <a class="deletePerson" href="';
+				echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-plus"></span> Premjesti u Odbor</a> &nbsp; <a class="deletePerson" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'administrator',
 					"action" => 'deletePerson'
 				));
-				echo '?id=' . $val->idOsobe . '">Obriši</a></td></tr>';
+				echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a></td></tr>';
 			}
 ?>
 				</tbody>
 			</table>
 		</div>
 		
-		<a href="<?php echo \route\Route::get('d3')->generate(array(
+		<center><a type="button" class="btn btn-primary" href="<?php echo \route\Route::get('d3')->generate(array(
 			"controller" => 'administrator',
 			"action" => 'searchPersons'
-		));?>">Pretraži osobe</a>
+		));?>">Pretraži osobe</a></center>
 <?php
 		}
 		

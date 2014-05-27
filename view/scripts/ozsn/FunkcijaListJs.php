@@ -13,7 +13,7 @@ class FunkcijaListJs extends AbstractView {
 			// When Uredi is clicked, show form
 			var idFunkcije;
 			$('.editFunkcija').click(function () {
-				idFunkcije = (this).data("id");
+				idFunkcije = $(this).data("id");				
 				$('.modify-' + idFunkcije).hide();
 				$('.modifyOn-' + idFunkcije).show();
 			});

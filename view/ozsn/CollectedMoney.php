@@ -23,7 +23,16 @@ class CollectedMoney extends AbstractView {
 		if(count($this->podrucja))
 		{
 			
+			echo new \view\components\DownloadLinks(array(
+				"route" => \route\Route::get("d3")->generate(array(
+					"controller" => "ozsn",
+					"action" => "displayMoneySum"
+				)) . "?x=sss",
+				"onlyParam" => false
+			));			
 ?>
+			<br><br>
+			
 			<div class="panel panel-default">
 				<div class="panel-heading">Prikupljena Sredstva</div>
 				
@@ -62,14 +71,6 @@ class CollectedMoney extends AbstractView {
 					</tr>
 <?php
 			echo '</tbody></table></div>';
-			
-			echo new \view\components\DownloadLinks(array(
-				"route" => \route\Route::get("d3")->generate(array(
-					"controller" => "ozsn",
-					"action" => "displayMoneySum"
-				)) . "?x=sss",
-				"onlyParam" => false
-			));
 		}
 		 else
 		{

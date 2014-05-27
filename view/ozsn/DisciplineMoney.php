@@ -11,14 +11,24 @@ class DisciplineMoney extends AbstractView {
 	
 	protected function outputHTML() {
 		// print messages if any
-		echo new \view\components\ErrorMessage(array(
+
+        echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
         ));
 	
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
+
 ?>
+<?php
+            echo new \view\components\DownloadLinks(array("route" => \route\Route::get("d3")->generate(array(
+            "controller" => "ozsn",
+            "action" => "disciplineMoney"
+            )) . "?id=" . $this->idPodrucja,
+            "onlyParam" => false));
+?>
+<br><br>
 <form action="<?php echo \route\Route::get('d3')->generate(array(
 	"controller" => "ozsn",
 	"action" => "disciplineMoney"
@@ -32,7 +42,7 @@ class DisciplineMoney extends AbstractView {
 						<th>Korisničko ime</th>
 						<th>Ime</th>
 						<th>Prezime</th>
-						<th>Iznos</th>
+                        <th><center>Iznos</center></th>
 					</tr>
 				</thead>
 
@@ -43,24 +53,23 @@ class DisciplineMoney extends AbstractView {
 			foreach($this->osobe as $val)
 			{
 				echo "<tr><td>" . $val->ferId . "</td><td>" . $val->ime . "</td><td>" . $val->prezime . 
-						"</td><td>";
+						"</td><td".' style="width:270px;">';
 ?>
-						<div class="form-group">
-			<div class="col-sm-9">
-				<div class="input-group">
-					<input type="text" name="<?php echo $val->idPodrucjeSudjelovanja?>" class="form-control" placeholder="Upišite iznos uplate" <?php if($val && $val->iznosUplate) echo 'value="' . $val->iznosUplate . '"' ?> />
-					
-					<div class="input-group-btn">
-						<select name="valuta<?php echo $val->idPodrucjeSudjelovanja?>" class="form-control btn btn-default" style="width:80px;">
+						<!--<div class="form-group">-->
+                                <!--<div class="col-sm-8">-->
+                                <center><div class="input-group col-sm-7">
+                                        <input type="text" name="<?php echo $val->idPodrucjeSudjelovanja?>" class="form-control" placeholder="Iznos" <?php if($val && $val->iznosUplate) echo 'value="' . $val->iznosUplate . '"' ?> />
+					<div style="vertical-align:top;" class="input-group-btn">
+						<select name="valuta<?php echo $val->idPodrucjeSudjelovanja?>" class="form-control btn btn-primary" style="width:80px;">
 						<option <?php if(!$val || ($val && $val->valuta == 'HRK')) echo 'selected="selected"' ?> value="HRK">HRK</option>
 						<option <?php if($val && $val->valuta == 'USD') echo 'selected="selected"' ?> value="USD">USD</option>
 						<option <?php if($val && $val->valuta == 'EUR') echo 'selected="selected"' ?> value="EUR">EUR</option>
 						</select>
 					</div>
 					
-					</div>
-			</div>
-		</div>
+                                    </div></center>
+                                <!--</div>-->
+		<!--</div>-->
 <?php
 				echo "</td></tr>";
 			}
@@ -81,11 +90,6 @@ class DisciplineMoney extends AbstractView {
 	<center><input type="submit" class="btn btn-primary" value="Spremi" /></center>
 </form>
 <?php
-		echo new \view\components\DownloadLinks(array("route" => \route\Route::get("d3")->generate(array(
-			"controller" => "ozsn",
-			"action" => "disciplineMoney"
-		)) . "?id=" . $this->idPodrucja,
-			"onlyParam" => false));
 	}
 	
 	public function setErrorMessage($errorMessage) {

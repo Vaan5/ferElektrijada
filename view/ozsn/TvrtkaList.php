@@ -52,22 +52,22 @@ class TvrtkaList extends AbstractView {
 					"action" => 'modifyTvrtka'
 				));
 				echo '" method="POST">';
-				echo '<tr><td><span class="modify-' . $val->idTvrtke . '">' . $val->imeTvrtke . '</span><input type="text" class="modifyOn-' . $val->idTvrtke . '" style="display:none;" name="imeTvrtke" value="' . $val->imeTvrtke . '"><input type="hidden" name="idTvrtke" value="' . $val->idTvrtke . '"></td>';
-				echo '<td><span class="modify-' . $val->idTvrtke . '">' . $val->adresaTvrtke . '</span><input type="text" class="modifyOn-' . $val->idTvrtke . '" style="display:none;" name="adresaTvrtke" value="' . $val->adresaTvrtke . '">';
-				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idTvrtke . '" value="Spremi" />';
-				echo '<a href="';
+				echo '<tr><td><span class="modify-' . $val->idTvrtke . '">' . $val->imeTvrtke . '</span><input type="text" class="form-control modifyOn-' . $val->idTvrtke . '" style="display:none;" name="imeTvrtke" value="' . $val->imeTvrtke . '"><input type="hidden" name="idTvrtke" value="' . $val->idTvrtke . '"></td>';
+				echo '<td><span class="modify-' . $val->idTvrtke . '">' . $val->adresaTvrtke . '</span><input type="text" class="form-control modifyOn-' . $val->idTvrtke . '" style="display:none;" name="adresaTvrtke" value=" '. $val->adresaTvrtke . '">';
+				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idTvrtke . '" value="Spremi" /> ';
+				echo '<a class="modify-' . $val->idTvrtke . '" href="';
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'assignTvrtka'
 				)) . "?id=" . $val->idTvrtke;
-				echo '">Pridruži elektrijadi</a>  &nbsp; ';
-				echo'<a href="javascript:;" class="editTvrtka modify-' . $val->idTvrtke . '" data-id="' . $val->idTvrtke . '">Uredi</a> &nbsp; <a class="deleteTvrtka modify-' . $val->idTvrtke . '" href="';
+				echo '"><span class="glyphicon glyphicon-plus"></span> Pridruži elektrijadi</a>  &nbsp; ';
+				echo'<a href="javascript:;" class="editTvrtka modify-' . $val->idTvrtke . '" data-id="' . $val->idTvrtke . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="deleteTvrtka modify-' . $val->idTvrtke . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'deleteTvrtka'
 				));
-				echo '?id=' . $val->idTvrtke . '">Obriši</a>';
+				echo '?id=' . $val->idTvrtke . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a>';
 				echo '</td></tr></form>';
 			}
 		}
@@ -93,8 +93,8 @@ class TvrtkaList extends AbstractView {
 								"action" => 'addTvrtka'
 							)); ?>							  
 							  " method="post">
-							<td><input type="text" name="imeTvrtke" placeholder="Upišite ime tvrtke"></td>
-							<td><input type="text" name="adresaTvrtke" placeholder="Upišite adresu tvrtke"></td>
+							<td><input type="text" class="form-control" name="imeTvrtke" placeholder="Upišite ime tvrtke"></td>
+							<td><input type="text" class="form-control" name="adresaTvrtke" placeholder="Upišite adresu tvrtke"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
 						</form>
 					</tr>

@@ -51,14 +51,14 @@ class FunkcijaList extends AbstractView {
 					"action" => 'modifyFunkcija'
 				));
 				echo '" method="POST">';
-				echo '<tr><td><span class="modify-' . $val->idFunkcije . '">' . $val->nazivFunkcije . '</span><input type="text" class="modifyOn-' . $val->idFunkcije . '" style="display:none;" name="nazivFunkcije" value="' . $val->nazivFunkcije . '"><input type="hidden" name="idFunkcije" value="' . $val->idFunkcije . '"></td>';
-				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idFunkcije . '" value="Spremi" /><a href="javascript:;" class="editFunkcija modify-' . $val->idFunkcije . '" data-id="' . $val->idFunkcije . '">Uredi</a> &nbsp; <a class="deleteFunkcija modify-' . $val->idFunkcije . '" href="';
+				echo '<tr><td><span class="modify-' . $val->idFunkcije . '">' . $val->nazivFunkcije . '</span><input type="text" class="form-control modifyOn-' . $val->idFunkcije . '" style="display:none;" name="nazivFunkcije" value="' . $val->nazivFunkcije . '"><input type="hidden" name="idFunkcije" value="' . $val->idFunkcije . '"></td>';
+				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idFunkcije . '" value="Spremi" /><a href="javascript:;" class="editFunkcija modify-' . $val->idFunkcije . '" data-id="' . $val->idFunkcije . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="deleteFunkcija modify-' . $val->idFunkcije . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'deleteFunkcija'
 				));
-				echo '?id=' . $val->idFunkcije . '">Obriši</a>';
+				echo '?id=' . $val->idFunkcije . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a>';
 				echo '</td></tr></form>';
 			}
 		}
@@ -84,7 +84,7 @@ class FunkcijaList extends AbstractView {
 								"action" => 'addFunkcija'
 							)); ?>							  
 							  " method="post">
-							<td><input type="text" name="nazivFunkcije" placeholder="Upišite naziv funkcije"></td>
+							<td><input type="text" class="form-control" name="nazivFunkcije" placeholder="Upišite naziv funkcije"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
 						</form>
 					</tr>

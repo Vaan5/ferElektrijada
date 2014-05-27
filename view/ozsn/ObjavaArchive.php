@@ -87,22 +87,26 @@ class ObjavaArchive extends AbstractView {
 							<td><?php echo $val->autorIme . ' ' . $val->autorPrezime; ?></td>
 							<td><?php echo $val->nazivMedija; ?></td>
 							<td><?php echo date('d.m.Y', strtotime($val->datumObjave)); ?></td>
-							<td><?php if ($val->link) echo '<a href="'  . $val->link . '" target="_blank">Link</a>'; else echo '<i>Ne postoji</i>'; ?></td>
+							<td><?php if ($val->link) echo '<a href="'  . $val->link . '" target="_blank"><span class="glyphicon glyphicon-globe"></span> Link</a>'; else echo '<i>Ne postoji</i>'; ?></td>
 							<td>
 								<?php if ($val->dokument) { ?>
 								<a href="<?php echo \route\Route::get('d3')->generate(array(
 									"controller" => 'ozsn',
 									"action" => 'download'
-								));?>?id=<?php echo $val->idObjave; ?>">Preuzmi</a>
+								));?>?id=<?php echo $val->idObjave; ?>"><span class="glyphicon glyphicon-download"></span> Preuzmi</a>
 								<?php } else echo '<i>Ne postoji</i>'; ?>
 							</td>
 						</tr>
-					</tbody>
+			<!--		</tbody>
 				</table>
-			</div>
+			</div>-->
 <?php
 			}
-		}
+?>                        					
+                                        </tbody>
+				</table>
+			</div>
+<?php		}
 		
 		else
 		{
@@ -111,11 +115,6 @@ class ObjavaArchive extends AbstractView {
 			));
 		}
 	}
-		
-		// napravi nesh slicno DBM-u
-		// dakle ako rezultati nisu postavljeni (null) prikazujes post formu sa drop down om elektrijada
-		// inace prikazujes rezultate (ako je prazno polje ispisi poruku)
-		// dodaj download linkove i nista vise (ne treba uredjivanje i ostalo...)
     }
     
     public function setErrorMessage($errorMessage) {

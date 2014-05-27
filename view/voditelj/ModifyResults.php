@@ -18,12 +18,21 @@ class ModifyResults extends AbstractView {
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
+		
+		echo new \view\components\DownloadLinks(array("route" => \route\Route::get("d3")->generate(array(
+			"controller" => "voditelj",
+			"action" => "modifyResults"
+		)) . "?id=" . $this->idPodrucja,
+			"onlyParam" => false));
 
 ?>
 <form action="<?php echo \route\Route::get('d3')->generate(array(
 	"controller" => "voditelj",
 	"action" => "modifyResults"
 ))?>" method="POST">
+	
+		<br><br>
+	
 		<div class="panel panel-default">
 			<div class="panel-heading">Članovi tima</div>
 
@@ -47,9 +56,9 @@ class ModifyResults extends AbstractView {
 			{
 				$ispis = "<tr><td>" . $val->ferId . "</td><td>" . $val->ime . "</td><td>" . $val->prezime . 
 						"</td><td>" . ($val->vrstaPodrucja == '1' ? 'Timsko' : 'Pojedinačno') . "</td><td>
-							<input type=\"text\" name=\"" . $val->idPodrucjeSudjelovanja . "\" value=\"" . 
+							<input class=\"form-control\" type=\"text\" name=\"" . $val->idPodrucjeSudjelovanja . "\" value=\"" . 
 						($val->rezultatPojedinacni === NULL ? "" : $val->rezultatPojedinacni) ."\"/></td><td>
-							<input type=\"text\" name=\"b" . $val->idPodrucjeSudjelovanja . "\" value=\"" . 
+							<input class=\"form-control\" type=\"text\" name=\"b" . $val->idPodrucjeSudjelovanja . "\" value=\"" . 
 						($val->ukupanBrojSudionika === NULL ? "" : $val->ukupanBrojSudionika) ."\"/>";
 				echo $ispis;
 			}
@@ -70,11 +79,6 @@ class ModifyResults extends AbstractView {
 	<center><input type="submit" class="btn btn-primary" value="Spremi" /></center>
 </form>
 <?php
-		echo new \view\components\DownloadLinks(array("route" => \route\Route::get("d3")->generate(array(
-			"controller" => "voditelj",
-			"action" => "modifyResults"
-		)) . "?id=" . $this->idPodrucja,
-			"onlyParam" => false));
 	}
 	
 	public function setErrorMessage($errorMessage) {

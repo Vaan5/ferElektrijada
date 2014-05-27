@@ -33,6 +33,7 @@ class Main extends AbstractView {
 
     <head>
         <title><?php echo $this->title; ?></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta charset="utf-8">
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 
@@ -40,16 +41,22 @@ class Main extends AbstractView {
 		<script src="/assets/js/bootstrap.min.js"></script>
 		<link href="/assets/css/style.css" rel="stylesheet">
         <link href="/assets/css/menu.css" rel="stylesheet">
+		<link rel="stylesheet" href="/assets/css/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+		<script type="text/javascript" src="/assets/js/jquery.fancybox.pack.js?v=2.1.5"></script>
         
 		<link href="./assets/css/bootstrap.min.css" rel="stylesheet">
 		<script src="./assets/js/bootstrap.min.js"></script>
 		<link href="./assets/css/style.css" rel="stylesheet">
         <link href="./assets/css/menu.css" rel="stylesheet">
+		<link rel="stylesheet" href="./assets/css/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+		<script type="text/javascript" src="./assets/js/jquery.fancybox.pack.js?v=2.1.5"></script>
         	
 		<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
 		<script src="../assets/js/bootstrap.min.js"></script>
 		<link href="../assets/css/style.css" rel="stylesheet">
         <link href="../assets/css/menu.css" rel="stylesheet">
+		<link rel="stylesheet" href="../assets/css/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+		<script type="text/javascript" src="../assets/js/jquery.fancybox.pack.js?v=2.1.5"></script>
         <?php if (null !== $this->script) {
             echo $this->script;
         }
@@ -57,7 +64,7 @@ class Main extends AbstractView {
     </head>
 
     <body>
-<nav class="navbar navbar-default" role="navigation">
+<nav class="navbar  navbar-default" role="navigation">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
@@ -71,12 +78,12 @@ class Main extends AbstractView {
 		<span class="glyphicon glyphicon-home"></span>
 	</a>
         <a class="navbar-brand">
-            <!--<span class="glyphicon glyphicon-chevron-right"></span>--><?php echo " ".$this->title; ?>
-        </a>
+		<?php echo " ".$this->title; ?>
+	</a>
      </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">    
-        <?php if(\model\DBOsoba::isLoggedIn() && ($_SESSION ['vrsta']==='O' || $_SESSION['vrsta'] === 'OV')) echo new navbar\OzsnNavbar(); ?>
+        <?php if(\model\DBOsoba::isLoggedIn() && ($_SESSION ['vrsta']==='O' || $_SESSION['vrsta'] === 'OV' || $_SESSION ['vrsta']==='A')) echo new navbar\OzsnNavbar(); ?>
         <?php if(\model\DBOsoba::isLoggedIn() && $_SESSION ['vrsta']==='A') echo new navbar\AdminNavbar(); ?>
         <?php if(\model\DBOsoba::isLoggedIn() && ($_SESSION ['vrsta']==='S' || $_SESSION ['vrsta']==='SV')) echo new navbar\SudionikNavbar(); ?>
         <?php if(\model\DBOsoba::isLoggedIn() && ($_SESSION ['vrsta']==='SV' || $_SESSION ['vrsta']==='OV')) echo new navbar\VoditeljNavbar(); ?>
@@ -99,7 +106,7 @@ class Main extends AbstractView {
                                                                                        "controller" => 'ozsn',
                                                                                        "action" => 'displayProfile'
                                                 )) . "\"> Profil</a>"
-                                                ;elseif ($_SESSION ['vrsta']==='SV') echo 
+                                                ;elseif ($_SESSION ['vrsta']==='SV') echo
                                                     $_SESSION ['user']." (voditelj) ".
                                                     "<span class=\"glyphicon glyphicon-user\"></span> <a href=\"" . \route\Route::get('d3')->generate(array(
                                                                                        "controller" => 'voditelj',
@@ -119,10 +126,9 @@ class Main extends AbstractView {
           </p>
           </ul>
     </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
+  </div><!-- /.container-fluid-->
 </nav>
-        <br>
-        
+        <br/>
         <div class = "container-narrow">
         <?php echo $this->body; ?>
         </div>

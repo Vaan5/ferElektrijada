@@ -59,13 +59,13 @@ class ActiveTvrtkeList extends AbstractView {
 					"controller" => 'ozsn',
 					"action" => 'modifyActiveTvrtka'
 				));
-				echo '?id=' . $val->idKoristiPruza . '">Uredi</a> &nbsp; <a class="obrisiActiveTvrtku" href="';
+				echo '?id=' . $val->idKoristiPruza . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="obrisiActiveTvrtku" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'deleteActiveTvrtka'
 				));
-				echo '?id=' . $val->idKoristiPruza . '">Obriši</a>';
+				echo '?id=' . $val->idKoristiPruza . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a>';
 			}
 			
 			echo '</tbody></table></div>';

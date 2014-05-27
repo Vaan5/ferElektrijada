@@ -72,7 +72,7 @@ class DBOsoba extends AbstractDBModel {
 			$pdo = $this->getPdo();
 			$id = $elektrijada->getCurrentElektrijadaId();
 			if($id === false){
-				return null;
+				return array();
 			}
 			$q = $pdo->prepare("CALL dohvatiOsobnaPodrucja(:id,:Osoba)");
 			$q->bindValue(":id", $id);
@@ -80,7 +80,7 @@ class DBOsoba extends AbstractDBModel {
 			$q->execute();
 			$rez  = $q->fetchAll();
 		}catch (\PDOException $e) {
-           return false;
+           return array();
 		}
 		$vel=count($rez);
 		if($vel>0){//ako postoji ba 1 podrucje vrati podrucje, ako ne vrati null
@@ -92,7 +92,7 @@ class DBOsoba extends AbstractDBModel {
 			$q->execute();
 			$pom = $q->fetchAll();
 			}catch (\PDOException $e) {
-              return false;
+              return array();
 		      }
 			foreach($pom as $dio){
 			$vel++;
@@ -102,7 +102,7 @@ class DBOsoba extends AbstractDBModel {
 			}
 			return $rez;
 		} else {
-			return null;
+			return array();
 		}
 	}
 	
@@ -127,7 +127,7 @@ class DBOsoba extends AbstractDBModel {
         
         return true;
     }
-    
+	
     /**
      * 
      * @param string $userName
@@ -141,7 +141,10 @@ class DBOsoba extends AbstractDBModel {
         if ($this->isLoggedIn) {
             $_SESSION["auth"] = $this->getPrimaryKey();
 			$uloga=$this->uloga;
-			$_SESSION["vrsta"] =$this->getUloga($_SESSION["auth"], $uloga);
+			if ($uloga !== 'A')
+				$_SESSION["vrsta"] =$this->getUloga($_SESSION["auth"], $uloga);
+			else
+				$_SESSION["vrsta"] = 'A';
             $_SESSION["user"] = $this->ime == NULL ? null:$this->ime;
 			$_SESSION["podrucja"] = $this->getPodrucja ($_SESSION["auth"]);//vraca id podrucja
 			$_SESSION["active"]= $this->isActive($uloga,$_SESSION["auth"]);//true ako je aktivan, false ako nije
@@ -636,8 +639,9 @@ class DBOsoba extends AbstractDBModel {
 						LEFT JOIN imaatribut ON imaatribut.idSudjelovanja = sudjelovanje.idSudjelovanja
 						LEFT JOIN atribut ON imaatribut.idAtributa = atribut.idAtributa
 						LEFT JOIN podrucjesudjelovanja ON podrucjesudjelovanja.idSudjelovanja = sudjelovanje.idSudjelovanja
-						LEFT JOIN putovanje ON putovanje.idPutovanja = sudjelovanje.idPutovanja
-						LEFT JOIN bus ON bus.idBusa = putovanje.idBusa
+						LEFT JOIN putovanje ON putovanje.idSudjelovanja = sudjelovanje.idSudjelovanja
+						LEFT JOIN busgrupa ON busgrupa.idGrupe = putovanje.idGrupe
+						LEFT JOIN bus ON bus.idBusa = busgrupa.idBusa	
 					WHERE sudjelovanje.idElektrijade = :idE AND (podrucjesudjelovanja.idPodrucja = :idP OR imaatribut.idPodrucja = :idP)";
 
 			$pdo = $this->getPdo();
@@ -740,8 +744,9 @@ class DBOsoba extends AbstractDBModel {
 						LEFT JOIN imaatribut ON imaatribut.idSudjelovanja = sudjelovanje.idSudjelovanja
 						LEFT JOIN atribut ON imaatribut.idAtributa = atribut.idAtributa
 						LEFT JOIN podrucjesudjelovanja ON podrucjesudjelovanja.idSudjelovanja = sudjelovanje.idSudjelovanja
-						LEFT JOIN putovanje ON putovanje.idPutovanja = sudjelovanje.idPutovanja
-						LEFT JOIN bus ON bus.idBusa = putovanje.idBusa
+						LEFT JOIN putovanje ON putovanje.idSudjelovanja = sudjelovanje.idSudjelovanja
+						LEFT JOIN busgrupa ON busgrupa.idGrupe = putovanje.idGrupe
+						LEFT JOIN bus ON bus.idBusa = busgrupa.idBusa	
 					WHERE sudjelovanje.idElektrijade = :idE
 					GROUP BY godstud.godina, ";
 					 foreach ($array as $k => $v) {
@@ -765,8 +770,9 @@ class DBOsoba extends AbstractDBModel {
 						LEFT JOIN imaatribut ON imaatribut.idSudjelovanja = sudjelovanje.idSudjelovanja
 						LEFT JOIN atribut ON imaatribut.idAtributa = atribut.idAtributa
 						LEFT JOIN podrucjesudjelovanja ON podrucjesudjelovanja.idSudjelovanja = sudjelovanje.idSudjelovanja
-						LEFT JOIN putovanje ON putovanje.idPutovanja = sudjelovanje.idPutovanja
-						LEFT JOIN bus ON bus.idBusa = putovanje.idBusa
+						LEFT JOIN putovanje ON putovanje.idSudjelovanja = sudjelovanje.idSudjelovanja
+						LEFT JOIN busgrupa ON busgrupa.idGrupe = putovanje.idGrupe
+						LEFT JOIN bus ON bus.idBusa = busgrupa.idBusa	
 					WHERE sudjelovanje.idElektrijade = :idE
 					GROUP BY smjer.nazivSmjera, ";
 					 foreach ($array as $k => $v) {
@@ -789,8 +795,9 @@ class DBOsoba extends AbstractDBModel {
 						LEFT JOIN imaatribut ON imaatribut.idSudjelovanja = sudjelovanje.idSudjelovanja
 						LEFT JOIN atribut ON imaatribut.idAtributa = atribut.idAtributa
 						LEFT JOIN podrucjesudjelovanja ON podrucjesudjelovanja.idSudjelovanja = sudjelovanje.idSudjelovanja
-						LEFT JOIN putovanje ON putovanje.idPutovanja = sudjelovanje.idPutovanja
-						LEFT JOIN bus ON bus.idBusa = putovanje.idBusa
+						LEFT JOIN putovanje ON putovanje.idSudjelovanja = sudjelovanje.idSudjelovanja
+						LEFT JOIN busgrupa ON busgrupa.idGrupe = putovanje.idGrupe
+						LEFT JOIN bus ON bus.idBusa = busgrupa.idBusa	
 					WHERE sudjelovanje.idElektrijade = :idE
 					GROUP BY smjer.nazivSmjera, godstud.godina, ";
 					 foreach ($array as $k => $v) {
@@ -868,7 +875,7 @@ class DBOsoba extends AbstractDBModel {
 	
 	public function reportBusCompetitorsList($array, $idElektrijade) {
 		try {
-			$statement = 'SELECT bus.brojBusa, putovanje.polazak, putovanje.povratak, putovanje.napomena, putovanje.brojSjedala, ';
+			$statement = 'SELECT bus.brojBusa, busgrupa.nazivGrupe, putovanje.polazak, putovanje.povratak, putovanje.napomena, putovanje.brojSjedala, ';
 
 			// only if there aren't atributes with same name, otherwise do it one by one or
 			// put in the checkbox form the name of the table, like atribut_nazivAtributa,
@@ -882,13 +889,14 @@ class DBOsoba extends AbstractDBModel {
 			// remove last ', ';
 			$statement = rtrim($statement, ", ");  //makni zadnji zarez
 
-
+		
 
 			$statement .= " FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
-									   LEFT JOIN putovanje ON putovanje.idPutovanja = sudjelovanje.idPutovanja
-									   LEFT JOIN bus ON bus.idBusa = putovanje.idBusa
+									   LEFT JOIN putovanje ON putovanje.idSudjelovanja = sudjelovanje.idSudjelovanja
+					                   LEFT JOIN busgrupa ON busgrupa.idGrupe = putovanje.idGrupe
+					               	   LEFT JOIN bus ON bus.idBusa = busgrupa.idBusa	
 											WHERE sudjelovanje.idElektrijade = :idE
-											   GROUP BY bus.brojBusa, putovanje.polazak, putovanje.povratak, putovanje.napomena, putovanje.brojSjedala, ";
+											   GROUP BY bus.brojBusa, busgrupa.nazivGrupe, putovanje.polazak, putovanje.povratak, putovanje.napomena, putovanje.brojSjedala, ";
 					 foreach ($array as $k => $v) {
 				//sve osim idElektrijade, idPodrucija i tipa
 			if ($k !== 'idElektrijade'  && $k !== 'type') {

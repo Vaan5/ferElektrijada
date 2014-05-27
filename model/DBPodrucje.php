@@ -20,9 +20,9 @@ class DBPodrucje extends AbstractDBModel {
     public function getAll() {
 		try {
 			$pdo = $this->getPdo();
-			$q = $pdo->prepare("SELECT podrucje.idPodrucja, podrucje.nazivPodrucja, k.nazivPodrucja idNadredjenog 
+			$q = $pdo->prepare("SELECT podrucje.idPodrucja, podrucje.nazivPodrucja, k.nazivPodrucja kategorija, k.idPodrucja idNadredjenog 
 									FROM podrucje JOIN podrucje k ON podrucje.idNadredjenog = k.idPodrucja
-									ORDER BY k.nazivPodrucja ASC");
+									ORDER BY podrucje.nazivPodrucja ASC");
 			$q->execute();
 			return $q->fetchAll();
 		} catch (\PDOException $e) {
@@ -135,7 +135,7 @@ class DBPodrucje extends AbstractDBModel {
 	 *				Team Leader
 	 **************************************************************/
 	
-	public function loadDisciplines(array $podrucja) {
+	public function loadDisciplines($podrucja) {
 		$pov = array();
 		try {
 			if (count($podrucja)) {

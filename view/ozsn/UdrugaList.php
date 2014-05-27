@@ -51,14 +51,14 @@ class UdrugaList extends AbstractView {
 					"action" => 'modifyUdruga'
 				));
 				echo '" method="POST">';
-				echo '<tr><td><span class="modify-' . $val->idUdruge . '">' . $val->nazivUdruge . '</span><input type="text" class="modifyOn-' . $val->idUdruge . '" style="display:none;" name="nazivUdruge" value="' . $val->nazivUdruge . '"><input type="hidden" name="idUdruge" value="' . $val->idUdruge . '"></td>';
-				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idUdruge . '" value="Spremi" /><a href="javascript:;" class="editUdruga modify-' . $val->idUdruge . '" data-id="' . $val->idUdruge . '">Uredi</a> &nbsp; <a class="deleteUdruga modify-' . $val->idUdruge . '" href="';
+				echo '<tr><td><span class="modify-' . $val->idUdruge . '">' . $val->nazivUdruge . '</span><input type="text" class="form-control modifyOn-' . $val->idUdruge . '" style="display:none;" name="nazivUdruge" value="' . $val->nazivUdruge . '"><input type="hidden" name="idUdruge" value="' . $val->idUdruge . '"></td>';
+				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idUdruge . '" value="Spremi" /><a href="javascript:;" class="editUdruga modify-' . $val->idUdruge . '" data-id="' . $val->idUdruge . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="deleteUdruga modify-' . $val->idUdruge . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'deleteUdruga'
 				));
-				echo '?id=' . $val->idUdruge . '">Obriši</a>';
+				echo '?id=' . $val->idUdruge . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a>';
 				echo '</td></tr></form>';
 			}
 		}
@@ -84,7 +84,7 @@ class UdrugaList extends AbstractView {
 								"action" => 'addUdruga'
 							)); ?>							  
 							  " method="post">
-							<td><input type="text" name="nazivUdruge" placeholder="Upišite naziv udruge"></td>
+							<td><input type="text" class="form-control" name="nazivUdruge" placeholder="Upišite naziv udruge"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
 						</form>
 					</tr>

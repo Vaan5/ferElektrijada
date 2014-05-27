@@ -51,14 +51,14 @@ class KategorijaList extends AbstractView {
 					"action" => 'modifyKategorija'
 				));
 				echo '" method="POST">';
-				echo '<tr><td><span class="modify-' . $val->idKategorijeSponzora . '">' . $val->tipKategorijeSponzora . '</span><input type="text" class="modifyOn-' . $val->idKategorijeSponzora . '" style="display:none;" name="tipKategorijeSponzora" value="' . $val->tipKategorijeSponzora . '"><input type="hidden" name="idKategorijeSponzora" value="' . $val->idKategorijeSponzora . '"></td>';
-				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idKategorijeSponzora . '" value="Spremi" /><a href="javascript:;" class="editKategorija modify-' . $val->idKategorijeSponzora . '" data-id="' . $val->idKategorijeSponzora . '">Uredi</a> &nbsp; <a class="deleteKategorija modify-' . $val->idKategorijeSponzora . '" href="';
+				echo '<tr><td><span class="modify-' . $val->idKategorijeSponzora . '">' . $val->tipKategorijeSponzora . '</span><input type="text" class="form-control modifyOn-' . $val->idKategorijeSponzora . '" style="display:none;" name="tipKategorijeSponzora" value="' . $val->tipKategorijeSponzora . '"><input type="hidden" name="idKategorijeSponzora" value="' . $val->idKategorijeSponzora . '"></td>';
+				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idKategorijeSponzora . '" value="Spremi" /><a href="javascript:;" class="editKategorija modify-' . $val->idKategorijeSponzora . '" data-id="' . $val->idKategorijeSponzora . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="deleteKategorija modify-' . $val->idKategorijeSponzora . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'deleteKategorija'
 				));
-				echo '?id=' . $val->idKategorijeSponzora . '">Obriši</a>';
+				echo '?id=' . $val->idKategorijeSponzora . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a>';
 				echo '</td></tr></form>';
 			}
 		}
@@ -84,7 +84,7 @@ class KategorijaList extends AbstractView {
 								"action" => 'addKategorija'
 							)); ?>							  
 							  " method="post">
-							<td><input type="text" name="tipKategorijeSponzora" placeholder="Upišite tip kategorije"></td>
+							<td><input type="text" class="form-control" name="tipKategorijeSponzora" placeholder="Upišite tip kategorije"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
 						</form>
 					</tr>

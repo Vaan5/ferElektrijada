@@ -2,6 +2,7 @@
 
 namespace ctl;
 use app\controller\Controller;
+use \app\model\NotFoundException;
 use \PDOException;
 
 class Ozsn implements Controller {
@@ -12,8 +13,8 @@ class Ozsn implements Controller {
     private function checkRole() {
         // you must be logged in, and an Ozsn member with or without leadership
 		$o = new \model\DBOsoba();
-		if (!(\model\DBOsoba::isLoggedIn() && (\model\DBOsoba::getUserRole() === 'O' ||
-			\model\DBOsoba::getUserRole() === 'OV') && $o->isActiveOzsn(session("auth")))) {
+		if (!((\model\DBOsoba::isLoggedIn() && (\model\DBOsoba::getUserRole() === 'O' ||
+			\model\DBOsoba::getUserRole() === 'OV') && $o->isActiveOzsn(session("auth"))) || (\model\DBOsoba::isLoggedIn() && \model\DBOsoba::getUserRole() === 'A' ))) {
 				preusmjeri(\route\Route::get('d1')->generate() . "?msg=accessDenied");
 		}
     }
@@ -135,7 +136,7 @@ class Ozsn implements Controller {
 			
 			$podrucja = $podrucje->getAll();
 			$voditelji = $osoba->getTeamLeaders($idElektrijade);
-		} catch (app\model\NotFoundException $e) {
+		} catch (\app\model\NotFoundException $e) {
 			$this->createMessage("Nepoznati identifikator!");
 		} catch (\PDOException $e) {
 			$handler = new \model\ExceptionHandlerModel($e);
@@ -168,7 +169,8 @@ class Ozsn implements Controller {
 				"resultMessage" => $this->resultMessage,
 				"voditelji" => $voditelji,
 				"podrucja" => $podrucja
-			))
+			)),
+			"script" => new \view\scripts\ozsn\TeamLeadersJs()
 		));
 	}
 	
@@ -203,7 +205,7 @@ class Ozsn implements Controller {
 				$smjerovi = $smjer->getAllSmjer();
 				$velicine = $velicina->getAllVelicina();
 				$mjesta = $mjesto->getAllRadnoMjesto();
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$this->createMessage("Nepostojeći zapis!", "d3", "ozsn", "displayTeamLeaders");
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
@@ -277,7 +279,7 @@ class Ozsn implements Controller {
 						"action" => "displayTeamLeaders"
 					)) . "?msg=succa");
 				}
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator!");
 				$_SESSION["exception"] = serialize($handler);
 				preusmjeri(\route\Route::get('d3')->generate(array(
@@ -305,7 +307,8 @@ class Ozsn implements Controller {
 				"smjerovi" => $smjerovi,
 				"godine" => $godine,
 				"zavodi" => $zavodi
-			))
+			)),
+			"script" => new \view\scripts\PersonFormJs()
 		));
 	}
 	
@@ -326,7 +329,7 @@ class Ozsn implements Controller {
 			
 			try {	
 				$osobe = $osoba->getAllPersons();
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$this->createMessage("Nepostojeći zapis!", "d3", "ozsn", "displayTeamLeaders");
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
@@ -372,7 +375,7 @@ class Ozsn implements Controller {
 					"controller" => "ozsn",
 					"action" => "displayTeamLeaders"
 				)) . "?msg=succa");
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator!");
 				$_SESSION["exception"] = serialize($handler);
 				preusmjeri(\route\Route::get('d3')->generate(array(
@@ -396,7 +399,8 @@ class Ozsn implements Controller {
 				"resultMessage" => $this->resultMessage,
 				"idPodrucja" => $idPodrucja,
 				"osobe" => $osobe
-			))
+			)),
+			"script" => new \view\scripts\ozsn\AddExistingTeamLeaderJs()
 		));
 	}
 	
@@ -432,15 +436,20 @@ class Ozsn implements Controller {
 				$sudjelovanje->delete();
 			}
 			
-			if($zast)
+			if($zast) {
 				session_destroy ();
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "login",
+					"action" => "display"
+				)));
+			}
 			
 			// okay lets redirect
 			preusmjeri(\route\Route::get('d3')->generate(array(
 				"controller" => "ozsn",
 				"action" => "displayTeamLeaders"
 			))  . "?msg=succd");
-		} catch (app\model\NotFoundException $e) {
+		} catch (\app\model\NotFoundException $e) {
 			$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayTeamLeaders");
 		} catch (\PDOException $e) {
 			$handler = new \model\ExceptionHandlerModel($e);
@@ -505,7 +514,7 @@ class Ozsn implements Controller {
 				$velicine = $velicina->getAllVelicina();
 				$velicina->loadIfExists($sudjelovanje->idVelicine);
 				
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayTeamLeaders");
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
@@ -681,7 +690,8 @@ class Ozsn implements Controller {
 				"zavod" => $zavod,
 				"smjer" => $smjer,
 				"idimaatribut" => $idImaAtribut
-			))
+			)),
+			"script" => new \view\scripts\PersonFormJs()
 		));
 	}
 	
@@ -998,6 +1008,7 @@ class Ozsn implements Controller {
                 "resultMessage" => $this->resultMessage
             )),
             "title" => "Pretraga Sudionika",
+			"script" => new \view\scripts\ozsn\ContestantListJs()
         ));
 	}
 	
@@ -1033,7 +1044,7 @@ class Ozsn implements Controller {
 			$mjesta = $mjesto->getAllRadnoMjesto();
 			$podrucja = $podrucje->getAll();
 			$atributi = $atribut->getAllAtributes();
-		} catch (app\model\NotFoundException $e) {
+		} catch (\app\model\NotFoundException $e) {
 			$this->createMessage("Nepostojeći zapis!");
 		} catch (\PDOException $e) {
 			$handler = new \model\ExceptionHandlerModel($e);
@@ -1061,6 +1072,27 @@ class Ozsn implements Controller {
 				$this->createMessage($validacija->decypherErrors($pov), "d3", "ozsn", "addContestant");
 			}
 			
+			if (postArray("idAtributa") !== false) {
+				if (post("idPodrucja") === false) {
+					$this->createMessage("Da biste dodali atribut morate odabrati i disciplinu!", "d3", "ozsn", "addContestant");
+				}
+				if (post("option") === '0') {
+					$this->createMessage("Ukoliko dodajete natjecatelja, atribut je suvišan!", "d3", "ozsn", "addContestant");
+				}
+				if (post("option") === false) {
+					$this->createMessage("Odaberite tip sudionika!", "d3", "ozsn", "addContestant");
+				}
+			}
+			if (post("idPodrucja") !== false && postArray("idAtributa") === false) {
+				if (post("option") === false) {
+					$this->createMessage("Odaberite opciju!", "d3", "ozsn", "addContestant");
+				}
+				if (post("option") === '1')
+					$this->createMessage("Da biste dodali natjecatelja, odaberite odgovarajuću opciju!", "d3", "ozsn", "addContestant");
+				if (post("option") === '2' && postArray("idAtributa") === false) {
+					$this->createMessage("Da biste dodali koordinatora, odaberite atribut!", "d3", "ozsn", "addContestant");
+				}
+			}
 			if (post("idPodrucja") === false && post("idAtributa") === true) {
 				$this->createMessage("Da biste dodali atribut morate odabrati i disciplinu!", "d3", "ozsn", "addContestant");
 			} else if (post("option") === false && !(post("idPodrucja") === false || post("idAtributa") === false)){
@@ -1095,8 +1127,10 @@ class Ozsn implements Controller {
 				
 				if (post("idPodrucja") !== false && post("idAtributa") !== false && (post("option") === '1' || post("option") === '2')) {
 					foreach (post("idAtributa") as $k => $v) {
-						$imaAtribut = new \model\DBImaatribut();
-						$imaAtribut->addRow(post("idPodrucja"), $v, $sudjelovanje->getPrimaryKey());
+						if ($v !== '') {
+							$imaAtribut = new \model\DBImaatribut();
+							$imaAtribut->addRow(post("idPodrucja"), $v, $sudjelovanje->getPrimaryKey());
+						}
 					}
 				}
 
@@ -1105,7 +1139,7 @@ class Ozsn implements Controller {
 					"controller" => "ozsn",
 					"action" => "searchContestants"
 				)) . "?msg=succa&a=1");
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "addContestant");
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
@@ -1126,7 +1160,8 @@ class Ozsn implements Controller {
 				"zavodi" => $zavodi,
 				"podrucja" => $podrucja,
 				"atributi" => $atributi
-			))
+			)),
+			"script" => new \view\scripts\PersonFormJs()
 		));
 	}
 	
@@ -1194,7 +1229,7 @@ class Ozsn implements Controller {
 				$podrucjaSudjelovanja = $podrucjeSudjelovanja->getAllContestantFields($sudjelovanje->getPrimaryKey());
 				$imaAtribute = $imaatribut->getAllContestantAttributes($sudjelovanje->getPrimaryKey());
 				
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$this->createMessage("Nepoznati sudionik", "d3", "ozsn", "searchContestants");
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
@@ -1332,7 +1367,7 @@ class Ozsn implements Controller {
 					"controller" => "ozsn",
 					"action" => "searchContestants"
 				)) . "?msg=succm&a=1");
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati sudionik");
 				$_SESSION["exception"] = serialize($handler);
 				preusmjeri(\route\Route::get('d3')->generate(array(
@@ -1373,7 +1408,8 @@ class Ozsn implements Controller {
 				"podrucja" => $podrucja,
 				"atributi" => $atributi,
 				"korisnikovaPodrucja" => $korisnikovaPodrucja
-			))
+			)),
+			"script" => new \view\scripts\PersonFormJs()
 		));
 	}
 	
@@ -1424,7 +1460,7 @@ class Ozsn implements Controller {
 					}
 				}
 				
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$this->createMessage("Nepoznati identifikator", "d3", "ozsn", "searchContestants");
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
@@ -1488,7 +1524,7 @@ class Ozsn implements Controller {
 					"controller" => "ozsn",
 					"action" => "searchContestants"
 				)) . "?a=1&msg=succm");
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator");
 				$_SESSION["exception"] = serialize($handler);
 				preusmjeri(\route\Route::get('d3')->generate(array(
@@ -1539,7 +1575,7 @@ class Ozsn implements Controller {
 			} else {
 				$this->createMessage("Osoba nije sudionik!", "d3", "ozsn", "searchContestants");
 			}
-		} catch (app\model\NotFoundException $e) {
+		} catch (\app\model\NotFoundException $e) {
 			$this->createMessage("Nepoznati sudionik!", "d3", "ozsn", "searchContestants");
 		} catch (\PDOException $e) {
 			$handler = new \model\ExceptionHandlerModel($e);
@@ -1554,7 +1590,7 @@ class Ozsn implements Controller {
 		try {
 			$podrucje = new \model\DBPodrucje();
 			$podrucja = $podrucje->getAllExceptKnowledgeAndSport();
-		} catch (app\model\NotFoundException $e) {
+		} catch (\app\model\NotFoundException $e) {
 			$this->createMessage("Nepoznati identifikator");
 		} catch (\PDOException $e) {
 			$handler = new \model\ExceptionHandlerModel($e);
@@ -1589,7 +1625,7 @@ class Ozsn implements Controller {
 				
 				$idElektrijade = $elektrijada->getCurrentElektrijadaId();
 				$osobe = $podrucjeSudjelovanja->getCollectedMoney($idPodrucja, $idElektrijade);
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayCollectedMoney");
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
@@ -1629,7 +1665,7 @@ class Ozsn implements Controller {
 								"controller" => "ozsn",
 								"action" => "disciplineMoney"
 							)) . "?msg=succm&id=" . post("idPodrucja"));
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator");
 				$_SESSION["exception"] = serialize($handler);
 				preusmjeri(\route\Route::get('d3')->generate(array(
@@ -1741,7 +1777,7 @@ class Ozsn implements Controller {
 		try {
 			$idElektrijada = $elektrijada->getCurrentElektrijadaId();
 			$elektrijada->load($idElektrijada);
-		} catch (app\model\NotFoundException $e) {
+		} catch (\app\model\NotFoundException $e) {
 			$this->createMessage("Nepoznata Elektrijada!");
 		} catch (\PDOException $e) {
 			$handler = new \model\ExceptionHandlerModel($e);
@@ -1784,7 +1820,8 @@ class Ozsn implements Controller {
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage,
 				"elektrijada" => $elektrijada
-			))
+			)),
+			"script" => new \view\scripts\ElektrijadaFormJs()
 		));
 	}
 	
@@ -1974,7 +2011,7 @@ class Ozsn implements Controller {
         $obavljaFunkciju = new \model\DBObavljaFunkciju();
         try {
 			if ($obavljaFunkciju->checkOzsnFunction(get("id"), session("auth"))) {
-				$obavljaFunkciju->deleteRow(get("id"));
+				$obavljaFunkciju->deleteIfNotLast(get("id"));
 			} else {
 				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Ne možete brisati tuđe funkcije!");
 				$this->createMessage($handler, "d3", "ozsn", "displayUserFunctions");
@@ -3225,7 +3262,8 @@ class Ozsn implements Controller {
 				"kategorije" => $kategorije,
 				"promocije" => $promocije
 				)),
-			"title" => "Dodavanje Sponzora"
+			"title" => "Dodavanje Sponzora",
+			"script" => new \view\scripts\SponzorFormJs()
 		));
     }
 	
@@ -3376,7 +3414,8 @@ class Ozsn implements Controller {
 				"kategorija" => $kategorija,
 				"promocija" => $promocija
 				)),
-			"title" => "Mijenjanje Sponzora"
+			"title" => "Mijenjanje Sponzora",
+			"script" => new \view\scripts\SponzorFormJs()
 		));
     }
 	
@@ -3780,7 +3819,8 @@ class Ozsn implements Controller {
 				"kategorija" => $kategorija,
 				"promocija" => $promocija
 				)),
-			"title" => "Mijenjanje Ovogodišnjeg Sponzora"
+			"title" => "Mijenjanje Ovogodišnjeg Sponzora",
+			"script" => new \view\scripts\ActiveSponzorFormJs()
 		));
     }
 	
@@ -3912,7 +3952,8 @@ class Ozsn implements Controller {
 				"sponzori" => $sponzori,
 				"podrucja" => $podrucja
 				)),
-			"title" => "Pojedinačne Donacije"
+			"title" => "Pojedinačne Donacije",
+			"script" => new \view\scripts\AreaSponzorFormJs()
 		));
     }
 	
@@ -3981,7 +4022,8 @@ class Ozsn implements Controller {
 				"sponelekpod" => $sponElekPod,
 				"podrucja" => $podrucja
 				)),
-			"title" => "Ažuriranje Sponzora Discipline"
+			"title" => "Ažuriranje Sponzora Discipline",
+			"script" => new \view\scripts\AreaSponzorFormJs()
 		));
     }
 	
@@ -4369,7 +4411,8 @@ class Ozsn implements Controller {
 				"tvrtka" => $tvrtka,
 				"usluga" => $usluga,
 				"usluge" => $usluge
-				))
+			)),
+			"script" => new \view\scripts\TvrtkaAssignFormJs()
 		));
     }
     
@@ -5225,6 +5268,7 @@ class Ozsn implements Controller {
 			
 			try {
 				$podrucja = $podrucje->getAllForReport();
+				$korijenski = $podrucje->getRoot();
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
 				$this->errorMessage = $handler;
@@ -5232,7 +5276,13 @@ class Ozsn implements Controller {
 			
 			if ($podrucja !== null && count($podrucja)) {
 				foreach ($podrucja as $v) {
-					$array[] = array($v->nazivPodrucja, $v->tip);
+					$array[] = array($v->nazivPodrucja, $v->kategorija);
+				}
+			}
+			
+			if ($korijenski !== null && count($korijenski)) {
+				foreach ($korijenski as $v) {
+					$array[] = array($v->nazivPodrucja, "Vršna disciplina");
 				}
 			}
 			
@@ -5339,12 +5389,13 @@ class Ozsn implements Controller {
 		}
 		
 		echo new \view\Main(array(
-			"title" => "Hall Of Fame",
+			"title" => "Povijest sudjelovanja",
 			"body" => new \view\ozsn\HallOfFame(array(
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage,
 				"rezultati" => $rezultati
-			))
+			)),
+			"script" => new \view\scripts\ozsn\HallOfFameJs()
 		));
 	}
 	
@@ -5362,7 +5413,7 @@ class Ozsn implements Controller {
 			// get data to show
 			try {
 				$elektrijade = $elektrijada->getAll();
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$this->createMessage("Nepoznata elektrijada!");
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
@@ -5373,7 +5424,7 @@ class Ozsn implements Controller {
 				$o = new \model\DBObjavaOElektrijadi();
 				$rezultati = $o->getAllActive(post("idElektrijade"));
 				$_SESSION['search'] = post("idElektrijade");
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayObjavaReport");
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
@@ -5386,7 +5437,7 @@ class Ozsn implements Controller {
 				$o = new \model\DBObjavaOElektrijadi();
 				$id = unserialize(session("search"));
 				$rezultati = $o->getAllActive($id);
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayObjavaReport");
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
@@ -5444,7 +5495,7 @@ class Ozsn implements Controller {
 				$mobiteli = $mob->getContactNumbers(get("idKontakta"));
 				$mailovi = $mail->getContactEmails(get("idKontakta"));
 				$_SESSION['search'] = serialize(get("idKontakta"));
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayContacts");
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
@@ -5481,7 +5532,7 @@ class Ozsn implements Controller {
 					
 					$info[] = array("Medij", $m->nazivMedija);
 				}
-			} catch (app\model\NotFoundException $e) {
+			} catch (\app\model\NotFoundException $e) {
 				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayContacts");
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
@@ -5489,6 +5540,7 @@ class Ozsn implements Controller {
 			}
 			
 			$array = array();
+			$array[] = array("", "Kontakt informacije");
 			$array[] = array("Ime", $k->imeKontakt);
 			$array[] = array("Prezime", $k->prezimeKontakt);
 			$array[] = array("Radno Mjesto", $k->radnoMjesto);
@@ -5519,7 +5571,6 @@ class Ozsn implements Controller {
 		
 		echo new \view\Main(array(
 			"title" => "Informacije o Kontaktima",
-			"script" => new \view\scripts\ozsn\ContactInfoJs(),
 			"body" => new \view\ozsn\ContactInfo(array(
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage,

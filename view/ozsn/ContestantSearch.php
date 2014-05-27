@@ -20,7 +20,24 @@ class ContestantSearch extends AbstractView {
 		
 		if ($this->osobe !== null) {
 			if (count($this->osobe)) {
+				
+				echo new \view\components\AddNewLink(array(
+					"link" => \route\Route::get('d3')->generate(array(
+						"controller" => 'ozsn',
+						"action" => 'addContestant'
+					)),
+					"buttonText" => 'Dodaj sudionika'
+				));
+				
+				echo new \view\components\DownloadLinks(array(
+					"route" => \route\Route::get('d3')->generate(array(
+						"controller" => 'ozsn',
+						"action" => 'searchContestants'
+					))
+				));
 ?>
+			<br><br>
+			
 			<div class="panel panel-default">
 				<div class="panel-heading">Sudionici</div>
 				
@@ -44,25 +61,19 @@ class ContestantSearch extends AbstractView {
 					"controller" => 'ozsn',
 					"action" => 'modifyContestant'
 				));
-				echo '?id=' . $val->idOsobe . '">Uredi</a> &nbsp; <a href="';
+				echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="deleteContestant" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'deleteContestant'
 				));
-				echo '?id=' . $val->idOsobe . '">Obriši</a></td></tr>';
+				echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a></td></tr>';
 			}
 ?>
 				</tbody>
 			</table>
 		</div>
 <?php
-			echo new \view\components\DownloadLinks(array(
-				"route" => \route\Route::get('d3')->generate(array(
-					"controller" => 'ozsn',
-					"action" => 'searchContestants'
-				))
-			));
 			} else {
 				echo new \view\components\ErrorMessage(array(
 					"errorMessage" => "Ne postoji niti jedan sudionik koji odgovara parametrima pretrage!"

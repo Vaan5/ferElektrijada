@@ -428,8 +428,8 @@ CREATE TABLE PodrucjeSudjelovanja (
     rezultatPojedinacni SMALLINT,
     vrstaPodrucja TINYINT(1) DEFAULT '0',
     ukupanBrojSudionika INT,
-	iznosUplate INT,
-    valuta VARCHAR(3),
+	iznosUplate decimal(13,2) DEFAULT NULL,
+    valuta VARCHAR(3) DEFAULT NULL,
     PRIMARY KEY (idPodrucjeSudjelovanja),
     UNIQUE (idPodrucja , idSudjelovanja, vrstaPodrucja),
     FOREIGN KEY (idPodrucja)
@@ -472,7 +472,5 @@ CREATE TABLE ObjavaOElektrijadi (
 );
 
 
-
-
-
-
+INSERT INTO `osoba` (`idOsobe`, `ime`, `prezime`, `mail`, `brojMob`, `ferId`, `password`, `JMBAG`, `spol`, `datRod`, `brOsobne`, `brPutovnice`, `osobnaVrijediDo`, `putovnicaVrijediDo`, `uloga`, `zivotopis`, `MBG`, `OIB`, `idNadredjena`, `aktivanDokument`) VALUES
+(1, 'Root', 'Root', 'root@fer.hr', NULL, 'Root', 'dc76e9f0c0006e8f919e0c515c66dbba3982f785', NULL, 'M', NULL, NULL, NULL, NULL, NULL, 'A', NULL, NULL, NULL, NULL, 1);

@@ -19,7 +19,7 @@ class AdminNavbar extends AbstractView{
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'administrator',
                     "action" => 'addElektrijada'
-                ));?>">Dodaj Elektrijadu</a></li>
+                ));?>">Dodaj elektrijadu</a></li>
           </ul>
         </li>
                 <li class="dropdown">
@@ -35,17 +35,17 @@ class AdminNavbar extends AbstractView{
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'administrator',
                     "action" => 'searchOzsn'
-                ));?>">Pretraži Aktivne Članove</a></li>
+                ));?>">Pretraži aktivne članove</a></li>
             <li class="divider"></li>
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'administrator',
                     "action" => 'listOldOzsn'
-                ));?>">Prikaži Stare Članove</a></li>
+                ));?>">Prikaži stare članove</a></li>
             <li class="divider"></li>
             <li><a href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'administrator',
                     "action" => 'searchPersons'
-                ));?>">Pretraži Osobe</a></li>
+                ));?>">Pretraži osobe</a></li>
           </ul>
         </li>
     </ul>

@@ -18,7 +18,14 @@ class MyDisciplines extends AbstractView {
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
+		
+		echo new \view\components\DownloadLinks(array("route" => \route\Route::get("d3")->generate(array(
+			"controller" => "voditelj",
+			"action" => "displayPodrucja"
+		))));
 ?>
+		<br><br>
+		
 		<div class="panel panel-default">
 			<div class="panel-heading">Upravljanje Disciplinom</div>
 
@@ -38,24 +45,27 @@ class MyDisciplines extends AbstractView {
 			foreach($this->podrucja as $val)
 			{
 				echo "<tr>";
-				echo "<td>" . $val->nazivPodrucja . "</td>";
+				echo "<td><a href=\"" . \route\Route::get('d3')->generate(array(
+						"controller" => "voditelj",
+						"action" => "displayTeam"
+					)) .  "?id=" . $val->idPodrucja . "\">" . $val->nazivPodrucja . "</a></td>";
 				if (!$this->disabled) {
 					echo "<td><a href=\"" . \route\Route::get('d3')->generate(array(
 						"controller" => "voditelj",
 						"action" => "assignExistingPerson"
-					)) .  "?id=" . $val->idPodrucja . "\">Dodaj postojećeg natjecatelja</a>&nbsp;&nbsp;<a href=\"" . 
+					)) .  "?id=" . $val->idPodrucja . "\">".'<span class="glyphicon glyphicon-plus"></span>'." Dodaj postojećeg natjecatelja</a>&nbsp;&nbsp;&nbsp;<a href=\"" . 
 						\route\Route::get('d3')->generate(array(
 						"controller" => "voditelj",
 						"action" => "assignNewPerson"
-					)) . "?id=" . $val->idPodrucja ."\">Dodaj novog natjecatelja</a>&nbsp;&nbsp;<a href=\"" . 
+					)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-plus"></span>'." Dodaj novog natjecatelja</a>&nbsp;&nbsp;&nbsp;<a href=\"" . 
 						\route\Route::get('d3')->generate(array(
 						"controller" => "voditelj",
 						"action" => "modifyCompetitionData"
-					)) . "?id=" . $val->idPodrucja ."\">Uredi područje</a>&nbsp;&nbsp;<a href=\"" . 
+					)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-pencil"></span>'." Uredi područje</a>&nbsp;&nbsp;<a href=\"" . 
 						\route\Route::get('d3')->generate(array(
 						"controller" => "voditelj",
 						"action" => "modifyResults"
-					)) . "?id=" . $val->idPodrucja ."\">Rezultati</a></td>";				
+					)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-list-alt"></span>'." Rezultati</a></td>";				
 				} else {
 					echo "<td>Istekao je rok za promjene</td>";
 				}
@@ -75,11 +85,6 @@ class MyDisciplines extends AbstractView {
 			</table>
 		</div>
 <?php
-
-	echo new \view\components\DownloadLinks(array("route" => \route\Route::get("d3")->generate(array(
-			"controller" => "voditelj",
-			"action" => "displayPodrucja"
-		))));
 	}
 	
 	public function setErrorMessage($errorMessage) {

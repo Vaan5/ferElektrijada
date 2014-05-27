@@ -26,9 +26,9 @@ class Profile extends AbstractView {
             "errorMessage" => $this->errorMessage
         ));
 		if ($this->disabled)
-			echo new \view\components\ResultMessage(array(
-			"resultMessage" => "Protekao je rok za unos promjena!"
-			));
+			echo new \view\components\ErrorMessage(array(
+			"errorMessage" => "Protekao je rok za unos promjena!"
+		));
 	
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage

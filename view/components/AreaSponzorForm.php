@@ -14,13 +14,14 @@ class AreaSponzorForm extends AbstractView {
     protected function outputHTML() {
 ?>
 
-	<form method="post" action="<?php echo $this->route;?>">
+	<form id="areaSponzorForm" method="post" class="form-horizontal" role="form" action="<?php echo $this->route;?>">
 <?php
 		if(!$this->sponelekpod)
 		{
-?>
-		<label for="sponzor">Sponzor</label><br>
-		<select name="idSponzora">
+?>              <div class="form-group">
+		<label for="sponzor" class="col-sm-3 control-label">Sponzor</label>
+		<div class="col-sm-7">
+                <select name="idSponzora" class="form-control">
 			<option selected="selected" value="" disabled>Odaberi</option>
 <?php
 		foreach($this->sponzori as $val)
@@ -28,12 +29,13 @@ class AreaSponzorForm extends AbstractView {
 			echo '<option value="' . $val->idSponzora . '">' . $val->imeTvrtke . '</option>';
 		}
 ?>					
-		</select><br><br>
+                </select></div></div>
 		
 <?php } ?>
-		
-		<label for="podrucje">Područje</label><br>
-		<select name="idPodrucja">
+		<div class="form-group">
+		<label for="podrucje" class="col-sm-3 control-label">Područje</label>
+		<div class="col-sm-7">
+                <select name="idPodrucja" class="form-control">
 			<option <?php if(!$this->sponelekpod) echo 'selected="selected"'; ?> value=""><?php if(!$this->sponelekpod) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
 <?php
 		foreach($this->podrucja as $val)
@@ -46,16 +48,16 @@ class AreaSponzorForm extends AbstractView {
 			echo '>' . $val->nazivPodrucja . '</option>';
 		}
 ?>					
-		</select><br><br>
+                </select></div></div>
 		
 		<div class="form-group">
 			<label for="iznosDonacije" class="col-sm-3 control-label">Iznos donacije</label>
-			<div class="col-sm-9">
+			<div class="col-sm-7">
 				<div class="input-group">
 					<input type="text" name="iznosDonacije" class="form-control" placeholder="Upišite iznos donacije" <?php if($this->sponelekpod && $this->sponelekpod->iznosDonacije) echo 'value="' . $this->sponelekpod->iznosDonacije . '"' ?> />
 					
 					<div class="input-group-btn">
-						<select name="valutaDonacije" class="form-control btn btn-default" style="width:80px;">
+						<select name="valutaDonacije" class="form-control btn btn-primary" style="width:80px;">
 						<option <?php if(!$this->sponelekpod || ($this->sponelekpod && $this->sponelekpod->valutaDonacije == 'HRK')) echo 'selected="selected"' ?> value="HRK">HRK</option>
 						<option <?php if($this->sponelekpod && $this->sponelekpod->valutaDonacije == 'USD') echo 'selected="selected"' ?> value="USD">USD</option>
 						<option <?php if($this->sponelekpod && $this->sponelekpod->valutaDonacije == 'EUR') echo 'selected="selected"' ?> value="EUR">EUR</option>
@@ -66,14 +68,14 @@ class AreaSponzorForm extends AbstractView {
 			</div>
 		</div>
 		
-		<br><br>
-		
-		<label for="napomena">Napomena</label><br>
-		<textarea name="napomena"><?php if($this->sponelekpod && $this->sponelekpod->napomena) echo $this->sponelekpod->napomena; ?></textarea>
-		
+		<div class="form-group">
+		<label for="napomena" class="col-sm-3 control-label">Napomena</label>
+		<div class="col-sm-7">
+                <textarea name="napomena" class="form-control"><?php if($this->sponelekpod && $this->sponelekpod->napomena) echo $this->sponelekpod->napomena; ?></textarea>
+                </div></div>
 		<br>
 		
-		<input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText; ?>" />
+                <center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText; ?>" /></center>
     </form>
 
 <?php

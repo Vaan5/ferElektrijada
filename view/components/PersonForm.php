@@ -38,7 +38,9 @@ class PersonForm extends AbstractView {
     protected function outputHTML() {
 		
 ?>
-        <form class="form-horizontal" role="form" action="<?php echo $this->postAction;?>" method="POST" enctype="multipart/form-data">
+        <form class="form-horizontal" id="personForm" role="form" action="<?php echo $this->postAction;?>" method="POST" enctype="multipart/form-data">
+			<input type="text" style="display:none;">
+			<input type="password" style="display:none;">
         <div class="form-group">
             <label for="korisnickoime" class="col-sm-3 control-label">Korisničko ime</label>            
             <div class="col-sm-9">
@@ -103,7 +105,7 @@ if($this->osoba){ ?>
 		<div class="form-group">
             <label for="spol" class="col-sm-3 control-label">Spol</label>
         <div class="col-sm-9">
-			<input type="radio" name="spol" value="M" <?php if($this->osoba && $this->osoba->spol == 'M'){ echo 'checked'; } ?>> Muški
+			<input style="margin-top: 11px" type="radio" name="spol" value="M" <?php if($this->osoba && $this->osoba->spol == 'M'){ echo 'checked'; } ?>> Muški
 			&nbsp; &nbsp;
 			<input type="radio" name="spol" value="Ž" <?php if($this->osoba && $this->osoba->spol == 'Ž'){ echo 'checked'; } ?>> Ženski
         </div>        
@@ -172,7 +174,7 @@ if($this->osoba){ ?>
 	<div class="form-group">
             <label for="aktivanDokument" class="col-sm-3 control-label">Dokument za putovanje</label>
         <div class="col-sm-9">
-			<input type="radio" name="aktivanDokument" value="0" <?php if($this->osoba && $this->osoba->aktivanDokument == '0'){ echo 'checked'; } ?>> Putovnica
+			<input type="radio" style="margin-top: 22px" name="aktivanDokument" value="0" <?php if($this->osoba && $this->osoba->aktivanDokument == '0'){ echo 'checked'; } ?>> Putovnica
 			&nbsp; &nbsp;
 			<input type="radio" name="aktivanDokument" value="1" <?php if($this->osoba && $this->osoba->aktivanDokument == '1'){ echo 'checked'; } ?>> Osobna iskaznica
         </div>        
@@ -204,7 +206,7 @@ if($this->osoba){ ?>
 ?>              <div class="form-group">
 		<label for="logotip" class="col-sm-3 control-label">Životopis</label>
 		<div class="col-sm-9">
-                <input type="file" name="datoteka" />
+                <input style="margin-top: 6px" type="file" name="datoteka" />
                 </div>
                 </div>
 <?php
@@ -236,10 +238,26 @@ if($this->osoba){ ?>
         </div>
 	
 <?php }
-	if ($this->smjerovi !== null) {
+
+	if ($this->showTip !== false) {
+?>
+		<div class="form-group">
+            <label for="tip" class="col-sm-3 control-label">Tip sudionika</label>
+        <div class="col-sm-9">
+			<input type="radio" style="margin-top: 11px" name="tip" value="S" <?php if ($this->sudjelovanje !== null && $this->sudjelovanje->tip == "S") echo "checked"?>> Student
+			&nbsp; &nbsp;
+			<input type="radio" name="tip" value="D" <?php if ($this->sudjelovanje !== null && $this->sudjelovanje->tip == "D") echo "checked"?>> Djelatnik
+			<?php if (session("vrsta") === "OV") {?>
+			&nbsp; &nbsp;
+			<input type="radio" name="tip" value="O" <?php if ($this->sudjelovanje !== null && $this->sudjelovanje->tip == "O") echo "checked"?>> Ozsn
+			<?php } ?>
+        </div>        
+        </div>
+<?php
+		}
 ?>
 	
-	<div class="form-group">	
+	<div id="smjerField" <?php if(!$this->smjer || $this->smjerovi === null) echo 'style="display:none;"'; ?> class="form-group">	
                 <label for="smjer" class="col-sm-3 control-label">Smjer</label>
 		<div class="col-sm-9">
                 <select name="idSmjera" class="form-control">
@@ -259,11 +277,7 @@ if($this->osoba){ ?>
 </select></div>
         </div>
 	
-<?php }
-	if ($this->zavodi !== null) {
-?>
-	
-	<div class="form-group">	
+	<div id="zavodField" <?php if(!$this->zavod || $this->zavodi === null) echo 'style="display:none;"'; ?> class="form-group">	
                 <label for="zavod" class="col-sm-3 control-label">Zavod</label>
 		<div class="col-sm-9">
                 <select name="idZavoda" class="form-control">
@@ -283,10 +297,7 @@ if($this->osoba){ ?>
 </select></div>
         </div>
 	
-<?php }
-	if ($this->godine !== null) {
-?>
-	<div class="form-group">	
+	<div id="godStudField" <?php if(!$this->godina || $this->godine === null) echo 'style="display:none;"'; ?> class="form-group">	
                 <label for="godina" class="col-sm-3 control-label">Godina studija</label>
 		<div class="col-sm-9">
                 <select name="idGodStud" class="form-control">
@@ -306,11 +317,7 @@ if($this->osoba){ ?>
 </select></div>
         </div>
 	
-<?php }
-	if ($this->radnaMjesta !== null) {
-?>	
-
-	<div class="form-group">	
+	<div id="radnoMjestoField" <?php if(!$this->radnoMjesto || $this->radnaMjesta === null) echo 'style="display:none;"'; ?> class="form-group">	
                 <label for="radnomjesto" class="col-sm-3 control-label">Radno mjesto</label>
 		<div class="col-sm-9">
                 <select name="idRadnogMjesta" class="form-control">
@@ -330,30 +337,31 @@ if($this->osoba){ ?>
 </select></div>
         </div>
 	
-	<?php }} 
-		if ($this->showTip !== false) {
-?>
+<?php }
+
+		if ($this->showOption !== false) {
+		?>
 		<div class="form-group">
-            <label for="tip" class="col-sm-3 control-label">Tip sudionika</label>
+            <label for="opcija" class="col-sm-3 control-label">Natjecatelj ili Koordinator</label>
         <div class="col-sm-9">
-			<input type="radio" name="tip" value="S" <?php if ($this->sudjelovanje !== null && $this->sudjelovanje->tip == "S") echo "checked"?>> Student
+			<input style="margin-top:20px;" type="radio" name="option" value="0" > Natjecatelj
 			&nbsp; &nbsp;
-			<input type="radio" name="tip" value="D" <?php if ($this->sudjelovanje !== null && $this->sudjelovanje->tip == "D") echo "checked"?>> Djelatnik
-			<?php if (session("vrsta") === "OV") {?>
+			<input type="radio" name="option" value="1" > Koordinator
 			&nbsp; &nbsp;
-			<input type="radio" name="tip" value="O" <?php if ($this->sudjelovanje !== null && $this->sudjelovanje->tip == "O") echo "checked"?>> Ozsn
-			<?php } ?>
+			<input type="radio" name="option" value="2" > Natjecatelj i Koordinator
+			<span id="lastOption"></span>
         </div>        
         </div>
 <?php
 		}
+
 		if ($this->podrucja !== null) {
 ?>	
 
 	<div class="form-group">	
                 <label for="podrucja" class="col-sm-3 control-label">Disciplina</label>
 		<div class="col-sm-9">
-                <select name="idPodrucja" class="form-control">
+                <select name="idPodrucja" id="idPodrucjaSelect" class="form-control">
 			<option <?php if(!$this->podrucje) echo 'selected="selected"'; ?> value=""><?php if(!$this->podrucje) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
 
 <?php
@@ -374,12 +382,10 @@ if($this->osoba){ ?>
 			if ($this->atributi !== null) {
 ?>	
 
-	<div class="form-group">	
+	<div id="atributField" <?php if(!$this->atribut) echo 'style="display:none;"'; ?> class="form-group">	
                 <label for="atributi" class="col-sm-3 control-label">Atribut</label>
 		<div class="col-sm-9">
-                <select name="idAtributa[]" class="form-control" multiple>
-			<option <?php if(!$this->atribut) echo 'selected="selected"'; ?> value=""><?php if(!$this->atribut) echo '(prazno)'; else echo '(prazno)'; ?></option>
-
+                <select name="idAtributa[]" id="idAtributaSelect" class="form-control" multiple>
 <?php
 		foreach($this->atributi as $val)
 		{
@@ -391,30 +397,18 @@ if($this->osoba){ ?>
 			echo '>' . $val->nazivAtributa . '</option>';
 		}
 ?>					
-</select></div>
+</select>
+		<span style="font-size: 12px">NAPOMENA: Za višestruki odabir držite tipku CTRL i mišem kliknite na željene elektrijade</span>
+		</div>
         </div>
 	
 	<?php }
-	if ($this->showOption !== false) {
-		?>
-		<div class="form-group">
-            <label for="opcija" class="col-sm-3 control-label">Natjecatelj ili Koordinator</label>
-        <div class="col-sm-9">
-			<input type="radio" name="option" value="0" > Natjecatelj
-			&nbsp; &nbsp;
-			<input type="radio" name="option" value="1" > Koordinator
-			&nbsp; &nbsp;
-			<input type="radio" name="option" value="2" > Natjecatelj i Koordinator
-        </div>        
-        </div>
-<?php
-		}
 		if ($this->showVrstaPodrucja !== false) {
 ?>
 		<div class="form-group">
             <label for="vrstaPodrucja" class="col-sm-3 control-label">Vrsta discipline</label>
         <div class="col-sm-9">
-			<input type="radio" name="vrstaPodrucja" value="1" <?php if ($this->podrucjeSudjelovanja !== null && $this->podrucjeSudjelovanja->vrstaPodrucja == 1) echo "checked" ?>> Timsko natjecanje
+			<input type="radio" style="margin-top:11px" name="vrstaPodrucja" value="1" <?php if ($this->podrucjeSudjelovanja !== null && $this->podrucjeSudjelovanja->vrstaPodrucja == 1) echo "checked" ?>> Timsko natjecanje
 			&nbsp; &nbsp;
 			<input type="radio" name="vrstaPodrucja" value="0" <?php if ($this->podrucjeSudjelovanja !== null && $this->podrucjeSudjelovanja->vrstaPodrucja == 0) echo "checked" ?>> Pojedinačno natjecanje
         </div>        

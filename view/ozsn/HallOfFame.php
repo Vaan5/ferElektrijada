@@ -17,11 +17,87 @@ class HallOfFame extends AbstractView {
             "resultMessage" => $this->resultMessage
         ));
 		
+		$brPodrucja = NULL;
+		
 		// izgeneriraj prikaz rezultata: dakle ukupan za cijelu elektrijadu, ukupan za znanje i ostale korijenske discipline (idNadredjene  = NULL)
 		// + za svako podrucje rezultat
 		// ISPITAJ KRAJNJE SLUCAJEVE
-	
-		var_dump($this->rezultati);
+		
+		// Separate all elektrijade into another array
+		foreach($this->rezultati as $val)
+		{
+			if(!isset($elektrijade[$val->datumPocetka]))
+			{
+				$elektrijade[$val->datumPocetka] = array(
+					"idElektrijade" => $val->idElektrijade,
+					"mjestoOdrzavanja" => $val->mjestoOdrzavanja,
+					"datumPocetka" => $val->datumPocetka,
+					"datumKraja" => $val->datumKraja,
+					"ukupniRezultat" => $val->ukupniRezultat,
+					"rokZaZnanje" => $val->rokZaZnanje,
+					"rokZaSport" => $val->rokZaSport,
+					"drzava" => $val->drzava,
+					"ukupanBrojSudionika" => $val->ukupanBrojSudionika
+				);
+			}
+			
+			if(isset($val->idPodrucja))
+			{
+				if(!isset($brPodrucja[$val->idElektrijade])) $brPodrucja[$val->idElektrijade] = 0;
+				$brPodrucja[$val->idElektrijade]++;
+			}
+		}
+		
+		foreach($elektrijade as $val)
+		{
+?>
+		<div class="panel panel-default">
+			<div class="panel-heading"><?php echo $val["mjestoOdrzavanja"] . ' ' . date('Y', strtotime($val["datumPocetka"])); ?></div>
+			
+			<div class="panel-body">
+				<div style="float:left;padding-right:200px;">
+					<p><b>Mjesto:</b> <?php echo $val["mjestoOdrzavanja"] . ', ' . $val["drzava"]; ?></p>
+					<p><b>Datum početka:</b> <?php echo date('d.m.Y', strtotime($val["datumPocetka"])); ?></p>
+					<p><b>Datum kraja:</b> <?php echo date('d.m.Y', strtotime($val["datumKraja"])); ?></p>
+				</div>
+				<div style="float:left;">
+					<p><b>Broj sudionika:</b> <?php echo $val["ukupanBrojSudionika"]; ?></p>
+					<p><b>Ukupni rezultat:</b> <?php echo $val["ukupniRezultat"]; ?></p>
+				</div>
+			</div>
+<?php
+			if(isset($brPodrucja[$val["idElektrijade"]]))
+			{
+?>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Disciplina</th>
+						<th>Broj ekipa</th>
+						<th>Rezultat</th>
+						<th>Slika</th>
+					</tr>
+					
+					<tbody>
+<?php
+				foreach($this->rezultati as $val2)
+				{
+					if($val2->idElektrijade == $val["idElektrijade"])
+					{
+						echo '<tr><td>' . $val2->nazivPodrucja . '</td><td>' . $val2->ukupanBrojEkipa . '</td><td>' . $val2->rezultatGrupni . '</td><td>';
+						if($val2->slikaLink) echo '<a class="fancyboxLoader" href="' . $val2->slikaLink . '">Prikaži</a>';
+						else echo '<i>Ne postoji</i>';
+						echo '</td></tr>';
+					}
+				}	
+?>
+					</tbody>
+				</thead>
+			</table>
+<?php		} ?>
+		</div>
+<?php
+		}
     }
     
     public function setErrorMessage($errorMessage) {

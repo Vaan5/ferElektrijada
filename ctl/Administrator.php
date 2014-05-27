@@ -178,6 +178,7 @@ class Administrator implements Controller {
                         post('JMBAG', null), post('spol', null), post('datRod', null), post('brOsobne', null), post('brPutovnice', null), post('osobnaVrijediDo', null),
                         post('putovnicaVrijediDo', null), 'A', NULL, post('MBG', null), post('OIB', null), post("aktivanDokument", "0"));
                     // redirect with according message
+					$_SESSION["user"] = $osoba->ime === NULL ? null : $osoba->ime;
                     preusmjeri(\route\Route::get('d1')->generate() . "?msg=profSucc");
                 } catch(\PDOException $e) {
                     $handler = new \model\ExceptionHandlerModel($e);
@@ -202,7 +203,9 @@ class Administrator implements Controller {
 					"admin" => $osoba
 				)),
             "title" => "Uređivanje profila",
-            "script" => new \view\scripts\PersonFormJs()
+            "script" => new \view\scripts\PersonFormJs(array(
+				"modification" => true
+			))
         ));
     }
 
@@ -264,7 +267,7 @@ class Administrator implements Controller {
             "body" => new \view\administrator\OzsnAdding(array(
                     "errorMessage" => $this->errorMessage
                 )),
-            "title" => "Dodavanje članova odbora",
+            "title" => "Novi član",
             "script" => new \view\scripts\PersonFormJs()
         ));
         
@@ -407,7 +410,7 @@ class Administrator implements Controller {
                 $this->errorMessage = $validacija->decypherErrors($pov);
                 try {
                     $osoba->load(post('idOsobe'));
-                } catch (app\model\NotFoundException $e) {
+                } catch (\app\model\NotFoundException $e) {
                     
                 } catch (\PDOException $e) {
                     $handler = new \model\ExceptionHandlerModel($e);
@@ -491,7 +494,9 @@ class Administrator implements Controller {
                 "osoba" => $osoba
             )),
             "title" => "Ažuriranje Člana Odbora",
-            "script" => new \view\scripts\PersonFormJs()
+            "script" => new \view\scripts\PersonFormJs(array(
+				"modification" => "true"
+			))
         ));  
         
     }
@@ -833,7 +838,7 @@ class Administrator implements Controller {
                 "resultMessage" => $this->resultMessage,
                 "clanovi" => $clanovi
             )),
-            "title" => "Prošlogodišnji članovi odbora"
+            "title" => "Prošlogodišnji Članovi"
         ));
     }
     public function deletePerson() {
@@ -908,7 +913,7 @@ class Administrator implements Controller {
                 $this->errorMessage = $validacija->decypherErrors($pov);
                 try {
                     $osoba->load(post('idOsobe'));
-                } catch (app\model\NotFoundException $e) {
+                } catch (\app\model\NotFoundException $e) {
                     
                 } catch (\PDOException $e) {
                     $handler = new \model\ExceptionHandlerModel($e);
@@ -992,7 +997,9 @@ class Administrator implements Controller {
                 "osoba" => $osoba
             )),
             "title" => "Ažuriranje osoba",
-            "script" => new \view\scripts\PersonFormJs()
+            "script" => new \view\scripts\PersonFormJs(array(
+				"modification" => true
+			))
         ));  
         
     }
@@ -1281,7 +1288,8 @@ class Administrator implements Controller {
                 "errorMessage" => $this->errorMessage,
                 "id" => get('id')
             )),
-            "title" => "Provjera identiteta"
+            "title" => "Provjera identiteta",
+			"script" => new \view\scripts\administrator\AdminDoubleCheckJs()
         ));
     }
 }

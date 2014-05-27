@@ -51,14 +51,14 @@ class NacinPromocijeList extends AbstractView {
 					"action" => 'modifyNacinPromocije'
 				));
 				echo '" method="POST">';
-				echo '<tr><td><span class="modify-' . $val->idPromocije . '">' . $val->tipPromocije . '</span><input type="text" class="modifyOn-' . $val->idPromocije . '" style="display:none;" name="tipPromocije" value="' . $val->tipPromocije . '"><input type="hidden" name="idPromocije" value="' . $val->idPromocije . '"></td>';
-				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idPromocije . '" value="Spremi" /><a href="javascript:;" class="editNacinPromocije modify-' . $val->idPromocije . '" data-id="' . $val->idPromocije . '">Uredi</a> &nbsp; <a class="deleteNacinPromocije modify-' . $val->idPromocije . '" href="';
+				echo '<tr><td><span class="modify-' . $val->idPromocije . '">' . $val->tipPromocije . '</span><input type="text" class="form-control modifyOn-' . $val->idPromocije . '" style="display:none;" name="tipPromocije" value="' . $val->tipPromocije . '"><input type="hidden" name="idPromocije" value="' . $val->idPromocije . '"></td>';
+				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idPromocije . '" value="Spremi" /><a href="javascript:;" class="editNacinPromocije modify-' . $val->idPromocije . '" data-id="' . $val->idPromocije . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="deleteNacinPromocije modify-' . $val->idPromocije . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'deleteNacinPromocije'
 				));
-				echo '?id=' . $val->idPromocije . '">Obriši</a>';
+				echo '?id=' . $val->idPromocije . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a>';
 				echo '</td></tr></form>';
 			}
 		}
@@ -84,7 +84,7 @@ class NacinPromocijeList extends AbstractView {
 								"action" => 'addNacinPromocije'
 							)); ?>							  
 							  " method="post">
-							<td><input type="text" name="tipPromocije" placeholder="Upišite tip promocije"></td>
+							<td><input type="text" class="form-control" name="tipPromocije" placeholder="Upišite tip promocije"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
 						</form>
 					</tr>

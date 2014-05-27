@@ -51,14 +51,14 @@ class RadnoMjestoList extends AbstractView {
 					"action" => 'modifyRadnoMjesto'
 				));
 				echo '" method="POST">';
-				echo '<tr><td><span class="modify-' . $val->idRadnogMjesta . '">' . $val->naziv . '</span><input type="text" class="modifyOn-' . $val->idRadnogMjesta . '" style="display:none;" name="naziv" value="' . $val->naziv . '"><input type="hidden" name="idRadnogMjesta" value="' . $val->idRadnogMjesta . '"></td>';
-				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idRadnogMjesta . '" value="Spremi" /><a href="javascript:;" class="editRadnoMjesto modify-' . $val->idRadnogMjesta . '" data-id="' . $val->idRadnogMjesta . '">Uredi</a> &nbsp; <a class="deleteRadnoMjesto modify-' . $val->idRadnogMjesta . '" href="';
+				echo '<tr><td><span class="modify-' . $val->idRadnogMjesta . '">' . $val->naziv . '</span><input type="text" class="form-control modifyOn-' . $val->idRadnogMjesta . '" style="display:none;" name="naziv" value="' . $val->naziv . '"><input type="hidden" name="idRadnogMjesta" value="' . $val->idRadnogMjesta . '"></td>';
+				echo '<td><input type="submit" style="display: none;" class="btn btn-primary modifyOn-' . $val->idRadnogMjesta . '" value="Spremi" /><a href="javascript:;" class="editRadnoMjesto modify-' . $val->idRadnogMjesta . '" data-id="' . $val->idRadnogMjesta . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="deleteRadnoMjesto modify-' . $val->idRadnogMjesta . '" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'deleteRadnoMjesto'
 				));
-				echo '?id=' . $val->idRadnogMjesta . '">Obriši</a>';
+				echo '?id=' . $val->idRadnogMjesta . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a>';
 				echo '</td></tr></form>';
 			}
 		}
@@ -84,7 +84,7 @@ class RadnoMjestoList extends AbstractView {
 								"action" => 'addRadnoMjesto'
 							)); ?>							  
 							  " method="post">
-							<td><input type="text" name="naziv" placeholder="Upišite naziv radnog mjesta"></td>
+							<td><input type="text" class="form-control" name="naziv" placeholder="Upišite naziv radnog mjesta"></td>
 							<td><input type="submit" class="btn btn-primary" value="Dodaj" /></td>
 						</form>
 					</tr>

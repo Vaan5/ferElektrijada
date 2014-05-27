@@ -1,0 +1,40 @@
+-> pls kad napravis neki pogled josh jednom provjeri name-ove...
++ -> probaj onu traku srediti da onaj trokutic bude uz ime + Font prilagodi +
++-> i unificiraj nazive (velika mala slova (izbaci DBM), mnozina jednina itd) 
+
+-> svi pogledi koje vidis u folderu sudionik, sredi kad randy zavrsi
++ -> one linkove u DownloadLinks (pretvori u slicice male)
++ -> kod navbarova da bi znao koji uvjeti idu u if-elsovima pogledaj checkRole funkciju odgovarajuceg kontrollera+
++ -> i kod navbarova ne ispisujes DOCTYPE html i body i slicne tagove... to popravi +
+
+baci oko na TvrtkaAssignForm.php, odmah na poèetku æeš vidjeti gdje ispisujem ime i adresu tvrtke pa to
+nekako uredi da se lijepo uklopi... i probaj možda vidjeti da se ove forme, ovaj tekst što bude
+lijevo pored polja poravna lijevo a ne desno, mislim da bi bilo ljepše... i onda i ovo uklopi u to
+
++ neke forme sponzora nisu ureðene (npr. ActiveSponzorForm i AreaSponzorForm), ne znam da li nisi došao do
++ toga još ili si preskoèio al èisto da obavijestim, jer sam sluèajno naletio  primjetit æeš ova polja sa
++ donacijom da su samo ona ureðena i iskaèu od ostatka, to je zato jer sam njih sad preuredio i kopirao od
++ druge veæ ureðene forme
+
++ PS. kako vam se èini ovo s valutom odmah u polju? po meni je preglednije i bolje... samo su nešto malo
++ borderi pobrkani od buttona al dobro budemo se poigrali time ako bude vremena... može se i boja mjenjat
++ pa Martin ako misliš da je ok, možeš probat mjenjat
+
++ -> Sredite poglede u folderu voditelj + forme koje se kod njih koriste
+
++ Martine, kad budes pravio uredjivanje profila (pazi da se ne dogodi da za nekog budu dva linka), recimo
++ ako si S vidis samo ono od S, ako si SV vidis voditeljev, ako si O ili OV vidis Ozsnov, ako si A vidis adminov
+
+pod ActiveObjavaList æeš vidjeti te DownloadLinks i taj button, pa se možeš malo igrati,
+ako bi to mogao bolje/ljepše složiti
+
+
+
+Uvijek prije nego sto krenete radit importajte sve procedure iz fajla procedure_koristene_u_aplikaciji.sql
+
+Bez njih vam nece radit aplikacija!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
+

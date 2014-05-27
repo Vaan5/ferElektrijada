@@ -31,7 +31,7 @@ class OtherTeams extends AbstractView {
 					"action" => "displayOtherTeams"
 				));?>">
 					<div class="form-group">	
-								<label for="podrucje" class="col-sm-3 control-label">Odaberite disciplinu:</label>
+								<label for="podrucje" class="col-sm-3 control-label">Odaberite disciplinu</label>
 						<div class="col-sm-9">
 								<select name="idPodrucja" class="form-control">
 							<option value="">Odaberi...</option>
@@ -55,7 +55,17 @@ class OtherTeams extends AbstractView {
 			}
 		} else {
 			// show results
+			echo new \view\components\DownloadLinks(array("route" => \route\Route::get("d3")->generate(array(
+				"controller" => "sudionik",
+				"action" => "displayOtherTeams"
+			))));
 ?>
+		<a class="btn btn-primary" href="<?php echo \route\Route::get('d3')->generate(array(
+			"controller" => "sudionik",
+			"action" => "displayOtherTeams"))?>">Povratak</a>
+		
+		<br><br>
+		
 		<div class="panel panel-default">
 			<div class="panel-heading">Članovi tima</div>
 
@@ -73,7 +83,18 @@ class OtherTeams extends AbstractView {
 
 		if(count($this->takmicari))
 		{
-			// Foreach atribut, generate row in table
+			// Show voditelji
+			if (count($this->voditelji)) {
+				foreach($this->voditelji as $val)
+				{
+					$ispis = "<tr style=\"background-color:#F1F8FF;\"><td>" . $val->ime . "</td><td>" . $val->prezime . "</td><td colspan=\"2\"><center><b>VODITELJ</b></center></td></tr>";
+					if ($val->idOsobe == $this->osoba->idOsobe)
+						$ispis = "<b>" . $ispis . "</b>";
+					echo $ispis;
+				}				
+			}
+			
+			// Foreach takmicar, generate row in table
 			foreach($this->takmicari as $val)
 			{
 				$ispis = "<tr><td>" . $val->ime . "</td><td>" . $val->prezime . "</td><td>" . $val->rezultatPojedinacni . "</td></tr>";
@@ -81,29 +102,12 @@ class OtherTeams extends AbstractView {
 					$ispis = "<b>" . $ispis . "</b>";
 				echo $ispis;
 			}
-			
-			if (count($this->voditelji)) {
-?>
-				<thead>
-					<tr>
-						<th class="addAtribut" colspan="3"><i><center>Voditelji</center></i></td>
-					</tr>
-				</thead>
-<?php
-				foreach($this->voditelji as $val)
-				{
-					$ispis = "<tr><td>" . $val->ime . "</td><td>" . $val->prezime . "</td><td>&nbsp;</td></tr>";
-					if ($val->idOsobe == $this->osoba->idOsobe)
-						$ispis = "<b>" . $ispis . "</b>";
-					echo $ispis;
-				}
-			}
 		}
 		else
 		{
 ?>
 						<tr>
-							<td class="addAtribut" colspan="3"><i>Ne postoji ni jedan atribut</i></td>
+							<td class="addAtribut" colspan="3"><i>Ne postoji ni jedan član tima</i></td>
 						</tr>
 <?php
 		}
@@ -112,16 +116,6 @@ class OtherTeams extends AbstractView {
 			</table>
 		</div>
 <?php
-
-		echo new \view\components\DownloadLinks(array("route" => \route\Route::get("d3")->generate(array(
-			"controller" => "sudionik",
-			"action" => "displayOtherTeams"
-		))));
-			?>
-				<a href="<?php echo \route\Route::get('d3')->generate(array(
-					"controller" => "sudionik",
-					"action" => "displayOtherTeams"))?>">Povratak</a>
-			<?php
 		}
     }
     

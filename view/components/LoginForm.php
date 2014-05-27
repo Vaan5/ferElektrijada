@@ -15,13 +15,13 @@ class LoginForm extends AbstractView {
     
     protected function outputHTML() {
 ?>
-    <form action="<?php echo $this->actionRoute;?>" method="POST">
+    <form action="<?php echo $this->actionRoute;?>" id="loginForm" method="POST">
 	<br><br><br>
 	<div class="login-container" style="width:350px; margin:auto">
 		<div class="panel panel-default login">
 			<div class="panel-body">
 				<?php if ($this->showUserName) { ?>
-                            <h2>Prijava</h2>
+                            <h2 style="margin-top:0px;">Prijava</h2>
 				
 					<div class="form-group">
 						<label for="korisničkoIme"><b>Korisničko ime</b></label>
