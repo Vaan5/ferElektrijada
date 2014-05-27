@@ -27,6 +27,35 @@ class DBObavljaFunkciju extends AbstractDBModel {
             throw $e;
         }
     }
+	
+	public function deleteIfNotLast($id) {
+		try {
+			$pdo = $this->getPdo();
+			$q1 = $pdo->prepare("SELECT * FROM obavljafunkciju WHERE idObavljaFunkciju = :id");
+			$q1->bindValue(":id", $id);
+			$q1->execute();
+			$pov = $q1->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+			if (count($pov)) {
+				$q2 = $pdo->prepare("SELECT * FROM obavljafunkciju WHERE idOsobe = :idOsobe AND idElektrijade = :idElektrijade");
+				$q2->bindValue(":idOsobe", $pov[0]->idOsobe);
+				$q2->bindValue(":idElektrijade", $pov[0]->idElektrijade);
+				$q2->execute();
+				$brojac = $q2->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+				if (count($brojac) !== 1) {
+					$q = $pdo->prepare("CALL brisiFunkciju(:id)");
+					$q->bindValue(":id", $id);
+					$q->execute();
+				} else {
+					// just delete function name
+					$q = $pdo->prepare("UPDATE obavljafunkciju SET idFunkcije = NULL WHERE idObavljaFunkciju = :id");
+					$q->bindValue(":id", $id);
+					$q->execute();
+				}
+			}
+        } catch (\PDOException $e) {
+            throw $e;
+        }
+	}
     
     public function checkOzsnFunction($primaryKey, $idOsobe) {
 		try {

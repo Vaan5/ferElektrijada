@@ -2011,7 +2011,7 @@ class Ozsn implements Controller {
         $obavljaFunkciju = new \model\DBObavljaFunkciju();
         try {
 			if ($obavljaFunkciju->checkOzsnFunction(get("id"), session("auth"))) {
-				$obavljaFunkciju->deleteRow(get("id"));
+				$obavljaFunkciju->deleteIfNotLast(get("id"));
 			} else {
 				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Ne možete brisati tuđe funkcije!");
 				$this->createMessage($handler, "d3", "ozsn", "displayUserFunctions");
