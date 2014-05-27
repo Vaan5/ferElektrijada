@@ -64,19 +64,19 @@ class ContactList extends AbstractView {
 					"controller" => 'ozsn',
 					"action" => 'displayContactInfo'
 				));
-				echo '?idKontakta=' . $val->idKontakta . '">Prikaži detalje</a> &nbsp; ';
+				echo '?idKontakta=' . $val->idKontakta . '"><span class="glyphicon glyphicon-list-alt"></span> Prikaži detalje</a> &nbsp; ';
 				echo '<a href="';
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'modifyContact'
 				));
-				echo '?id=' . $val->idKontakta . '">Uredi</a> &nbsp; <a class="deleteContact" href="';
+				echo '?id=' . $val->idKontakta . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a class="deleteContact" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'deleteContact'
 				));
-				echo '?id=' . $val->idKontakta . '">Obriši</a></td></tr>';
+				echo '?id=' . $val->idKontakta . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a></td></tr>';
 			}
 ?>
 				</tbody>
