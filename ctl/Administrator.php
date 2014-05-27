@@ -178,6 +178,7 @@ class Administrator implements Controller {
                         post('JMBAG', null), post('spol', null), post('datRod', null), post('brOsobne', null), post('brPutovnice', null), post('osobnaVrijediDo', null),
                         post('putovnicaVrijediDo', null), 'A', NULL, post('MBG', null), post('OIB', null), post("aktivanDokument", "0"));
                     // redirect with according message
+					$_SESSION["user"] = $osoba->ime === NULL ? null : $osoba->ime;
                     preusmjeri(\route\Route::get('d1')->generate() . "?msg=profSucc");
                 } catch(\PDOException $e) {
                     $handler = new \model\ExceptionHandlerModel($e);
