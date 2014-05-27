@@ -21,7 +21,7 @@ class MyTeam extends AbstractView {
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
-		
+               
 		if ($this->podrucja) {
 			// choose your competition area
 			if (count($this->podrucja)) {

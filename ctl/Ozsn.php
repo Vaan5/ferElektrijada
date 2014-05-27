@@ -1408,7 +1408,8 @@ class Ozsn implements Controller {
 				"podrucja" => $podrucja,
 				"atributi" => $atributi,
 				"korisnikovaPodrucja" => $korisnikovaPodrucja
-			))
+			)),
+			"script" => new \view\scripts\PersonFormJs()
 		));
 	}
 	
