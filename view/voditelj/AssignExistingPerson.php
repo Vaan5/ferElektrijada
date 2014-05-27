@@ -43,7 +43,7 @@ class AssignExistingPerson extends AbstractView {
 						<th>Prezime</th>
 						<th>JMBAG</th>
 						<th>Korisničko ime</th>
-                                                <th><center>Opcije</center></th>
+						<th><center>Odaberi</center></th>
 					</tr>
 				</thead>
 
@@ -56,7 +56,7 @@ class AssignExistingPerson extends AbstractView {
 						<td><?php echo $o->prezime; ?></td>
 						<td><?php echo $o->JMBAG; ?></td>
 						<td><?php echo $o->ferId; ?></td>
-                                                <td> <center><input type="checkbox" name="osobe[]" value="<?php echo $o->getPrimaryKey();?>"></center></td>
+						<td> <center><input type="checkbox" name="osobe[]" value="<?php echo $o->getPrimaryKey();?>"></center></td>
 					</tr>
 			 
 <?php

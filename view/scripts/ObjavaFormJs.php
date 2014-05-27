@@ -35,7 +35,7 @@ class ObjavaFormJs extends AbstractView {
 			jQuery.validator.addMethod("validateUrl", function(value, element) {
 				if (value) return /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/.test(value);
 				else return true;
-			}, "Neispravan unos (samo znamenke, slova, razmaci i osnovni interpunkcijski znakovi)");
+			}, "Neispravan unos linka");
 		   
 			$("#objavaForm").validate({
 				rules: {
