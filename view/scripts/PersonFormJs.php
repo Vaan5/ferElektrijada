@@ -55,6 +55,17 @@ class PersonFormJs extends AbstractView {
 				}
 			});
 			
+			// If natjecatelj is selected, hide atribut field
+			$("input:radio[name=option]").change(function () {
+				if ($("input[name=option]:checked").val() == "0") {
+					$('#atributField').hide();
+					$('#atributField select').val("");
+				}
+				else {
+					$('#atributField').show();
+				}
+			});
+			
 			/*	======  FORM VALIDATION ======
 			*	Includes validator JS file, sets rules and messages
 			*	On keyup or on submit checks if input is valid
@@ -163,7 +174,21 @@ class PersonFormJs extends AbstractView {
 					idPodrucja: {
 						required: {
 							depends: function(element){
-								return $("#idAtributaSelect").val()!= "";
+								return $("#idAtributaSelect").val()!= null;
+							}
+						}
+					},
+					option: {
+						required: {
+							depends: function(element){
+								return ($("#idPodrucjaSelect").val()!= "" && $("#idAtributaSelect").val()== "");
+							}
+						}
+					},
+					"idAtributa[]": {
+						required: {
+							depends: function(element){
+								return ($("#idPodrucjaSelect").val()!= "" && ($("input[name=option]:checked").val() == "1" ||  $("input[name=option]:checked").val() == "2"));
 							}
 						}
 					}
@@ -193,6 +218,22 @@ class PersonFormJs extends AbstractView {
 					},
 					idPodrucja: {
 						required: "Da biste dodali atribut morate odabrati i disciplinu"
+					},
+					option: {
+						required: "Morate odabrati opciju"
+					},
+					"idAtributa[]": {
+						required: "Morate odabrati atribut"
+					}
+				},
+				errorPlacement: function(error, element) {
+					if (element.attr("name") == "option")
+					{
+					 error.insertAfter("#lastOption");
+					}
+					else
+					{
+					 error.insertAfter(element);
 					}
 				}
 			});
