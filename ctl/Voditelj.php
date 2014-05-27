@@ -291,7 +291,8 @@ class Voditelj implements Controller {
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage,
 				"idPodrucja" => $idPodrucja
-			))
+			)),
+			"script" => new \view\scripts\PersonFormJs()
 		));
 	}
 	
@@ -1046,7 +1047,9 @@ class Voditelj implements Controller {
 				"sudjelovanje" => $sudjelovanje,
 				"disabled" => $this->changesDisabled
 				)),
-			"script" => new \view\scripts\PersonFormJs()
+			"script" => new \view\scripts\PersonFormJs(array(
+				"modification" => true
+			))
 		));
     }
 	

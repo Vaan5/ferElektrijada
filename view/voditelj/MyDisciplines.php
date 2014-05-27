@@ -18,7 +18,14 @@ class MyDisciplines extends AbstractView {
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
+		
+		echo new \view\components\DownloadLinks(array("route" => \route\Route::get("d3")->generate(array(
+			"controller" => "voditelj",
+			"action" => "displayPodrucja"
+		))));
 ?>
+		<br><br>
+		
 		<div class="panel panel-default">
 			<div class="panel-heading">Upravljanje Disciplinom</div>
 
@@ -78,11 +85,6 @@ class MyDisciplines extends AbstractView {
 			</table>
 		</div>
 <?php
-
-	echo new \view\components\DownloadLinks(array("route" => \route\Route::get("d3")->generate(array(
-			"controller" => "voditelj",
-			"action" => "displayPodrucja"
-		))));
 	}
 	
 	public function setErrorMessage($errorMessage) {
