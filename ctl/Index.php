@@ -66,11 +66,15 @@ class Index implements Controller {
     }
     
     public function display() {
+		if (!\model\DBOsoba::isLoggedIn())
+			preusmjeri (\route\Route::get('d3')->generate (array(
+				"controller" => "login",
+				"action" => "display"
+			)));
         $this->checkForMessages();
         
         echo new \view\Main(array(
             "body" => new \view\Index(array(
-                "varijablaPrenesenaIzControllera" => "Varijabla koju sam mogao staviti da sam htio! => izmijeniti ctl\Index!",
                 "resultMessage" => $this->resultMessage,
                 "errorMessage" => $this->errorMessage
             )),
