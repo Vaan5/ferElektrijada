@@ -41,6 +41,7 @@ class Login implements Controller {
                 "errorMessage" => $this->errorMessage
             )),
             "title" => "Login",
+			"script" => new \view\scripts\LoginFormJs()
         ));
     }
     
