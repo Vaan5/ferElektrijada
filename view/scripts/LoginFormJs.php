@@ -9,7 +9,7 @@ class LoginFormJs extends AbstractView {
 		<script src="../assets/js/jquery.validate.js"></script>
 
 		<script type="text/javascript">
-			$(function(){
+			$( document ).ready(function() {
 				/*	======  FORM VALIDATION ======
 				*	Includes validator JS file, sets rules and messages
 				*	On keyup or on submit checks if input is valid
