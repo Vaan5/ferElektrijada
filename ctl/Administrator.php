@@ -1289,7 +1289,7 @@ class Administrator implements Controller {
                 "id" => get('id')
             )),
             "title" => "Provjera identiteta",
-			"script" => new \view\scripts\administrator\AdminDoubleCheckJs()
+			"script" => new \view\scripts\LoginFormJs()
         ));
     }
 }
