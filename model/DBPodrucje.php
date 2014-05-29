@@ -21,7 +21,7 @@ class DBPodrucje extends AbstractDBModel {
 		try {
 			$pdo = $this->getPdo();
 			$q = $pdo->prepare("SELECT podrucje.idPodrucja, podrucje.nazivPodrucja, k.nazivPodrucja kategorija, k.idPodrucja idNadredjenog 
-									FROM podrucje JOIN podrucje k ON podrucje.idNadredjenog = k.idPodrucja
+									FROM podrucje LEFT JOIN podrucje k ON podrucje.idNadredjenog = k.idPodrucja
 									ORDER BY podrucje.nazivPodrucja ASC");
 			$q->execute();
 			return $q->fetchAll();
