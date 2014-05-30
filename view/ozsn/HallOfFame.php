@@ -85,7 +85,12 @@ class HallOfFame extends AbstractView {
 					if($val2->idElektrijade == $val["idElektrijade"])
 					{
 						echo '<tr><td>' . $val2->nazivPodrucja . '</td><td>' . $val2->ukupanBrojEkipa . '</td><td>' . $val2->rezultatGrupni . '</td><td>';
-						if($val2->slikaLink) echo '<a class="fancyboxLoader" href="' . $val2->slikaLink . '">Prikaži</a>';
+						// if you want a cool and fancy image preview uncomment this
+						//if($val2->slikaLink) echo '<a class="fancyboxLoader" href="' . $val2->slikaLink . '">Prikaži</a>';
+						if($val2->slikaLink) echo '<a href="' . \route\Route::get('d3')->generate(array(
+							"controller" => "ozsn",
+							"action" => "downloadImage"
+						)) . "?id=" . $val2->idElekPodrucje . '">Preuzmi</a>';
 						else echo '<i>Ne postoji</i>';
 						echo '</td></tr>';
 					}

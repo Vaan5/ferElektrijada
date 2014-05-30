@@ -38,8 +38,8 @@ class ElekPodForm extends AbstractView {
             <a href="<?php echo \route\Route::get('d3')->generate(array(
 				"controller" => $this->controller,
 				"action" => $this->action
-		));?>?id=<?php echo $this->elekPod->idElekPodrucje; ?>">Preuzmi sliku &nbsp;</a>
-            <input type="checkbox" name="delete"> Obriši sliku    
+		));?>?id=<?php echo $this->elekPod->idElekPodrucje; ?>">Preuzmi datoteku &nbsp;</a>
+            <input type="checkbox" name="delete"> Obriši datoteku    
             </div>
         </div>
 		

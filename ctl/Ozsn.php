@@ -5399,6 +5399,28 @@ class Ozsn implements Controller {
 		));
 	}
 	
+	public function downloadImage() {
+		$this->checkRole();
+		$this->checkMessages();
+
+		if (count($_GET) === 0 || get("id") === false)
+			$this->createMessage("Nepoznata datoteka!");
+		
+		$elekPod = new \model\DBElekPodrucje();
+		try {
+			$elekPod->load(get("id"));
+		} catch (\app\model\NotFoundException $e) {
+			$this->createMessage("Nepoznati zapis!");
+		} catch (\PDOException $e) {
+			$handler = new \model\ExceptionHandlerModel($e);
+			$this->createMessage($handler);
+		}
+
+		echo new \view\Download(array(
+			"path" => $elekPod->slikaLink
+		));
+	}
+	
 	/******************************************************************
 	 *					PREGLED OBJAVA
 	 ******************************************************************/

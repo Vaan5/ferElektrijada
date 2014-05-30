@@ -761,8 +761,8 @@ class Voditelj implements Controller {
 					// process image
 					if (files("tmp_name", "datoteka") !== false) {
 						// security check
-						if(files("size", "datoteka") > 1024 * 1024) {
-							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Datoteka je prevelika! Maksimalna dozvoljena veličina je 1 MB!");
+						if(files("size", "datoteka") > 10 * 1024 * 1024) {
+							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Datoteka je prevelika! Maksimalna dozvoljena veličina je 10 MB!");
 							$_SESSION["exception"] = serialize($handler);
 							preusmjeri(\route\Route::get('d3')->generate(array(
 								"controller" => "voditelj",
@@ -777,24 +777,28 @@ class Voditelj implements Controller {
 								"action" => "modifyCompetitionData"
 							)) . "?msg=excep&id=" . post("idPodrucja"));
 						}
-						// check if it is a pdf
-						if(function_exists('finfo_file')) {
-							$finfo = \finfo_open(FILEINFO_MIME_TYPE);
-							$mime = finfo_file($finfo, files("tmp_name", "datoteka"));
-						} else {
-							$mime = \mime_content_type(files("tmp_name", "datoteka"));
-						}
-						if($mime != 'image/jpeg' && $mime != 'image/jpg') {
-							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Sliku možete poslati samo u jpeg formatu!");
-							$_SESSION["exception"] = serialize($handler);
-							preusmjeri(\route\Route::get('d3')->generate(array(
-								"controller" => "voditelj",
-								"action" => "modifyCompetitionData"
-							)) . "?msg=excep&id=" . post("idPodrucja"));
-						}
-
+						
+						// uncomment this if you want to accept only jpg format
+//						// check if it is a jpg
+//						if(function_exists('finfo_file')) {
+//							$finfo = \finfo_open(FILEINFO_MIME_TYPE);
+//							$mime = finfo_file($finfo, files("tmp_name", "datoteka"));
+//						} else {
+//							$mime = \mime_content_type(files("tmp_name", "datoteka"));
+//						}
+//						if($mime != 'image/jpeg' && $mime != 'image/jpg') {
+//							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Sliku možete poslati samo u jpeg formatu!");
+//							$_SESSION["exception"] = serialize($handler);
+//							preusmjeri(\route\Route::get('d3')->generate(array(
+//								"controller" => "voditelj",
+//								"action" => "modifyCompetitionData"
+//							)) . "?msg=excep&id=" . post("idPodrucja"));
+//						}
+//
+//						// adding the path and the file
+//						$putanja = "./elektrijada_slike/" . date("Y_m_d_H_i_s") . ".jpg";
 						// adding the path and the file
-						$putanja = "./elektrijada_slike/" . date("Y_m_d_H_i_s") . ".jpg";
+						$putanja = "./elektrijada_slike/" . date("Y_m_d_H_i_s") . "_" . files("name", "datoteka");
 						if (move_uploaded_file(files("tmp_name", "datoteka"), $putanja)) {
 							// if there was already a CV on the server
 							// remove it
@@ -804,7 +808,7 @@ class Voditelj implements Controller {
 									$e = new \PDOException();
 									$e->errorInfo[0] = '02000';
 									$e->errorInfo[1] = 1604;
-									$e->errorInfo[2] = "Greška prilikom brisanja slike!";
+									$e->errorInfo[2] = "Greška prilikom brisanja datoteke!";
 									throw $e;
 								}
 							}
@@ -812,7 +816,7 @@ class Voditelj implements Controller {
 							// add path to db
 							$elekPod->addImage($elekPod->getPrimaryKey(), $putanja);		
 						} else {
-							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Dogodio se problem sa spremanjem slike! Ostali podaci su ažurirani!");
+							$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Dogodio se problem sa spremanjem datoteke! Ostali podaci su ažurirani!");
 							$_SESSION["exception"] = serialize($handler);
 							preusmjeri(\route\Route::get('d3')->generate(array(
 								"controller" => "voditelj",
@@ -827,7 +831,7 @@ class Voditelj implements Controller {
 								$e = new \PDOException();
 								$e->errorInfo[0] = '02000';
 								$e->errorInfo[1] = 1604;
-								$e->errorInfo[2] = "Greška prilikom brisanja slike!";
+								$e->errorInfo[2] = "Greška prilikom brisanja datoteke!";
 								$elekPod->addImage($elekPod->getPrimaryKey(), NULL);
 								throw $e;
 							}
@@ -1227,7 +1231,7 @@ class Voditelj implements Controller {
 		$this->checkMessages();
 
 		if (count($_GET) === 0 || get("id") === false)
-			$this->createMessage("Nepoznata osoba!");
+			$this->createMessage("Nepoznata datoteka!");
 		
 		$elekPod = new \model\DBElekPodrucje();
 		try {
