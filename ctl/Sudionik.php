@@ -68,14 +68,14 @@ class Sudionik implements Controller {
 			}
 
 			// now check if the dates are right
-			if ($checkZnanje && $this->rokZaZnanje !== null) {
+			if ($checkZnanje && $elektrijada->rokZaZnanje !== null) {
 				if ($currentTime > $rokZaZnanje) {
 					$this->changesDisabled = true;
 					return;
 				}
 			}
 
-			if ($checkSport && $this->rokZaSport !== null) {
+			if ($checkSport && $elektrijada->rokZaSport !== null) {
 				if ($currentTime > $rokZaSport) {
 					$this->changesDisabled = true;
 					return;

@@ -60,7 +60,7 @@ class ReportGenerator implements Controller {
 	
 	
 	try {
-	    $podrucja = $podrucje->getAll();  //dohvati sve iz tablice podrucja
+	    $podrucja = $podrucje->getAllWithRoots();  //dohvati sve iz tablice podrucja
 		$elektrijade = $e->getAll();   //koristi se pri kraju, treba nam za poglede
 		 
 	
