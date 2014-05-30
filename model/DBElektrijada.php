@@ -155,6 +155,27 @@ class DBElektrijada extends AbstractDBModel {
         } else {
             return false;
         }
+		
+		// nova verzija -> kad je jedna godina od 1.9.2013. do 31.8.2014;
+//		try {
+//			// dohvati mjesec
+//			$mjesec = date('n');
+//			$dan = date('D');
+//			
+//			$pdo = $this->getPdo();
+//			$query = $pdo->prepare("SELECT * FROM elektrijada WHERE YEAR(datumPocetka) = :datum");
+//			$query->bindValue(':datum', $datum);
+//			$query->execute();
+//			$pov = $query->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+//			
+//			if(count($pov)) {
+//	            return $pov[0]->idElektrijade;
+//	        } else {
+//	            return false;
+//	        }
+//		} catch(\PDOException $e) {
+//			return false;
+//		}
     }
     
     public function getLastYearElektrijadaId() {
