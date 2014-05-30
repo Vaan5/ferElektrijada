@@ -13,6 +13,7 @@ class TeamMembers extends AbstractView {
 
     protected function outputHTML() {
 		// print messages if any
+
         echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
         ));
@@ -20,18 +21,26 @@ class TeamMembers extends AbstractView {
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
+        echo new \view\components\DownloadLinks(array(
+            "route" => \route\Route::get("d3")->generate(array(
+            "controller" => "voditelj",
+            "action" => "displayTeam"
+            )). "?id=" . $this->idPodrucja,
+            "onlyParam" => false));
+
 ?>
-		<div class="panel panel-default">
+<br><br><div class="panel panel-default">
 			<div class="panel-heading">Članovi tima</div>
 
 			<table class="table">
 				<thead>
 					<tr>
-						<th>Ime</th>
+                                                <th>Korisnik</th>
+                                                <th>Ime</th>
 						<th>Prezime</th>
 						<th>JMBAG</th>
 						<th>Rezultat</th>
-						<th>Vrsta Natjecanja</th>
+						<th>Natjecanje</th>
 						<th>Opcije</th>
 					</tr>
 				</thead>
@@ -42,7 +51,7 @@ class TeamMembers extends AbstractView {
 		{
 			foreach($this->takmicari as $val)
 			{
-				$ispis = "<tr><td>" . $val->ime . "</td><td>" . $val->prezime . 
+				$ispis = "<tr><td>" . $val->ferId . "</td><td>" . $val->ime . "</td><td>" . $val->prezime . 
 						"</td><td>" . $val->JMBAG . "</td><td>" . $val->rezultatPojedinacni . "</td><td>" . 
 						($val->vrstaPodrucja == '1' ? 'Timsko' : 'Pojedinačno') . "</td>";
 				$ispis .= "<td><a href=\"" . \route\Route::get('d3')->generate(array(
@@ -74,12 +83,7 @@ class TeamMembers extends AbstractView {
 		</div>
 <?php
 
-		echo new \view\components\DownloadLinks(array(
-			"route" => \route\Route::get("d3")->generate(array(
-														"controller" => "voditelj",
-														"action" => "displayTeam"
-													)) . "?id=" . $this->idPodrucja,
-				"onlyParam" => false));
+
     }
     
     public function setErrorMessage($errorMessage) {

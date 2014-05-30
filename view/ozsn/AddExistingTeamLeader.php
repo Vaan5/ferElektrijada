@@ -40,7 +40,7 @@ class AddExistingTeamLeader extends AbstractView {
 			{
 				echo '<tr><td>' . $val->ferId . '</td><td>' . $val->ime . '</td><td>' . $val->prezime . 
 						'</td><td>' . ($val->uloga == 'O' ? 'Ozsn' : 'Sudionik') . '</td><td>
-							<a href="javascript:;" class="proglasiVoditeljem" data-id="' . $val->idOsobe . '" data-idpodrucja="' . $this->idPodrucja . '">Proglasi voditeljem</a></td>';
+							<a href="javascript:;" class="proglasiVoditeljem" data-id="' . $val->idOsobe . '" data-idpodrucja="' . $this->idPodrucja . '"><span class="glyphicon glyphicon-ok"></span> Proglasi voditeljem</a></td>';
 			}
 		}
 		else

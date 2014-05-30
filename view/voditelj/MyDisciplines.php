@@ -26,7 +26,7 @@ class MyDisciplines extends AbstractView {
 ?>
 		<br><br>
 		
-		<div class="panel panel-default">
+                <div class="panel panel-default">
 			<div class="panel-heading">Upravljanje Disciplinom</div>
 
 			<table class="table">
@@ -53,15 +53,15 @@ class MyDisciplines extends AbstractView {
 					echo "<td><a href=\"" . \route\Route::get('d3')->generate(array(
 						"controller" => "voditelj",
 						"action" => "assignExistingPerson"
-					)) .  "?id=" . $val->idPodrucja . "\">".'<span class="glyphicon glyphicon-plus"></span>'." Dodaj postojećeg natjecatelja</a>&nbsp;&nbsp;&nbsp;<a href=\"" . 
+					)) .  "?id=" . $val->idPodrucja . "\">".'<span class="glyphicon glyphicon-plus"></span>'." Postojeći natjecatelj</a>&nbsp;&nbsp;&nbsp;<a href=\"" . 
 						\route\Route::get('d3')->generate(array(
 						"controller" => "voditelj",
 						"action" => "assignNewPerson"
-					)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-plus"></span>'." Dodaj novog natjecatelja</a>&nbsp;&nbsp;&nbsp;<a href=\"" . 
+					)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-plus"></span>'." Novi natjecatelj</a>&nbsp;&nbsp;&nbsp;<a href=\"" . 
 						\route\Route::get('d3')->generate(array(
 						"controller" => "voditelj",
 						"action" => "modifyCompetitionData"
-					)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-pencil"></span>'." Uredi područje</a>&nbsp;&nbsp;<a href=\"" . 
+					)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-pencil"></span>'." Uredi</a>&nbsp;&nbsp;<a href=\"" . 
 						\route\Route::get('d3')->generate(array(
 						"controller" => "voditelj",
 						"action" => "modifyResults"
@@ -83,7 +83,7 @@ class MyDisciplines extends AbstractView {
 ?>
 				</tbody>
 			</table>
-		</div>
+                    </div>
 <?php
 	}
 	
