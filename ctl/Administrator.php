@@ -665,6 +665,18 @@ class Administrator implements Controller {
         $this->checkMessages();
         $osobe = array();
         $osoba = new \model\DBOsoba();
+		$clanovi = array();
+		
+		try {
+			$pom = $osoba->getAllActiveOzsn();
+			if (count($pom)) {
+				foreach ($pom as $v) {
+					$clanovi[] = $v->getPrimaryKey();
+				}
+			}
+		} catch (\PDOException $e) {
+			$this->createMessage("Dogodila se greška! Pokušajte kasnije!");
+		}
         
 		if (get("type")) {
 			// generate file
@@ -733,7 +745,8 @@ class Administrator implements Controller {
             "body" => new \view\administrator\PersonList(array(
                 "osobe" => $osobe,
                 "errorMessage" => $this->errorMessage,
-                "resultMessage" => $this->resultMessage
+                "resultMessage" => $this->resultMessage,
+				"clanovi" => $clanovi
             )),
             "title" => "Popis osoba",
             "script" => new \view\scripts\administrator\PersonListJs
@@ -749,7 +762,19 @@ class Administrator implements Controller {
         $osoba = new \model\DBOsoba();
         $elektrijada = new \model\DBElektrijada();
         $clanovi = null;
+		$aktivniClanovi = array();
         
+		try {
+			$pom = $osoba->getAllActiveOzsn();
+			if (count($pom)) {
+				foreach ($pom as $v) {
+					$aktivniClanovi[] = $v->getPrimaryKey();
+				}
+			}
+		} catch (\PDOException $e) {
+			$this->createMessage("Dogodila se greška! Pokušajte kasnije!");
+		}
+		
         if(get("id") !== false) {
             // i add only one member
             try {
@@ -836,7 +861,8 @@ class Administrator implements Controller {
             "body" => new \view\administrator\OldOzsn(array(
                 "errorMessage" => $this->errorMessage,
                 "resultMessage" => $this->resultMessage,
-                "clanovi" => $clanovi
+                "clanovi" => $clanovi,
+				"aktivniClanovi" => $aktivniClanovi
             )),
             "title" => "Prošlogodišnji Članovi"
         ));

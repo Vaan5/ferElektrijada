@@ -21,6 +21,8 @@ class PersonList extends AbstractView {
      * @var string 
      */
     private $resultMessage;
+	
+	private $clanovi;
     
     protected function outputHTML() {
 		// print messages if any
@@ -30,7 +32,7 @@ class PersonList extends AbstractView {
 		
 		echo new \view\components\ErrorMessage(array(
             "errorMessage" => $this->errorMessage
-		));		
+		));
 		
 		// Else list osobe in table
 		if(count($this->osobe))
@@ -118,5 +120,10 @@ class PersonList extends AbstractView {
         $this->resultMessage = $resultMessage;
         return $this;
     }
+	
+	public function setClanovi($clanovi) {
+		$this->clanovi = $clanovi;
+		return $this;
+	}
 
 }

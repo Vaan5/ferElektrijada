@@ -20,6 +20,8 @@ class OldOzsn extends AbstractView {
      * @var array 
      */
     private $clanovi;
+	
+	private $aktivniClanovi;
     
     protected function outputHTML() {
         // print messages if any
@@ -30,7 +32,7 @@ class OldOzsn extends AbstractView {
 		echo new \view\components\ErrorMessage(array(
            "errorMessage" => $this->errorMessage
 		));
-				
+		
 		// Else showOldOzsn in table
 		if(count($this->clanovi))
 		{
@@ -98,5 +100,10 @@ class OldOzsn extends AbstractView {
         $this->clanovi = $clanovi;
         return $this;
     }
+	
+	public function setAktivniClanovi($aktivniClanovi) {
+		$this->aktivniClanovi = $aktivniClanovi;
+		return $this;
+	}
 
 }
