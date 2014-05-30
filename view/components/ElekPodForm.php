@@ -11,6 +11,8 @@ class ElekPodForm extends AbstractView {
 	private $controller;
 	private $action;
 	private $idPodrucja;
+	private $timova;
+	private $natjecatelja;
     
     protected function outputHTML() {
 ?>
@@ -22,9 +24,21 @@ class ElekPodForm extends AbstractView {
                         </div>
         </div>
         <div class="form-group">
-            <label for="ukupnoEkipa" class="col-sm-4 control-label">Ukupni broj ekipa</label>
+            <label for="ukupnoEkipa" class="col-sm-4 control-label">Broj fakulteta koji sudjeluju u ovoj disciplini</label>
                         <div class="col-sm-5">           
-                        <input type="text" name="ukupanBrojEkipa" class="form-control" placeholder="Upišite broj ekipa" <?php if($this->elekPod && $this->elekPod->ukupanBrojEkipa){ echo 'value="' . $this->elekPod->ukupanBrojEkipa . '"'; } ?> />
+                        <input type="text" name="ukupanBrojEkipa" class="form-control" placeholder="Upišite broj fakulteta koji sudjeluju u ovoj disciplini" <?php if($this->elekPod && $this->elekPod->ukupanBrojEkipa){ echo 'value="' . $this->elekPod->ukupanBrojEkipa . '"'; } ?> />
+                        </div>
+        </div>
+		<div class="form-group">
+            <label for="ukupnoEkipa" class="col-sm-4 control-label">Ukupan broj pojedinačnih natjecatelja</label>
+                        <div class="col-sm-5">           
+                        <input type="text" name="ukupanBrojTakmicara" class="form-control" placeholder="Upišite broj pojedinačnih natjecatelja" <?php if($this->natjecatelja){ echo 'value="' . $this->natjecatelja . '"'; } ?> />
+                        </div>
+        </div>
+		<div class="form-group">
+            <label for="ukupnoEkipa" class="col-sm-4 control-label">Ukupan broj timova</label>
+                        <div class="col-sm-5">           
+                        <input type="text" name="ukupanBrojTimova" class="form-control" placeholder="Upišite broj timova" <?php if($this->timova){ echo 'value="' . $this->timova . '"'; } ?> />
                         </div>
         </div>
 <?php		
@@ -93,4 +107,15 @@ class ElekPodForm extends AbstractView {
 		$this->idPodrucja = $idPodrucja;
 		return $this;
 	}
+	
+	public function setTimova($timova) {
+		$this->timova = $timova;
+		return $this;
+	}
+
+	public function setNatjecatelja($natjecatelja) {
+		$this->natjecatelja = $natjecatelja;
+		return $this;
+	}
+
 }

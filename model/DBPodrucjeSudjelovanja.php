@@ -16,6 +16,80 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
     public function getColumns() {
 		return array ('idPodrucja','idSudjelovanja','rezultatPojedinacni','vrstaPodrucja', 'ukupanBrojSudionika', 'iznosUplate', 'valuta');
     }
+	
+	public function updateNumberOfContestants($idPodrucja, $idElektrijade, $vrstaPodrucja, $broj) {
+		try {
+			$pdo = $this->getPdo();
+			$pr = $pdo->prepare("SELECT podrucjesudjelovanja.* FROM podrucjesudjelovanja
+									JOIN sudjelovanje ON podrucjesudjelovanja.idSudjelovanja = sudjelovanje.idSudjelovanja
+									WHERE sudjelovanje.idElektrijade = :idElektrijade AND podrucjesudjelovanja.idPodrucja = :idPodrucja
+									AND podrucjesudjelovanja.vrstaPodrucja = :vrstaPodrucja");
+			$pr->bindParam(":idElektrijade", $idElektrijade);
+			$pr->bindParam(":idPodrucja", $idPodrucja);
+			$pr->bindParam(":vrstaPodrucja", $vrstaPodrucja);
+			$pr->execute();
+			$pov = $pr->fetchAll();
+			if (count($pov) == 0) 
+				return false;
+			$q = $pdo->prepare("UPDATE podrucjesudjelovanja SET 
+								ukupanBrojSudionika = :broj WHERE
+								podrucjesudjelovanja.vrstaPodrucja = :vrstaPodrucja AND podrucjesudjelovanja.idPodrucja = :idPodrucja
+								AND podrucjesudjelovanja.idSudjelovanja AND EXISTS
+								(SELECT sudjelovanje.idSudjelovanja 
+									FROM sudjelovanje
+									WHERE sudjelovanje.idElektrijade = :idElektrijade AND sudjelovanje.idSudjelovanja = podrucjesudjelovanja.idSudjelovanja)");
+			$q->bindParam(":idElektrijade", $idElektrijade);
+			$q->bindParam(":idPodrucja", $idPodrucja);
+			$q->bindParam(":vrstaPodrucja", $vrstaPodrucja);
+			$q->bindParam(":broj", $broj);
+			$q->execute();
+			return true;
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
+	
+	public function getNumberOfContestants($idPodrucja, $idElektrijade) {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT podrucjesudjelovanja.ukupanBrojSudionika FROM podrucjesudjelovanja
+									JOIN sudjelovanje ON podrucjesudjelovanja.idSudjelovanja = sudjelovanje.idSudjelovanja
+									WHERE sudjelovanje.idElektrijade = :idElektrijade AND podrucjesudjelovanja.idPodrucja = :idPodrucja
+									AND podrucjesudjelovanja.vrstaPodrucja = 0");
+			$q->bindParam(":idElektrijade", $idElektrijade);
+			$q->bindParam(":idPodrucja", $idPodrucja);
+			$q->execute();
+			$pov = $q->fetchAll();
+			if (count($pov)) {
+				return $pov[0]->ukupanBrojSudionika;
+			} else {
+				return null;
+			}
+		} catch (\PDOException $e) {
+			return null;
+		}
+	}
+	
+	public function getNumberOfTeams($idPodrucja, $idElektrijade) {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT podrucjesudjelovanja.ukupanBrojSudionika FROM podrucjesudjelovanja
+									JOIN sudjelovanje ON podrucjesudjelovanja.idSudjelovanja = sudjelovanje.idSudjelovanja
+									WHERE sudjelovanje.idElektrijade = :idElektrijade AND podrucjesudjelovanja.idPodrucja = :idPodrucja
+									AND podrucjesudjelovanja.vrstaPodrucja = 1");
+			$q->bindParam(":idElektrijade", $idElektrijade);
+			$q->bindParam(":idPodrucja", $idPodrucja);
+			$q->execute();
+			$pov = $q->fetchAll();
+			if (count($pov)) {
+				return $pov[0]->ukupanBrojSudionika;
+			} else {
+				return null;
+			}
+		} catch (\PDOException $e) {
+			return null;
+		}
+	}
     
     public function getContestantAreas($idSudjelovanja) {
 		try {

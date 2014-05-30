@@ -713,10 +713,12 @@ class Voditelj implements Controller {
 		
 		$elekPod = new \model\DBElekPodrucje();
 		$podrucje = new \model\DBPodrucje();
+		$podSud = new \model\DBPodrucjeSudjelovanja();
+		$natjecatelja = null;
+		$timova = null;
 
 		$naziv = "";
 		if (postEmpty()) {
-			// process query
 			try {
 				$this->idCheck("displayPodrucja");
 				$this->checkAuthority(get("id"));
@@ -728,6 +730,8 @@ class Voditelj implements Controller {
 				$podrucje->load(get("id"));
 				$idPodrucja = get("id");
 				$naziv = $podrucje->nazivPodrucja;
+				$natjecatelja = $podSud->getNumberOfContestants($idPodrucja, $idElektrijade);
+				$timova = $podSud->getNumberOfTeams($idPodrucja, $idElektrijade);
 			} catch (\app\model\NotFoundException $e) {
 				$this->createMessage("Nepoznati identifikator!", "d3", "voditelj", "displayPodrucja");
 			} catch (\PDOException $e) {
@@ -735,19 +739,20 @@ class Voditelj implements Controller {
 				$this->createMessage($handler, "d3", "voditelj", "displayPodrucja");
 			}
 		} else {
-			// display
 			try {
 				$podrucje->load(post("idPodrucja"));
 				$idPodrucja = post("idPodrucja");
 				$naziv = $podrucje->nazivPodrucja;
 				$validacija = new \model\formModel\ElekPodFormModel(array('rezultatGrupni' => post('rezultatGrupni'),
 											'ukupanBrojEkipa' => post('ukupanBrojEkipa'),
+											'ukupanBrojTakmicara' => post('ukupanBrojTakmicara'),
+											'ukupanBrojTimova' => post('ukupanBrojTimova')
 											));
 				$pov = $validacija->validate();
 				if($pov !== true) {
 					$this->errorMessage = $validacija->decypherErrors($pov);
 				} else if (post("rezultatGrupni", "0") > post("ukupanBrojEkipa", "0")) {
-					$this->errorMessage = "Rezultat ne može biti manji od broja ekipa!";
+					$this->errorMessage = "Rezultat ne može biti veći od broja fakulteta!";
 				} else {	
 					// now add data
 					if (post("idElekPodrucje") === false) {
@@ -756,6 +761,26 @@ class Voditelj implements Controller {
 						$elekPod->addRow(post("idPodrucja"),  post("rezultatGrupni", NULL), NULL, $idElektrijade, post("ukupanBrojEkipa", NULL));
 					} else {
 						$elekPod->modifyRow(post("idElekPodrucje"), FALSE, post("rezultatGrupni"), FALSE, FALSE, post("ukupanBrojEkipa", NULL));
+					}
+					
+					// azuriraj broj timova i broj natjecatelja
+					$elektrijada = new \model\DBElektrijada();
+					$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+					if (!$podSud->updateNumberOfContestants($elekPod->idPodrucja, $idElektrijade, 0, post("ukupanBrojTakmicara", 0))) {
+						$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Da biste unijeli broj natjecatelja, morate najprije registrirati barem jednog natjecatelja!");
+						$_SESSION["exception"] = serialize($handler);
+						preusmjeri(\route\Route::get('d3')->generate(array(
+							"controller" => "voditelj",
+							"action" => "modifyCompetitionData"
+						)) . "?msg=excep&id=" . post("idPodrucja"));
+					}
+					if (!$podSud->updateNumberOfContestants($elekPod->idPodrucja, $idElektrijade, 1, post("ukupanBrojTimova", 0))) {
+						$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Da biste unijeli broj timova, morate najprije registrirati barem jednog člana tima!");
+						$_SESSION["exception"] = serialize($handler);
+						preusmjeri(\route\Route::get('d3')->generate(array(
+							"controller" => "voditelj",
+							"action" => "modifyCompetitionData"
+						)) . "?msg=excep&id=" . post("idPodrucja"));
 					}
 					
 					// process image
@@ -868,7 +893,9 @@ class Voditelj implements Controller {
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage,
 				"elekPod" => $elekPod,
-				"idPodrucja" => $idPodrucja
+				"idPodrucja" => $idPodrucja,
+				"natjecatelja" => $natjecatelja,
+				"timova" => $timova
 			))
 		));
 	}

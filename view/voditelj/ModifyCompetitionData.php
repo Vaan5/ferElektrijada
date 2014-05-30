@@ -8,6 +8,8 @@ class ModifyCompetitionData extends AbstractView {
     private $resultMessage;
 	private $elekPod;
 	private $idPodrucja;
+	private $timova;
+	private $natjecatelja;
 	
 	protected function outputHTML() {
 		// print messages if any
@@ -28,7 +30,9 @@ class ModifyCompetitionData extends AbstractView {
 			"elekPod" => $this->elekPod,
 			"controller" => "voditelj",
 			"action" => "downloadImage",
-			"idPodrucja" => $this->idPodrucja
+			"idPodrucja" => $this->idPodrucja,
+			"timova" => $this->timova,
+			"natjecatelja" => $this->natjecatelja
 		));
 	}
 	
@@ -49,6 +53,16 @@ class ModifyCompetitionData extends AbstractView {
 	
 	public function setIdPodrucja($idPodrucja) {
 		$this->idPodrucja = $idPodrucja;
+		return $this;
+	}
+
+	public function setTimova($timova) {
+		$this->timova = $timova;
+		return $this;
+	}
+
+	public function setNatjecatelja($natjecatelja) {
+		$this->natjecatelja = $natjecatelja;
 		return $this;
 	}
 

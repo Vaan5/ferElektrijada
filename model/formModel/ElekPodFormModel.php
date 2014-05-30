@@ -8,7 +8,9 @@ class ElekPodFormModel extends AbstractFormModel {
     protected function rules() {
         if ($this->rulesArray === null) {
             $this->rulesArray = array('rezultatGrupni' => array('required', 'numbers'),
-										'ukupanBrojEkipa' => array('required', 'numbers'));
+										'ukupanBrojEkipa' => array('required', 'numbers'),
+										'ukupanBrojTakmicara' => array('numbers'),
+										'ukupanBrojTimova' => array('numbers'));
         }
         return $this->rulesArray;
     }
@@ -21,6 +23,10 @@ class ElekPodFormModel extends AbstractFormModel {
                         return $v === 'required' ? "Rezultat je obavezan" : "Rezultat može biti samo brojčana vrijednost!";
 					case 'ukupanBrojEkipa':
                         return $v === 'required' ? "Broj ekipa je obavezan" : "Broj ekipa može biti samo brojčana vrijednost!";
+					case 'ukupanBrojTakmicara':
+                        return "Broj pojedniačnih natjecatelja može biti samo brojčana vrijednost!";
+					case 'ukupanBrojTimova':
+                        return "Broj timova može biti samo brojčana vrijednost!";
                     default:
                         break;
                 }

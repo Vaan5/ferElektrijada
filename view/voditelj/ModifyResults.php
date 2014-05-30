@@ -57,8 +57,8 @@ class ModifyResults extends AbstractView {
 				$ispis = "<tr><td>" . $val->ferId . "</td><td>" . $val->ime . "</td><td>" . $val->prezime . 
 						"</td><td>" . ($val->vrstaPodrucja == '1' ? 'Timsko' : 'Pojedinačno') . "</td><td>
 							<input class=\"form-control\" type=\"text\" name=\"" . $val->idPodrucjeSudjelovanja . "\" value=\"" . 
-						($val->rezultatPojedinacni === NULL ? "" : $val->rezultatPojedinacni) ."\"/></td><td>
-							<input class=\"form-control\" type=\"text\" name=\"b" . $val->idPodrucjeSudjelovanja . "\" value=\"" . 
+						($val->rezultatPojedinacni === NULL ? "" : $val->rezultatPojedinacni) ."\"/></td><td>" . ($val->ukupanBrojSudionika === NULL ? "" : $val->ukupanBrojSudionika) .
+							"<input class=\"form-control\" type=\"hidden\" name=\"b" . $val->idPodrucjeSudjelovanja . "\" value=\"" . 
 						($val->ukupanBrojSudionika === NULL ? "" : $val->ukupanBrojSudionika) ."\"/>";
 				echo $ispis;
 			}
