@@ -25,7 +25,7 @@ class DBBusGrupa extends AbstractDBModel {
         try {
             $pdo = $this->getPdo();
             $q = $pdo->prepare(
-                        "SELECT * FROM BUSGRUPA WHERE idBusa = ?"
+                        "SELECT * FROM busgrupa WHERE idBusa = ?"
                     );
             $q->execute(array($idBusa));
             return $q->fetchAll();

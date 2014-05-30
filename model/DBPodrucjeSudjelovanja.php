@@ -276,7 +276,7 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
 											LEFT JOIN podrucjesudjelovanja ON podrucje.idPodrucja = podrucjesudjelovanja.idPodrucja
 											LEFT JOIN sudjelovanje ON sudjelovanje.idSudjelovanja = podrucjesudjelovanja.idSudjelovanja AND
 														sudjelovanje.idElektrijade = :idElektrijade
-										WHERE UPPER(podrucje.nazivPodrucja) <> 'ZNANJE' AND UPPER(podrucje.nazivPodrucja) <> 'SPORT'
+										WHERE podrucje.idNadredjenog IS NOT NULL
 										GROUP BY podrucje.idPodrucja
 										ORDER BY podrucjesudjelovanja.vrstaPodrucja ASC");
 			$q->bindValue(":idElektrijade", $idElektrijade);
@@ -313,6 +313,23 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
 											JOIN podrucje ON podrucje.idPodrucja = podrucjesudjelovanja.idPodrucja
 											JOIN podrucje k ON podrucje.idNadredjenog = k.idPodrucja
 										WHERE UPPER(k.nazivPodrucja) = 'SPORT'");
+			$q->bindValue(":idElektrijade", $idElektrijade);
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
+	
+	public function getOstaloMoney($idElektrijade) {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT SUM(podrucjesudjelovanja.iznosUplate) suma
+										FROM podrucjesudjelovanja
+											JOIN sudjelovanje ON sudjelovanje.idSudjelovanja = podrucjesudjelovanja.idSudjelovanja
+											JOIN podrucje ON podrucje.idPodrucja = podrucjesudjelovanja.idPodrucja
+											JOIN podrucje k ON podrucje.idNadredjenog = k.idPodrucja
+										WHERE UPPER(k.nazivPodrucja) = 'OSTALO'");
 			$q->bindValue(":idElektrijade", $idElektrijade);
 			$q->execute();
 			return $q->fetchAll();

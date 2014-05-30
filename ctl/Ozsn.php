@@ -1589,7 +1589,7 @@ class Ozsn implements Controller {
 		
 		try {
 			$podrucje = new \model\DBPodrucje();
-			$podrucja = $podrucje->getAllExceptKnowledgeAndSport();
+			$podrucja = $podrucje->getAll();
 		} catch (\app\model\NotFoundException $e) {
 			$this->createMessage("Nepoznati identifikator");
 		} catch (\PDOException $e) {
@@ -1725,6 +1725,7 @@ class Ozsn implements Controller {
 				
 				$znanje = $podrucjeSudjelovanja->getKnowledgeMoney($idElektrijade);
 				$sport = $podrucjeSudjelovanja->getSportMoney($idElektrijade);
+				$ostalo = $podrucjeSudjelovanja->getOstaloMoney($idElektrijade);
 				
 				$ukupno = $podrucjeSudjelovanja->getAllMoney($idElektrijade);
 				$ukupno = $ukupno[0]->suma;
@@ -1764,7 +1765,8 @@ class Ozsn implements Controller {
 				"ukupno" => $ukupno,
 				"podrucja" => $novci,
 				"znanje" => $znanje,
-				"sport" => $sport
+				"sport" => $sport,
+				"ostalo" => $ostalo
 			))
 		));
 	}

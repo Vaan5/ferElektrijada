@@ -5,7 +5,7 @@ CREATE DATABASE IF NOT EXISTS ferElektrijada
 USE ferElektrijada;
 
 
-CREATE TABLE ELEKTRIJADA (
+CREATE TABLE elektrijada (
     idElektrijade INT UNSIGNED AUTO_INCREMENT,
     mjestoOdrzavanja VARCHAR(100) NOT NULL,
     datumPocetka DATE NOT NULL,
@@ -20,21 +20,21 @@ CREATE TABLE ELEKTRIJADA (
     UNIQUE (datumPocetka)
 );
 
-CREATE TABLE FUNKCIJA (
+CREATE TABLE funkcija (
     idFunkcije INT UNSIGNED AUTO_INCREMENT,
     nazivFunkcije VARCHAR(100) NOT NULL,
     PRIMARY KEY (idFunkcije),
     UNIQUE (nazivFunkcije)
 );
 
-CREATE TABLE UDRUGA (
+CREATE TABLE udruga (
     idUdruge INT UNSIGNED AUTO_INCREMENT,
     nazivUdruge VARCHAR(50) NOT NULL,
     PRIMARY KEY (idUdruge),
     UNIQUE (nazivUdruge)
 );
 
-CREATE TABLE OSOBA (
+CREATE TABLE osoba (
     idOsobe INT UNSIGNED AUTO_INCREMENT,
     ime VARCHAR(50),
     prezime VARCHAR(50),
@@ -61,23 +61,23 @@ CREATE TABLE OSOBA (
     UNIQUE (OIB),
     UNIQUE (MBG),
     FOREIGN KEY (idNadredjena)
-	REFERENCES OSOBA (idOsobe)
+	REFERENCES osoba (idOsobe)
 	ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 
-CREATE TABLE PODRUCJE (
+CREATE TABLE podrucje (
     idPodrucja INT UNSIGNED AUTO_INCREMENT,
     nazivPodrucja VARCHAR(100) NOT NULL,
     idNadredjenog INT UNSIGNED DEFAULT NULL,
     PRIMARY KEY (idPodrucja),
     FOREIGN KEY (idNadredjenog)
-        REFERENCES PODRUCJE (idPodrucja)
+        REFERENCES podrucje (idPodrucja)
         ON DELETE SET NULL,
     UNIQUE (nazivPodrucja)
 );
 
-CREATE TABLE SPONZOR (
+CREATE TABLE sponzor (
     idSponzora INT UNSIGNED AUTO_INCREMENT,
     imeTvrtke VARCHAR(100) NOT NULL,
     adresaTvrtke VARCHAR(100) NOT NULL,
@@ -85,7 +85,7 @@ CREATE TABLE SPONZOR (
     PRIMARY KEY (idSponzora)
 );
 
-CREATE TABLE ElekPodrucje (
+CREATE TABLE elekpodrucje (
     idElekPodrucje INT UNSIGNED AUTO_INCREMENT,
     idPodrucja INT UNSIGNED NOT NULL,
     rezultatGrupni SMALLINT,
@@ -95,14 +95,14 @@ CREATE TABLE ElekPodrucje (
     PRIMARY KEY (idElekPodrucje),
     UNIQUE (idElektrijade , idPodrucja),
     FOREIGN KEY (idElektrijade)
-        REFERENCES ELEKTRIJADA (idElektrijade)
+        REFERENCES elektrijada (idElektrijade)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idPodrucja)
-        REFERENCES PODRUCJE (idPodrucja)
+        REFERENCES podrucje (idPodrucja)
         ON UPDATE CASCADE ON DELETE CASCADE  
 );
 
-CREATE TABLE SponElekPod (
+CREATE TABLE sponelekpod (
     idSponElekPod INT UNSIGNED AUTO_INCREMENT,
     idSponzora INT UNSIGNED NOT NULL,
     idPodrucja INT UNSIGNED NOT NULL,
@@ -113,25 +113,25 @@ CREATE TABLE SponElekPod (
     PRIMARY KEY (idSponElekPod),
     UNIQUE (idSponzora , idPodrucja, idElektrijade),
     FOREIGN KEY (idElektrijade)
-        REFERENCES ELEKTRIJADA (idElektrijade)
+        REFERENCES elektrijada (idElektrijade)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idPodrucja)
-        REFERENCES PODRUCJE (idPodrucja)
+        REFERENCES podrucje (idPodrucja)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idSponzora)
-        REFERENCES SPONZOR (idSponzora)
+        REFERENCES sponzor (idSponzora)
         ON UPDATE CASCADE ON DELETE CASCADE  
 );
 
 
-CREATE TABLE NACINPROMOCIJE (
+CREATE TABLE nacinpromocije (
     idPromocije INT UNSIGNED AUTO_INCREMENT,
     tipPromocije VARCHAR(100) NOT NULL,
     UNIQUE (tipPromocije),
     PRIMARY KEY (idPromocije)
 );
 
-CREATE TABLE KATEGORIJA (
+CREATE TABLE kategorija (
     idKategorijeSponzora INT UNSIGNED AUTO_INCREMENT,
     tipKategorijeSponzora VARCHAR(100) NOT NULL,
     UNIQUE (tipKategorijeSponzora),
@@ -139,21 +139,21 @@ CREATE TABLE KATEGORIJA (
 );
 
 
-CREATE TABLE TVRTKA (
+CREATE TABLE tvrtka (
     idTvrtke INT UNSIGNED AUTO_INCREMENT,
     imeTvrtke VARCHAR(100) NOT NULL,
     adresaTvrtke VARCHAR(100) NOT NULL,
     PRIMARY KEY (idTvrtke)
 );
 
-CREATE TABLE USLUGA (
+CREATE TABLE usluga (
     idUsluge INT UNSIGNED AUTO_INCREMENT,
     nazivUsluge VARCHAR(100) NOT NULL,
     UNIQUE (nazivUsluge),
     PRIMARY KEY (idUsluge)
 );
 
-CREATE TABLE ImaSponzora (
+CREATE TABLE imasponzora (
     idImaSponzora INT UNSIGNED AUTO_INCREMENT,
     idSponzora INT UNSIGNED NOT NULL,
     idKategorijeSponzora INT UNSIGNED,
@@ -165,21 +165,21 @@ CREATE TABLE ImaSponzora (
     PRIMARY KEY (idImaSponzora),
     UNIQUE (idSponzora , idElektrijade),
     FOREIGN KEY (idSponzora)
-        REFERENCES SPONZOR (idSponzora)
+        REFERENCES sponzor (idSponzora)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idKategorijeSponzora)
-        REFERENCES KATEGORIJA (idKategorijeSponzora)
+        REFERENCES kategorija (idKategorijeSponzora)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idPromocije)
-        REFERENCES NACINPROMOCIJE (idPromocije)
+        REFERENCES nacinpromocije (idPromocije)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idElektrijade)
-        REFERENCES ELEKTRIJADA (idElektrijade)
+        REFERENCES elektrijada (idElektrijade)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 
-CREATE TABLE KoristiPruza (
+CREATE TABLE koristipruza (
     idKoristiPruza INT UNSIGNED AUTO_INCREMENT,
     idUsluge INT UNSIGNED NOT NULL,
     idTvrtke INT UNSIGNED NOT NULL,
@@ -191,31 +191,31 @@ CREATE TABLE KoristiPruza (
     UNIQUE (idTvrtke , idElektrijade , idUsluge),
     PRIMARY KEY (idKoristiPruza),
     FOREIGN KEY (idUsluge)
-        REFERENCES USLUGA (idUsluge)
+        REFERENCES usluga (idUsluge)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idTvrtke)
-        REFERENCES TVRTKA (idTvrtke)
+        REFERENCES tvrtka (idTvrtke)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idElektrijade)
-        REFERENCES ELEKTRIJADA (idElektrijade)
+        REFERENCES elektrijada (idElektrijade)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE ATRIBUT (
+CREATE TABLE atribut (
     idAtributa INT UNSIGNED AUTO_INCREMENT,
     nazivAtributa VARCHAR(100) NOT NULL,
     PRIMARY KEY (idAtributa),
     UNIQUE (nazivAtributa)
 );
 
-CREATE TABLE VELMAJICE (
+CREATE TABLE velmajice (
     idVelicine INT UNSIGNED AUTO_INCREMENT,
     velicina VARCHAR(5) NOT NULL,
     PRIMARY KEY (idVelicine),
     UNIQUE (velicina)
 );
 
-CREATE TABLE GODSTUD (
+CREATE TABLE godstud (
     idGodStud INT UNSIGNED AUTO_INCREMENT,
     studij VARCHAR(50) NOT NULL,
     godina VARCHAR(50) NOT NULL,
@@ -223,14 +223,14 @@ CREATE TABLE GODSTUD (
     UNIQUE (godina , studij)
 );
 
-CREATE TABLE SMJER (
+CREATE TABLE smjer (
     idSmjera INT UNSIGNED AUTO_INCREMENT,
     nazivSmjera VARCHAR(100) NOT NULL,
     PRIMARY KEY (idSmjera),
     UNIQUE (nazivSmjera)
 );
 
-CREATE TABLE ZAVOD (
+CREATE TABLE zavod (
     idZavoda INT UNSIGNED AUTO_INCREMENT,
     nazivZavoda VARCHAR(100) NOT NULL,
     skraceniNaziv VARCHAR(10) NOT NULL,
@@ -239,14 +239,14 @@ CREATE TABLE ZAVOD (
     UNIQUE (skraceniNaziv)
 );
 
-CREATE TABLE RADNOMJESTO (
+CREATE TABLE radnomjesto (
     idRadnogMjesta INT UNSIGNED AUTO_INCREMENT,
     naziv VARCHAR(100) NOT NULL,
     PRIMARY KEY (idRadnogMjesta),
     UNIQUE (naziv)
 );
 
-CREATE TABLE BUS (
+CREATE TABLE bus (
     idBusa INT UNSIGNED AUTO_INCREMENT,
     registracija VARCHAR(100),
     brojMjesta INT UNSIGNED,
@@ -256,21 +256,21 @@ CREATE TABLE BUS (
     UNIQUE (registracija)
 );
 
-CREATE TABLE BUSGRUPA (
+CREATE TABLE busgrupa (
     idGrupe INT UNSIGNED AUTO_INCREMENT,
     nazivGrupe VARCHAR(200),
     idBusa INT UNSIGNED,
     PRIMARY KEY (idGrupe),
     UNIQUE (nazivGrupe),
     FOREIGN KEY (idBusa)
-        REFERENCES BUS (idBusa)
+        REFERENCES bus (idBusa)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 
 
 
-CREATE TABLE SUDJELOVANJE (
+CREATE TABLE sudjelovanje (
     idSudjelovanja INT UNSIGNED AUTO_INCREMENT,
     idOsobe INT UNSIGNED NOT NULL,
     idElektrijade INT UNSIGNED NOT NULL,
@@ -281,30 +281,30 @@ CREATE TABLE SUDJELOVANJE (
     idRadnogMjesta INT UNSIGNED,
     idZavoda INT UNSIGNED,
     FOREIGN KEY (idRadnogMjesta)
-        REFERENCES RADNOMJESTO (idRadnogMjesta)
+        REFERENCES radnomjesto (idRadnogMjesta)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idSmjera)
-        REFERENCES SMJER (idSmjera)
+        REFERENCES smjer (idSmjera)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idZavoda)
-        REFERENCES ZAVOD (idZavoda)
+        REFERENCES zavod (idZavoda)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idGodStud)
-        REFERENCES GODSTUD (idGodStud)
+        REFERENCES godstud (idGodStud)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idVelicine)
-        REFERENCES VELMAJICE (idVelicine)
+        REFERENCES velmajice (idVelicine)
         ON UPDATE CASCADE ON DELETE CASCADE,    
     PRIMARY KEY (idSudjelovanja),
     UNIQUE (idOsobe , idElektrijade),
     FOREIGN KEY (idOsobe)
-        REFERENCES OSOBA (idOsobe)
+        REFERENCES osoba (idOsobe)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idElektrijade)
-        REFERENCES ELEKTRIJADA (idElektrijade)
+        REFERENCES elektrijada (idElektrijade)
 );
 
-CREATE TABLE PUTOVANJE (
+CREATE TABLE putovanje (
     idPutovanja INT UNSIGNED AUTO_INCREMENT,
     idSudjelovanja INT UNSIGNED,
     idGrupe INT UNSIGNED,
@@ -314,14 +314,14 @@ CREATE TABLE PUTOVANJE (
     brojSjedala INT NOT NULL,
     PRIMARY KEY (idPutovanja),
     FOREIGN KEY (idGrupe)
-        REFERENCES BUSGRUPA (idGrupe)
+        REFERENCES busgrupa (idGrupe)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idSudjelovanja)
-        REFERENCES SUDJELOVANJE (idSudjelovanja)
+        REFERENCES sudjelovanje (idSudjelovanja)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE ObavljaFunkciju (
+CREATE TABLE obavljafunkciju (
     idObavljaFunkciju INT UNSIGNED AUTO_INCREMENT,
     idOsobe INT UNSIGNED NOT NULL,
     idFunkcije INT UNSIGNED ,
@@ -329,30 +329,30 @@ CREATE TABLE ObavljaFunkciju (
     PRIMARY KEY (idObavljaFunkciju),
     UNIQUE (idOsobe , idFunkcije , idElektrijade),
     FOREIGN KEY (idOsobe)
-        REFERENCES OSOBA (idOsobe)
+        REFERENCES osoba (idOsobe)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idFunkcije)
-        REFERENCES FUNKCIJA (idFunkcije)
+        REFERENCES funkcija (idFunkcije)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idElektrijade)
-        REFERENCES ELEKTRIJADA (idElektrijade)
+        REFERENCES elektrijada (idElektrijade)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
-CREATE TABLE JeUUdruzi (
+CREATE TABLE jeuudruzi (
     idJeUUdruzi INT UNSIGNED AUTO_INCREMENT,
     idUdruge INT UNSIGNED NOT NULL,
     idOsobe INT UNSIGNED NOT NULL,
     PRIMARY KEY (idJeUUdruzi),
     UNIQUE (idUdruge , idOsobe),
     FOREIGN KEY (idUdruge)
-        REFERENCES UDRUGA (idUdruge)
+        REFERENCES udruga (idUdruge)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idOsobe)
-        REFERENCES OSOBA (idOsobe)
+        REFERENCES osoba (idOsobe)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE MEDIJ (
+CREATE TABLE medij (
     idMedija INT UNSIGNED AUTO_INCREMENT,
     nazivMedija VARCHAR(100) NOT NULL,    
     PRIMARY KEY (idMedija),
@@ -360,7 +360,7 @@ CREATE TABLE MEDIJ (
 
 );
 
-CREATE TABLE KONTAKTOSOBE (
+CREATE TABLE kontaktosobe (
     idKontakta INT UNSIGNED AUTO_INCREMENT,
     imeKontakt VARCHAR(100) NOT NULL,
     prezimeKontakt VARCHAR(100) NOT NULL,
@@ -370,40 +370,40 @@ CREATE TABLE KONTAKTOSOBE (
     idSponzora INT UNSIGNED,
     idMedija INT UNSIGNED,
     FOREIGN KEY (idSponzora)
-        REFERENCES SPONZOR (idSponzora)
+        REFERENCES sponzor (idSponzora)
         ON UPDATE CASCADE ON DELETE SET NULL,
     FOREIGN KEY (idMedija)
-        REFERENCES MEDIJ (idMedija)
+        REFERENCES medij (idMedija)
         ON UPDATE CASCADE ON DELETE SET NULL,
     FOREIGN KEY (idTvrtke)
-        REFERENCES TVRTKA (idTvrtke)
+        REFERENCES tvrtka (idTvrtke)
         ON UPDATE CASCADE ON DELETE SET NULL,
     PRIMARY KEY (idKontakta)
 );
 
-CREATE TABLE EMAILADRESE (
+CREATE TABLE emailadrese (
     idAdrese INT UNSIGNED AUTO_INCREMENT,
     idKontakta INT UNSIGNED,
     email VARCHAR(100) NOT NULL,
     UNIQUE (email),
     PRIMARY KEY (idAdrese),
     FOREIGN KEY (idKontakta)
-        REFERENCES KONTAKTOSOBE (idKontakta)
+        REFERENCES kontaktosobe (idKontakta)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE BROJEVIMOBITELA (
+CREATE TABLE brojevimobitela (
     idBroja INT UNSIGNED AUTO_INCREMENT,
     idKontakta INT UNSIGNED,
     broj VARCHAR(20) NOT NULL,
     UNIQUE (broj),
     PRIMARY KEY (idBroja),
     FOREIGN KEY (idKontakta)
-        REFERENCES KONTAKTOSOBE (idKontakta)
+        REFERENCES kontaktosobe (idKontakta)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE ImaAtribut (
+CREATE TABLE imaatribut (
     idImaAtribut INT UNSIGNED AUTO_INCREMENT,
     idPodrucja INT UNSIGNED NOT NULL,
     idAtributa INT UNSIGNED NOT NULL,
@@ -411,17 +411,17 @@ CREATE TABLE ImaAtribut (
     PRIMARY KEY (idImaAtribut),
     UNIQUE (idPodrucja , idAtributa , idSudjelovanja),
     FOREIGN KEY (idPodrucja)
-        REFERENCES PODRUCJE (idPodrucja)
+        REFERENCES podrucje (idPodrucja)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idAtributa)
-        REFERENCES ATRIBUT (idAtributa)
+        REFERENCES atribut (idAtributa)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idSudjelovanja)
-        REFERENCES SUDJELOVANJE (idSudjelovanja)
+        REFERENCES sudjelovanje (idSudjelovanja)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE PodrucjeSudjelovanja (
+CREATE TABLE podrucjesudjelovanja (
     idPodrucjeSudjelovanja INT UNSIGNED AUTO_INCREMENT,
     idPodrucja INT UNSIGNED NOT NULL,
     idSudjelovanja INT UNSIGNED NOT NULL,
@@ -433,17 +433,17 @@ CREATE TABLE PodrucjeSudjelovanja (
     PRIMARY KEY (idPodrucjeSudjelovanja),
     UNIQUE (idPodrucja , idSudjelovanja, vrstaPodrucja),
     FOREIGN KEY (idPodrucja)
-        REFERENCES PODRUCJE (idPodrucja)
+        REFERENCES podrucje (idPodrucja)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idSudjelovanja)
-        REFERENCES SUDJELOVANJE (idSudjelovanja)
+        REFERENCES sudjelovanje (idSudjelovanja)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 
 
 
-CREATE TABLE OBJAVA (
+CREATE TABLE objava (
     idObjave INT UNSIGNED AUTO_INCREMENT,
     datumObjave DATE NOT NULL,
     link VARCHAR(100),
@@ -453,21 +453,21 @@ CREATE TABLE OBJAVA (
     dokument VARCHAR(200),
     PRIMARY KEY (idObjave),
     FOREIGN KEY (idMedija)
-        REFERENCES MEDIJ (idMedija)
+        REFERENCES medij (idMedija)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE ObjavaOElektrijadi (
+CREATE TABLE objavaoelektrijadi (
     idObjavaOElektrijadi INT UNSIGNED AUTO_INCREMENT,
     idObjave INT UNSIGNED NOT NULL,
     idElektrijade INT UNSIGNED NOT NULL,
     PRIMARY KEY (idObjavaOElektrijadi),
     UNIQUE (idObjave , idElektrijade),
     FOREIGN KEY (idObjave)
-        REFERENCES OBJAVA (idObjave)
+        REFERENCES objava (idObjave)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idElektrijade)
-        REFERENCES ELEKTRIJADA (idElektrijade)
+        REFERENCES elektrijada (idElektrijade)
         ON UPDATE CASCADE ON DELETE CASCADE 
 );
 

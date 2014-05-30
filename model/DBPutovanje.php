@@ -36,17 +36,17 @@ class DBPutovanje extends AbstractDBModel {
         {
             $pdo = $this->getPdo();
             $q = $pdo->prepare(
-                        "SELECT SUDJELOVANJE.idSudjelovanja,
+                        "SELECT sudjelovanje.idSudjelovanja,
                                 ime,
                                 prezime,
                                 povratak,
                                 polazak
-                                FROM PUTOVANJE
-                            JOIN SUDJELOVANJE
-                                ON SUDJELOVANJE.idSudjelovanja = PUTOVANJE.idSudjelovanja
-                            JOIN OSOBA
-                                ON SUDJELOVANJE.idOsobe = OSOBA.idOsobe
-                            WHERE PUTOVANJE.idGrupe = ?"
+                                FROM putovanje
+                            JOIN sudjelovanje
+                                ON sudjelovanje.idSudjelovanja = putovanje.idSudjelovanja
+                            JOIN osoba
+                                ON sudjelovanje.idOsobe = osoba.idOsobe
+                            WHERE putovanje.idGrupe = ?"
                         );
             $q->execute(array($idGrupe));
             return $q->fetchAll();
@@ -120,16 +120,16 @@ class DBPutovanje extends AbstractDBModel {
                     "SELECT idSudjelovanja as ID,
                             concat(ime, ' ', prezime) as ime_prezime,
                             (SELECT group_concat(concat(nazivPodrucja) separator ';')
-                                FROM PodrucjeSudjelovanja as P NATURAL JOIN Podrucje
+                                FROM podrucjesudjelovanja as P NATURAL JOIN podrucje
                                 WHERE P.idSudjelovanja = ID) as podrucja,
                             (SELECT group_concat(concat(nazivPodrucja) separator ';')
-                                FROM ImaAtribut as A NATURAL JOIN Podrucje
+                                FROM imaatribut as A NATURAL JOIN podrucje
                                 WHERE A.idSudjelovanja = ID) as atributi
                     FROM sudjelovanje AS S
                     NATURAL JOIN osoba
                     WHERE idElektrijade = ?
                         AND (SELECT COUNT(*)
-                                FROM PUTOVANJE AS PUT
+                                FROM putovanje AS PUT
                                 WHERE PUT.idSudjelovanja = S.idSudjelovanja) = 0"
                 );
             $q->execute(array($idElektrijade));

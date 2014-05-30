@@ -25,7 +25,7 @@ class DBBus extends AbstractDBModel {
     	try {
             $pdo = $this->getPdo();
             $q = $pdo->prepare(
-                    "SELECT * FROM BUS"
+                    "SELECT * FROM bus"
                 );
             $q->execute();
             return $q->fetchAll();
@@ -86,7 +86,7 @@ class DBBus extends AbstractDBModel {
     	try {
             $pdo = $this->getPdo();
             $q = $pdo->prepare(
-                    "DELETE FROM BUS"
+                    "DELETE FROM bus"
                 );
             $q->execute();
         } catch (\PDOException $e) {

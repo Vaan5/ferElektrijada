@@ -10,6 +10,7 @@ class CollectedMoney extends AbstractView {
 	private $ukupno;
 	private $znanje;
 	private $sport;
+	private $ostalo;
     
     protected function outputHTML() {
 		// print messages if any
@@ -66,6 +67,10 @@ class CollectedMoney extends AbstractView {
 						<td><?php echo $this->sport[0]->suma === null ? 0 : $this->sport[0]->suma;?></td>
 					</tr>
 					<tr>
+						<td>Ostalo</td>
+						<td><?php echo $this->ostalo[0]->suma === null ? 0 : $this->ostalo[0]->suma;?></td>
+					</tr>
+					<tr>
 						<td>Ukupno</td>
 						<td><?php echo $this->ukupno === null ? 0 : $this->ukupno;?></td>
 					</tr>
@@ -107,6 +112,11 @@ class CollectedMoney extends AbstractView {
 
 	public function setSport($sport) {
 		$this->sport = $sport;
+		return $this;
+	}
+	
+	public function setOstalo($ostalo) {
+		$this->ostalo = $ostalo;
 		return $this;
 	}
 
