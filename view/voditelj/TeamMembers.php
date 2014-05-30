@@ -27,7 +27,6 @@ class TeamMembers extends AbstractView {
 			<table class="table">
 				<thead>
 					<tr>
-						<th>Korisničko ime</th>
 						<th>Ime</th>
 						<th>Prezime</th>
 						<th>JMBAG</th>
@@ -38,26 +37,26 @@ class TeamMembers extends AbstractView {
 				</thead>
 
 				<tbody>
-<?php
+<?php //<td>" . $val->ferId . "</td>
 		if($this->takmicari !== null && count($this->takmicari))
 		{
 			foreach($this->takmicari as $val)
 			{
-				$ispis = "<tr><td>" . $val->ferId . "</td><td>" . $val->ime . "</td><td>" . $val->prezime . 
+				$ispis = "<tr><td>" . $val->ime . "</td><td>" . $val->prezime . 
 						"</td><td>" . $val->JMBAG . "</td><td>" . $val->rezultatPojedinacni . "</td><td>" . 
 						($val->vrstaPodrucja == '1' ? 'Timsko' : 'Pojedinačno') . "</td>";
 				$ispis .= "<td><a href=\"" . \route\Route::get('d3')->generate(array(
 					"controller" => "voditelj",
 					"action" => "modifyContestant"
-				)) . "?idP=" . $val->idPodrucjeSudjelovanja ."&idS=". $val->idSudjelovanja . "&idO=". $val->idOsobe ."\">Uredi</a>&nbsp;";
+				)) . "?idP=" . $val->idPodrucjeSudjelovanja ."&idS=". $val->idSudjelovanja . "&idO=". $val->idOsobe ."\">".'<span class="glyphicon glyphicon-pencil"></span>'." Uredi</a>&nbsp;";
 				$ispis .= "&nbsp;<a href=\"" . \route\Route::get('d3')->generate(array(
 					"controller" => "voditelj",
 					"action" => "deleteContestant"
-				)) . "?idP=" . $val->idPodrucjeSudjelovanja ."&idS=". $val->idSudjelovanja ."\">Briši</a>&nbsp;";
+				)) . "?idP=" . $val->idPodrucjeSudjelovanja ."&idS=". $val->idSudjelovanja ."\">".'<span class="glyphicon glyphicon-remove"></span>'." Briši</a>&nbsp;";
 				$ispis .= "&nbsp;<a href=\"" . \route\Route::get('d3')->generate(array(
 					"controller" => "voditelj",
 					"action" => "changeContestantAttributes"
-				)) . "?idP=" . $val->idPodrucja ."&idS=". $val->idSudjelovanja ."\">Uredi Atribute</a></td></tr>";
+				)) . "?idP=" . $val->idPodrucja ."&idS=". $val->idSudjelovanja ."\">".'<span class="glyphicon glyphicon-pencil"></span>'." Atributi</a></td></tr>";
 				echo $ispis;
 			}
 		}
