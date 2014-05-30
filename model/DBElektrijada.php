@@ -143,54 +143,85 @@ class DBElektrijada extends AbstractDBModel {
     }
     
     public function getCurrentElektrijadaId() {
-        $datum = date('Y');
-        $pdo = $this->getPdo();
-        $query = $pdo->prepare("SELECT * FROM elektrijada WHERE YEAR(datumPocetka) = :datum");
-        $query->bindValue(':datum', $datum);
-        $query->execute();
-        $pov = $query->fetchAll(\PDO::FETCH_CLASS, get_class($this));
-        
-        if(count($pov)) {
-            return $pov[0]->idElektrijade;
-        } else {
-            return false;
-        }
+		// stara inacica za cijelu godinu, a ne akademsku
+//        $datum = date('Y');
+//        $pdo = $this->getPdo();
+//        $query = $pdo->prepare("SELECT * FROM elektrijada WHERE YEAR(datumPocetka) = :datum");
+//        $query->bindValue(':datum', $datum);
+//        $query->execute();
+//        $pov = $query->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+//        
+//        if(count($pov)) {
+//            return $pov[0]->idElektrijade;
+//        } else {
+//            return false;
+//        }
 		
 		// nova verzija -> kad je jedna godina od 1.9.2013. do 31.8.2014;
-//		try {
-//			// dohvati mjesec
-//			$mjesec = date('n');
-//			$dan = date('D');
-//			
-//			$pdo = $this->getPdo();
-//			$query = $pdo->prepare("SELECT * FROM elektrijada WHERE YEAR(datumPocetka) = :datum");
-//			$query->bindValue(':datum', $datum);
-//			$query->execute();
-//			$pov = $query->fetchAll(\PDO::FETCH_CLASS, get_class($this));
-//			
-//			if(count($pov)) {
-//	            return $pov[0]->idElektrijade;
-//	        } else {
-//	            return false;
-//	        }
-//		} catch(\PDOException $e) {
-//			return false;
-//		}
+		try {
+			// dohvati mjesec
+			$mjesec = date('n');
+			$datum = date('Y');
+			
+			if ($mjesec >= 9) {
+				// gledam iducu godinu
+				$datum += 1;
+			} // inace sam josh u akademskoj godini i gledam elektrijadu ciji je datumPocetka u tekucoj godini
+			
+			$pdo = $this->getPdo();
+			$query = $pdo->prepare("SELECT * FROM elektrijada WHERE YEAR(datumPocetka) = :datum");
+			$query->bindValue(':datum', $datum);
+			$query->execute();
+			$pov = $query->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+			
+			if(count($pov)) {
+	            return $pov[0]->idElektrijade;
+	        } else {
+	            return false;
+	        }
+		} catch(\PDOException $e) {
+			return false;
+		}
     }
     
     public function getLastYearElektrijadaId() {
-        $datum = date('Y') - 1;
-        $pdo = $this->getPdo();
-        $query = $pdo->prepare("SELECT * FROM elektrijada WHERE YEAR(datumPocetka) = :datum");
-        $query->bindValue(':datum', $datum);
-        $query->execute();
-        $pov = $query->fetchAll(\PDO::FETCH_CLASS, get_class($this));
-        
-        if(count($pov)) {
-            return $pov[0]->idElektrijade;
-        } else {
-            return false;
-        }
+		// Inacica koja radi po kalendarskim godinama, a ne akademskim
+//        $datum = date('Y') - 1;
+//        $pdo = $this->getPdo();
+//        $query = $pdo->prepare("SELECT * FROM elektrijada WHERE YEAR(datumPocetka) = :datum");
+//        $query->bindValue(':datum', $datum);
+//        $query->execute();
+//        $pov = $query->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+//        
+//        if(count($pov)) {
+//            return $pov[0]->idElektrijade;
+//        } else {
+//            return false;
+//        }
+		
+		// akademske godine
+		try {
+			$mjesec = date('n');
+			if ($mjesec >= 9) {
+				// nova akademska godina gledam elektrijadu ciji je datumPocetka ta godina
+				$datum = date('Y');
+			} else {
+				$datum = date('Y') - 1;
+			}
+			$pdo = $this->getPdo();
+			$query = $pdo->prepare("SELECT * FROM elektrijada WHERE YEAR(datumPocetka) = :datum");
+			$query->bindValue(':datum', $datum);
+			$query->execute();
+			$pov = $query->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+
+			if(count($pov)) {
+				return $pov[0]->idElektrijade;
+			} else {
+				return false;
+			}
+		} catch (\PDOException $e) {
+			return false;
+		}
     }
 	
 	public function generateHallOfFame() {
