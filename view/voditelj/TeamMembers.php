@@ -20,7 +20,6 @@ class TeamMembers extends AbstractView {
         echo new \view\components\ResultMessage(array(
             "resultMessage" => $this->resultMessage
         ));
-		
 ?>
 		<div class="panel panel-default">
 			<div class="panel-heading">Članovi tima</div>
@@ -54,7 +53,11 @@ class TeamMembers extends AbstractView {
 				$ispis .= "&nbsp;<a href=\"" . \route\Route::get('d3')->generate(array(
 					"controller" => "voditelj",
 					"action" => "deleteContestant"
-				)) . "?idP=" . $val->idPodrucjeSudjelovanja ."&idS=". $val->idSudjelovanja ."\">Briši</a></td></tr>";
+				)) . "?idP=" . $val->idPodrucjeSudjelovanja ."&idS=". $val->idSudjelovanja ."\">Briši</a>&nbsp;";
+				$ispis .= "&nbsp;<a href=\"" . \route\Route::get('d3')->generate(array(
+					"controller" => "voditelj",
+					"action" => "changeContestantAttributes"
+				)) . "?idP=" . $val->idPodrucja ."&idS=". $val->idSudjelovanja ."\">Uredi Atribute</a></td></tr>";
 				echo $ispis;
 			}
 		}

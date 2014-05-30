@@ -118,4 +118,45 @@ class DBImaatribut extends AbstractDBModel {
 			throw $e;
 		}
 	}
+	
+	public function deleteContestantsAttributesExceptLeader($idSudjelovanja, $idPodrucja) {
+		try {
+			$pov = $this->select()->where(array(
+				"idSudjelovanja" => $idSudjelovanja,
+				"idPodrucja" => $idPodrucja
+			))->fetchAll();
+			
+			$atribut = new DBAtribut();
+			$idVoditelja = $atribut->getTeamLeaderId();
+			
+			if (count($pov)) {
+				foreach ($pov as $p) {
+					if ($p->idAtributa != $idVoditelja)
+						$p->delete();
+				}
+			}
+		} catch (app\model\NotFoundException $e) {
+			throw $e;
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
+	
+	public function loadIfExists($idPodrucja, $idSudjelovanja) {
+		try {
+			$pov = $this->select()->where(array(
+				"idPodrucja" => $idPodrucja,
+				"idSudjelovanja" => $idSudjelovanja
+			))->fetchAll();
+			
+			if(count($pov)) {
+				$this->load($pov[0]->idImaAtribut);
+			}
+			return $this;
+		} catch (\app\model\NotFoundException $e) {
+			throw $e;
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	} 
 }

@@ -1243,4 +1243,110 @@ class Voditelj implements Controller {
 			"path" => $elekPod->slikaLink
 		));
 	}
+	
+	public function changeContestantAttributes() {
+		$this->checkRole();
+		$this->checkMessages();
+		
+		$sudjelovanje = new \model\DBSudjelovanje();
+		$podrucjeSudjelovanja = new \model\DBPodrucjeSudjelovanja();
+		$podrucje = new \model\DBPodrucje();
+		$imaatribut = new \model\DBImaatribut();
+		$atribut = new \model\DBAtribut();
+		
+		$atributi = null;
+		$podrucja = null;
+		$korisnikoviAtributi = null;
+		
+		
+		if (postEmpty()) {
+			// get data to show
+			$this->getParamCheck("idS", "displayPodrucja");
+			$this->getParamCheck("idP", "displayPodrucja");
+			$idSudjelovanja = get("idS");
+			$idPodrucja = get("idP");
+			
+			try {
+				$sudjelovanje->load(get("idS"));
+				$elektrijada = new \model\DBElektrijada();
+				$idElektrijade = $elektrijada->getCurrentElektrijadaId();
+				
+				if ($sudjelovanje->idElektrijade != $idElektrijade)
+					$this->createMessage("Ne možete mijenjati prošlogodišnje zapise!", "d3", "voditelj", "searchContestants");
+				
+				$podrucja = $podrucje->getAll();
+				$atributi = $atribut->getAllExceptTeamLeader();
+				
+				$podrucjeSudjelovanja = $podrucjeSudjelovanja->loadIfExists(get("idP"), get("idS"), get("vrsta"));
+				
+				$at = $imaatribut->getAllContestantAttributes(get("idS"));
+				
+				$korisnikoviAtributi = array();
+				if (count($at)) {
+					foreach ($at as $a) {
+						if ($a->idPodrucja == get("idP"))
+							$korisnikoviAtributi[] = $a->idAtributa;
+					}
+				}
+				
+			} catch (\app\model\NotFoundException $e) {
+				$this->createMessage("Nepoznati identifikator", "d3", "voditelj", "displayPodrucja");
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$this->createMessage($handler, "d3", "voditelj", "displayPodrucja");
+			}
+		} else {
+			$idSudjelovanja = post("idS");
+			$idPodrucja = post("idP");
+			
+			try {
+				// now lets modify the attributes
+				// first delete the old ones, and after that add new
+				$imaatribut->deleteContestantsAttributesExceptLeader($idSudjelovanja, $idPodrucja);
+				
+				$idVoditelja = $atribut->getTeamLeaderId();
+				// now add the new ones if any
+				foreach (post("idAtributa") as $k => $v) {
+					if ($v !== '' && $v !== $idVoditelja) {
+						$imaatribut = new \model\DBImaatribut();
+						$imaatribut->addRow($idPodrucja, $v, $idSudjelovanja);
+					}
+				}
+				
+				// success redirect
+				preusmjeri(\route\Route::get("d3")->generate(array(
+					"controller" => "voditelj",
+					"action" => "displayTeam"
+				)) . "?id=" . $idPodrucja . "&msg=succM");
+			} catch (\app\model\NotFoundException $e) {
+				$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Nepoznati identifikator");
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "voditelj",
+					"action" => "changeContestantAttributes"
+				)) . "?msg=excep&idP=" . $idPodrucja . "&idS=" . $idSudjelovanja);
+			} catch (\PDOException $e) {
+				$handler = new \model\ExceptionHandlerModel($e);
+				$_SESSION["exception"] = serialize($handler);
+				preusmjeri(\route\Route::get('d3')->generate(array(
+					"controller" => "voditelj",
+					"action" => "changeContestantAttributes"
+				)) . "?msg=excep&idP=" . $idPodrucja . "&idS=" . $idSudjelovanja);
+			}
+		}
+		
+		echo new \view\Main(array(
+			"title" => "Ažuriranje Atributa",
+			"body" => new \view\voditelj\ContestantAttributes(array(
+				"errorMessage" => $this->errorMessage,
+				"resultMessage" => $this->resultMessage,
+				"podrucjeSudjelovanja" => $podrucjeSudjelovanja,
+				"podrucja" => $podrucja,
+				"atributi" => $atributi,
+				"korisnikoviAtributi" => $korisnikoviAtributi,
+				"idSudjelovanja" => $idSudjelovanja,
+				"idPodrucja" => $idPodrucja
+			))
+		));
+	}
 }

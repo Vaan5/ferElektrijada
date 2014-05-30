@@ -27,6 +27,17 @@ class DBAtribut extends AbstractDBModel {
 			return array();
 		}
     }
+	
+	public function getAllExceptTeamLeader() {
+        try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT * FROM atribut WHERE UPPER(nazivAtributa) <> 'VODITELJ'");
+			$q->execute();
+			return $q->fetchAll(\PDO::FETCH_CLASS, get_class($this));
+		} catch (\PDOException $e) {
+			return array();
+		}
+    }
 
     public function modifyRow($idAtributa, $nazivAtributa) {
         try {

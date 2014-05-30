@@ -134,7 +134,7 @@ class Ozsn implements Controller {
 			$elektrijada = new \model\DBElektrijada();
 			$idElektrijade = $elektrijada->getCurrentElektrijadaId();
 			
-			$podrucja = $podrucje->getAll();
+			$podrucja = $podrucje->getAllWithRoots();
 			$voditelji = $osoba->getTeamLeaders($idElektrijade);
 		} catch (\app\model\NotFoundException $e) {
 			$this->createMessage("Nepoznati identifikator!");
@@ -3905,7 +3905,7 @@ class Ozsn implements Controller {
 		$sponzori = null;
 
 		try {
-			$podrucja = $podrucje->getAll();
+			$podrucja = $podrucje->getAllWithRoots();
 			$sponzori = $sponzor->getAll();
 		} catch (\PDOException $e) {
 			$handler = new \model\ExceptionHandlerModel($e);
