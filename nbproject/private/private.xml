@@ -5,9 +5,12 @@
         <group>
             <file>file:/C:/xampp/htdocs/ferElektrijada/view/voditelj/TeamMembers.php</file>
             <file>file:/C:/xampp/htdocs/ferElektrijada/ctl/Voditelj.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/ozsn/TeamLeaders.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/ozsn/AddExistingTeamLeader.php</file>
             <file>file:/C:/xampp/htdocs/ferElektrijada/view/Main.php</file>
             <file>file:/C:/xampp/htdocs/ferElektrijada/view/Login.php</file>
             <file>file:/C:/xampp/htdocs/ferElektrijada/view/components/LoginForm.php</file>
+            <file>file:/C:/xampp/htdocs/ferElektrijada/view/voditelj/MyDisciplines.php</file>
         </group>
     </open-files>
 </project-private>

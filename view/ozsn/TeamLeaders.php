@@ -73,7 +73,7 @@ class TeamLeaders extends AbstractView {
 				<thead>
 					<tr>
 						<th>Disciplina</th>
-						<th>Korisničko ime</th>
+						<th>Korisnik</th>
 						<th>Ime</th>
 						<th>Prezime</th>
 						<th>JMBAG</th>
@@ -90,7 +90,7 @@ class TeamLeaders extends AbstractView {
 			{
 				$ispis = "<tr><td>" . $val->nazivPodrucja . "<td>" . $val->ferId . "</td><td>" . $val->ime . "</td><td>" . $val->prezime . 
 						"</td><td>" . $val->JMBAG . "</td><td>" . ($val->tip == "S" ? "Student" : ($val->tip == "D" ? "Djelatnik" : "Ozsn")) . "</td>";
-				$ispis .= "<td><a href=\"" . \route\Route::get('d3')->generate(array(
+				$ispis .= "<td style=".'"width:140px;"'."><a href=\"" . \route\Route::get('d3')->generate(array(
 					"controller" => "ozsn",
 					"action" => "modifyTeamLeader"
 				)) . "?idS=". $val->idSudjelovanja . "&idA=". $val->idImaAtribut ."\">".'<span class="glyphicon glyphicon-pencil"></span>'." Uredi</a>&nbsp;";
