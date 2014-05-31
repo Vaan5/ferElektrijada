@@ -570,20 +570,73 @@ class Administrator implements Controller {
                 
                 $obavlja->deleteRows(get('id'), $i);
                 
-                preusmjeri(\route\Route::get('d3')->generate(array(
-                                    "controller" => "administrator",
-                                    "action" => "searchOzsn"
-                                )) . "?msg=remSucc");
+                if(get('a') == 1)
+				{
+					preusmjeri(\route\Route::get('d3')->generate(array(
+										"controller" => "administrator",
+										"action" => "displayPersons"
+									)) . "?a=1&msg=remSucc");
+				}
+				
+				else if(get('a') == 2)
+				{
+					preusmjeri(\route\Route::get('d3')->generate(array(
+										"controller" => "administrator",
+										"action" => "listOldOzsn"
+									)) . "?msg=remSucc");
+				}
+				
+				else
+				{
+					preusmjeri(\route\Route::get('d3')->generate(array(
+										"controller" => "administrator",
+										"action" => "searchOzsn"
+									)) . "?msg=remSucc");
+				}
             } catch (\app\model\NotFoundException $e) {
-                preusmjeri(\route\Route::get('d3')->generate(array(
-                    "controller" => "administrator",
-                    "action" => "searchOzsn"
-                )) . "?msg=err");
+				if(get('a') == 1)
+				{
+					preusmjeri(\route\Route::get('d3')->generate(array(
+						"controller" => "administrator",
+						"action" => "displayPersons"
+					)) . "?a=1&msg=err");
+				}
+				else if(get('a') == 1)
+				{
+					preusmjeri(\route\Route::get('d3')->generate(array(
+						"controller" => "administrator",
+						"action" => "listOldOzsn"
+					)) . "&msg=err");
+				}
+				else
+				{
+					preusmjeri(\route\Route::get('d3')->generate(array(
+						"controller" => "administrator",
+						"action" => "searchOzsn"
+					)) . "?msg=err");
+				}
             } catch (\PDOException $e) {
-                preusmjeri(\route\Route::get('d3')->generate(array(
-                    "controller" => "administrator",
-                    "action" => "searchOzsn"
-                )) . "?msg=derr");
+                if(get('a') == 1)
+				{
+					preusmjeri(\route\Route::get('d3')->generate(array(
+						"controller" => "administrator",
+						"action" => "displayPersons"
+					)) . "?a=1&msg=derr");
+				}
+				else if(get('a') == 1)
+				{
+					preusmjeri(\route\Route::get('d3')->generate(array(
+						"controller" => "administrator",
+						"action" => "listOldOzsn"
+					)) . "?&msg=derr");
+				}
+				else
+				{
+					preusmjeri(\route\Route::get('d3')->generate(array(
+						"controller" => "administrator",
+						"action" => "searchOzsn"
+					)) . "?msg=derr");
+				}
             }
         }
     }
@@ -669,7 +722,7 @@ class Administrator implements Controller {
 		
 		try {
 			$pom = $osoba->getAllActiveOzsn();
-			if (count($pom)) {
+			if ($pom && count($pom)) {
 				foreach ($pom as $v) {
 					$clanovi[] = $v->getPrimaryKey();
 				}
@@ -766,7 +819,7 @@ class Administrator implements Controller {
         
 		try {
 			$pom = $osoba->getAllActiveOzsn();
-			if (count($pom)) {
+			if ($pom && count($pom)) {
 				foreach ($pom as $v) {
 					$aktivniClanovi[] = $v->getPrimaryKey();
 				}
@@ -796,7 +849,11 @@ class Administrator implements Controller {
                     $obavljaFunkciju->addNewRow($osoba->getPrimaryKey(), NULL, $i);
 
                     // everything's ok
-                    preusmjeri(\route\Route::get('d1')->generate() . "?msg=ozsnAddedSucc");
+                    //preusmjeri(\route\Route::get('d1')->generate() . "?msg=ozsnAddedSucc");
+					preusmjeri(\route\Route::get('d3')->generate(array(
+						"controller" => "administrator",
+						"action" => "listOldOzsn"
+					)) . "?msg=ozsnAddedSucc");
                 }
             } catch (\app\model\NotFoundException $e) {
                 preusmjeri(\route\Route::get('d1')->generate() . "?msg=dunno");

@@ -67,11 +67,23 @@ class OldOzsn extends AbstractView {
 			{
 				echo '<tr><td>' . $val->ime . '</td><td>' . $val->prezime . '</td><td>' . $val->ferId . '</td>';
 				echo '<td><a href="';
-				echo \route\Route::get('d3')->generate(array(
-					"controller" => 'administrator',
-					"action" => 'listOldOzsn'
-				));
-				echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-plus"></span> Dodaj u Odbor</a></td></tr>';
+				if (!in_array($val->idOsobe, $this->aktivniClanovi))
+				{
+					echo \route\Route::get('d3')->generate(array(
+						"controller" => 'administrator',
+						"action" => 'listOldOzsn'
+					));
+					echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-plus"></span> Dodaj u ovogodišnji Odbor</a></td>';
+				}
+				else
+				{
+					echo \route\Route::get('d3')->generate(array(
+						"controller" => 'administrator',
+						"action" => 'removeOzsnFromCurrentElektrijada'
+					));
+					echo '?id=' . $val->idOsobe . '&a=2"><span class="glyphicon glyphicon-remove"></span> Ukloni iz ovogodišnjeg Odbora</a></td>';
+				}
+				echo '</tr>';
 			}
 ?>
 					</tbody>

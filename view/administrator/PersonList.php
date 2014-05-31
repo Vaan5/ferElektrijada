@@ -72,13 +72,30 @@ class PersonList extends AbstractView {
 					"controller" => 'administrator',
 					"action" => 'modifyPerson'
 				));
-				echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a> &nbsp; <a href="';
+				echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-pencil"></span> Uredi</a>';
 				
-				echo \route\Route::get('d3')->generate(array(
-					"controller" => 'administrator',
-					"action" => 'promoteToOzsn'
-				));
-				echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-plus"></span> Premjesti u Odbor</a> &nbsp; <a class="deletePerson" href="';
+				if(!in_array($val->idOsobe, $this->clanovi))
+				{
+					echo '&nbsp; <a href="';
+				
+					echo \route\Route::get('d3')->generate(array(
+						"controller" => 'administrator',
+						"action" => 'promoteToOzsn'
+					));
+					echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-plus"></span> Premjesti u Odbor</a>';
+				}
+				
+				else {
+					echo '&nbsp; <a href="';
+
+					echo \route\Route::get('d3')->generate(array(
+						"controller" => 'administrator',
+						"action" => 'removeOzsnFromCurrentElektrijada'
+					));
+					echo '?id=' . $val->idOsobe . '&a=1"><span class="glyphicon glyphicon-remove"></span> Ukloni iz Odbora</a>';		
+				}
+				
+				echo ' &nbsp; <a class="deletePerson" href="';
 				
 				echo \route\Route::get('d3')->generate(array(
 					"controller" => 'administrator',
