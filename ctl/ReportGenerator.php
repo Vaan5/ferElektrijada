@@ -62,10 +62,9 @@ class ReportGenerator implements Controller {
 	try {
 	    $podrucja = $podrucje->getAllWithRoots();  //dohvati sve iz tablice podrucja
 		$elektrijade = $e->getAll();   //koristi se pri kraju, treba nam za poglede
-		 
-	
 		
 		
+			
 	} catch (\PDOException $e) {
 	    $handler = new \model\ExceptionHandlerModel($e);
             $_SESSION["exception"] = serialize($handler);
@@ -106,7 +105,78 @@ class ReportGenerator implements Controller {
 	    // now proccess input data
 	    try {
 		$osoba = new \model\DBOsoba(); //objekt , treba nam samo radi poziva reportCompetitorList
-		$pov = $osoba->reportCompetitorList($_POST, post("idElektrijade"), post("idPodrucja")); //poziv metode nad objektom
+		
+		
+		
+		$temp = array();
+		$polje = array();
+		
+
+
+
+		
+		
+		//brojimo vršna područja - ona koja nemaju nadređenih
+		for($i=0; $i < count($podrucja); $i++){
+			if( $podrucja[$i]->idNadredjenog != TRUE)
+			   $polje[] = $podrucja[$i]->idPodrucja;
+		}
+	     
+		  
+	      for($z=0; $z < count($polje); $z++){
+			  
+			  //ako je odabrano vršno područje
+			if( post("idPodrucja") == $polje[$z]){
+			  
+				
+				//pronađi podređena područja
+			for($j=0; $j < count($polje); $j++){
+			for($i=0; $i < count($podrucja); $i++){
+				if ( $polje[$j] == $podrucja[$i]->idNadredjenog)
+			
+			$temp[$j][] = $podrucja[$i]->idPodrucja;
+			
+		  
+			}}
+			
+		//zvoi funkciju iz modela sa idPodrucja jednakim svim id-ima podređenih područja
+		for($i=0; $i < count($temp[$z]); $i++){
+		$niz[] = $osoba->reportCompetitorList($_POST, post("idElektrijade"), $temp[$z][$i]);
+		
+		 }
+	
+		 //pretvorba 2d polja u 1d zbog funkcije
+		   for ($i = 0; $i < count($niz); $i++) {
+      for ($j = 0; $j < count($niz[$i]); $j++) {
+        $pov[] = $niz[$i][$j];
+		
+      }}
+	   break;
+	   
+		}
+		//ako nisu odabrana vršna područja
+		else if( post("idPodrucja") != $polje[$z]){
+			$pov = $osoba->reportCompetitorList($_POST, post("idElektrijade"), post("idPodrucja")); //poziv metode nad objektom
+			
+			}
+		
+			
+		
+			}
+		
+		
+		
+			
+			
+			
+	
+		
+	
+			
+			
+			
+		
+		
 	
 		
 		//ljepsi nazivi vrijednosti atributa
