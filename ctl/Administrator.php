@@ -92,6 +92,9 @@ class Administrator implements Controller {
             case 'alrO':
                 $this->resultMessage = "Osoba je već član odbora!";
                 break;
+			case 'ozsnAddedSucc':
+				$this->resultMessage = "Uspješno dodan član odbora!";
+				break;
             case 'excep':
                 if(isset($_SESSION['exception'])) {
                     $e = unserialize($_SESSION['exception']);
@@ -337,7 +340,7 @@ class Administrator implements Controller {
 				$array = array();
 				$array[] = $pomPolje;
 
-				if ($osobe !== null && count($osobe)) {
+				if ($osobe && $osobe !== null && count($osobe)) {
 					foreach ($osobe as $v) {
 						$array[] = array($v->ime, $v->prezime, $v->mail, $v->brojMob, $v->JMBAG, ($v->spol == "M" ? "Muško" : "Žensko"),
 							$v->datRod, $v->brOsobne, $v->osobnaVrijediDo, $v->brPutovnice, $v->putovnicaVrijediDo, 
