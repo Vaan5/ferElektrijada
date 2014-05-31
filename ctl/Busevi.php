@@ -73,7 +73,7 @@ class Busevi implements Controller {
 
     public function spremiRaspored() {
         try {
-            //$this->checkRole();
+            $this->checkRole();
             $busevi = array();
             $busevi = post("busevi");
             //echo "<pre>";
@@ -138,7 +138,7 @@ class Busevi implements Controller {
 
     private function getBusevi() {
         try {
-            //$this->checkRole();
+            $this->checkRole();
             $busModel = new \model\DBBus();
             $busevi = $busModel->getAllBusesAsArray();
             for ($i=0; $i < count($busevi); $i++) {
