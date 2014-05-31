@@ -194,7 +194,7 @@ class Busevi implements Controller {
         $busevi = array();
         $sudionici = array();
         try {
-            //$this->checkRole();
+            $this->checkRole();
             $this->checkForMessages();
 
             if(!isset($this->errorMessage)) {
