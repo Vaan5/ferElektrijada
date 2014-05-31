@@ -17,63 +17,123 @@ class Busevi implements Controller {
         }
     }
 
+
+    private function validateInput($busevi) {
+        $naziviBuseva = array();
+        $registracije = array();
+        $naziviGrupa = array();
+        for ($i=0; $i < count($busevi); $i++) {
+            $bus = $busevi[$i];
+
+
+            if(
+                empty($bus["registracija"]) ||
+                !is_numeric($bus["brojMjesta"]) ||
+                !is_numeric($bus["brojBusa"]) ||
+                empty($bus["nazivBusa"])
+                )
+                return false;
+
+            array_push($registracije, $bus["registracija"]);
+            array_push($naziviBuseva, $bus["nazivBusa"]);
+
+            if(!array_key_exists("grupe", $bus)) {
+                continue;
+            }
+            for ($j=0; $j < count($bus["grupe"]); $j++) {
+                $grupa = $bus["grupe"][$j];
+
+                if( empty($grupa["nazivGrupe"]) )
+                    return false;
+
+                array_push($naziviGrupa, $grupa["nazivGrupe"]);
+
+                if(!array_key_exists("osobe", $grupa)) {
+                    continue;
+                }
+                for ($k=0; $k < count($grupa["osobe"]); $k++) {
+                    $osoba = $grupa["osobe"][$k];
+
+                    if(
+                        !is_numeric($osoba["idSudjelovanja"]) ||
+                        !is_numeric($osoba["brojSjedala"]) ||
+                        !is_numeric($osoba["polazak"]) ||
+                        !is_numeric($osoba["povratak"])
+                        )
+                        return false;
+                }
+            }
+        }
+        return (
+                    count($registracije) == count(array_unique($registracije)) &&
+                    count($naziviBuseva) == count(array_unique($naziviBuseva)) &&
+                    count($naziviGrupa) == count(array_unique($naziviGrupa))
+                );
+    }
+
     public function spremiRaspored() {
         try {
             //$this->checkRole();
             $busevi = array();
             $busevi = post("busevi");
-            /*echo "<pre>";
-            print_r($busevi);
-            echo "</pre>";*/
+            //echo "<pre>";
+            //var_dump($busevi);
+            //echo "</pre>";
 
-            $busModelClear = new \model\DBBus();
-            $busModelClear->clearBuses();
+            if($this->validateInput($busevi)) {
 
-            for ($i=0; $i < count($busevi); $i++) {
-                $bus = $busevi[$i];
+                $busModelClear = new \model\DBBus();
+                $busModelClear->clearBuses();
 
-                $busModel = new \model\DBBus();
-                $idBusa = $busModel->addRow(
-                                            $bus["registracija"],
-                                            $bus["brojMjesta"],
-                                            $bus["brojBusa"],
-                                            $bus["nazivBusa"]
-                                        );
+                for ($i=0; $i < count($busevi); $i++) {
+                    $bus = $busevi[$i];
 
-                if(!array_key_exists("grupe", $bus)) {
-                    continue;
-                }
-                for ($j=0; $j < count($bus["grupe"]); $j++) {
-                    $grupa = $bus["grupe"][$j];
-                    $grupaModel = new \model\DBBusGrupa();
+                    $busModel = new \model\DBBus();
+                    $idBusa = $busModel->addRow(
+                                                $bus["registracija"],
+                                                intval($bus["brojMjesta"]),
+                                                intval($bus["brojBusa"]),
+                                                $bus["nazivBusa"]
+                                            );
 
-                    $idGrupe = $grupaModel->addRow(
-                                                    $grupa["nazivGrupe"],
-                                                    $idBusa
-                                                );
-
-                    if(!array_key_exists("osobe", $grupa)) {
+                    if(!array_key_exists("grupe", $bus)) {
                         continue;
                     }
-                    for ($k=0; $k < count($grupa["osobe"]); $k++) {
-                        $osoba = $grupa["osobe"][$k];
+                    for ($j=0; $j < count($bus["grupe"]); $j++) {
+                        $grupa = $bus["grupe"][$j];
+                        $grupaModel = new \model\DBBusGrupa();
 
-                        $putovanjeModel = new \model\DBPutovanje();
-                        $putovanjeModel->addRow(
-                                                $osoba["idSudjelovanja"],
-                                                $idGrupe,
-                                                $osoba["polazak"],
-                                                $osoba["povratak"],
-                                                $osoba["napomena"],
-                                                $osoba["brojSjedala"]
-                                            );
+                        $idGrupe = $grupaModel->addRow(
+                                                        $grupa["nazivGrupe"],
+                                                        $idBusa
+                                                    );
+
+                        if(!array_key_exists("osobe", $grupa)) {
+                            continue;
+                        }
+                        for ($k=0; $k < count($grupa["osobe"]); $k++) {
+                            $osoba = $grupa["osobe"][$k];
+
+                            $putovanjeModel = new \model\DBPutovanje();
+                            $putovanjeModel->addRow(
+                                                    intval($osoba["idSudjelovanja"]),
+                                                    $idGrupe,
+                                                    intval($osoba["polazak"]),
+                                                    intval($osoba["povratak"]),
+                                                    $osoba["napomena"],
+                                                    intval($osoba["brojSjedala"])
+                                                );
+                        }
                     }
                 }
+                echo "Uspješno spremljeno!";
+            } else {
+                echo "Ulazni podatci nisu ispravni! Izmjene nisu spremljene!";
             }
-        } catch (\PDOException $e) {
+    } catch (\PDOException $e) {
             $handler = new \model\ExceptionHandlerModel($e);
             $this->createMessage($handler, "d2", "busevi", "");
-        }
+    }
     }
 
     private function getBusevi() {

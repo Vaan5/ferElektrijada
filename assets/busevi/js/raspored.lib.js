@@ -225,7 +225,7 @@ raspored.removeFromGroup = function() {
             raspored.groupUnassigned.append(element);
         }
         raspored.calculateActiveGroupSize();
-        
+
         raspored.showHideUnassigned();
     }
 };
@@ -339,7 +339,7 @@ raspored.setActiveBus = function(source) {
 };
 
 raspored.resetActiveBus = function() {
-    if(raspored.activeBus !== null) 
+    if(raspored.activeBus !== null)
     {
         raspored.activeBus.removeClass("bus-active");
         raspored.activeBus = null;
@@ -392,7 +392,7 @@ raspored.setBusCapacity = function() {
     else
     {
         var capacity = prompt("Unesite kapacitet busa:", "52");
-        if(capacity !== null && capacity.length > 0) {
+        if(capacity !== null && capacity.length > 0 && validateInt(capacity)) {
             var capInt = parseInt(capacity, 10);
             if(capInt < raspored.activeBusUsedCapacity)
             {
@@ -401,7 +401,7 @@ raspored.setBusCapacity = function() {
             else
             {
                 raspored.activeBusCapacity = capInt;
-                raspored.pl_activeBusCapacity.html(capacity);
+                raspored.pl_activeBusCapacity.html(capInt);
                 raspored.setUsedPercentage();
             }
         }
@@ -694,3 +694,13 @@ raspored.addGroupSilent = function(name) {
     }
     //raspored.bindItem();
 };
+
+function validateInt(numTxt) {
+num = parseInt(numTxt);
+return ! (  isNaN(num) ||
+            numTxt.indexOf('.') != -1 ||
+            numTxt.indexOf(',') != -1 ||
+            numTxt.indexOf(' ') != -1 ||
+            numTxt.length === 0
+            );
+}

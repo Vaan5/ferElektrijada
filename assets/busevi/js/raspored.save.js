@@ -8,8 +8,10 @@ raspored.save = function() {
 
     var busevi = [];
     var buses = $(".bus");
+    var sjedalo = 1;
     for(var i = 0; i < buses.length; i++)
     {
+        sjedalo = 1;
         var bus = buses.eq(i);
         var naziv = bus.children(".bus-name").html();
         var kapacitet = bus.children(".bus-capacity").html();
@@ -34,7 +36,7 @@ raspored.save = function() {
                 var polazak = student.children("input:checkbox.polazak").prop('checked') ? 1 : 0;
                 var povratak = student.children("input:checkbox.odlazak").prop('checked') ? 1 : 0;
                 var napomena = "nema";
-                var brojSjedala = 0;
+                var brojSjedala = sjedalo++;
                 var osoba = {
                     "idSudjelovanja": idOsobe,
                     "polazak": polazak,
@@ -63,7 +65,7 @@ raspored.save = function() {
     if(busevi.length > 0) {
         $.post( "/ferElektrijada/busevi/spremiRaspored", { 'busevi': busevi }, function(response) {
             raspored.hideLoader();
-            alert("Izmjene su uspješno spremljene");
+            alert(response);
             //document.write(response);
         });
     }

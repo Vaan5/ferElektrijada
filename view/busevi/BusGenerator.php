@@ -244,13 +244,15 @@ class BusGenerator extends AbstractView {
                                     for ($i=0; $i < count($this->sudionici); $i++) {
                                             $obj = $this->sudionici[$i];
                                             //echo ((string)$obj->ID . ": " . $obj->ime_prezime . " " . $obj->podrucja . $obj->atributi . "\r\n<br>");
+                                            $array1 = explode(";", $obj->podrucja);
+                                            $array2 = explode(";", $obj->atributi);
+                                            $p = array_unique(array_merge($array1, $array2));
                                             echo '<div class="student" id="' . $obj->ID . '">' .
                                                  '<input type="checkbox" class="polazak" checked>' .
                                                  '<input type="checkbox" class="odlazak" checked> ' .
                                                  $obj->ime_prezime .
                                                  ' <input type="text" value="' .
-                                                 $obj->podrucja . '::' .
-                                                 $obj->atributi .
+                                                    join(";", array_filter($p)) .
                                                  '"></div>';
                                     }
                                 ?>
