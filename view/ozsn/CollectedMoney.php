@@ -11,6 +11,8 @@ class CollectedMoney extends AbstractView {
 	private $znanje;
 	private $sport;
 	private $ostalo;
+	private $korijeni;
+	private $g;
     
     protected function outputHTML() {
 		// print messages if any
@@ -52,24 +54,32 @@ class CollectedMoney extends AbstractView {
 			{
 ?>
 					<tr>
-						<td><?php echo $val->nazivPodrucja; ?></td>
-						<td><?php echo $val->suma === null ? 0 : $val->suma; ?></td>
+						<td><?php echo $val[0]; ?></td>
+						<td><?php echo isset($val[1]) ? $val[1] : 0; ?></td>
 					</tr>
 <?php
 			}
+			
+			if ($this->korijeni && count($this->korijeni)) {
+				foreach ($this->korijeni as $k) {
+					echo "<tr>
+							<td>" . $k->nazivPodrucja . "</td>
+							<td>";
+					
+					$naziv = null;
+					if ($this->g && count($this->g)) {
+						foreach ($this->g as $v) {
+							if ($v->nazivPodrucja === $k->nazivPodrucja) {
+								$naziv = $v->suma;
+								break;
+							}
+						}
+					}
+					
+					echo ($naziv === null ? 0 : $naziv) . "</td></tr>";
+				}
+			}
 ?>
-					<tr>
-						<td>Znanje</td>
-						<td><?php echo $this->znanje[0]->suma === null ? 0 : $this->znanje[0]->suma;?></td>
-					</tr>
-					<tr>
-						<td>Sport</td>
-						<td><?php echo $this->sport[0]->suma === null ? 0 : $this->sport[0]->suma;?></td>
-					</tr>
-					<tr>
-						<td>Ostalo</td>
-						<td><?php echo $this->ostalo[0]->suma === null ? 0 : $this->ostalo[0]->suma;?></td>
-					</tr>
 					<tr>
 						<td>Ukupno</td>
 						<td><?php echo $this->ukupno === null ? 0 : $this->ukupno;?></td>
@@ -117,6 +127,16 @@ class CollectedMoney extends AbstractView {
 	
 	public function setOstalo($ostalo) {
 		$this->ostalo = $ostalo;
+		return $this;
+	}
+	
+	public function setKorijeni($korijeni) {
+		$this->korijeni = $korijeni;
+		return $this;
+	}
+
+	public function setG($g) {
+		$this->g = $g;
 		return $this;
 	}
 

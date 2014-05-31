@@ -274,11 +274,29 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
 										sudjelovanje.idElektrijade
 										FROM podrucje
 											LEFT JOIN podrucjesudjelovanja ON podrucje.idPodrucja = podrucjesudjelovanja.idPodrucja
-											LEFT JOIN sudjelovanje ON sudjelovanje.idSudjelovanja = podrucjesudjelovanja.idSudjelovanja AND
-														sudjelovanje.idElektrijade = :idElektrijade
-										WHERE podrucje.idNadredjenog IS NOT NULL
+											LEFT JOIN sudjelovanje ON sudjelovanje.idSudjelovanja = podrucjesudjelovanja.idSudjelovanja
+										WHERE podrucje.idNadredjenog IS NOT NULL AND sudjelovanje.idElektrijade = :idElektrijade
 										GROUP BY podrucje.idPodrucja
 										ORDER BY podrucjesudjelovanja.vrstaPodrucja ASC");
+			$q->bindValue(":idElektrijade", $idElektrijade);
+			$q->execute();
+			return $q->fetchAll();
+		} catch (\PDOException $e) {
+			throw $e;
+		}
+	}
+	
+	public function getRootMoney($idElektrijade) {
+		try {
+			$pdo = $this->getPdo();
+			$q = $pdo->prepare("SELECT k.nazivPodrucja,
+										SUM(podrucjesudjelovanja.iznosUplate) suma
+										FROM podrucje k
+											LEFT JOIN podrucje ON podrucje.idNadredjenog = k.idPodrucja
+											LEFT JOIN podrucjesudjelovanja ON podrucje.idPodrucja = podrucjesudjelovanja.idPodrucja
+											LEFT JOIN sudjelovanje ON sudjelovanje.idSudjelovanja = podrucjesudjelovanja.idSudjelovanja
+										WHERE k.idNadredjenog IS NULL AND sudjelovanje.idElektrijade = :idElektrijade
+									GROUP BY k.nazivPodrucja");
 			$q->bindValue(":idElektrijade", $idElektrijade);
 			$q->execute();
 			return $q->fetchAll();
@@ -295,7 +313,7 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
 											JOIN sudjelovanje ON sudjelovanje.idSudjelovanja = podrucjesudjelovanja.idSudjelovanja
 											JOIN podrucje ON podrucje.idPodrucja = podrucjesudjelovanja.idPodrucja
 											JOIN podrucje k ON podrucje.idNadredjenog = k.idPodrucja
-										WHERE UPPER(k.nazivPodrucja) = 'ZNANJE'");
+										WHERE UPPER(k.nazivPodrucja) = 'ZNANJE' AND sudjelovanje.idElektrijade = :idElektrijade");
 			$q->bindValue(":idElektrijade", $idElektrijade);
 			$q->execute();
 			return $q->fetchAll();
@@ -312,7 +330,7 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
 											JOIN sudjelovanje ON sudjelovanje.idSudjelovanja = podrucjesudjelovanja.idSudjelovanja
 											JOIN podrucje ON podrucje.idPodrucja = podrucjesudjelovanja.idPodrucja
 											JOIN podrucje k ON podrucje.idNadredjenog = k.idPodrucja
-										WHERE UPPER(k.nazivPodrucja) = 'SPORT'");
+										WHERE UPPER(k.nazivPodrucja) = 'SPORT' AND sudjelovanje.idElektrijade = :idElektrijade");
 			$q->bindValue(":idElektrijade", $idElektrijade);
 			$q->execute();
 			return $q->fetchAll();
@@ -329,7 +347,7 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
 											JOIN sudjelovanje ON sudjelovanje.idSudjelovanja = podrucjesudjelovanja.idSudjelovanja
 											JOIN podrucje ON podrucje.idPodrucja = podrucjesudjelovanja.idPodrucja
 											JOIN podrucje k ON podrucje.idNadredjenog = k.idPodrucja
-										WHERE UPPER(k.nazivPodrucja) = 'OSTALO'");
+										WHERE UPPER(k.nazivPodrucja) = 'OSTALO' AND sudjelovanje.idElektrijade = :idElektrijade");
 			$q->bindValue(":idElektrijade", $idElektrijade);
 			$q->execute();
 			return $q->fetchAll();

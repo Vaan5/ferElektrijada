@@ -1727,6 +1727,27 @@ class Ozsn implements Controller {
 				$sport = $podrucjeSudjelovanja->getSportMoney($idElektrijade);
 				$ostalo = $podrucjeSudjelovanja->getOstaloMoney($idElektrijade);
 				
+				$g = $podrucjeSudjelovanja->getRootMoney($idElektrijade);
+				$podrucje = new \model\DBPodrucje();
+				$korijeni = $podrucje->getRoot();
+				$djeca = $podrucje->getAll();
+				
+				$novciZaPrikazati = array();
+				if (count($djeca)) {
+					foreach ($djeca as $d) {
+						$pomPolje = array($d->nazivPodrucja);
+						if (count($novci)) {
+							foreach ($novci as $n) {
+								if ($n->nazivPodrucja == $d->nazivPodrucja) {
+									$pomPolje[] = $n->suma;
+									break;
+								}
+							}
+						}
+						$novciZaPrikazati[] = $pomPolje;
+					}
+				}
+				
 				$ukupno = $podrucjeSudjelovanja->getAllMoney($idElektrijade);
 				$ukupno = $ukupno[0]->suma;
 			} catch (\PDOException $e) {
@@ -1763,10 +1784,12 @@ class Ozsn implements Controller {
 				"errorMessage" => $this->errorMessage,
 				"resultMessage" => $this->resultMessage,
 				"ukupno" => $ukupno,
-				"podrucja" => $novci,
+				"podrucja" => $novciZaPrikazati,
 				"znanje" => $znanje,
 				"sport" => $sport,
-				"ostalo" => $ostalo
+				"ostalo" => $ostalo,
+				"korijeni" => $korijeni,
+				"g" => $g
 			))
 		));
 	}
@@ -2921,7 +2944,7 @@ class Ozsn implements Controller {
         $this->checkRole();
         $this->checkMessages();
         
-        $zavod = new \model\DBZAvod();
+        $zavod = new \model\DBZavod();
 		$zavodi = null;
         try {
             $zavodi = $zavod->getAllZavod();
