@@ -92,12 +92,12 @@ class ReportGenerator implements Controller {
 	  
 	    // have they selected atleast one attribute
 	    if (count($_POST) <= 3) {
-		$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Odaberite barem jedan atribut!");
-		$_SESSION["exception"] = serialize($handler);
-		preusmjeri(\route\Route::get('d3')->generate(array(
-		    "controller" => "reportGenerator",
-		    "action" => "generateDisciplineList"
-		)) . "?msg=excep");
+			$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Odaberite barem jedan atribut!");
+			$_SESSION["exception"] = serialize($handler);
+			preusmjeri(\route\Route::get('d3')->generate(array(
+				"controller" => "reportGenerator",
+				"action" => "generateDisciplineList"
+			)) . "?msg=excep");
 	    }
 	    
 		
@@ -115,10 +115,10 @@ class ReportGenerator implements Controller {
 
 
 		
-		
+		$pov = array();
 		//brojimo vršna područja - ona koja nemaju nadređenih
 		for($i=0; $i < count($podrucja); $i++){
-			if( $podrucja[$i]->idNadredjenog != TRUE)
+			if( $podrucja[$i]->idNadredjenog === NULL)
 			   $polje[] = $podrucja[$i]->idPodrucja;
 		}
 	     
@@ -141,9 +141,8 @@ class ReportGenerator implements Controller {
 			
 		//zvoi funkciju iz modela sa idPodrucja jednakim svim id-ima podređenih područja
 		for($i=0; $i < count($temp[$z]); $i++){
-		$niz[] = $osoba->reportCompetitorList($_POST, post("idElektrijade"), $temp[$z][$i]);
-		
-		 }
+			$niz[] = $osoba->reportCompetitorList($_POST, post("idElektrijade"), $temp[$z][$i]);
+		}
 	
 		 //pretvorba 2d polja u 1d zbog funkcije
 		   for ($i = 0; $i < count($niz); $i++) {
