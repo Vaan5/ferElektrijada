@@ -3,11 +3,12 @@ CREATE  PROCEDURE `dohvatiPopisSvihSudionikaIzPodrucja`(IN idElektrijade INT(10)
 BEGIN
 	IF EXISTS (SELECT * FROM elektrijada WHERE elektrijada.idElektrijade = idElektrijade) THEN
 		IF EXISTS (SELECT * FROM podrucje WHERE podrucje.idPodrucja = idPodrucja) THEN
-			SELECT DISTINCT osoba.*, podrucjeSudjelovanja.*, sudjelovanje.*
+			SELECT DISTINCT osoba.*, podrucjesudjelovanja.*, sudjelovanje.*
 			FROM osoba
 			JOIN sudjelovanje ON sudjelovanje.idOsobe = osoba.idOsobe
-			JOIN podrucjeSudjelovanja ON sudjelovanje.idSudjelovanja = podrucjeSudjelovanja.idSudjelovanja
-			WHERE sudjelovanje.idElektrijade = idElektrijade AND podrucjeSudjelovanja.idPodrucja = idPodrucja;
+			JOIN podrucjesudjelovanja ON sudjelovanje.idSudjelovanja = podrucjesudjelovanja.idSudjelovanja
+			WHERE sudjelovanje.idElektrijade = idElektrijade AND podrucjesudjelovanja.idPodrucja = idPodrucja
+			ORDER BY podrucjesudjelovanja.vrstaPodrucja;
 		ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeći identifikator područja';
 		END IF;
 	ELSE  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Unesen je nepostojeći identifikator Elektrijade!';
