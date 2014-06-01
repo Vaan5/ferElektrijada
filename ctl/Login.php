@@ -30,8 +30,15 @@ class Login implements Controller {
                     $korisnik = new \model\DBOsoba();
                     $r = $korisnik->doAuth(post("userName"), post("pass"));
                     
-                    $r === false ? $this->errorMessage = 'Pogrešno korisničko ime ili lozinka!' : 
+                    if ($r === false) {
+						$this->errorMessage = 'Pogrešno korisničko ime ili lozinka!';
+					} else if (session("vrsta") !== 'A' && session("active") === false) {
+						$this->errorMessage = 'Ne sudjelujete u ovogodišnjoj Elektrijadi!';
+						session_destroy();
+						$_SESSION = array();
+					} else {
                         preusmjeri(\route\Route::get('d1')->generate() . '?msg=logsuccess');
+					}
                 }                
             }
         }
