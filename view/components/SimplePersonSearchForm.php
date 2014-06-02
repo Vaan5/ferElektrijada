@@ -43,10 +43,10 @@ class SimplePersonSearchForm extends AbstractView {
 			<input type="text" name="ferId" class="form-control" placeholder="Upišite korisničko ime" />
                         </div>
         </div>        
-        <center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText;?>" /> <a href="<?php echo \route\Route::get('d3')->generate(array(
+        <center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText;?>" /> <button type="button" class="btn btn-primary" onClick="javascript:location.href = '<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => 'administrator',
                     "action" => 'displayOzsn'
-                ));?>?a=1"><button type="button" class="btn btn-primary">Lista aktivnih članova</button></a></center>
+                ));?>?a=1';">Lista aktivnih članova</button></a></center>
     </form>
 
 <?php
