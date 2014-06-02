@@ -186,13 +186,27 @@ class DBOsoba extends AbstractDBModel {
 				$final  = $q->fetchAll();
 			}
 		}catch (\PDOException $e) {
-           return null;
+           return false;
 		}
 		
 		$vel=count($final);
 		if($vel>0){//ako postoji vrati true, ako ne vrati false
 			return true;
 		} else {
+			// first check if he is a teamleader
+			try {
+				$q = $pdo->prepare("SELECT * FROM sudjelovanje
+									JOIN imaatribut ON sudjelovanje.idSudjelovanja = imaatribut.idSudjelovanja
+									WHERE sudjelovanje.idOsobe = :id AND sudjelovanje.idElektrijade = :Elektrijada;");
+				$q->bindValue(":id", $id);
+				$q->bindValue(":Elektrijada", $idelektr);
+				$q->execute();
+				$final  = $q->fetchAll();
+			} catch (\PDOException $e) {
+				return false;
+			}
+			if (count($final))
+				return true;
 			return false;
 		}
 	}
