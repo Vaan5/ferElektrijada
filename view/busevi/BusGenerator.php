@@ -74,7 +74,9 @@ class BusGenerator extends AbstractView {
                             <input type="checkbox" class="odlazak" ' . $povratak . '> '
                             . $osoba->ime . ' '
                             . $osoba->prezime .
-                            '</div>';
+                            ' <input type="text" value="' .
+                                    $grupa->nazivGrupe .
+                            '"></div>';
                     }
                     $velicina = $povratakCount;
                     if($polazakCount > $velicina)
@@ -94,6 +96,7 @@ class BusGenerator extends AbstractView {
 
                     $bus_inner_html .=
                     '<div class="bus-group" data-id="' . $grupa->idGrupe . '">' .
+                            '<input type="text" class="busGroupOrder" value="N" size="2" maxlength="2">' .
                             '<button type="button" class="btn btn-default btn-sm removeFromBus">' .
                                     '<span class="glyphicon glyphicon-arrow-left"></span>' .
                             '</button>' .
@@ -276,7 +279,11 @@ class BusGenerator extends AbstractView {
 
                     <div class="col-xs-4 busevi">
                         <div class="row-fluid">
-                            <div class="col-xs-12 top">BUSEVI</div>
+                            <div class="col-xs-12 top">BUSEVI
+                                <button type="button" class="btn btn-default btn-sm"  data-toggle="tooltip" data-placement="left" title="Sortiraj grupe u svim autobusima" id="sortBusGroups">
+                                    <span class="glyphicon glyphicon-sort-by-order"></span> Sort
+                                </button>
+                            </div>
                             <div id="bus-container">
                                 <?php
                                     echo $this->buseviHtml;
@@ -287,7 +294,7 @@ class BusGenerator extends AbstractView {
                 </div>
             </div>
         </div>
-
+            <script src="/ferElektrijada/assets/busevi/js/jquery.tinysort.js" charset="UTF-8"></script>
             <script src="/ferElektrijada/assets/busevi/js/raspored.lib.js" charset="UTF-8"></script>
             <script src="/ferElektrijada/assets/busevi/js/raspored.algorithm.js" charset="UTF-8"></script>
             <script src="/ferElektrijada/assets/busevi/js/raspored.save.js" charset="UTF-8"></script>

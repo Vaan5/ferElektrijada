@@ -471,7 +471,8 @@ raspored.addToBus = function() {
         {
             raspored.activeBusUsedCapacity += raspored.activeGroupSize;
             raspored.pl_activeBusUsedCapacity.html(raspored.activeBusUsedCapacity);
-            var content = '<div class="bus-group" data-id="' + raspored.activeGroupId + '">' + 
+            var content = '<div class="bus-group" data-id="' + raspored.activeGroupId + '">' +
+                            '<input type="text" class="busGroupOrder" value="N" size="2" maxlength="2">' +
                             '<button type="button" class="btn btn-default btn-sm removeFromBus">' +
                                     '<span class="glyphicon glyphicon-arrow-left"></span>' +
                             '</button>' +
@@ -490,7 +491,8 @@ raspored.addToBus = function() {
 };
 
 raspored.addGroupToBus = function(groupName, groupSize, groupId, bus) {
-    var content = '<div class="bus-group" data-id="' + groupId + '">' + 
+    var content = '<div class="bus-group" data-id="' + groupId + '">' +
+    '<input type="text" class="busGroupOrder" value="N" size="2" maxlength="2">' +
     '<button type="button" class="btn btn-default btn-sm removeFromBus">' +
     '<span class="glyphicon glyphicon-arrow-left"></span>' +
     '</button>' +
@@ -704,3 +706,14 @@ return ! (  isNaN(num) ||
             numTxt.length === 0
             );
 }
+
+raspored.sortBusGroups = function() {
+    var buses = $(".bus");
+    for(var i = 0; i < buses.length; i++)
+    {
+        //alert("Bus br. " + i);
+        $bus = buses.eq(i);
+        $bus.children("div.bus-group").tsort('input.busGroupOrder', {useVal:true});
+    }
+    raspored.resetActiveBus();
+};

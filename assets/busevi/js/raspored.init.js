@@ -72,12 +72,16 @@ raspored.init = function() {
         raspored.generateGroups();
         event.stopPropagation();
     });
+    $("#sortBusGroups").bind("click", function(event) {
+        raspored.sortBusGroups();
+        event.stopPropagation();
+    });
     $(".student input[type='text']").bind("click", function(event) {
         event.stopPropagation();
     });
     raspored.bindItem();
     raspored.showHideButtons();
-    $('.button-row button, .button-row a, .group-ignore .group-name button').tooltip({
+    $('.button-row button, .button-row a, .group-ignore .group-name button, button#sortBusGroups').tooltip({
         position: 'left'
     });
     raspored.calculateUsedOnAllBuses();
