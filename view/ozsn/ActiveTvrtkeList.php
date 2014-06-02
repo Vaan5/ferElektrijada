@@ -74,7 +74,7 @@ class ActiveTvrtkeList extends AbstractView {
 		else
 		{
 			echo new \view\components\ErrorMessage(array(
-				"errorMessage" => "Ne postoji niti jedna aktivna objava!"
+				"errorMessage" => "Ne postoji niti jedna aktivna usluga tvrtke!"
 			));
 		}
     }
