@@ -32,7 +32,7 @@ class ContactInfo extends AbstractView {
 		<?php echo '<h2 style="margin-top:0px;">' . $this->kontakt->imeKontakt . ' ' . $this->kontakt->prezimeKontakt . '</h2>'; 
 ?>
                     <h4>Radno mjesto:<span style="color:grey;">  <?php echo $this->kontakt->radnoMjesto; ?></span></h4>
-				<h4>Telefon:<span style="color:grey;"> <?php echo $this->kontakt->telefon; ?></span></h4>
+				<h4>Telefon:<span style="color:grey;"> <?php if($this->kontakt->telefon) echo $this->kontakt->telefon; else echo '<i>Nema broja telefona</i>'; ?></span></h4>
 
 				<?php if(count($this->mobiteli)) { ?>
 				<table>
