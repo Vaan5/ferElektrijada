@@ -59,7 +59,7 @@ class KontaktOsobeForm extends AbstractView {
 		<div class="form-group">
 			<label for="tvrtka" class="col-sm-3 control-label">Tvrtka</label>
 			<div class="col-sm-9">
-				<select name="idTvrtke" class="form-control">
+				<select id="idTvrtkeValidation" name="idTvrtke" class="form-control">
 					<option <?php if(!$this->kontakt) echo 'selected="selected"'; ?> selected="selected" value=""><?php if(!$this->kontakt) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
 
 <?php
@@ -80,7 +80,7 @@ class KontaktOsobeForm extends AbstractView {
 		<div class="form-group">
 			<label for="sponzor" class="col-sm-3 control-label">Sponzor</label>
 			<div class="col-sm-9">
-				<select name="idSponzora" class="form-control">
+				<select id="idSponzoraValidation" name="idSponzora" class="form-control">
 					<option <?php if(!$this->kontakt) echo 'selected="selected"'; ?> selected="selected" value=""><?php if(!$this->kontakt) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
 
 <?php
@@ -101,7 +101,7 @@ class KontaktOsobeForm extends AbstractView {
 		<div class="form-group">
 			<label for="medij" class="col-sm-3 control-label">Medij</label>
 			<div class="col-sm-9">
-				<select name="idMedija" class="form-control">
+				<select id="idMedijaValidation" name="idMedija" class="form-control">
 					<option <?php if(!$this->kontakt) echo 'selected="selected"'; ?> selected="selected" value=""><?php if(!$this->kontakt) echo 'Odaberi...'; else echo '(prazno)'; ?></option>
 
 <?php

@@ -93,8 +93,32 @@ class KontaktOsobeFormJs extends AbstractView {
 		   
 		   // Adding custom methods
 		   jQuery.validator.addMethod("validateTSM", function(value, element) {
-				if (!$('select[name="idTvrtke"]').val() && !$('select[name="idSponzora"]').val() && !$('select[name="idMedija"]').val()) return false;
-				else return true;
+				if (!$('select[name="idTvrtke"]').val() && !$('select[name="idSponzora"]').val() && !$('select[name="idMedija"]').val())
+				{	
+					return false;
+				}
+				else
+				{
+					if(!$(element).data('reval')) {
+						$('select[name="idTvrtke"]').data('reval', true).valid();
+						$('select[name="idSponzora"]').data('reval', true).valid();
+						$('select[name="idMedija"]').data('reval', true).valid();
+					}
+					return true;
+				}
+			}, "Morate odabrati barem jednog sponzora, medij ili tvrtku!");
+			
+			jQuery.validator.addMethod("r", function(value, element, options) {
+				var valid = $(options[1], element.form).filter(function() {
+					return $(this).val();
+				}).length >= options[0];
+
+				if(!$(element).data('reval')) {
+					var fields = $(options[1], element.form);
+					fields.data('reval', true).valid();
+					fields.data('reval', false);
+				}
+				return valid;
 			}, "Morate odabrati barem jednog sponzora, medij ili tvrtku!");
 			
 			jQuery.validator.addMethod("validateName", function(value, element) {
@@ -118,7 +142,7 @@ class KontaktOsobeFormJs extends AbstractView {
 			}, "Neispravan broj telefona");
 			
 			jQuery.validator.addMethod("validateRadnoMjesto", function(value, element) {
-				if (value) return /^[A-Za-z0-9čćžšđČĆŽŠĐ]+$/.test(value);
+				if (value) return /^[A-Za-z0-9čćžšđČĆŽŠĐ -]+$/.test(value);
 				else return true;
 			}, "Naziv radnog mjesta može sadržavati samo znamenke i slova!");
 			
