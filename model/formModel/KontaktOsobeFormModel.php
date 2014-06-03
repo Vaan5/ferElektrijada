@@ -10,7 +10,7 @@ class KontaktOsobeFormModel extends AbstractFormModel {
             $this->rulesArray = array('imeKontakt' => array('required', 'name'),
                 'prezimeKontakt' => array('required', 'name'),
                 'telefon' => array('phone'),
-                'radnoMjesto' => array('alnum'),
+                'radnoMjesto' => array('words'),
                 'idTvrtke' => array('numbers'),
                 'idSponzora' => array('numbers'),
 		'idMedija' => array('numbers'));
