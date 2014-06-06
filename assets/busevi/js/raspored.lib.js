@@ -236,22 +236,26 @@ raspored.removeGroup = function() {
     }
     else
     {
-        var name = raspored.activeGroup.children("div.group-name").html();
+        if(
+            confirm("Jeste li sigurni da želite obrisati grupu? Članovi grupe bit će prebačeni u neraspoređene sudionike.")
+                ) {
+            var name = raspored.activeGroup.children("div.group-name").html();
 
-        delete raspored.groupDictionary[name];
+            delete raspored.groupDictionary[name];
 
-        students = raspored.activeGroup.children("div.student");
-        for(var i=0; i<students.length; i++)
-        {
-            var element = students.eq(i).detach();
-            element.removeClass("student-active");
-            raspored.groupUnassigned.append(element);
+            students = raspored.activeGroup.children("div.student");
+            for(var i=0; i<students.length; i++)
+            {
+                var element = students.eq(i).detach();
+                element.removeClass("student-active");
+                raspored.groupUnassigned.append(element);
+            }
+            raspored.addToGroupName.html("");
+            raspored.activeGroup.remove();
+            raspored.activeGroup = null;
+
+            raspored.showHideUnassigned();
         }
-        raspored.addToGroupName.html("");
-        raspored.activeGroup.remove();
-        raspored.activeGroup = null;
-
-        raspored.showHideUnassigned();
     }
 };
 
@@ -585,18 +589,22 @@ raspored.removeActiveBus = function() {
     }
     else
     {
-        var groups = raspored.activeBus.children(".bus-group");
-        for(var i = 0; i < groups.length; i++)
-        {
-            var busGroup = groups.eq(i);
-            var groupId = "#" + busGroup.data("id");
-            //alert(groupId);
-            var group = $(groupId);
-            busGroup.remove();
-            raspored.enableGroup(group);
+        if(
+            confirm("Jeste li sigurni da želite obrisati autobus? Grupe neće biti obrisane.")
+                                                            ) {
+            var groups = raspored.activeBus.children(".bus-group");
+            for(var i = 0; i < groups.length; i++)
+            {
+                var busGroup = groups.eq(i);
+                var groupId = "#" + busGroup.data("id");
+                //alert(groupId);
+                var group = $(groupId);
+                busGroup.remove();
+                raspored.enableGroup(group);
+            }
+            raspored.activeBus.remove();
+            raspored.resetActiveBus();
         }
-        raspored.activeBus.remove();
-        raspored.resetActiveBus();
     }
     //raspored.bindItem();
 };

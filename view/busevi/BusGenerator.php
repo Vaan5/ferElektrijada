@@ -163,12 +163,12 @@ class BusGenerator extends AbstractView {
                         <div class="name">SUDIONICI</div>
                         <div class="button-row">
                             <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="right" title="Prebaci u aktivnu podgrupu" id="addToGroup">
-                                <span class="glyphicon glyphicon-plus-sign green"></span> Prebaci u 
+                                <span class="glyphicon glyphicon-download green"></span> Prebaci u 
                                 <span id="activeGroupName"></span>
                             </button>
 
                             <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="right" title="Ukloni selekciju iz aktivne podgrupe" id="removeFromGroup">
-                                <span class="glyphicon glyphicon-minus-sign red"></span> Ukloni
+                                <span class="glyphicon glyphicon-upload red"></span> Ukloni
                             </button>
                         </div>
                     </div>
@@ -176,16 +176,16 @@ class BusGenerator extends AbstractView {
                         <div class="name">PODGRUPE</div>
                         <div class="button-row">
                             <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="right" title="Dodaj novu podgrupu" id="addGroup">
-                                <span class="glyphicon glyphicon-plus-sign green"></span> Dodaj
+                                <span class="glyphicon glyphicon-th-list green"></span> Dodaj
                             </button>
                             <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="right" title="Promijeni ime podgrupe" id="setGroupName">
                                 <span class="glyphicon glyphicon-pencil blue"></span> Ime
                             </button>
                             <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="right" title="Ukloni podgrupu" id="removeGroup">
-                                <span class="glyphicon glyphicon-remove-sign red"></span> Ukloni
+                                <span class="glyphicon glyphicon-eject red"></span> Ukloni
                             </button>
                             <button type="button" class="btn btn-success btn-sm" id="addToBus" data-placement="right" title="Prebaci podgrupu u aktivni bus" id="removeGroup">
-                                <span class="glyphicon glyphicon-arrow-right"></span> Prebaci
+                                <span class="glyphicon glyphicon-transfer"></span> Prebaci
                             </button>
                         </div>
                     </div>
@@ -193,18 +193,14 @@ class BusGenerator extends AbstractView {
                         <div class="name">BUSEVI</div>
                         <div class="button-row">
                             <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="right" title="Dodaj novi bus" id="addBus">
-                                <span class="glyphicon glyphicon-plus-sign green"></span> Dodaj
+                                <span class="glyphicon glyphicon-hdd green"></span> Dodaj
                             </button>
                             <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="right" title="Očisti bus (zaključane grupe ostaju u busu)" id="clearBus">
-                                <span class="glyphicon glyphicon-share blue"></span> Očisti
+                                <span class="glyphicon glyphicon-step-backward blue"></span> Očisti
                             </button>
                             <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="right" title="Očisti sve buseve (zaključane grupe ostaju u busevima)" id="clearAllBuses">
-                                <span class="glyphicon glyphicon-share orange"></span> Očisti sve
+                                <span class="glyphicon glyphicon-fast-backward orange"></span> Očisti sve
                             </button>
-                            <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="right" title="Ukloni bus" id="removeBus">
-                                <span class="glyphicon glyphicon-remove-sign red"></span> Ukloni
-                            </button>
-
                             <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="right" title="Postavi naziv busa" id="setBusName">
                                 <span class="glyphicon glyphicon-pencil blue"></span> Naziv
                             </button>
@@ -213,6 +209,9 @@ class BusGenerator extends AbstractView {
                             </button>
                             <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="right" title="Postavi oznaku busa" id="setBusPlates">
                                 <span class="glyphicon glyphicon-pencil blue"></span> Oznaka
+                            </button>
+                            <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="right" title="Ukloni bus" id="removeBus">
+                                <span class="glyphicon glyphicon-trash red"></span> Ukloni
                             </button>
                         </div>
                     </div>
