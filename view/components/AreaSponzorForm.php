@@ -56,7 +56,7 @@ class AreaSponzorForm extends AbstractView {
 				<div class="input-group">
 					<input type="text" name="iznosDonacije" class="form-control" placeholder="Upišite iznos donacije" <?php if($this->sponelekpod && $this->sponelekpod->iznosDonacije) echo 'value="' . $this->sponelekpod->iznosDonacije . '"' ?> />
 					
-					<div class="input-group-btn">
+					<div class="input-group-btn"  style="vertical-align:top;">
 						<select name="valutaDonacije" class="form-control btn btn-primary" style="width:80px;">
 						<option <?php if(!$this->sponelekpod || ($this->sponelekpod && $this->sponelekpod->valutaDonacije == 'HRK')) echo 'selected="selected"' ?> value="HRK">HRK</option>
 						<option <?php if($this->sponelekpod && $this->sponelekpod->valutaDonacije == 'USD') echo 'selected="selected"' ?> value="USD">USD</option>
