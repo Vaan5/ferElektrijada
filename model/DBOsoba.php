@@ -631,7 +631,7 @@ class DBOsoba extends AbstractDBModel {
     
     public function reportCompetitorList($array, $idElektrijade, $idPodrucja) {
 		try {
-			$statement = 'SELECT ';
+			$statement = 'SELECT DISTINCT ';
 			// only if there aren't atributes with same name, otherwise do it one by one or
 			// put in the checkbox form the name of the table, like atribut_nazivAtributa,
 			// and then with php replace _ with .
