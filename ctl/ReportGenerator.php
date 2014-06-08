@@ -196,6 +196,13 @@ class ReportGenerator implements Controller {
 			else if ( $v->tip == 'O' ) $v->tip = 'OZSN';
 		}}
 		
+		if ( post('vrstaPodrucja') )
+		{	foreach( $pov as $k => $v)
+		{
+			if ( $v->vrstaPodrucja === 0 ) $v->vrstaPodrucja = 'Individualno';
+			else if ( $v->vrstaPodrucja === 1 ) $v->vrstaPodrucja = 'Timsko';
+		}}
+		
 		if ( post('aktivanDokument') )
 		{	foreach( $pov as $k => $v)
 		{
@@ -464,8 +471,6 @@ class ReportGenerator implements Controller {
 		)) . "?msg=excep");
 	    }
 	    
-	   
-	    
 	    // now proccess input data
 	    try {
 		$osoba = new \model\DBOsoba(); //objekt jer se tamo nalazi funkcija reportTshirtList
@@ -503,14 +508,13 @@ class ReportGenerator implements Controller {
 				//za sve iz $_POST OSIM za idPodrucja, idElektrijade i type
 			    
 				$h[] = $v->{$vrijednost};
-			    
 			}
 			$array[] = $h;
 			
 		    }
 			
 		}
-		
+
 		$reportModel = new \model\reports\ReportModel();  //novi objekt
 		switch (post("type")) {
 		    case 'xls':
@@ -633,6 +637,13 @@ class ReportGenerator implements Controller {
 			if ( $v->aktivanDokument == '0' ) $v->aktivanDokument = 'putovnica';
 			else if ( $v->aktivanDokument == '1' ) $v->aktivanDokument = 'osobna';
 			
+		}}
+		
+		if ( post('vrstaPodrucja') )
+		{	foreach( $pov as $k => $v)
+		{
+			if ( $v->vrstaPodrucja === '0' ) $v->vrstaPodrucja = 'Individualno';
+			else if ( $v->vrstaPodrucja === '1' )$v->vrstaPodrucja = 'Timsko';
 		}}
 			
 			
@@ -978,6 +989,9 @@ class ReportGenerator implements Controller {
 			break;
 		    case 'rezultatPojedinacni':
 			$a[] = "Rezultat";
+			break;
+			case 'vrstaPodrucja':
+			$a[] = "Individualno/Timsko";
 			break;
 		    case 'ukupanBrojSudionika':
 			$a[] = "Ukupno sudionika";

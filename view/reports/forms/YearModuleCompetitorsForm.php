@@ -164,6 +164,11 @@ class YearModuleCompetitorsForm extends AbstractView {
                 <input type="checkbox" name="rezultatPojedinacni"> Postignuti rezultat &nbsp;
             </label>
         </div>
+		<div class="checkbox">
+            <label>
+                <input type="checkbox" name="vrstaPodrucja"> Vrsta takmičenja &nbsp;
+            </label>
+        </div>
         <div class="checkbox">
             <label>
                 <input type="checkbox" name="ukupanBrojSudionika"> Ukupan broj sudionika &nbsp;

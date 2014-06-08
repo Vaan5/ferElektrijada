@@ -674,27 +674,24 @@ class DBOsoba extends AbstractDBModel {
 			if($idOpcija == '0'){
 
 			$statement = "SELECT osoba.spol, COUNT(osoba.idOsobe) AS brojMajica
-							 FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
+							 FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe AND sudjelovanje.idElektrijade = :idE
 								  LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
-									  WHERE sudjelovanje.idElektrijade = :idE
 									   GROUP BY osoba.spol";
 			}
 
 			else if($idOpcija == '1')
 			{
 				$statement = "SELECT velmajice.velicina, COUNT(osoba.idOsobe) AS brojMajica
-								 FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
-									LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
-									   WHERE sudjelovanje.idElektrijade = :idE
+								FROM velmajice LEFT JOIN sudjelovanje ON velmajice.idVelicine = sudjelovanje.idVelicine AND sudjelovanje.idElektrijade = :idE
+							LEFT JOIN osoba ON osoba.idOsobe = sudjelovanje.idOsobe
 									   GROUP BY velmajice.velicina";
 			}
 
 			else if($idOpcija == '2')
 			{
 				$statement = "SELECT velmajice.velicina, osoba.spol, COUNT(osoba.idOsobe) AS brojMajica
-								 FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
-									 LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
-									   WHERE sudjelovanje.idElektrijade = :idE 
+								 FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe AND sudjelovanje.idElektrijade = :idE
+								  LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
 										  GROUP BY velmajice.velicina, osoba.spol
 										   ORDER by osoba.spol";
 
@@ -717,7 +714,7 @@ class DBOsoba extends AbstractDBModel {
 		try {
 			if($idOpcija == '0')
 			{
-			$statement = 'SELECT godstud.godina, ';
+			$statement = "SELECT CONCAT(godstud.studij, ' ', godstud.godina) as godina, ";
 			}
 
 			else if($idOpcija == '1')
@@ -727,7 +724,7 @@ class DBOsoba extends AbstractDBModel {
 
 			else if($idOpcija == '2')
 			{
-			$statement = 'SELECT godstud.godina, smjer.nazivSmjera,  ';
+			$statement = "SELECT CONCAT(godstud.studij, ' ' , godstud.godina) as godina, smjer.nazivSmjera, ";
 			}
 
 			// only if there aren't atributes with same name, otherwise do it one by one or
@@ -749,9 +746,9 @@ class DBOsoba extends AbstractDBModel {
 			if($idOpcija == '0'){
 
 
-			$statement .= " FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
+			$statement .= " FROM godstud LEFT JOIN sudjelovanje ON godstud.idGodStud = sudjelovanje.idGodStud AND sudjelovanje.idElektrijade = :idE
 						LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
-						LEFT JOIN godstud ON godstud.idGodStud = sudjelovanje.idGodStud
+						LEFT JOIN osoba ON osoba.idOsobe = sudjelovanje.idOsobe
 						LEFT JOIN radnomjesto ON radnomjesto.idRadnogMjesta = sudjelovanje.idRadnogMjesta
 						LEFT JOIN zavod ON zavod.idZavoda = sudjelovanje.idZavoda
 						LEFT JOIN smjer ON smjer.idSmjera = sudjelovanje.idSmjera
@@ -761,7 +758,6 @@ class DBOsoba extends AbstractDBModel {
 						LEFT JOIN putovanje ON putovanje.idSudjelovanja = sudjelovanje.idSudjelovanja
 						LEFT JOIN busgrupa ON busgrupa.idGrupe = putovanje.idGrupe
 						LEFT JOIN bus ON bus.idBusa = busgrupa.idBusa	
-					WHERE sudjelovanje.idElektrijade = :idE
 					GROUP BY godstud.godina, ";
 					 foreach ($array as $k => $v) {
 				//sve osim idElektrijade, idPodrucija i tipa
@@ -775,19 +771,18 @@ class DBOsoba extends AbstractDBModel {
 
 			else if($idOpcija == '1')
 			{
-				$statement .= " FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
+				$statement .= " FROM smjer LEFT JOIN sudjelovanje ON smjer.idSmjera = sudjelovanje.idSmjera AND sudjelovanje.idElektrijade = :idE
 						LEFT JOIN velmajice ON velmajice.idVelicine = sudjelovanje.idVelicine
 						LEFT JOIN godstud ON godstud.idGodStud = sudjelovanje.idGodStud
 						LEFT JOIN radnomjesto ON radnomjesto.idRadnogMjesta = sudjelovanje.idRadnogMjesta
 						LEFT JOIN zavod ON zavod.idZavoda = sudjelovanje.idZavoda
-						LEFT JOIN smjer ON smjer.idSmjera = sudjelovanje.idSmjera
+						LEFT JOIN osoba ON osoba.idOsobe = sudjelovanje.idOsobe
 						LEFT JOIN imaatribut ON imaatribut.idSudjelovanja = sudjelovanje.idSudjelovanja
 						LEFT JOIN atribut ON imaatribut.idAtributa = atribut.idAtributa
 						LEFT JOIN podrucjesudjelovanja ON podrucjesudjelovanja.idSudjelovanja = sudjelovanje.idSudjelovanja
 						LEFT JOIN putovanje ON putovanje.idSudjelovanja = sudjelovanje.idSudjelovanja
 						LEFT JOIN busgrupa ON busgrupa.idGrupe = putovanje.idGrupe
 						LEFT JOIN bus ON bus.idBusa = busgrupa.idBusa	
-					WHERE sudjelovanje.idElektrijade = :idE
 					GROUP BY smjer.nazivSmjera, ";
 					 foreach ($array as $k => $v) {
 				//sve osim idElektrijade, idPodrucija i tipa
@@ -841,11 +836,9 @@ class DBOsoba extends AbstractDBModel {
 		try {
 			if($idOpcija == '0'){
 
-			$statement = "SELECT godstud.godina, COUNT(osoba.idOsobe) AS brojStudenata
-				FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
-					LEFT JOIN godstud ON godstud.idGodStud = sudjelovanje.idGodStud
-					LEFT JOIN smjer ON smjer.idSmjera = sudjelovanje.idSmjera
-							WHERE sudjelovanje.idElektrijade = :idE
+			$statement = "SELECT CONCAT(godstud.studij, ' ',godstud.godina) as godina, COUNT(osoba.idOsobe) AS brojStudenata
+				FROM godstud LEFT JOIN sudjelovanje ON godstud.idGodStud = sudjelovanje.idGodStud AND sudjelovanje.idElektrijade = :idE
+					LEFT JOIN osoba ON osoba.idOsobe = sudjelovanje.idOsobe
 								GROUP BY godstud.idGodStud
 								ORDER BY godstud.idGodStud";
 			}
@@ -853,21 +846,18 @@ class DBOsoba extends AbstractDBModel {
 			else if($idOpcija == '1')
 			{
 				$statement = "SELECT smjer.nazivSmjera, COUNT(osoba.idOsobe) AS brojStudenata
-				FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
-					LEFT JOIN godstud ON godstud.idGodStud = sudjelovanje.idGodStud
-					LEFT JOIN smjer ON smjer.idSmjera = sudjelovanje.idSmjera
-							WHERE sudjelovanje.idElektrijade = :idE
+				FROM smjer LEFT JOIN sudjelovanje ON smjer.idSmjera = sudjelovanje.idSmjera AND sudjelovanje.idElektrijade = :idE
+					LEFT JOIN osoba ON osoba.idOsobe = sudjelovanje.idOsobe
 								GROUP BY smjer.idSmjera
 								ORDER BY smjer.nazivSmjera";
 			}
 
 			else if($idOpcija == '2')
 			{
-				$statement = "SELECT godstud.godina, smjer.nazivSmjera, COUNT(osoba.idOsobe) AS brojStudenata
-				FROM osoba LEFT JOIN sudjelovanje ON osoba.idOsobe = sudjelovanje.idOsobe
-					LEFT JOIN godstud ON godstud.idGodStud = sudjelovanje.idGodStud
+				$statement = "SELECT CONCAT(godstud.studij, ' ',godstud.godina) as godina, smjer.nazivSmjera, COUNT(osoba.idOsobe) AS brojStudenata
+				FROM godstud LEFT JOIN sudjelovanje ON godstud.idGodStud = sudjelovanje.idGodStud AND sudjelovanje.idElektrijade = :idE
+					LEFT JOIN osoba ON osoba.idOsobe = sudjelovanje.idOsobe
 					LEFT JOIN smjer ON smjer.idSmjera = sudjelovanje.idSmjera
-							WHERE sudjelovanje.idElektrijade = :idE
 								GROUP BY smjer.idSmjera, godstud.idGodStud
 								ORDER BY smjer.nazivSmjera";
 
