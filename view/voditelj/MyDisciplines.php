@@ -50,24 +50,50 @@ class MyDisciplines extends AbstractView {
 						"action" => "displayTeam"
 					)) .  "?id=" . $val->idPodrucja . "\">" . $val->nazivPodrucja . "</a></td>";
 				if (!$this->disabled) {
-					echo "<td><a href=\"" . \route\Route::get('d3')->generate(array(
-						"controller" => "voditelj",
-						"action" => "assignExistingPerson"
-					)) .  "?id=" . $val->idPodrucja . "\">".'<span class="glyphicon glyphicon-plus"></span>'." Postojeći natjecatelj</a>&nbsp;&nbsp;&nbsp;<a href=\"" . 
-						\route\Route::get('d3')->generate(array(
-						"controller" => "voditelj",
-						"action" => "assignNewPerson"
-					)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-plus"></span>'." Novi natjecatelj</a>&nbsp;&nbsp;&nbsp;<a href=\"" . 
-						\route\Route::get('d3')->generate(array(
-						"controller" => "voditelj",
-						"action" => "modifyCompetitionData"
-					)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-pencil"></span>'." Uredi</a>&nbsp;&nbsp;<a href=\"" . 
-						\route\Route::get('d3')->generate(array(
-						"controller" => "voditelj",
-						"action" => "modifyResults"
-					)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-list-alt"></span>'." Rezultati</a></td>";				
+					echo "<td>";
+					if ($val->idNadredjenog !== null) {
+						echo "<a href=\"" . \route\Route::get('d3')->generate(array(
+							"controller" => "voditelj",
+							"action" => "assignExistingPerson"
+						)) .  "?id=" . $val->idPodrucja . "\">".'<span class="glyphicon glyphicon-plus"></span>'." Postojeći natjecatelj</a>&nbsp;&nbsp;&nbsp;<a href=\"" . 
+							\route\Route::get('d3')->generate(array(
+							"controller" => "voditelj",
+							"action" => "assignNewPerson"
+						)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-plus"></span>'." Novi natjecatelj</a>&nbsp;&nbsp;&nbsp;";
+						echo "<a href=\"" . 
+							\route\Route::get('d3')->generate(array(
+							"controller" => "voditelj",
+							"action" => "modifyCompetitionData"
+						)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-pencil"></span>'." Uredi</a>&nbsp;&nbsp;<a href=\"" . 
+							\route\Route::get('d3')->generate(array(
+							"controller" => "voditelj",
+							"action" => "modifyResults"
+						)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-list-alt"></span>'." Rezultati</a></td>";	
+					} else {
+						echo "<a href=\"" . 
+							\route\Route::get('d3')->generate(array(
+							"controller" => "voditelj",
+							"action" => "modifyCompetitionData"
+						)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-pencil"></span>'." Uredi</a></td>";
+					}
 				} else {
-					echo "<td>Istekao je rok za promjene</td>";
+					if ($val->idNadredjenog !== null) {
+						echo "<td><a href=\"" . 
+							\route\Route::get('d3')->generate(array(
+							"controller" => "voditelj",
+							"action" => "modifyCompetitionData"
+						)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-pencil"></span>'." Uredi</a>&nbsp;&nbsp;<a href=\"" . 
+							\route\Route::get('d3')->generate(array(
+							"controller" => "voditelj",
+							"action" => "modifyResults"
+						)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-list-alt"></span>'." Rezultati</a></td>";
+					} else {
+						echo "<a href=\"" . 
+							\route\Route::get('d3')->generate(array(
+							"controller" => "voditelj",
+							"action" => "modifyCompetitionData"
+						)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-pencil"></span>'." Uredi</a></td>";
+					}
 				}
 				echo "</tr>";
 			}
