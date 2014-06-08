@@ -24,8 +24,8 @@ class DBImaatribut extends AbstractDBModel {
 														ON osoba.idOsobe = sudjelovanje.idOsobe
 														JOIN imaatribut
 														ON imaatribut.idSudjelovanja = sudjelovanje.idSudjelovanja
-														JOIN atribut ON UPPER(nazivAtributa) = 'VODITELJ'
-										WHERE imaatribut.idPodrucja = :idPodrucja AND sudjelovanje.idElektrijade = :idElektrijade");
+														JOIN atribut ON imaatribut.idAtributa = atribut.idAtributa
+										WHERE imaatribut.idPodrucja = :idPodrucja AND sudjelovanje.idElektrijade = :idElektrijade AND UPPER(nazivAtributa) = 'VODITELJ'");
 			$q->bindValue(":idElektrijade", $idElektrijade);
 			$q->bindValue(":idPodrucja", $idPodrucja);
 			$q->execute();
