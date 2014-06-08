@@ -2902,7 +2902,7 @@ class Ozsn implements Controller {
         $this->checkRole();
         
         $godStud = new \model\DBGodStud();
-        $validacija = new \model\formModel\VelMajiceFormModel(array('studij' => post("studij")),array('godina'=>post("godina")));
+        $validacija = new \model\formModel\GodStudFormModel(array('studij' => post("studij")),array('godina'=>post("godina")));
         $pov = $validacija->validate();
         if($pov !== true) {
             $message = $validacija->decypherErrors($pov);
