@@ -241,21 +241,21 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
 	public function getCollectedMoney($idPodrucja, $idElektrijade) {
 		try {
 			$pdo = $this->getPdo();
-			$q = $pdo->prepare("SELECT podrucjeSudjelovanja.idPodrucja,
-												podrucjeSudjelovanja.idSudjelovanja,
-												podrucjeSudjelovanja.rezultatPojedinacni,
-												podrucjeSudjelovanja.iznosUplate,
-												podrucjeSudjelovanja.valuta,
-												podrucjeSudjelovanja.idPodrucjeSudjelovanja,
-												podrucjeSudjelovanja.vrstaPodrucja,
+			$q = $pdo->prepare("SELECT podrucjesudjelovanja.idPodrucja,
+												podrucjesudjelovanja.idSudjelovanja,
+												podrucjesudjelovanja.rezultatPojedinacni,
+												podrucjesudjelovanja.iznosUplate,
+												podrucjesudjelovanja.valuta,
+												podrucjesudjelovanja.idPodrucjeSudjelovanja,
+												podrucjesudjelovanja.vrstaPodrucja,
 												osoba.*,
 												sudjelovanje.*										
-										FROM podrucjeSudjelovanja
-											JOIN sudjelovanje ON sudjelovanje.idSudjelovanja = podrucjeSudjelovanja.idSudjelovanja
+										FROM podrucjesudjelovanja
+											JOIN sudjelovanje ON sudjelovanje.idSudjelovanja = podrucjesudjelovanja.idSudjelovanja
 											JOIN osoba ON osoba.idOsobe = sudjelovanje.idOsobe
-										GROUP BY podrucjeSudjelovanja.idSudjelovanja
+										GROUP BY podrucjesudjelovanja.idSudjelovanja
 										HAVING sudjelovanje.idElektrijade = :idElektrijade AND podrucjesudjelovanja.idPodrucja = :idPodrucja
-										ORDER BY podrucjeSudjelovanja.vrstaPodrucja ASC");
+										ORDER BY podrucjesudjelovanja.vrstaPodrucja ASC");
 			$q->bindValue(":idElektrijade", $idElektrijade);
 			$q->bindValue(":idPodrucja", $idPodrucja);
 			$q->execute();

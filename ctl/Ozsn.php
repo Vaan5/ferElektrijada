@@ -4103,6 +4103,14 @@ class Ozsn implements Controller {
 			} else {
 				$sponzor = new \model\DBSponzor();
 				$sponzori = $sponzor->getAllByElektrijada(post("idElektrijade"));
+				$sponzoriNePodrucja = $sponzor->getAllNotDisciplineByElektrijada(post("idElektrijade"));
+				if ($sponzoriNePodrucja && count($sponzoriNePodrucja)) {
+					if ($sponzori === null)
+						$sponzori = array();
+					foreach($sponzoriNePodrucja as $s) {
+						$sponzori[] = $s;
+					}
+				}
 				$_SESSION['search'] = post("idElektrijade");
 			}
 		} catch (\PDOException $e) {
@@ -4115,6 +4123,14 @@ class Ozsn implements Controller {
 			try {
 				$sponzor = new \model\DBSponzor();
 				$sponzori = $sponzor->getAllByElektrijada(session("search"));
+				$sponzoriNePodrucja = $sponzor->getAllNotDisciplineByElektrijada(post("idElektrijade"));
+				if ($sponzoriNePodrucja && count($sponzoriNePodrucja)) {
+					if ($sponzori === null)
+						$sponzori = array();
+					foreach($sponzoriNePodrucja as $s) {
+						$sponzori[] = $s;
+					}
+				}
 			} catch (\PDOException $e) {
 				$sponzori = array();
 				$handler = new \model\ExceptionHandlerModel($e);
