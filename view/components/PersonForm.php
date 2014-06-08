@@ -396,7 +396,7 @@ if($this->osoba){ ?>
 		}
 ?>					
 </select>
-		<span style="font-size: 12px">NAPOMENA: Za višestruki odabir držite tipku CTRL i mišem kliknite na željene elektrijade</span>
+		<span style="font-size: 12px">NAPOMENA: Za višestruki odabir držite tipku CTRL i mišem kliknite na željeni atribut</span>
 		</div>
         </div>
 	

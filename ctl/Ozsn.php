@@ -1110,7 +1110,7 @@ class Ozsn implements Controller {
 						post("aktivanDokument", "0"));
 
 				// okay person added now let's add competition data
-				if (post("tip") === 'D') {
+				if (post("tip") === 'D' || post("tip") === 'O') {
 					$sudjelovanje->addRow($osoba->getPrimaryKey(), $idElektrijade, post("tip", "D"), post("idVelicine", NULL), 
 							post("idGodStud", NULL), NULL, post("idRadnogMjesta", NULL), post("idZavoda", NULL), NULL);
 				} else {
