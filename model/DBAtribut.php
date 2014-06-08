@@ -53,6 +53,14 @@ class DBAtribut extends AbstractDBModel {
 
     public function deleteRow($id) {
         try {
+			$voditelj = $this->getTeamLeaderId();
+			if ($voditelj == $id) {
+				$e = new \PDOException();
+				$e->errorInfo[0] = '02000';
+				$e->errorInfo[1] = 1604;
+				$e->errorInfo[2] = "Ne možete obrisati voditelja!";
+				throw $e;
+			}
 			$pdo = $this->getPdo();
 			$q = $pdo->prepare("CALL brisiAtribut(:id)");
 			$q->bindValue(":id", $id);
