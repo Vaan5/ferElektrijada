@@ -1759,13 +1759,28 @@ class Ozsn implements Controller {
 		}
 		
 		if (get("type") !== false) {
-			$pomPolje = array("Podruje", "Ukupno");
+			$pomPolje = array("Područje", "Ukupno");
 			$array = array();
 			$array[] = $pomPolje;
 			
-			if ($novci !== null && count($novci)) {
-				foreach ($novci as $v) {
-					$array[] = array($v->nazivPodrucja, $v->suma === null ? 0 :  $v->suma);
+			if ($novciZaPrikazati !== null && count($novciZaPrikazati)) {
+				foreach ($novciZaPrikazati as $v) {
+					$array[] = array($v[0], isset($v[1]) ? $v[1] : 0);
+				}
+			}
+			if ($korijeni !== null && count($korijeni)) {
+				foreach ($korijeni as $k) {
+					$naziv = null;
+					if ($g && count($g)) {
+						foreach ($g as $v) {
+							if ($v->nazivPodrucja === $k->nazivPodrucja) {
+								$naziv = $v->suma;
+								break;
+							}
+						}
+					}
+					
+					$array[] = array($k->nazivPodrucja, $naziv === null ? 0 : $naziv);
 				}
 			}
 			$array[] = array("Ukupno", $ukupno === null ? 0 : $ukupno);
