@@ -508,7 +508,7 @@ class Voditelj implements Controller {
 					preusmjeri(\route\Route::get('d3')->generate(array(
 						"controller" => "voditelj",
 						"action" => "modifyContestant"
-					)) . "?msg=excep&idP=" . post("idPodrucjeSudjelovanja") . "&idO=" . post("idOsobe") . "&idS=" . post("idSudjelovanje"));
+					)) . "?msg=excep&idP=" . post("idPodrucjeSudjelovanja") . "&idO=" . post("idOsobe") . "&idS=" . post("idSudjelovanja"));
 				}
 				
 				// everything's okay lets do the modifying
@@ -547,7 +547,7 @@ class Voditelj implements Controller {
 						preusmjeri(\route\Route::get('d3')->generate(array(
 							"controller" => "voditelj",
 							"action" => "modifyContestant"
-						)) . "?msg=excep&idP=" . post("idPodrucjeSudjelovanja") . "&idO=" . post("idOsobe") . "&idS=" . post("idSudjelovanje"));
+						)) . "?msg=excep&idP=" . post("idPodrucjeSudjelovanja") . "&idO=" . post("idOsobe") . "&idS=" . post("idSudjelovanja"));
 					}
 					if(!is_uploaded_file(files("tmp_name", "datoteka"))) {
 						$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Morate poslati datoteku!");
@@ -555,7 +555,7 @@ class Voditelj implements Controller {
 						preusmjeri(\route\Route::get('d3')->generate(array(
 							"controller" => "voditelj",
 							"action" => "modifyContestant"
-						)) . "?msg=excep&idP=" . post("idPodrucjeSudjelovanja") . "&idO=" . post("idOsobe") . "&idS=" . post("idSudjelovanje"));
+						)) . "?msg=excep&idP=" . post("idPodrucjeSudjelovanja") . "&idO=" . post("idOsobe") . "&idS=" . post("idSudjelovanja"));
 					}
 					// check if it is a pdf
 					if(function_exists('finfo_file')) {
@@ -570,7 +570,7 @@ class Voditelj implements Controller {
 						preusmjeri(\route\Route::get('d3')->generate(array(
 							"controller" => "voditelj",
 							"action" => "modifyContestant"
-						)) . "?msg=excep&idP=" . post("idPodrucjeSudjelovanja") . "&idO=" . post("idOsobe") . "&idS=" . post("idSudjelovanje"));
+						)) . "?msg=excep&idP=" . post("idPodrucjeSudjelovanja") . "&idO=" . post("idOsobe") . "&idS=" . post("idSudjelovanja"));
 					}
 
 					// adding the path and the file
@@ -625,14 +625,14 @@ class Voditelj implements Controller {
 				preusmjeri(\route\Route::get('d3')->generate(array(
 					"controller" => "voditelj",
 					"action" => "modifyContestant"
-				)) . "?msg=excep&idP=" . post("idPodrucjeSudjelovanja") . "&idO=" . post("idOsobe") . "&idS=" . post("idSudjelovanje"));
+				)) . "?msg=excep&idP=" . post("idPodrucjeSudjelovanja") . "&idO=" . post("idOsobe") . "&idS=" . post("idSudjelovanja"));
 			} catch (\PDOException $e) {
 				$handler = new \model\ExceptionHandlerModel($e);
 				$_SESSION["exception"] = serialize($handler);
 				preusmjeri(\route\Route::get('d3')->generate(array(
 					"controller" => "voditelj",
 					"action" => "modifyContestant"
-				)) . "?msg=excep&idP=" . post("idPodrucjeSudjelovanja") . "&idO=" . post("idOsobe") . "&idS=" . post("idSudjelovanje"));
+				)) . "?msg=excep&idP=" . post("idPodrucjeSudjelovanja") . "&idO=" . post("idOsobe") . "&idS=" . post("idSudjelovanja"));
 			}
 		}
 		
