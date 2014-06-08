@@ -35,13 +35,15 @@ class ContestantAttributes extends AbstractView {
             <input type="text" name="rezultatPojedinacni" class="form-control" placeholder="Upišite rezultat" <?php if($this->podrucjeSudjelovanja && $this->podrucjeSudjelovanja->rezultatPojedinacni){ echo 'value="' . $this->podrucjeSudjelovanja->rezultatPojedinacni . '"'; } ?> autocomplete="off"  />
             </div>  
         </div>
-			
+		
 		<div class="form-group">
             <label for="ukupanBrojSudionika" class="col-sm-3 control-label">Ukupno sudionika</label>            
             <div class="col-sm-9">
-            <input type="text" name="ukupanBrojSudionika" class="form-control" placeholder="Upišite broj sudionika" <?php if($this->podrucjeSudjelovanja && $this->podrucjeSudjelovanja->ukupanBrojSudionika){ echo 'value="' . $this->podrucjeSudjelovanja->ukupanBrojSudionika . '"'; } ?> autocomplete="off"  />
+            <input type="text" disabled name="xxx" class="form-control" placeholder="Podatak nije unesen" <?php if($this->podrucjeSudjelovanja && $this->podrucjeSudjelovanja->ukupanBrojSudionika){ echo 'value="' . $this->podrucjeSudjelovanja->ukupanBrojSudionika . '"'; } ?> autocomplete="off"  />
             </div>  
-        </div>
+        </div>	
+		
+            <input type="hidden" name="ukupanBrojSudionika" class="form-control" placeholder="Upišite broj sudionika" <?php if($this->podrucjeSudjelovanja && $this->podrucjeSudjelovanja->ukupanBrojSudionika){ echo 'value="' . $this->podrucjeSudjelovanja->ukupanBrojSudionika . '"'; } ?> autocomplete="off"  />
 		
 		<div class="form-group">
 			<label for="iznosUplate" class="col-sm-3 control-label">Iznos uplate</label>
