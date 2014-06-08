@@ -242,7 +242,7 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `azurirajMedij`(IN idMedija INT(10), IN nazivMedija VARCHAR(10))
+CREATE  PROCEDURE `azurirajMedij`(IN idMedija INT(10), IN nazivMedija VARCHAR(100))
 BEGIN
 	IF NOT EXISTS (SELECT * FROM medij WHERE medij.nazivMedija=nazivMedija) THEN
 		
@@ -310,7 +310,7 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `azurirajVelicinu`( IN id INT UNSIGNED, IN vel VARCHAR(5) )
+CREATE  PROCEDURE `azurirajVelicinu`( IN id INT UNSIGNED, IN vel VARCHAR(50) )
 BEGIN
 	IF NOT EXISTS (SELECT * FROM velmajice WHERE velicina = vel) THEN
 		IF EXISTS (SELECT * FROM velmajice WHERE idVelicine = id) THEN
@@ -326,7 +326,7 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `azurirajZavod`( IN id INT UNSIGNED, IN naziv VARCHAR(100), IN skraceni VARCHAR(10)  )
+CREATE  PROCEDURE `azurirajZavod`( IN id INT UNSIGNED, IN naziv VARCHAR(100), IN skraceni VARCHAR(20)  )
 BEGIN
 	IF NOT EXISTS (SELECT * FROM zavod WHERE nazivZavoda = naziv AND skraceniNaziv = skraceni) THEN
 		IF EXISTS (SELECT * FROM zavod WHERE idZavoda = id) THEN
@@ -796,7 +796,7 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `dodajVelicinu`( IN velicina VARCHAR(5) )
+CREATE  PROCEDURE `dodajVelicinu`( IN velicina VARCHAR(50) )
 BEGIN
  IF EXISTS (SELECT* FROM velmajice WHERE  velmajice.velicina=velicina) THEN 
  SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Veličina majice već postoji!';
@@ -808,7 +808,7 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE  PROCEDURE `dodajZavod`(  IN naziv VARCHAR(100), IN skraceni VARCHAR(10) )
+CREATE  PROCEDURE `dodajZavod`(  IN naziv VARCHAR(100), IN skraceni VARCHAR(20) )
 BEGIN
 IF EXISTS (SELECT* FROM zavod WHERE nazivZavoda=naziv AND skraceniNaziv=skraceni) THEN 
  	 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Zavod već postoji!';

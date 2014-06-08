@@ -4123,7 +4123,7 @@ class Ozsn implements Controller {
 			try {
 				$sponzor = new \model\DBSponzor();
 				$sponzori = $sponzor->getAllByElektrijada(session("search"));
-				$sponzoriNePodrucja = $sponzor->getAllNotDisciplineByElektrijada(post("idElektrijade"));
+				$sponzoriNePodrucja = $sponzor->getAllNotDisciplineByElektrijada(session("search"));
 				if ($sponzoriNePodrucja && count($sponzoriNePodrucja)) {
 					if ($sponzori === null)
 						$sponzori = array();
@@ -5514,7 +5514,7 @@ class Ozsn implements Controller {
 		if (get("type") !== false) {
 			try {
 				$o = new \model\DBObjavaOElektrijadi();
-				$id = unserialize(session("search"));
+				$id = session("search");
 				$rezultati = $o->getAllActive($id);
 			} catch (\app\model\NotFoundException $e) {
 				$this->createMessage("Nepoznati identifikator!", "d3", "ozsn", "displayObjavaReport");
