@@ -466,12 +466,12 @@ class Voditelj implements Controller {
 					$mjesto->loadIfExists($sudjelovanje->idRadnogMjesta);
 					$zavod->loadIfExists($sudjelovanje->idZavoda);
 					$godina->loadIfExists($sudjelovanje->idGodStud);
-					$smjerovi = null;
+					//$smjerovi = null;
 				} else if ($sudjelovanje->isStudent()) {
 					$godina->loadIfExists($sudjelovanje->idGodStud);
 					$smjer->loadIfExists($sudjelovanje->idSmjera);
-					$mjesta = null;
-					$zavodi = null;
+					//$mjesta = null;
+					//$zavodi = null;
 				}
 				$velicina->loadIfExists($sudjelovanje->idVelicine);
 			} catch (\app\model\NotFoundException $e) {

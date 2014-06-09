@@ -1217,12 +1217,12 @@ class Ozsn implements Controller {
 					$mjesto->loadIfExists($sudjelovanje->idRadnogMjesta);
 					$zavod->loadIfExists($sudjelovanje->idZavoda);
 					$godina->loadIfExists($sudjelovanje->idGodStud);
-					$smjerovi = null;
+					//$smjerovi = null;
 				} else if ($sudjelovanje->isStudent()) {
 					$godina->loadIfExists($sudjelovanje->idGodStud);
 					$smjer->loadIfExists($sudjelovanje->idSmjera);
-					$mjesta = null;
-					$zavodi = null;
+					//$mjesta = null;
+					//$zavodi = null;
 				}
 				$velicina->loadIfExists($sudjelovanje->idVelicine);
 				
@@ -1512,10 +1512,12 @@ class Ozsn implements Controller {
 				$imaatribut->deleteContestantsAttributes($idSudjelovanja, $idPodrucja);
 				
 				// now add the new ones if any
-				foreach (post("idAtributa") as $k => $v) {
-					if ($v !== '') {
-						$imaatribut = new \model\DBImaatribut();
-						$imaatribut->addRow($idPodrucja, $v, $idSudjelovanja);
+				if (post("idAtributa")) {
+					foreach (post("idAtributa") as $k => $v) {
+						if ($v !== '') {
+							$imaatribut = new \model\DBImaatribut();
+							$imaatribut->addRow($idPodrucja, $v, $idSudjelovanja);
+						}
 					}
 				}
 				
