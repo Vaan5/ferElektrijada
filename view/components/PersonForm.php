@@ -255,7 +255,7 @@ if($this->osoba){ ?>
 		}
 ?>
 	
-	<div id="smjerField" <?php if(!$this->smjer || $this->smjerovi === null) echo 'style="display:none;"'; ?> class="form-group">	
+	<div id="smjerField" <?php if(!$this->smjer || $this->smjerovi === null || ($this->sudjelovanje && $this->sudjelovanje->tip !== 'S')) echo 'style="display:none;"'; ?> class="form-group">	
                 <label for="smjer" class="col-sm-3 control-label">Smjer</label>
 		<div class="col-sm-9">
                 <select name="idSmjera" class="form-control">
@@ -275,7 +275,7 @@ if($this->osoba){ ?>
 </select></div>
         </div>
 	
-	<div id="zavodField" <?php if(!$this->zavod || $this->zavodi === null) echo 'style="display:none;"'; ?> class="form-group">	
+	<div id="zavodField" <?php if(!$this->zavod || $this->zavodi === null || ($this->sudjelovanje && $this->sudjelovanje->tip === 'S')) echo 'style="display:none;"'; ?> class="form-group">	
                 <label for="zavod" class="col-sm-3 control-label">Zavod</label>
 		<div class="col-sm-9">
                 <select name="idZavoda" class="form-control">
@@ -315,7 +315,7 @@ if($this->osoba){ ?>
 </select></div>
         </div>
 	
-	<div id="radnoMjestoField" <?php if(!$this->radnoMjesto || $this->radnaMjesta === null) echo 'style="display:none;"'; ?> class="form-group">	
+	<div id="radnoMjestoField" <?php if(!$this->radnoMjesto || $this->radnaMjesta === null || ($this->sudjelovanje && $this->sudjelovanje->tip === 'S')) echo 'style="display:none;"'; ?> class="form-group">	
                 <label for="radnomjesto" class="col-sm-3 control-label">Radno mjesto</label>
 		<div class="col-sm-9">
                 <select name="idRadnogMjesta" class="form-control">
