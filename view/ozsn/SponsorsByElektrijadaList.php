@@ -85,8 +85,8 @@ class SponsorsByElektrijadaList extends AbstractView {
 ?>
 						<tr>
 							<td><?php echo $val->imeTvrtke; ?></td>
-							<td><?php echo $val->tipKategorijeSponzora; ?></td>
-							<td><?php echo $val->tipPromocije; ?></td>
+							<td><?php if($val->tipKategorijeSponzora) echo $val->tipKategorijeSponzora; else echo '-'; ?></td>
+							<td><?php if($val->tipPromocije) echo $val->tipPromocije; else echo '-'; ?></td>
 							<td><?php if($val->idPodrucja) echo $val->nazivPodrucja; else echo 'Elektrijada'; ?></td>
 							<td><?php echo $val->iznosDonacije . ' ' . $val->valutaDonacije; ?></td>
 						</tr>

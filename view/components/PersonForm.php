@@ -216,7 +216,7 @@ if($this->osoba){ ?>
 
 <?php if ($this->showDropDown) { 
 ?>
-	<div id="radnoMjestoField" <?php if(!$this->velicina || $this->velicine === null) echo 'style="display:none;"'; ?> class="form-group">	
+	<div class="form-group">	
                 <label for="velMajice" class="col-sm-3 control-label">Veličina majice</label>
 		<div class="col-sm-9">
                 <select name="idVelicine" class="form-control">

@@ -45,12 +45,11 @@ class PersonFormJs extends AbstractView {
 					$('#radnoMjestoField select').val("");
 					$('#zavodField select').val("");
 				}
-				else if ($("input[name=tip]:checked").val() == "D") {
+				else if ($("input[name=tip]:checked").val() == "D" || $("input[name=tip]:checked").val() == "O") {
 					$('#radnoMjestoField').show();
 					$('#zavodField').show();
-					$('#godStudField').hide();
+					$('#godStudField').show();
 					$('#smjerField').hide();
-					$('#godStudField select').val("");
 					$('#smjerField select').val("");
 				}
 			});

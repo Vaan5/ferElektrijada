@@ -656,7 +656,8 @@ class Voditelj implements Controller {
 				"mjesto" => $mjesto,
 				"zavod" => $zavod,
 				"smjer" => $smjer
-			))
+			)),
+			"script" => new \view\scripts\PersonFormJs()
 		));
 	}
 	
