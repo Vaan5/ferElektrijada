@@ -88,7 +88,7 @@ class MyDisciplines extends AbstractView {
 							"action" => "modifyResults"
 						)) . "?id=" . $val->idPodrucja ."\">".'<span class="glyphicon glyphicon-list-alt"></span>'." Rezultati</a></td>";
 					} else {
-						echo "<a href=\"" . 
+						echo "<td><a href=\"" . 
 							\route\Route::get('d3')->generate(array(
 							"controller" => "voditelj",
 							"action" => "modifyCompetitionData"

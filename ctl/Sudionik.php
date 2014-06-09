@@ -431,6 +431,7 @@ class Sudionik implements Controller {
 					if (in_array($v->idOsobe, $idVoditelja))
 						$pom = array($v->ime, $v->prezime, $v->mail, $v->rezultatPojedinacni, $v->ukupanBrojSudionika, "Voditelj");
 				}
+				$array[] = $pom;
 			}
 			
 			$path = $this->generateFile(get("type"), $array);
@@ -525,6 +526,7 @@ class Sudionik implements Controller {
 					if (in_array($v->idOsobe, $idVoditelja))
 						$pom = array($v->ime, $v->prezime, $v->mail, $v->rezultatPojedinacni, $v->ukupanBrojSudionika, "Voditelj");
 				}
+				$array[] = $pom;
 			}
 			
 			$path = $this->generateFile(get("type"), $array);

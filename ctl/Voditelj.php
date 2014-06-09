@@ -79,18 +79,25 @@ class Voditelj implements Controller {
 			} else {
 				throw new \app\model\NotFoundException();
 			}
+			$pocetak = strtotime($elektrijada->datumPocetka);
+			$currentTime = time();
+			if ($currentTime > $pocetak) {
+				$this->changesDisabled = true;
+				return;
+			}
 
 			// now check if the dates are right
-			$currentTime = time();
-			if ($checkZnanje) {
+			if ($checkZnanje && $elektrijada->rokZaZnanje !== null) {
 				if ($currentTime > $rokZaZnanje) {
 					$this->changesDisabled = true;
+					return;
 				}
 			}
 
-			if ($checkSport) {
+			if ($checkSport && $elektrijada->rokZaSport !== null) {
 				if ($currentTime > $rokZaSport) {
 					$this->changesDisabled = true;
+					return;
 				}
 			}
 			$this->changesDisabled = false;
@@ -1279,6 +1286,11 @@ class Voditelj implements Controller {
 	public function changeContestantAttributes() {
 		$this->checkRole();
 		$this->checkMessages();
+		$this->changesAllowed();
+		
+		if ($this->changesDisabled) {
+			$this->createMessage("Istekao je rok za unos promjena!", "d3", "voditelj", "displayPodrucja");
+		}
 		
 		$sudjelovanje = new \model\DBSudjelovanje();
 		$podrucjeSudjelovanja = new \model\DBPodrucjeSudjelovanja();

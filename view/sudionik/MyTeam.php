@@ -50,7 +50,7 @@ class MyTeam extends AbstractView {
 				<?php
 			} else {
 				echo new \view\components\ErrorMessage(array(
-				   "errorMessage" => "Nije zabilježeno Vaše učešće niti u jednoj disciplini!"
+				   "errorMessage" => "Nije zabilježeno Vaše natjecanje niti u jednoj disciplini!"
 				));
 			}
 		} else {

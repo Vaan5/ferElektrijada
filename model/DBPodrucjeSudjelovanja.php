@@ -104,6 +104,16 @@ class DBPodrucjeSudjelovanja extends AbstractDBModel {
 					$podrucje->load($v->idPodrucja);
 					$p[] = $podrucje;
 				}
+				
+				$poljeNaziva = array();
+				for ($i = 0; $i < count($p); $i++) {
+					if (in_array($p[$i]->nazivPodrucja, $poljeNaziva)) {
+						unset($p[$i]);
+					} else {
+						$poljeNaziva[] = $p[$i]->nazivPodrucja;
+					}
+				}
+				
 				return $p;
 			}
 			return array();

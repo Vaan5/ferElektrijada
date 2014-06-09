@@ -64,6 +64,7 @@ class PersonList extends AbstractView {
 				<tbody>
 <?php
 			// Foreach Ozsn member, generate row in table
+			if ($this->osobe) {
 			foreach($this->osobe as $val)
 			{
 				echo '<tr><td>' . $val->ime . '</td><td>' . $val->prezime . '</td><td>' . $val->ferId . '</td>';
@@ -102,6 +103,7 @@ class PersonList extends AbstractView {
 					"action" => 'deletePerson'
 				));
 				echo '?id=' . $val->idOsobe . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a></td></tr>';
+			}
 			}
 ?>
 				</tbody>

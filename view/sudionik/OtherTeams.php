@@ -81,7 +81,7 @@ class OtherTeams extends AbstractView {
 				<tbody>
 <?php
 
-		if(count($this->takmicari))
+		if(count($this->takmicari) || count($this->voditelji))
 		{
 			// Show voditelji
 			if (count($this->voditelji)) {
