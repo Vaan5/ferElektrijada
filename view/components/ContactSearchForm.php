@@ -12,12 +12,7 @@ class ContactSearchForm extends AbstractView {
     private $sponzori;
     private $mediji;
     
-    protected function outputHTML() {
-
-	// Samo jedno text polje s name="search"
-	// + ispisi drop down liste tvrtki sponzora i medija (name je idSponzora, idTvrtke i slicno) a value je konkretni id, + dodaj polje s value ""
-	//
-		
+    protected function outputHTML() {		
 ?>
 	<form class="form-horizontal" role="form" method="post" action="<?php echo $this->postAction;?>">
 		<div class="form-group">
@@ -77,15 +72,16 @@ class ContactSearchForm extends AbstractView {
 		
 		<center>
 			<input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText; ?>" />
-			<button type="button" class="btn btn-primary" onClick="javascript:location.href = '<?php echo \route\Route::get('d3')->generate(array(
+			
+			<a class="btn btn-primary" href="<?php echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'displayContacts'
-				)) . "";?>';">Prikaži sve kontakt osobe</button>
+				)) . "";?>">Prikaži sve kontakt osobe</a>
 			
-			<button type="button" class="btn btn-primary" onClick="javascript:location.href = '<?php echo \route\Route::get('d3')->generate(array(
+			<a class="btn btn-primary" href="<?php echo \route\Route::get('d3')->generate(array(
 					"controller" => 'ozsn',
 					"action" => 'addContact'
-				));?>';">Dodaj kontakt osobu</button></a>
+				));?>">Dodaj kontakt osobu</a>
 		</center>
 	</form>
 <?php

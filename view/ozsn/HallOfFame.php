@@ -19,11 +19,6 @@ class HallOfFame extends AbstractView {
 		
 		$brPodrucja = NULL;
 		
-		// izgeneriraj prikaz rezultata: dakle ukupan za cijelu elektrijadu, ukupan za znanje i ostale korijenske discipline (idNadredjene  = NULL)
-		// + za svako podrucje rezultat
-		// ISPITAJ KRAJNJE SLUCAJEVE
-		
-		// Separate all elektrijade into another array
 		foreach($this->rezultati as $val)
 		{
 			if(!isset($elektrijade[$val->datumPocetka]))
@@ -75,7 +70,7 @@ class HallOfFame extends AbstractView {
 						<th>Disciplina</th>
 						<th>Broj ekipa</th>
 						<th>Rezultat</th>
-						<th>Slika</th>
+						<th>Dokument</th>
 					</tr>
 					
 					<tbody>

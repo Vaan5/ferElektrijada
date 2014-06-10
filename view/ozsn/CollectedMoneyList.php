@@ -43,11 +43,14 @@ class CollectedMoneyList extends AbstractView {
                                         </div>
 				</div>
 				
-                            <center><input style="" type="submit" class="btn btn-primary" value="Prikupljeni novac za disciplinu" />
-			    <a href="<?php echo \route\Route::get('d3')->generate(array(
-					"controller" => "ozsn",
-					"action" => "displayMoneySum"
-                                ))?>?x=1"><button type="button" class="btn btn-primary">Pregled prikupljenog novca</button></a></center>	
+                            <center>
+								<input style="" type="submit" class="btn btn-primary" value="Prikupljeni novac za disciplinu" />
+								
+								<a class="btn btn-primary" href="<?php echo \route\Route::get('d3')->generate(array(
+									"controller" => "ozsn",
+									"action" => "displayMoneySum"
+                                ))?>?x=1">Pregled prikupljenog novca</a>
+							</center>	
 <?php 
 
 						} else {

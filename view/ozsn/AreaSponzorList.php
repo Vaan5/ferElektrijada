@@ -55,7 +55,7 @@ class AreaSponzorList extends AbstractView {
 				
 				<tbody>
 <?php
-			// Foreach areaSponzor, generate row in table
+				// Foreach areaSponzor, generate row in table
 				foreach($this->sponzori as $val)
 				{
 ?>

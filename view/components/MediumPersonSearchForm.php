@@ -60,11 +60,12 @@ class MediumPersonSearchForm extends AbstractView {
 			<input type="text" name="OIB" class="form-control" placeholder="Upišite OIB" />
                         </div>
         </div>
-            <center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText;?>" /> 
-                <a href="<?php echo \route\Route::get('d3')->generate(array(
+            <center><input type="submit" class="btn btn-primary" value="<?php echo $this->submitButtonText;?>" />
+				<a class="btn btn-primary" href="<?php echo \route\Route::get('d3')->generate(array(
                     "controller" => $this->allController,
                     "action" => $this->allAction
-                ));?>?a=1"><button type="button" class="btn btn-primary"><?php echo $this->showAllButtonText;?></button></a></center>
+                ));?>?a=1"><?php echo $this->showAllButtonText;?></a>
+			</center>
     </form>
 
 <?php
