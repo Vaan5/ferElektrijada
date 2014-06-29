@@ -151,3 +151,10 @@ function postArray($key) {
 	}
 	return false;
 }
+
+/**
+ * Returns root of app
+ */
+function getRootDir() {
+	return '/ferElektrijada/';		// mora biti isti kao i basepath u DefaultRoot
+}
