@@ -1135,6 +1135,8 @@ class Administrator implements Controller {
                     if ($p === false) {
                         $this->errorMessage = "Već postoji Elektrijada za tu godinu";
                     } else {
+						$bus = new \model\DBBus();
+						$bus->clearBuses();
                         preusmjeri(\route\Route::get('d1')->generate() . "?msg=elekAddSucc");
                     }
                 } catch (\PDOException $e) {
