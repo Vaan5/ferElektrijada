@@ -84,7 +84,7 @@ class ActiveObjavaList extends AbstractView {
 					"controller" => 'ozsn',
 					"action" => 'deleteActiveObjava'
 				));
-				echo '?id=' . $val->idObjave . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a></td></tr>';
+				echo '?id=' . $val->idObjavaOElektrijadi . '"><span class="glyphicon glyphicon-remove"></span> Obriši</a></td></tr>';
 			}
 			
 			echo '</tbody></table></div>';
