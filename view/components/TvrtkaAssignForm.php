@@ -74,7 +74,7 @@ class TvrtkaAssignForm extends AbstractView {
 		</div>
 		
 		<div class="form-group">
-			<label for="nacinPlacanja" class="col-sm-3 control-label">Način plačanja</label>
+			<label for="nacinPlacanja" class="col-sm-3 control-label">Način plaćanja</label>
 			<div class="col-sm-9">
 				<textarea name="nacinPlacanja" class="form-control"><?php if($this->koristiPruza && $this->koristiPruza->nacinPlacanja) echo $this->koristiPruza->nacinPlacanja; ?></textarea>
 			</div>
