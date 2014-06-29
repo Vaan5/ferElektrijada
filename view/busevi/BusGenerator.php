@@ -77,7 +77,7 @@ class BusGenerator extends AbstractView {
                         }
 
                         $grupa_inner_html .=
-                            '<div class="student" id="'
+                            '<div class="student" data-id="'
                             . $osoba->idSudjelovanja
                             .'"><input type="checkbox" class="polazak" ' . $polazak . '>
                             <input type="checkbox" class="odlazak" ' . $povratak . '> '
@@ -258,7 +258,7 @@ class BusGenerator extends AbstractView {
                                             $array1 = explode(";", $obj->podrucja);
                                             $array2 = explode(";", $obj->atributi);
                                             $p = array_unique(array_merge($array1, $array2));
-                                            echo '<div class="student" id="' . $obj->ID . '">' .
+                                            echo '<div class="student" data-id="' . $obj->ID . '">' .
                                                  '<input type="checkbox" class="polazak" checked>' .
                                                  '<input type="checkbox" class="odlazak" checked> ' .
                                                  $obj->ime_prezime .
@@ -268,7 +268,7 @@ class BusGenerator extends AbstractView {
                                     }
                                 ?>
 
-                                <!-- <div class="student" id="8"><input type="checkbox" class="polazak" checked> <input type="checkbox" class="odlazak" checked> Francuski Ključ <input type="text" value="test;test2"></div> -->
+                                <!-- <div class="student" data-id="8"><input type="checkbox" class="polazak" checked> <input type="checkbox" class="odlazak" checked> Francuski Ključ <input type="text" value="test;test2"></div> -->
                             </div>
 
                             <div id="group-container">
@@ -278,7 +278,7 @@ class BusGenerator extends AbstractView {
                                     <div class="group-show-hide"><span class="glyphicon glyphicon-chevron-right"></span></div>
                                     <div class="group-name">Analiza elektroenergetskih sustava</div>
                                     <div class="group-size">4</div>
-                                    <div class="student" id="9"><input type="checkbox" class="polazak" checked> <input type="checkbox" class="odlazak" checked> Student Studentić</div>
+                                    <div class="student" data-id="9"><input type="checkbox" class="polazak" checked> <input type="checkbox" class="odlazak" checked> Student Studentić</div>
                                 </div>
                                 -->
                             </div>

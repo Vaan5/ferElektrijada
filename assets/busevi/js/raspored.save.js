@@ -32,7 +32,7 @@ raspored.save = function() {
             for(var k=0; k<students.length; k++)
             {
                 var student = students.eq(k);
-                var idOsobe = student.attr("id");
+                var idOsobe = student.data("id");
                 var polazak = student.children("input:checkbox.polazak").prop('checked') ? 1 : 0;
                 var povratak = student.children("input:checkbox.odlazak").prop('checked') ? 1 : 0;
                 var napomena = "nema";
