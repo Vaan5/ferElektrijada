@@ -63,7 +63,7 @@ raspored.save = function() {
         busevi.push(autobus);
     }
     if(busevi.length > 0) {
-        $.post( "/ferElektrijada/busevi/spremiRaspored", { 'busevi': busevi }, function(response) {
+        $.post( baseUrl + "busevi/spremiRaspored", { 'busevi': busevi }, function(response) {
             raspored.hideLoader();
             alert(response);
             //document.write(response);

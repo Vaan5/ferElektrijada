@@ -213,7 +213,8 @@ class Busevi implements Controller {
                             array(
                             "sudionici" => $sudionici,
                             "busevi" => $busevi,
-                            "errorMessage" => $this->errorMessage
+                            "errorMessage" => $this->errorMessage,
+                            "baseUrl" => getRootDir()
                             )),
                 "title" => "Raspored po Busevima",
         ));

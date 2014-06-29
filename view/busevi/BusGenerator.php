@@ -20,6 +20,15 @@ class BusGenerator extends AbstractView {
         $this->sudionici = $sudionici;
     }
 
+    private $baseUrl;
+    /**
+     *
+     * @param string $baseUrl
+     */
+    public function setBaseUrl($baseUrl) {
+        $this->baseUrl = $baseUrl;
+    }
+
     private $busevi;
     private $buseviHtml;
     private $grupeHtml;
@@ -142,7 +151,7 @@ class BusGenerator extends AbstractView {
         ?>
 
         <style type="text/css">
-          @import url("/ferElektrijada/assets/busevi/css/style.css");
+          @import url("<?php echo $this->baseUrl; ?>assets/busevi/css/style.css");
         </style>
         <div id="busevi-container">
             <div id="loader"><div id="loader_img"></div></div>
@@ -293,16 +302,19 @@ class BusGenerator extends AbstractView {
                 </div>
             </div>
         </div>
-            <script src="/ferElektrijada/assets/busevi/js/jquery.tinysort.js" charset="UTF-8"></script>
-            <script src="/ferElektrijada/assets/busevi/js/raspored.lib.js" charset="UTF-8"></script>
-            <script src="/ferElektrijada/assets/busevi/js/raspored.algorithm.js" charset="UTF-8"></script>
-            <script src="/ferElektrijada/assets/busevi/js/raspored.save.js" charset="UTF-8"></script>
-            <script src="/ferElektrijada/assets/busevi/js/raspored.init.js" charset="UTF-8"></script>
             <script type="text/javascript">
+                var baseUrl = "/";
                 $(document).ready( function() {
                     <?php echo $this->rjecnikGrupa; ?>
+                    baseUrl = "<?php echo $this->baseUrl; ?>";
                 });
             </script>
+            <script src="<?php echo $this->baseUrl; ?>assets/busevi/js/jquery.tinysort.js" charset="UTF-8"></script>
+            <script src="<?php echo $this->baseUrl; ?>assets/busevi/js/raspored.lib.js" charset="UTF-8"></script>
+            <script src="<?php echo $this->baseUrl; ?>assets/busevi/js/raspored.algorithm.js" charset="UTF-8"></script>
+            <script src="<?php echo $this->baseUrl; ?>assets/busevi/js/raspored.save.js" charset="UTF-8"></script>
+            <script src="<?php echo $this->baseUrl; ?>assets/busevi/js/raspored.init.js" charset="UTF-8"></script>
+
 
 <?php
         }
