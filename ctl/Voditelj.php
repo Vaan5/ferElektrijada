@@ -774,15 +774,15 @@ class Voditelj implements Controller {
 					// azuriraj broj timova i broj natjecatelja
 					$elektrijada = new \model\DBElektrijada();
 					$idElektrijade = $elektrijada->getCurrentElektrijadaId();
-					if ($podrucje && $podrucje->idNadredjenog !== null && !$podSud->updateNumberOfContestants($elekPod->idPodrucja, $idElektrijade, 0, post("ukupanBrojTakmicara", 0))) {
-						$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Da biste unijeli broj natjecatelja, morate najprije registrirati barem jednog natjecatelja!");
+					if ($podrucje && $podrucje->idNadredjenog !== null && post('ukupanBrojTakmicara', false) !== false && !$podSud->updateNumberOfContestants($elekPod->idPodrucja, $idElektrijade, 0, post("ukupanBrojTakmicara", 0))) {
+						$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Da biste unijeli broj natjecatelja, morate najprije registrirati barem jednog pojedinačnog natjecatelja!");
 						$_SESSION["exception"] = serialize($handler);
 						preusmjeri(\route\Route::get('d3')->generate(array(
 							"controller" => "voditelj",
 							"action" => "modifyCompetitionData"
 						)) . "?msg=excep&id=" . post("idPodrucja"));
 					}
-					if ($podrucje && $podrucje->idNadredjenog !== null && !$podSud->updateNumberOfContestants($elekPod->idPodrucja, $idElektrijade, 1, post("ukupanBrojTimova", 0))) {
+					if ($podrucje && $podrucje->idNadredjenog !== null && post('ukupanBrojTimova', false) !== false && !$podSud->updateNumberOfContestants($elekPod->idPodrucja, $idElektrijade, 1, post("ukupanBrojTimova", 0))) {
 						$handler = new \model\ExceptionHandlerModel(new \PDOException(), "Da biste unijeli broj timova, morate najprije registrirati barem jednog člana tima!");
 						$_SESSION["exception"] = serialize($handler);
 						preusmjeri(\route\Route::get('d3')->generate(array(
