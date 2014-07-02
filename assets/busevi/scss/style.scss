@@ -270,6 +270,8 @@
             padding: 0 6px;
             background-color: #fff;
             margin: 2px;
+            height: 34px;
+            overflow: hidden;
             //@include border-radius(4px);
 
             button.btn.btn-default.btn-sm.removeFromBus {
@@ -400,7 +402,7 @@
     z-index: 167771;
 
     #loader_img {
-        background: url(/ferElektrijada/assets/busevi/gif/loader.gif) no-repeat center center;
+        background: url(../gif/loader.gif) no-repeat center center;
         position: fixed;
         @include tlbr(0, 0, 0, 0);
         z-index: 167772;

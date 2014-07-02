@@ -214,7 +214,9 @@
       border-top: 1px dashed #bbb;
       padding: 0 6px;
       background-color: #fff;
-      margin: 2px; }
+      margin: 2px;
+      height: 34px;
+      overflow: hidden; }
       .busevi .bus .bus-group button.btn.btn-default.btn-sm.removeFromBus {
         margin: 2px; }
       .busevi .bus .bus-group button.btn.btn-default.btn-sm.lockBusGroup {
@@ -310,7 +312,7 @@
   right: 0;
   z-index: 167771; }
   #loader #loader_img {
-    background: url(/ferElektrijada/assets/busevi/gif/loader.gif) no-repeat center center;
+    background: url(../gif/loader.gif) no-repeat center center;
     position: fixed;
     top: 0;
     left: 0;
