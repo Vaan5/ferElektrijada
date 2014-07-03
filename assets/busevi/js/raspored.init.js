@@ -56,10 +56,6 @@ raspored.init = function() {
         raspored.clearBus();
         event.stopPropagation();
     });
-    $("input:checkbox").bind("click", function(event) {
-        raspored.calculateGroupSize($(this));
-        event.stopPropagation();
-    });
     $("#fillBuses").bind("click", function(event) {
         raspored.fillBuses();
         event.stopPropagation();
@@ -74,9 +70,6 @@ raspored.init = function() {
     });
     $("#sortBusGroups").bind("click", function(event) {
         raspored.sortBusGroups();
-        event.stopPropagation();
-    });
-    $(".student input[type='text']").bind("click", function(event) {
         event.stopPropagation();
     });
     raspored.bindItem();

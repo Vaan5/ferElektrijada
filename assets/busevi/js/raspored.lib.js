@@ -57,6 +57,13 @@ raspored.bindItem = function() {
         raspored.lockBusGroup($(this));
         event.stopPropagation();
     });
+    $("body").on("click", "input:checkbox", function(event) {
+        raspored.calculateGroupSize($(this));
+        event.stopPropagation();
+    });
+    $("body").on("click", ".student input[type='text']", function(event) {
+        event.stopPropagation();
+    });
 };
 
 raspored.unbindItem = function() {
