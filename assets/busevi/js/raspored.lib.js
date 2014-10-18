@@ -637,7 +637,7 @@ raspored.addBus = function() {
 
 raspored.generateGroups = function() {
     var students = raspored.groupUnassigned.children("div.student");
-    console.log(students);
+    //console.log(students);
     for(var i = 0; i < students.length; i++) {
         var student = students.eq(i);
         var groupName = student.children("input[type='text']").eq(0).val().trim();
@@ -679,7 +679,7 @@ raspored.generateGroups = function() {
         student.removeClass("student-active");
 
         var studentHtml = student.outerHTML();
-        console.log(studentHtml);
+        //console.log(studentHtml);
         student.remove();
         group.append(studentHtml);
         raspored.calculateGroupSize(group);

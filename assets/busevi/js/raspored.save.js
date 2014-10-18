@@ -123,9 +123,9 @@ raspored.validate = function() {
         return false;
     }
 
-    console.log(naziviGrupa);
-    console.log(naziviBuseva);
-    console.log(registracijeBuseva);
+    //console.log(naziviGrupa);
+    //console.log(naziviBuseva);
+    //console.log(registracijeBuseva);
 
     return true;
 };

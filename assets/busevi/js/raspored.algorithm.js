@@ -116,7 +116,7 @@ raspored.fillBuses = function() {
     }
 
     orderVariants = raspored.permuteBuses(orderVariants);
-    console.log(orderVariants);
+    //console.log(orderVariants);
 
     var selectedVariant = 0;
     var maxTotal = 0;
@@ -134,7 +134,7 @@ raspored.fillBuses = function() {
             if(capacity <= 0)
                 continue;
 
-            console.log(sizesTest + " ::: " + capacityTest);
+            //console.log(sizesTest + " ::: " + capacityTest);
 
             chosen = raspored.subsetSum(sizesTest.length, capacityTest, sizesTest);
 
@@ -151,16 +151,16 @@ raspored.fillBuses = function() {
                 namesTest.splice(chosen[j], 1);
                 idsTest.splice(chosen[j], 1);
             }
-            total += sum;           
+            total += sum;
         }
-        console.log("Variant: " + k + " - " + orderVariants[k] + " :: seats taken: " + total);
+        //console.log("Variant: " + k + " - " + orderVariants[k] + " :: seats taken: " + total);
         if(total > maxTotal)
         {
             maxTotal = total;
             selectedVariant = k;
         }
     }
-    console.log(maxTotal + " <- total, selected variant -> " + selectedVariant);
+    //console.log(maxTotal + " <- total, selected variant -> " + selectedVariant);
 
     for(var i=0; i<buses.length; i++)
     {
@@ -173,8 +173,8 @@ raspored.fillBuses = function() {
         if(capacity <= 0)
             continue;
 
-        console.log(sizes.length + "-" + capacity);
-        console.log(sizes);
+        //console.log(sizes.length + "-" + capacity);
+        //console.log(sizes);
         chosen = raspored.subsetSum(sizes.length, capacity, sizes);
 
         var sum = 0;
@@ -183,7 +183,7 @@ raspored.fillBuses = function() {
             if(sizes[chosen[j]] == undefined)
                 continue;
 
-            console.log(names[chosen[j]] + " - " + sizes[chosen[j]] + "  ");
+            //console.log(names[chosen[j]] + " - " + sizes[chosen[j]] + "  ");
             sum += sizes[chosen[j]];
             raspored.addGroupToBus(names[chosen[j]], sizes[chosen[j]], ids[chosen[j]], bus);
 
